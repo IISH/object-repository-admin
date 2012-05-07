@@ -1,0 +1,179 @@
+package org.objectrepository.util
+
+import groovy.xml.MarkupBuilder
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.objectrepository.instruction.Task
+import org.objectrepository.security.Bucket
+import org.objectrepository.security.Policy
+
+import javax.xml.stream.XMLInputFactory
+import javax.xml.stream.XMLStreamReader
+
+/**
+ * OrUtil
+ *
+ * Utility class of this project. Contains various utility methods.
+ *
+ * @author Stefan van Wouw <swo@iisg.nl>
+ */
+class OrUtil {
+
+    /**
+     * Stream through a potential xml document
+     *
+     * @param file
+     * @return
+     */
+    static boolean hasFSInstruction(File file) {
+
+        final XMLInputFactory xif = XMLInputFactory.newInstance();
+        final XMLStreamReader xsr = xif.createXMLStreamReader(file.newReader());
+        boolean ok = false
+        try {
+            ok = readElement(xsr)
+        } catch (Exception e) {
+            println(e)
+        }
+        ok
+    }
+
+    /**
+     * Determine if this is a complete XML document and contains the expected namespace
+     *
+     * @param xsr
+     * @return
+     * @throws Exception
+     */
+    private static boolean readElement(XMLStreamReader xsr) throws Exception {
+
+        String or_ns = "http://objectrepository.org/instruction/1.0/"
+
+        while (xsr.hasNext()) {
+            if (xsr.next() == XMLStreamReader.START_ELEMENT) {
+                if (xsr.localName.contains("instruction") && xsr.namespaceURI.equals(or_ns)) break // We have the correct namespace.
+                return false
+            }
+        }
+        while (xsr.hasNext()) {
+            if (xsr.next() == XMLStreamReader.END_DOCUMENT) {
+                return true // The document is "whole".
+            }
+        }
+        false
+    }
+
+    /**
+     * makeOrType
+     *
+     * Turns the Instruction (without a file) or Stagingfile instance into XML conform the or schema.
+     *
+     * The xml is not valid when applying an xmlns=or validation, but the end clients do not apply this. Non schema
+     * elements will be removed in their marshall
+     *
+     * @param document
+     * @return
+     */
+    static String makeOrType(document) {
+
+        def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
+        final LinkedHashMap map = getPropertiesMap(document, true, ['task', 'workflow', 'version', 'label'])
+        map << [id: document.id]
+        orAttributes.putAll(map)
+        orAttributes << [workflow: document.workflow.collect() {
+            it.name
+        }.join("'")]
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        xml.doubleQuotes = true
+        xml.omitNullAttributes = true
+        xml.instruction(orAttributes) {
+            task {
+                identifier document.task.identifier
+                name document.task.name
+                statusCode document.task.statusCode
+            }
+        }
+        return writer.toString()
+    }
+
+    /**
+     * Utility method for getting all persistent properties mapped to their
+     * values of a domain object. Null values will not be returned when
+     * noNullValues is true.
+     * @param object A domain object to get the property map of.
+     * @param noNullValues When true, does not return null values.
+     * @return The property map of the domain object,
+     * or an empty map when the provided object was null.
+     */
+    static def getPropertiesMap(def object, def noNullValues = true, def filter) {
+
+        def map = [:]
+        if (!object) return map
+
+        new DefaultGrailsDomainClass(object.class).persistentProperties.each {p ->
+            def key = p.name
+            if (!(key in filter)) {
+                def value = object[key]
+                if (!noNullValues || value)
+                    map.put(key, value)
+            }
+        }
+        map
+    }
+
+    static camelCase(def map) {
+
+        map.inject("") {acc, val ->
+            acc + val[0].toUpperCase() + val.substring(1)
+        }
+    }
+
+    public static boolean hasTask(def workflow, Task task) {
+
+        hasTask(workflow, task.name)
+    }
+
+    public static boolean hasTask(def workflow, String name) {
+
+        (workflow.find {
+            it.name == name
+        })
+    }
+
+    static boolean removeFirst(List list) {
+        (emptyList(list)) ? false : list.remove(list.first())
+    }
+
+    static def takeFirst(List list) {
+        (emptyList(list)) ? null : list.first()
+    }
+
+    static boolean emptyList(def list) {
+        (!list || list.size() == 0)
+    }
+
+    /**
+     * availableWorkflows
+     *
+     * We cannot use the findResults method. It does not seem to work on the remote server.
+     *
+     * @param workflow
+     * @return
+     */
+    static def availableWorkflows(def workflow) {
+        def list = []
+        workflow.each {
+            if (it.key.startsWith("Stagingfile")) {
+                list << new Task(name: it.key, info: "Default workflow")
+            }
+        }
+        list
+    }
+
+    static void availablePolicies(String na, def accessMatrix) {
+        accessMatrix.each { it ->
+            def buckets = it.value.collect { new Bucket(it) }
+            Policy.findByAccessAndNa(it.key, na) ?: new Policy(na: na, access: it.key, buckets: buckets).save(failOnError: true)
+        }
+    }
+}

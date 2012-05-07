@@ -1,0 +1,117 @@
+body {
+    max-width: 100%;
+}
+
+.logout {
+    float: right;
+}
+
+.username {
+    float: right;
+}
+
+.header {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.header p {
+
+    line-height: 1em;
+}
+
+.left {
+    width: 20%;
+}
+
+#content {
+    float: left;
+    padding-top: 25px;
+    margin-left: 25px;
+    width: 80%;
+}
+
+#navHome {
+    float: left;
+    padding-right: 25px;
+    padding-top: 25px;
+    border-right: #CCCCCC solid 1px;
+}
+
+#navHome ul {
+    list-style-type: none;
+}
+
+#navHome li {
+    background: url(../images/skin/information.png) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+    line-height: 25px;
+}
+
+.table {
+    border: #CCCCCC solid 1px;
+}
+
+.buttons .upload, .buttons .download {
+    background-position: 0.7em center;
+    background-repeat: no-repeat;
+    text-indent: 25px;
+}
+
+.buttons .upload {
+    background-image: url(../images/or/upload.png);
+}
+
+.buttons .download {
+    background-image: url(../images/or/download.png);
+}
+
+.nav a.login, .nav a.lostpassword {
+    background-position: 0.7em center;
+    background-repeat: no-repeat;
+    text-indent: 25px;
+}
+
+.nav a.login {
+    background-image: url(../images/skin/house.png);
+}
+
+.nav a.lostpassword {
+    background-image: url(../images/skin/house.png);
+}
+
+.li {
+    float: left;
+}
+
+.smiley {
+    border: 0px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.statusCode700 {
+    color: red;
+}
+
+.statusCode800 {
+    color: green;
+}
+
+.footer {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer ul {
+    list-style-type: none;
+    margin: auto
+}
+
+.footer li {
+    float: left;
+    padding-left: 30px;
+    padding-right: 30px;
+}
