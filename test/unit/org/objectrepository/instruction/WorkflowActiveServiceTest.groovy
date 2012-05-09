@@ -40,15 +40,6 @@ class WorkflowActiveServiceTest {
             true
         }
 
-        Historystagingfile.metaClass.delete = {
-            print("'mock delete'")
-            true
-        }
-        Historystagingfile.metaClass.save = {
-            print("'mock save'")
-            true
-        }
-
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
         workflowActiveService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
@@ -193,7 +184,7 @@ class WorkflowActiveServiceTest {
         document.parent.workflow = [
                 allWorkflow[1],
                 allWorkflow[2]
-        ]
+        ] as List<Task>
         document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
