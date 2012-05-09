@@ -80,14 +80,6 @@
 
 </ol>
 
-    %{--<g:form>
-        <fieldset class="buttons">
-            <g:hiddenField name="id" value="${stagingfileInstance.id}"/>
-            <g:link class="edit" action="edit" id="${stagingfileInstance.id}"><g:message
-                    code="default.button.edit.label" default="Edit"/></g:link>
-        </fieldset>
-    </g:form>--}%
-
 </div>
 
 <g:formRemote name="listremote" update="updateList" url="[action:'showremote', params:[id:stagingfileInstance.id]]"/>

@@ -4,9 +4,11 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
+import org.objectrepository.security.Role
+import org.objectrepository.security.User
+import org.objectrepository.security.UserRole
 import org.objectrepository.util.OrUtil
 import org.springframework.security.oauth2.provider.BaseClientDetails
-import org.objectrepository.security.*
 
 class BootStrap {
 

@@ -27,8 +27,7 @@
 <g:formRemote name="listremote" update="updateList" url="[action:'listremote', params:[orid:instructionInstance.id,
     order:(params.order)?:'asc',
     sort:(params.sort)?:'id',
-    offset:(params.offset)?:0
-    ]]"/>
+    offset:(params.offset)?:0]]" />
 
 <div class="pagination">
     <g:paginate total="${stagingfileInstanceTotal}" params="[orid:instructionInstance.id]"/>

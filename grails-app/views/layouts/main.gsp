@@ -17,26 +17,16 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}"/>
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'or.css')}"/>
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'progressbar.css')}"/>
+    %{--<dojo:header theme="soria" showSpinner="true"/>--}%
     <g:javascript library="jquery" plugin="jquery"/>
     <r:layoutResources/>
     <g:layoutHead/>
     <script type="text/javascript">
-        var update = true;
-
-        jQuery(document).ready(function() {
-
-            /*jQuery("#updateList").mouseenter(function() {
-             update = false;
-             });
-             jQuery("#updateList").mouseleave(function() {
-             update = true;
-             });*/
-            window.setInterval(function() {
-                if (update) {
-                    jQuery('form[id^=listremote]').each(function() {
-                        jQuery(this).submit();
-                    });
-                }
+        jQuery(document).ready(function () {
+            window.setInterval(function () {
+                jQuery('form[id^=listremote]').each(function () {
+                    jQuery(this).submit();
+                });
             }, ${grailsApplication.config.updateList.interval});
         });
     </script>
@@ -44,7 +34,7 @@
         function validate(form) {
             var e = form.elements;
 
-            if (!e['skippassword'] &&  e['confirmpassword'].value && e['password'].value != e['confirmpassword'].value) {
+            if (!e['skippassword'] && e['confirmpassword'].value && e['password'].value != e['confirmpassword'].value) {
                 alert('Your passwords do not match');
                 return false;
             }

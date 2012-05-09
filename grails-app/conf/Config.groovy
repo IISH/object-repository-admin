@@ -1,9 +1,11 @@
 grails.project.groupId = "org.objectrepository" // change this to alter the default package name and Maven publishing destination
 grails.camel.camelContextId = "camelContext"
+grails.views.javascript.library="dojo"
 grails.views.javascript.library = "jquery"
 ['ldap', 'oauthProvider', 'wf','addUsers'].each {
     delegate."$it" = Boolean.parseBoolean(System.properties.getProperty(it, 'false'))
 }
+
 grails.plugins.springsecurity.ldap.active = ldap
 grails.plugins.springsecurity.oauthProvider.active = oauthProvider
 

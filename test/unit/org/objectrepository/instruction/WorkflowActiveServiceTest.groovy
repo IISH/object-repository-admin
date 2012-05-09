@@ -35,6 +35,20 @@ class WorkflowActiveServiceTest {
             getProperty("action")
         }
 
+        Stagingfile.metaClass.delete = { Map arg->
+            println("Mock delete")
+            true
+        }
+
+        Historystagingfile.metaClass.delete = {
+            print("'mock delete'")
+            true
+        }
+        Historystagingfile.metaClass.save = {
+            print("'mock save'")
+            true
+        }
+
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
         workflowActiveService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
@@ -45,12 +59,13 @@ class WorkflowActiveServiceTest {
 
         workflowActiveService.filesUDService = new FilesUDService()
         workflowActiveService.filesUDService.metaClass.delete = { String pid ->
-            println("updating pid")
+            println("mock update")
         }
         workflowActiveService.filesUDService.metaClass.findOne = { String pid, String md5 ->
-            println("lookup pid")
+            println("mock pid")
             true
         }
+
     }
 
     void testFirst() {
@@ -113,6 +128,7 @@ class WorkflowActiveServiceTest {
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'add']
         document.parent = [id: new ObjectId()]
+        document.failed = []
         document.workflow = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
@@ -154,6 +170,7 @@ class WorkflowActiveServiceTest {
                 contentType: 'image/jpeg', task: task, action: 'add']
         document.parent = [id: new ObjectId()]
         document.parent.workflow = OrUtil.availableWorkflows(config.workflow)
+        document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
@@ -177,6 +194,7 @@ class WorkflowActiveServiceTest {
                 allWorkflow[1],
                 allWorkflow[2]
         ]
+        document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
@@ -234,6 +252,7 @@ class WorkflowActiveServiceTest {
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', contentType: 'image/jpeg', task: task, action: 'delete']
         document.parent = [id: new ObjectId(), workflow: OrUtil.availableWorkflows(config.workflow)]
+        document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800

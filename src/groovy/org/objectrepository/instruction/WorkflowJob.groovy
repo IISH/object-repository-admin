@@ -1,9 +1,9 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.util.OrUtil
 import grails.converters.XML
 import org.apache.camel.CamelExecutionException
 import org.apache.commons.logging.LogFactory
+import org.objectrepository.util.OrUtil
 
 /**
  * WorkflowJob
@@ -281,7 +281,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void Instruction800(def document) {
-        if (document.autoIngestValidInstruction && taskValidationService.hasValidDBInstruction(document)) {
+        if (document.task.name != 'InstructionIngest' && document.autoIngestValidInstruction && taskValidationService.hasValidDBInstruction(document)) {
             changeWorkflow('InstructionIngest', document)
         }
     }
@@ -299,12 +299,9 @@ abstract class WorkflowJob {
 
         if (document instanceof Stagingfile) {
             if (document.failed.size() == 0) {
-                log.info id(document) + "Stagingfile successfull."
-                final Historystagingfile historystagingfile = document.properties
-                if (historystagingfile.save()) {
-                    document.task = null
-                    document.delete(flush: true)
-                }
+                log.info id(document) + "Stagingfile successfull. Remove document."
+                document.fileSet = null
+                document.delete(flush: true)
             } else {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
                 document.task.name = "Start"
@@ -314,7 +311,7 @@ abstract class WorkflowJob {
     }
 
     /**
-     * Writes an OrType into XML and expresses that as text
+     * Writes an InstructionType into XML and expresses that as text
      * This will be for instruction and files.
      *
      * We want to be sure the task identifier is in the database before the message queue client
@@ -359,7 +356,7 @@ abstract class WorkflowJob {
      * @return
      */
     void saveWorkflow(def document) {
-        if (!document.task || document.task.name == document.cacheTask?.name &&
+        if (!document.fileSet || document.task.name == document.cacheTask?.name &&
                 document.task.statusCode == document.cacheTask?.statusCode) {
             log.info id(document) + "Skipping save for workflow status... no changes"
         } else {
@@ -373,8 +370,9 @@ abstract class WorkflowJob {
         }
     }
 
-    void save(def document) {
-        if (document.save(flush: true)) {
+    boolean save(def document) {
+        boolean ok = document.save(flush: true)
+        if (ok) {
             log.info id(document) + "Saved document..."
         } else {
             println("Validation problem when saving document.")
@@ -383,6 +381,7 @@ abstract class WorkflowJob {
             }
             println("Document:" + document as XML)
         }
+        ok
     }
 
     void exception(def document, Exception e) {

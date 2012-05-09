@@ -105,7 +105,7 @@ class WorkflowInitiateService extends WorkflowJob {
             }
         }
 
-        if (instructionInstance.task) return // If we have a current workflow, we need not initiate.
+        if (!instructionInstance || instructionInstance.task) return
 
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
