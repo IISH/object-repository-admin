@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <instruction xmlns="http://objectrepository.org/instruction/1.0/" action="add" access="open" contentType="image/jpg" na="12345"
      resolverBaseUrl="http://hdl.handle.net/" autoGeneratePIDs="lid"
-    label="My alias for a folder"
-    fileSet="C:/Users/lwo/object-repository-servicenodes/instruction-manager/src/test/resources/home/12345/folder_of_cpuser/test-collection">
+    label="I stood in a fileSet"
+    fileSet="/folder">
     <task>
         <name>InstructionUpload</name>
         <statusCode>500</statusCode>

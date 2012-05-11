@@ -20,10 +20,6 @@ class ProfileController {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         def profiles = (springSecurityService.hasRole('ROLE_ADMIN')) ? Profile.list(params) : Profile.findAllByNa(springSecurityService.principal.na, params)
-        if (!profiles) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'profile.label', default: 'Profile'), params.id])
-            return;
-        }
         if (springSecurityService.hasRole('ROLE_CPADMIN')) {
             forward(action: 'show', id: profiles[0].id)
         }

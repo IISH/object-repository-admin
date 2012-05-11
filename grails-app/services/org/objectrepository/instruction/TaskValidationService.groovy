@@ -98,10 +98,10 @@ class TaskValidationService {
      * @param document
      * @return
      */
-    boolean hasFSInstruction(def document) {
+    def hasFSInstruction(def document) {
 
         File file = FSInstruction(document)
-        if (!file.exists()) return false
+        if (!file.exists()) return null
         OrUtil.hasFSInstruction(file)
     }
 

@@ -57,7 +57,7 @@ class WorkflowActiveService extends WorkflowJob {
                         exception(stagingfile, e)
                     }
                 }
-                if ( instruction.change ){ save(instruction) }
+                if (instruction.change) { save(instruction) }
             }
         }
     }
@@ -88,10 +88,18 @@ class WorkflowActiveService extends WorkflowJob {
  * @param document
  * @return
  */
-    def UploadFiles800(document) {
-        if (!taskValidationService.hasFSFiles(document)) first(document) // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
-        if (taskValidationService.hasFSInstruction(document)) { // A fibb. We can proceed.
-            changeWorkflow('InstructionUpload', document)
+    def UploadFiles800(Instruction document) {
+        if (!taskValidationService.hasFSFiles(document)) {
+            // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
+            first(document)
+        } else {
+            def instruction = taskValidationService.hasFSInstruction(document)
+            if (instruction) { // A fibb. We can proceed.
+                instruction.each {
+                    document.setProperty(it.key, it.value)
+                }
+                changeWorkflow('InstructionUpload', document)
+            }
         }
     }
 

@@ -18,61 +18,66 @@ import javax.xml.stream.XMLStreamReader
  */
 class OrUtil {
 
+    final static String or_ns = "http://objectrepository.org/instruction/1.0/"
+    final static filter = ["fileSet", "na", "task"]
+
     /**
      * Stream through a potential xml document
      *
      * @param file
      * @return
      */
-    static boolean hasFSInstruction(File file) {
+    static def hasFSInstruction(File file) {
 
         final XMLInputFactory xif = XMLInputFactory.newInstance();
         final XMLStreamReader xsr = xif.createXMLStreamReader(file.newReader());
-        boolean ok = false
         try {
-            ok = readElement(xsr)
+            return readElement(xsr)
         } catch (Exception e) {
             println(e)
         }
-        ok
+        null
     }
 
     /**
-     * Determine if this is a complete XML document and contains the expected namespace
+     * readElement
+     *
+     * Determine if this is a complete XML document and contains the expected namespace and main attributes.
+     * Skips all elements and looks for a final end of document.
+     * If found we return the attributes
      *
      * @param xsr
      * @return
      * @throws Exception
      */
-    private static boolean readElement(XMLStreamReader xsr) throws Exception {
+    private static Map readElement(XMLStreamReader xsr) throws Exception {
 
-        String or_ns = "http://objectrepository.org/instruction/1.0/"
-
+        final Map instruction = null
         while (xsr.hasNext()) {
-            if (xsr.next() == XMLStreamReader.START_ELEMENT) {
-                if (xsr.localName.contains("instruction") && xsr.namespaceURI.equals(or_ns)) break // We have the correct namespace.
-                return false
+            final next = xsr.next()
+            if (next == XMLStreamReader.START_ELEMENT && !instruction && xsr.localName.contains("instruction")
+                    && xsr.namespaceURI.equals(or_ns)) {
+                instruction = [:]
+                for (int i = 0; i < xsr.getAttributeCount(); i++) {
+                    final String key = xsr.getAttributeLocalName(i)
+                    if (!(key in filter)) instruction.put(key, xsr.getAttributeValue(i))
+                }
             }
         }
-        while (xsr.hasNext()) {
-            if (xsr.next() == XMLStreamReader.END_DOCUMENT) {
-                return true // The document is "whole".
-            }
-        }
-        false
+        instruction
     }
 
-    /**
-     * makeOrType
-     *
-     * Turns the Instruction (without a file) or Stagingfile instance into XML conform the or schema.
-     *
-     * The xml is not valid when applying an xmlns=or validation, but the end clients do not apply this. Non schema
-     * elements will be removed in their marshall
-     *
-     * @param document
-     * @return
-     */
+/**
+ * makeOrType
+ *
+ * Turns the Instruction (without a file) or Stagingfile instance into XML conform the or schema.
+ *
+ * The xml is not valid when applying an xmlns=or validation, but the end clients do not apply this. Non schema
+ * elements will be removed in their marshall
+ *
+ * @param document
+ * @return
+ */
     static String makeOrType(document) {
 
         def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
@@ -96,15 +101,15 @@ class OrUtil {
         return writer.toString()
     }
 
-    /**
-     * Utility method for getting all persistent properties mapped to their
-     * values of a domain object. Null values will not be returned when
-     * noNullValues is true.
-     * @param object A domain object to get the property map of.
-     * @param noNullValues When true, does not return null values.
-     * @return The property map of the domain object,
-     * or an empty map when the provided object was null.
-     */
+/**
+ * Utility method for getting all persistent properties mapped to their
+ * values of a domain object. Null values will not be returned when
+ * noNullValues is true.
+ * @param object A domain object to get the property map of.
+ * @param noNullValues When true, does not return null values.
+ * @return The property map of the domain object,
+ * or an empty map when the provided object was null.
+ */
     static def getPropertiesMap(def object, def noNullValues = true, def filter) {
 
         def map = [:]
@@ -152,14 +157,14 @@ class OrUtil {
         (!list || list.size() == 0)
     }
 
-    /**
-     * availableWorkflows
-     *
-     * We cannot use the findResults method. It does not seem to work on the remote server.
-     *
-     * @param workflow
-     * @return
-     */
+/**
+ * availableWorkflows
+ *
+ * We cannot use the findResults method. It does not seem to work on the remote server.
+ *
+ * @param workflow
+ * @return
+ */
     static def availableWorkflows(def workflow) {
         def list = []
         workflow.each {
@@ -176,4 +181,5 @@ class OrUtil {
             Policy.findByAccessAndNa(it.key, na) ?: new Policy(na: na, access: it.key, buckets: buckets).save(failOnError: true)
         }
     }
+
 }

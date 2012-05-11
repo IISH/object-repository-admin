@@ -17,12 +17,31 @@ class OrUtilTest {
     void testFSInstruction() {
 
         int success, failure
-        new File(System.properties['user.dir'] + "/test/resources").eachFile(FileType.FILES) { // Todo: How to groovy the resource folder ?
+        new File(System.properties['user.dir'] + "/test/resources").eachFile(FileType.FILES) {
             if (OrUtil.hasFSInstruction(it)) {success++}
             else { failure++ }
         }
         assert success == 1
         assert failure == 3
+    }
+
+    void testFSInstructionValues() {
+        def shouldHave = [
+                action: "add", access: "open", contentType: "image/jpg", na: "12345",
+                resolverBaseUrl: "http://hdl.handle.net/", autoGeneratePIDs: "lid",
+                label: "My alias for a folder"]
+        File file = new File(System.properties['user.dir'] + "/test/resources/valid-instruction.xml")
+        def instruction = OrUtil.hasFSInstruction(file)
+        instruction.each {
+            assert it.key in shouldHave
+            assert it.value == shouldHave."$it.key"
+        }
+
+        ['fileSet', 'na'].each {      key ->
+            assert !instruction.find {
+                it.key == key
+            }
+        }
     }
 
     void testHasTask() {
