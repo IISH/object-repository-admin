@@ -28,15 +28,6 @@ class WorkflowStaleService extends WorkflowJob {
     void job() {
 
         final date = new Date(new Date().time - period) // past tense
-
-        //This does not dry...
-        /*
-                [Instruction, Stagingfile].each {
-                    invalidate(it.where {
-                        task.statusCode == 400 && task.end < date
-                    }).list([max: max])
-                }
-        */
         invalidate(Instruction.where({task.statusCode == 400 && task.end < date}).list([max: max]))
         invalidate(Stagingfile.where({task.statusCode == 400 && task.end < date}).list([max: max]))
     }

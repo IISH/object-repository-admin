@@ -94,24 +94,22 @@ class WorkflowActiveService extends WorkflowJob {
             first(document)
         } else {
             def instruction = taskValidationService.hasFSInstruction(document)
-            if (instruction) { // A fibb. We can proceed.
-                instruction.each {
-                    document.setProperty(it.key, it.value)
-                }
+            if (instruction) {
+                OrUtil.putAll(document, instruction)
                 changeWorkflow('InstructionUpload', document)
             }
         }
     }
 
-    /**
-     * InstructionIngest600
-     *
-     * Verify that all stagingfile documents are correctly tasked.
-     * We know when all files ought to have a task and that task ought to be Start.
-     *
-     * @param document
-     * @return
-     */
+/**
+ * InstructionIngest600
+ *
+ * Verify that all stagingfile documents are correctly tasked.
+ * We know when all files ought to have a task and that task ought to be Start.
+ *
+ * @param document
+ * @return
+ */
     def InstructionIngest600(def document) {
 
         if (document.task.exitValue == 0) {
@@ -128,21 +126,21 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
-    /**
-     * addUpdateUpsertOrDelete
-     *
-     * The action indicator determines the flow of the file.
-     * Where:
-     * action=delete : we move to the delete queue
-     * action=add : we go to the next phase
-     * action=update : with file location, we proceed like add.
-     * action=upsert : no location. A simple metadata update
-     *
-     * Sets the expected tasks.
-     *
-     * @param document
-     * @return
-     */
+/**
+ * addUpdateUpsertOrDelete
+ *
+ * The action indicator determines the flow of the file.
+ * Where:
+ * action=delete : we move to the delete queue
+ * action=add : we go to the next phase
+ * action=update : with file location, we proceed like add.
+ * action=upsert : no location. A simple metadata update
+ *
+ * Sets the expected tasks.
+ *
+ * @param document
+ * @return
+ */
     def Start100(def document) {
 
         switch (document.action) {
@@ -170,14 +168,14 @@ class WorkflowActiveService extends WorkflowJob {
         next(document)
     }
 
-    /**
-     * Stagingfile800
-     *
-     * Detect the next task. If not found, we move to the default end of the Road.
-     *
-     * @param document
-     * @return
-     */
+/**
+ * Stagingfile800
+ *
+ * Detect the next task. If not found, we move to the default end of the Road.
+ *
+ * @param document
+ * @return
+ */
     void Stagingfile800(document) {
 
         OrUtil.removeFirst(document.workflow)
@@ -185,4 +183,5 @@ class WorkflowActiveService extends WorkflowJob {
         log.info id(document) + "Stagingfile800 sets changeWorkflow."
         changeWorkflow(task, document)
     }
+
 }

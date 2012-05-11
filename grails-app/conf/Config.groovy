@@ -156,18 +156,17 @@ println("log directory: " + logFile.absolutePath)
 log4j = {
 
     appenders {
-        stdout name: 'StackTrace'
+        console name: 'StackTrace'
         rollingFile name: 'stacktrace', maxFileSize: 1024,
                 file: logFile.absolutePath + '/objectrepository-admin-stacktrace.log'
     }
 
     root {
-        info()
+        warn()
     }
 
     info 'grails.app.controllers'
     info 'grails.app.services'
-    //debug 'grails.app'
 }
 
 grails.doc.title = "Object-repository"

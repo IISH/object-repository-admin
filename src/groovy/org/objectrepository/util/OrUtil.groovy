@@ -182,4 +182,13 @@ class OrUtil {
         }
     }
 
+    static void putAll(def document, Map instruction) {
+        instruction.each {
+            if (it.key == 'workflow') {
+                document.setProperty(it.key, it.value.split(",").toList())
+            } else {
+                document.setProperty(it.key, it.value)
+            }
+        }
+    }
 }

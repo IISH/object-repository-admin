@@ -86,29 +86,23 @@ class BootStrap {
     private void bindAccessors() {
 
         new DefaultGrailsDomainClass(Profile.class).persistentProperties.each { p ->
-
             String attribute = p.name
             log.info "bindAccessors: " + attribute
             String getter = "get" + OrUtil.camelCase([attribute])
             String setter = "set" + OrUtil.camelCase([attribute])
 
-            Instruction.metaClass."$getter" = {
-                delegate.@"$attribute" ?: parent."$attribute"
-            }
-            Stagingfile.metaClass."$getter" = {
-                delegate.@"$attribute" ?: parent."$attribute"
-            }
-            // As we overwrite the getter, we need set the setter to prevent loop-ness
-            Instruction.metaClass."$setter" = { val ->
-                delegate.@"$attribute" = val
-            }
-            Stagingfile.metaClass."$setter" = { val ->
-                delegate.@"$attribute" = val
+            [Stagingfile, Instruction].each {
+                it.metaClass."$getter" = {
+                    // we will not use the elvis operator ?: because it does not distinguish between null and the boolean false.
+                    delegate.@"$attribute" = (delegate.@"$attribute" == null) ? parent."$attribute" : delegate.@"$attribute"
+                }
+                // As we overwrite the getter, we need set the setter to prevent loop-ness
+                it.metaClass."$setter" = { val ->
+                    delegate.@"$attribute" = val
+                }
             }
         }
     }
-
-
 
     private void addUser(String na, String username, String authority) {
 
