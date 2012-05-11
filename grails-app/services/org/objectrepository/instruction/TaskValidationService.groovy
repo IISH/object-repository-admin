@@ -26,40 +26,33 @@ class TaskValidationService {
          * Each Workflow has a service that invokes it. Hence we also have a controller to invoke the service.
          * Services become available when we have an ingest=pending state.
          *
-         * The services is locked when a workflow is running: statusCode < 700
-         * In all other cases the services is free to be called.
+         * The services is locked when a workflow is running: statusCode < 700 ( can be set via WorkflowConfig )
+         * In all other cases the services is free to be called at a default instruction ingest status of 'pending'.
+         * Each service can be filtered in WorkflowConfig in the service: [ingest:[] ] setting
          *
-         * If an ingest=working
-         *
-         * All services are locked once the ingest=true is set. All files and backend service nodes will be working
-         * on the task
-         *
-         * Here these services are infused in the Instruction class, where other servies, controllers and views can
-         * access it easily using the getServices property.
+         * These services are infused in the Instruction class, where other services, controllers and views can
+         * access via the getServices property.
          *
          */
         Instruction.metaClass.getServices = {
-            if (delegate.ingest == 'pending') {
-                _services = (_services) ?: grailsApplication.config.workflow.inject([]) {acc, v ->
-                    def service = v.value.service
-                    if (service) {
-                        def method = service.method
-                        def statusCode = (service.statusCode) ?: 700
-                        if (task.statusCode >= statusCode) {
-                            //noinspection GroovyAssignabilityCheck
-                            if (!method || "$method"(delegate)) {
-                                def name = (service.name) ?: v.key
-                                def controllerAction = Pattern.compile("([A-Z])").matcher(name).replaceAll(" \$1").trim().toLowerCase().split("\\s", 2)
-                                def controller = (service.controller) ?: controllerAction[0]
-                                def action = (service.action) ?: controllerAction[1]
-                                acc << [name: name, controller: controller, action: action]
-                            }
+            _services = (_services) ?: grailsApplication.config.workflow.inject([]) {acc, v ->
+                def service = v.value.service
+                if (service) {
+                    def method = service.method
+                    def statusCode = (service.statusCode) ?: 700
+                    def ingest = (service.ingest) ?: ['pending']
+                    if (task.statusCode >= statusCode && delegate.ingest in ingest) {
+                        //noinspection GroovyAssignabilityCheck
+                        if (!method || "$method"(delegate)) {
+                            def name = (service.name) ?: v.key
+                            def controllerAction = Pattern.compile("([A-Z])").matcher(name).replaceAll(" \$1").trim().toLowerCase().split("\\s", 2)
+                            def controller = (service.controller) ?: controllerAction[0]
+                            def action = (service.action) ?: controllerAction[1]
+                            acc << [name: name, controller: controller, action: action]
                         }
                     }
-                    acc
                 }
-            } else {
-                _services = (_services) ?: []
+                acc
             }
         }
 

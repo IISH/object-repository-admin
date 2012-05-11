@@ -29,7 +29,7 @@ class OrUtilTest {
         def shouldHave = [
                 action: "add", access: "open", contentType: "image/jpg", na: "12345",
                 resolverBaseUrl: "http://hdl.handle.net/", autoGeneratePIDs: "lid",
-                label: "My alias for a folder"]
+                label: "I was put in this folder."]
         File file = new File(System.properties['user.dir'] + "/test/resources/valid-instruction.xml")
         def instruction = OrUtil.hasFSInstruction(file)
         instruction.each {

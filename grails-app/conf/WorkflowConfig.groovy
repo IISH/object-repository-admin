@@ -28,7 +28,7 @@ workflow = [
                 ]
         ],
         InstructionDownload: [
-                service: [method: 'hasDBInstruction'],
+                service: [method: 'hasDBInstruction', ingest:['pending','working']],
                 statusCodes: [
                         100: [purpose: 'A user asked to download an instruction.']
                 ]
