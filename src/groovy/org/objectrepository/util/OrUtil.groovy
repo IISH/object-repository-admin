@@ -185,7 +185,9 @@ class OrUtil {
     static void putAll(def document, Map instruction) {
         instruction.each {
             if (it.key == 'workflow') {
-                document.setProperty(it.key, it.value.split(",").toList())
+                document.workflow = it.value.split(',').collect { String name ->
+                    new Task(name: name, info: 'Added by a xml instruction')
+                }
             } else {
                 document.setProperty(it.key, it.value)
             }

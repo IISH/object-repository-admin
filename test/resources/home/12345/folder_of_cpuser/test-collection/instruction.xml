@@ -3,7 +3,7 @@
 <instruction xmlns="http://objectrepository.org/instruction/1.0/" access="closed" action="upsert"
              autoGeneratePIDs="filename2lid" contentType="image/tiff" label="enter descriptive tag title here"
              resolverBaseUrl="http://hdl.handle.net/"
-             workflow="StagingfileBindPIDs,StagingfileIngestMaster,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3">
+             workflow="StagingfileIngestMaster,StagingfileBindPIDs">
     <stagingfile><!--<pid>12345/12561A73-B0DF-4593-8BD0-7FC8953C44B3</pid>-->
         <location>/test-collection/apple2/apple4/apples1.jpeg</location>
         <md5>2b87dbbce277e7ddfeb840cc38229648</md5>
