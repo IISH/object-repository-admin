@@ -2,7 +2,6 @@ package org.objectrepository.instruction
 
 import grails.converters.XML
 import org.apache.camel.CamelExecutionException
-import org.apache.commons.logging.LogFactory
 import org.objectrepository.util.OrUtil
 
 /**
@@ -12,8 +11,7 @@ import org.objectrepository.util.OrUtil
  */
 abstract class WorkflowJob {
 
-    private static final log = LogFactory.getLog(this)
-    static transactional = false
+    static transactional = 'mongo'
     def grailsApplication
     File home
     TaskValidationService taskValidationService

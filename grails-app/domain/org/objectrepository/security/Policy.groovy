@@ -39,7 +39,7 @@ class Policy {
         beforeChange()
     }
 
-    protected String getAccessForBucket(String bucket) {
+    public String getAccessForBucket(String bucket) {
         buckets.find {
             it.bucket == bucket
         }.access

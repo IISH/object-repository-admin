@@ -14,7 +14,7 @@ import java.util.regex.Pattern
  */
 class TaskValidationService {
 
-    static transactional = false
+    static transactional = 'mongo'
 
     def grailsApplication
 

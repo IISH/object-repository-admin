@@ -1,8 +1,6 @@
 package org.objectrepository.files
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
-import com.mongodb.util.JSON
+import org.objectrepository.domain.Orfiles
 
 class FilesUDService {
 
@@ -17,9 +15,9 @@ class FilesUDService {
      * @return
      */
     def update(String pid, def params) {
-        final DBObject query = new BasicDBObject("pid", pid)
+        /*final DBObject query = new BasicDBObject("pid", pid)
         def update = JSON.parse(String.format("{\$set:{label:'%s',access:'%s', resolverBaseUrl:'%s'}}", params.label, params.access, params.resolverBaseUrl))
-        Files.collection.update(query, update, true, false)
+        File.collection.update(query, update, true, false)*/
     }
 
     /**
@@ -31,14 +29,14 @@ class FilesUDService {
      * @return
      */
     def delete(String pid) {
-        final DBObject query = new BasicDBObject("pid", pid)
+       /* final DBObject query = new BasicDBObject("pid", pid)
         def update = JSON.parse("{\$set:{access:'deleted'}}");
-        Files.collection.update(query, update, true, false)
+        Files.collection.update(query, update, true, false)*/
     }
 
     def findOne(String pid, String md5) {
-        final DBObject query = new BasicDBObject("pid", pid)
+        /* final DBObject query = new BasicDBObject("pid", pid)
         query.append("md5", md5);
-        Files.collection.findOne(query);
+        Files.collection.findOne(query);*/
     }
 }

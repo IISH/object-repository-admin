@@ -1,14 +1,17 @@
 package org.objectrepository.files
 
-import org.objectrepository.security.Policy
 import grails.plugins.springsecurity.Secured
+import org.objectrepository.domain.Orfiles
+import org.objectrepository.security.Policy
 
 @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class FilesController {
+class OrfilesController {
 
     def springSecurityService
-    def filesUDService
+    def gridFSService
+    def mongo
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
 
     def index() {
         forward(action: "list", params: params)
@@ -17,22 +20,22 @@ class FilesController {
     def list() {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        def filesInstanceList = springSecurityService.hasRole('ROLE_ADMIN') ? Files.list(params) : Files.findAllByNa(springSecurityService.principal.na, params)
-        [filesInstanceList: filesInstanceList, filesInstanceTotal: filesInstanceList.size()]
+        def orfilesInstanceList = gridFSService.findAllByNa(springSecurityService.principal.na, params)
+        [orfilesInstanceList: orfilesInstanceList, orfilesInstanceListTotal: orfilesInstanceList.size()]
     }
 
     def show() {
-        def filesInstance = Files.get(params.id)
-        if (!filesInstance) {
+        def orfilesInstance = gridFSService.get(springSecurityService.principal.na, params.id)
+        if (!orfilesInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             redirect(action: "list")
             return
         }
-        [filesInstance: filesInstance]
+        [orfilesInstance: orfilesInstance]
     }
 
     def edit() {
-        def filesInstance = Files.get(params.id)
+        def filesInstance = Orfiles.get(params.id)
         if (!filesInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             forward(action: "list")
@@ -53,7 +56,7 @@ class FilesController {
     }*/
 
     def update() {
-        def filesInstance = Files.get(params.id)
+        def filesInstance = Orfiles.get(params.id)
         if (!filesInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             redirect(action: "list")
@@ -72,7 +75,7 @@ class FilesController {
     }
 
     def delete() {
-        def filesInstance = Files.get(params.id)
+        def filesInstance = Orfiles.get(params.id)
         if (!filesInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             redirect(action: "list")

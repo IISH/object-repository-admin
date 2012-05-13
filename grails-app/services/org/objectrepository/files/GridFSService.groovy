@@ -2,11 +2,12 @@ package org.objectrepository.files
 
 import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
+import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
-import com.mongodb.gridfs.GridFSDBFile
 import com.mongodb.util.JSON
-import org.objectrepository.domain.File
-import groovy.transform.Synchronized
+
+import org.objectrepository.util.OrUtil
+import org.objectrepository.domain.Orfiles
 
 /**
  * GridFSService
@@ -17,45 +18,55 @@ import groovy.transform.Synchronized
 class GridFSService {
 
     static transactional = false
+    def mongo
 
-    Map<String, GridFS> gridFS = [:]
+    /**
+     * findByPid
+     *
+     * Find the document via pid reference.
+     *
+     * @param pid
+     * @return
+     */
+    def findByPid(String pid, String bucket) {
+        if (!pid || pid.isEmpty()) return null
+        String na = OrUtil.getNa(pid)
+        def db = mongo.getDB("or_" + na)
+        GridFS gridFS = new GridFS(db, bucket)
+        gridFS.findOne(new BasicDBObject("metadata.pid", pid))
+    }
 
-    GridFSDBFile getFile(File file) {
-
-        GridFS fs = getGridFS(file.bucket)
-        update(fs, file)
-        fs.findOne(file.objectId)
+    /**
+     * findAllByNa
+     *
+     * Find all documents via na reference
+     *
+     * @param na
+     * @param params for sorting, paging and filtering
+     */
+    List<Orfiles> findAllByNa(def na, def params) {
+        def collection = mongo.getDB("or_" + na).getCollection("master.files")
+        collection.find('metadata.na': na).limit(params.max).skip(0).collect { // may dd .sort(key:1)
+            new Orfiles(it)
+        }
     }
 
     /**
      * update
      *
-     * As we cannot perform a FindAndModify using GridFS, we need a unidirectional update
+     * As we cannot perform a FindAndModify using GridFS, we need a unidirectional atomic update
      *
      * @param gridFS
      * @param file
      */
-    private void update(GridFS gridFS, File file) {
-        DBObject query = new BasicDBObject('files.file.\$id', file.objectId)
-        DBObject update = JSON.parse("{\$inc:{'files.\$.timesAccessed':1}}")
-        gridFS.getDB().getCollection('files').update(query, update, false, false)
+    void update(def file, String bucket) {
+        final DBObject query = new BasicDBObject('_id', file._id)
+        final DBObject update = (DBObject) JSON.parse("{\$inc:{'metadata.timesAccessed':1}}")
+        final def db = mongo.getDB("or_" + file.metadata.na)
+        db.getCollection(bucket + ".files").update(query, update, false, false, WriteConcern.NONE)
     }
 
-    @Synchronized
-    def loadGridFS(String bucket) {
-        GridFS fs = gridFS[bucket] // double fail safe singleton
-        if (fs == null) {
-            fs = new GridFS(Files.collection.DB, bucket)
-            gridFS.put(bucket, fs)
-        }
-        fs
-    }
-
-    def getGridFS(String bucket) {
-        def fs = gridFS[bucket]
-        if (!fs) {
-            fs = loadGridFS(bucket)
-        }
-        fs
+    Orfiles get(String na, String id) {
+        mongo.getDB("or_" + na).getCollection("master.files").findOne(_id: id)
     }
 }

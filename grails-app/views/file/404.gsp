@@ -12,8 +12,8 @@
                                                             default="Skip to content&hellip;"/></a>
 
 <div id="show-file" class="content scaffold-show" role="main">
-    <h1>File removed</h1>
-    <p>This file has been removed from the repository.</p>
+    <h1>File not found</h1>
+    <p>${params.pid}</p>
 </div>
 </body>
 </html>

@@ -1,9 +1,8 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.domain.FileBase
 import org.bson.types.ObjectId
 
-class Stagingfile extends FileBase {
+class Stagingfile {
 
     // Move these attributes to Globals ( see the comment therein )
     ObjectId id
@@ -11,6 +10,8 @@ class Stagingfile extends FileBase {
     String action
     String access = "closed"
     String contentType
+    String md5
+    Long length = 0
     String resolverBaseUrl
     String autoGeneratePIDs
     Boolean autoIngestValidInstruction
@@ -57,10 +58,10 @@ class Stagingfile extends FileBase {
         failed(nullable: true)
     }
 
-    static embedded = ['task', 'workflow','failed']
+    static embedded = ['task', 'workflow', 'failed']
     static mapWith = "mongo"
     static mapping = {
-            fileSet index: true
-        }
+        fileSet index: true
+    }
 }
 

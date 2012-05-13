@@ -7,7 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder
 
 class DownloadService {
 
-    static transactional = false
+    static transactional = 'mongo'
 
     def _filter = ['version', '_id', '_class', 'date', 'name', 'na', 'fileSet',
             'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length']

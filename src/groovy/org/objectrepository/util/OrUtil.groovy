@@ -19,7 +19,9 @@ import javax.xml.stream.XMLStreamReader
 class OrUtil {
 
     final static String or_ns = "http://objectrepository.org/instruction/1.0/"
-    final static filter = ["fileSet", "na", "task"]
+    final static def filter = ["fileSet", "na", "task"]
+    final static def na_pattern = "/?[0-9.]*/"
+
 
     /**
      * Stream through a potential xml document
@@ -192,5 +194,11 @@ class OrUtil {
                 document.setProperty(it.key, it.value)
             }
         }
+    }
+
+    static String getNa(String pid) {
+        def m = pid =~ na_pattern
+        String na = m[0]
+        na.replace(".", "_").replace("/", "")
     }
 }

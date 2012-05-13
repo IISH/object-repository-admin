@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-    <meta name="layout" content="main">
+    <meta name="layout" content="disseminate">
     <g:set var="entityName" value="${message(code: 'files.label', default: 'Files')}"/>
     <title><g:message code="default.show.label" args="[entityName]"/></title>
 </head>
