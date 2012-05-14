@@ -1,4 +1,3 @@
-<%@ page import="org.objectrepository.files.Orfile" %>
 <!doctype html>
 <html>
 <head>
