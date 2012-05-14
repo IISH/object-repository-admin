@@ -120,4 +120,9 @@ class GridFSService {
             }
         }
     }
+
+    boolean delete(String pid) {
+        // this method is not implemented
+        false
+    }
 }

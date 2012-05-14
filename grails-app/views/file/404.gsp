@@ -1,4 +1,4 @@
-<%@ page import="org.objectrepository.files.Files" %>
+<%@ page import="org.objectrepository.files.Orfile" %>
 <!doctype html>
 <html>
 <head>

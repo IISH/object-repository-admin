@@ -13,7 +13,7 @@ import org.objectrepository.util.OrUtil
  */
 class WorkflowActiveService extends WorkflowJob {
 
-    def filesUDService
+    def gridFSService
     int max = 50
 
     /**
@@ -164,7 +164,7 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     def FileRemove400(def document) {
-        filesUDService.delete(document.pid)
+        gridFSService.delete(document.pid)
         next(document)
     }
 

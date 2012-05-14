@@ -5,7 +5,7 @@ import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
 import org.bson.types.ObjectId
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.objectrepository.files.FilesUDService
+import org.objectrepository.files.GridFSService
 import org.objectrepository.util.OrUtil
 
 @TestMixin(GrailsUnitTestMixin)
@@ -48,15 +48,7 @@ class WorkflowActiveServiceTest {
         fileSet_NoInstruction = System.properties['base.dir'] + "/test/resources/home/12345/folder_of_cpuser/test-templates"
         fileSet_Instruction = System.properties['base.dir'] + "/test/resources/home/12345/folder_of_cpuser/test-collection"
 
-        workflowActiveService.filesUDService = new FilesUDService()
-        workflowActiveService.filesUDService.metaClass.delete = { String pid ->
-            println("mock update")
-        }
-        workflowActiveService.filesUDService.metaClass.findOne = { String pid, String md5 ->
-            println("mock pid")
-            true
-        }
-
+        workflowActiveService.gridFSService = new GridFSService()
     }
 
     void testFirst() {
