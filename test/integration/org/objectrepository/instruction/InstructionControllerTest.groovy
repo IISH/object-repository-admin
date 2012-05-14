@@ -63,7 +63,7 @@ public class InstructionControllerTest extends DownloadTestCase {
     }
 
     /**
-     * Validate a collection of Orfiles Types, matching the keys of the passed
+     * Validate a collection of Orfile Types, matching the keys of the passed
      * map with the pid attribute of the children of the  passed root node.
      * @param Stagingfiles The map of file type objects.
      * @param root The root node (or) which has files as children.

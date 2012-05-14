@@ -2,7 +2,7 @@ package org.objectrepository.domain
 
 import com.mongodb.BasicDBObject
 
-class Orfiles {
+class Orfile {
 
     Object _id
     String filename
@@ -14,15 +14,26 @@ class Orfiles {
     Metadata metadata
     String md5
 
-    String bucket // data should go under metadata
-
     String getId() {
         _id
     }
+
+    static List<String> whiteList = [
+            'filename',
+            'length',
+            'md5',
+            'contentType',
+            'content',
+            'firstUploadDate',
+            'lastUploadDate',
+            'timesUpdated',
+            'timesAccessed',
+    ]
 }
 
 class Metadata {
-    String bucket
+
+    String bucket = "Bucket"
     String na
     String pid
     String resolverBaseUrl
@@ -34,6 +45,6 @@ class Metadata {
     Date lastUploadDate
     int timesAccessed
     int timesUpdated
-    List<Orfiles> files
+    List<Orfile> cache
 }
 

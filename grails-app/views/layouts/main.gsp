@@ -65,7 +65,7 @@
         <li class="profile"><g:link controller="profile">Profile</g:link></li>
         <li class="policy"><g:link controller="policy">Policies</g:link></li>
         <li class="instruction"><g:link controller="instruction">Instructions</g:link></li>
-        <li class="convert"><g:link controller="orfiles">Stored objects</g:link></li>
+        <li class="convert"><g:link controller="orfile">Stored objects</g:link></li>
     </ul>
 </div>
 

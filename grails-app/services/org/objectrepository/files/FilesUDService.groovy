@@ -1,7 +1,5 @@
 package org.objectrepository.files
 
-import org.objectrepository.domain.Orfiles
-
 class FilesUDService {
 
     static transactional = false

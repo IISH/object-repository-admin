@@ -3,7 +3,7 @@
         <thead>
         <tr>
             <g:sortableColumn action="list" property="fileSetAlias"
-                              title="${message(code: 'instruction.fileSetAlias.label', default: 'Orfiles Set')}"/>
+                              title="${message(code: 'instruction.fileSetAlias.label', default: 'Orfile Set')}"/>
             <g:sortableColumn action="list" property="label"
                               title="${message(code: 'instruction.label.label', default: 'Label')}"/>
             <g:sortableColumn action="list" property="task.statusCode"

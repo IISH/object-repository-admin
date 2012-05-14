@@ -1,13 +1,11 @@
 package org.objectrepository.files
 
 import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
-import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
-import com.mongodb.util.JSON
-
+import groovy.xml.StreamingMarkupBuilder
+import org.objectrepository.domain.Orfile
 import org.objectrepository.util.OrUtil
-import org.objectrepository.domain.Orfiles
+import org.springframework.data.mongodb.core.query.Update
 
 /**
  * GridFSService
@@ -39,34 +37,87 @@ class GridFSService {
     /**
      * findAllByNa
      *
-     * Find all documents via na reference
+     * Find all documents in the collection.
      *
      * @param na
      * @param params for sorting, paging and filtering
      */
-    List<Orfiles> findAllByNa(def na, def params) {
+    List<Orfile> findAllByNa(def na, def params) {
         def collection = mongo.getDB("or_" + na).getCollection("master.files")
-        collection.find('metadata.na': na).limit(params.max).skip(0).collect { // may dd .sort(key:1)
-            new Orfiles(it)
+        collection.find().limit(params.max).skip(0).collect { // may dd .sort(key:1)
+            new Orfile(it)
         }
     }
 
     /**
      * update
      *
-     * As we cannot perform a FindAndModify using GridFS, we need a unidirectional atomic update
+     * A unidirectional atomic update
      *
      * @param gridFS
      * @param file
      */
-    void update(def file, String bucket) {
-        final DBObject query = new BasicDBObject('_id', file._id)
-        final DBObject update = (DBObject) JSON.parse("{\$inc:{'metadata.timesAccessed':1}}")
-        final def db = mongo.getDB("or_" + file.metadata.na)
-        db.getCollection(bucket + ".files").update(query, update, false, false, WriteConcern.NONE)
+    void update(Orfile orFile, def params) {
+
+        def update = Update.update("metadata.access", params.access).set("metadata.label", params.label).updateObject
+        final collection = mongo.getDB("or_" + orFile.metadata.na).getCollection("master.files")
+        collection.update(_id: orFile.id, update, false, false)
     }
 
-    Orfiles get(String na, String id) {
+    Orfile get(String na, String id) {
         mongo.getDB("or_" + na).getCollection("master.files").findOne(_id: id)
+    }
+
+    void writeOrfiles(String id, String na, def writer) {
+
+        def orfileAttributes = [xmlns: "http://objectrepository.org/orfiles/1.0/"]
+
+        def builder = new StreamingMarkupBuilder()
+        builder.setEncoding("utf-8")
+        builder.setUseDoubleQuotes(true)
+
+        final collection = mongo.getDB("or_" + na).getCollection("master.files")
+        String comments = String.format('Database contains %s files. Export extracted on %s',
+                collection.count(), new Date().toGMTString())
+        def cursor = (id) ? collection.find([_id: id]) : collection.find()
+
+        writer << builder.bind {
+            mkp.xmlDeclaration()
+            comment << comments
+            orfiles(orfileAttributes) {
+                cursor.each {
+                    final Orfile orFile = new Orfile(it)
+
+                    orfile {
+                        pid orFile.metadata.pid
+                        resolverBaseUrl orFile.metadata.resolverBaseUrl
+                        access orFile.metadata.access
+                        label orFile.metadata.label
+                        files {
+                            out << cache(orFile.metadata.cache)
+                        }
+                    }
+                }
+            }
+        }
+
+        writer.flush()
+        writer.close()
+    }
+
+    private cache(List<Orfile> orfiles) {
+
+        return {
+            orfiles.each { def cache ->
+                file {
+                    Orfile.whiteList.each { String key ->
+                        def value = (cache."$key") ?: cache.metadata."$key"
+                        if (value) {
+                            "$key" value
+                        }
+                    }
+                }
+            }
+        }
     }
 }
