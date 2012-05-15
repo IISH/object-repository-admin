@@ -17,7 +17,7 @@
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance:userInstance]"/>
+<g:render template="/layouts/header" model="[instance: userInstance]"/>
 
 <div id="list-user" class="content scaffold-list" role="main">
     <table>
@@ -37,19 +37,20 @@
         <tbody>
         <g:each in="${userInstanceList}" status="i" var="userInstance">
             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><g:link action="show"
-                            id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></td>
+                <td><g:if test="${userInstance.username == currentUsername}">${fieldValue(bean: userInstance, field: "username")}</g:if><g:else><g:link action="show"
+                            id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></g:else></td>
                 <td>${fieldValue(bean: userInstance, field: "mail")}</td>
                 <td>${userInstance.roles}</td>
                 <td><g:formatBoolean boolean="${userInstance.enabled}"/></td>
                 <sec:ifAnyGranted roles="ROLE_ADMIN"><td>${userInstance.na}</td></sec:ifAnyGranted>
-                <td><g:link action="show"
-                            id="${userInstance.id}">${message(code: 'default.button.show.label')}</g:link></td>
-                <td><g:link action="edit"
-                            id="${userInstance.id}">${message(code: 'default.button.edit.label')}</g:link></td>
-                <td><g:if test="${userInstance.username != currentUsername }"><g:link action="delete"
-                                                                                      id="${userInstance.id}"
-                                                                                      onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">${message(code: 'default.button.delete.label')}</g:link></g:if></td>
+                <g:if test="${userInstance.username == currentUsername}">
+                    <td colspan="3"></td>
+                </g:if>
+                <g:else>
+                    <td><g:link action="show" id="${userInstance.id}">${message(code: 'default.button.show.label')}</g:link></td>
+                    <td><g:link action="edit" id="${userInstance.id}">${message(code: 'default.button.edit.label')}</g:link></td>
+                    <td><g:link action="delete" id="${userInstance.id}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">${message(code: 'default.button.delete.label')}</g:link></td>
+                </g:else>
             </tr>
         </g:each>
         </tbody>
