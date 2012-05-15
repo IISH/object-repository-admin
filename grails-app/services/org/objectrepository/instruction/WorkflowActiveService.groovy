@@ -153,7 +153,8 @@ class WorkflowActiveService extends WorkflowJob {
             default:
                 document.workflow = [document.task]
                 document.failed = []
-                document.parent.workflow.each {
+                def workflow = (document.parent.workflow.size() == 0) ? document.parent.parent.workflow : document.parent.workflow
+                workflow.each {
                     it.statusCode = 0
                     it.processed = 0
                     document.workflow << it

@@ -302,12 +302,19 @@ class UserController {
         password
     }
 
+    /**
+     * updateUser
+     *
+     * Update the user in LDAP.
+     * We can easily say the home directory belongs to a CPADMIN as that account uidNumber is identical to the na
+     *
+     * @param userInstance
+     */
     protected void updateUser(org.objectrepository.security.User userInstance) {
         def currentUser = User.findByUsername(springSecurityService.principal.username)
         Essence person = new Essence();
         person.password = userInstance.password
-        def cprole = UserRole.findByRoleAndUser(new Role(authority: "ROLE_CPADMIN"), userInstance)
-        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
+        def homeDirectory = (userInstance.uidNumber == userInstance.na) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
         person.homeDirectory = homeDirectory
         person.gidNumber = currentUser.na as Long
         person.ou = currentUser.na

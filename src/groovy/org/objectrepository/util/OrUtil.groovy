@@ -166,7 +166,7 @@ class OrUtil {
  * @param workflow
  * @return
  */
-    static def availableWorkflows(def workflow) {
+    static List<Task> availableWorkflows(def workflow) {
         def list = []
         workflow.each {
             if (it.key.startsWith("Stagingfile")) {

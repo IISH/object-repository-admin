@@ -96,11 +96,11 @@ class WorkflowInitiateService extends WorkflowJob {
 
         final String fileSet = Normalizers.normalize(entry)
         def instructionInstance = Instruction.findByFileSet(fileSet)
-        if (!instructionInstance) { // No declaration of the fileset as Instruction... add one...
-            log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
-            instructionInstance = new Instruction(na: na, fileSet: fileSet)
-            instructionInstance.change = true
-        }
+        if (instructionInstance) return
+
+        log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
+        instructionInstance = new Instruction(na: na, fileSet: fileSet)
+        instructionInstance.change = true
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]

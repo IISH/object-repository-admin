@@ -161,8 +161,15 @@ class InstructionController {
             } else {
                 instructionInstance.workflow = []
             }
+            def workflows = OrUtil.availableWorkflows(grailsApplication.config.workflow)
             params.workflow.each {
-                if (it.value == 'on') instructionInstance.workflow << new Task(name: it.key)
+                if (it.value == 'on') {
+                    String name = it.key
+                    def task = workflows.find {
+                        it.name == name
+                    }
+                    if (task) instructionInstance.workflow << task
+                }
             }
 
             if (OrUtil.emptyList(instructionInstance.workflow)) {
