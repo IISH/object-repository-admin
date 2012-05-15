@@ -96,8 +96,7 @@ class LostpasswordController {
     protected void updateUser(org.objectrepository.security.User userInstance, String password) {
         Essence person = new Essence();
         person.password = password
-        def cprole = UserRole.findByRoleAndUser(new Role(authority: "ROLE_CPADMIN"), userInstance)
-        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
+        def homeDirectory = ( userInstance.na == userInstance.uidNumber) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
         person.homeDirectory = homeDirectory
         person.gidNumber = userInstance.na as Long
         person.ou = userInstance.na
