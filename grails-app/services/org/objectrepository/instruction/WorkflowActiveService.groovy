@@ -14,7 +14,7 @@ import org.objectrepository.util.OrUtil
 class WorkflowActiveService extends WorkflowJob {
 
     def gridFSService
-    int max = 50
+    private static int max = 50
 
     /**
      * job
@@ -81,8 +81,8 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
 /**
- * We have files, but no instruction yet.
- * If the files are removed, we reset the entire task to near zero.
+ * We have files and possibly an xml document processing instruction.
+ * If the files are removed, we reset the task.
  * When an instruction is seen (upload), we can proceed reading it in.
  *
  * @param document
@@ -95,7 +95,7 @@ class WorkflowActiveService extends WorkflowJob {
         } else {
             def instruction = taskValidationService.hasFSInstruction(document)
             if (instruction) {
-                OrUtil.putAll(document, instruction)
+                OrUtil.putAll(workflow, document, instruction)
                 changeWorkflow('InstructionUpload', document)
             }
         }

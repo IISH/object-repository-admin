@@ -22,7 +22,6 @@ class OrUtil {
     final static def filter = ["fileSet", "na", "task"]
     final static def na_pattern = "/?[0-9.]*/"
 
-
     /**
      * Stream through a potential xml document
      *
@@ -171,7 +170,11 @@ class OrUtil {
         def list = []
         workflow.each {
             if (it.key.startsWith("Stagingfile")) {
-                list << new Task(name: it.key, info: "Default workflow")
+                def attributes = [name: it.key, info: "Default workflow"]
+                it.value.task?.each() {
+                    attributes << it
+                }
+                list << new Task(attributes)
             }
         }
         list
@@ -184,11 +187,18 @@ class OrUtil {
         }
     }
 
-    static void putAll(def document, Map instruction) {
+    static void putAll(def workflow, def document, Map instruction) {
+        def workflows = availableWorkflows(workflow)
         instruction.each {
             if (it.key == 'workflow') {
-                document.workflow = it.value.split(',').collect { String name ->
-                    new Task(name: name, info: 'Added by a xml instruction')
+                document.workflow = []
+                it.value.split(',').each { String name ->
+                    def task = workflows.find {
+                        it.name == name
+                    }
+                    if (task) {
+                        document.workflow << task
+                    }
                 }
             } else {
                 document.setProperty(it.key, it.value)

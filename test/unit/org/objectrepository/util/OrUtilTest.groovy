@@ -2,16 +2,21 @@ package org.objectrepository.util
 
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.util.Environment
 import groovy.io.FileType
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Task
 
 @TestMixin(GrailsUnitTestMixin)
 class OrUtilTest {
 
-    def workFlowJob
+    def config
 
     void setUp() {
+        GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
+                ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
+                config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("WorkflowConfig"))
     }
 
     void testFSInstruction() {
@@ -21,7 +26,7 @@ class OrUtilTest {
             if (OrUtil.hasFSInstruction(it)) {success++}
             else { failure++ }
         }
-        assert success == 1
+        assert success == 2
         assert failure == 3
     }
 
@@ -73,5 +78,16 @@ class OrUtilTest {
         assert OrUtil.removeFirst(list)
         assert list.size() == 0
         assert !OrUtil.removeFirst(list)
+    }
+
+
+    void testPutAll()
+    {
+        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-workflow.xml")
+        def instructionFromFile = OrUtil.hasFSInstruction(file)
+        Instruction document = [:]
+        OrUtil.putAll( config.workflow, document, instructionFromFile)
+        assert document.workflow.size() == 2
+        assert document.workflow.get(0).limit == Integer.MAX_VALUE
     }
 }

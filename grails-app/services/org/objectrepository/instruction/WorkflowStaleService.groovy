@@ -17,8 +17,10 @@ package org.objectrepository.instruction
  */
 class WorkflowStaleService extends WorkflowJob {
 
-    int max = 100
-    int period = 180000 // three minutes of no activity... and then the task becomes stale.
+    private static int max = 100
+    private static int period = 180000 // three minutes of no response from the message queue client. And then the task becomes stale.
+    private static final int StatusCodeTaskReceipt = 400;
+    private static final int StatusCodeTaskComplete = 500;
 
     /**
      * job
@@ -28,14 +30,14 @@ class WorkflowStaleService extends WorkflowJob {
     void job() {
 
         final date = new Date(new Date().time - period) // past tense
-        invalidate(Instruction.where({task.statusCode == 400 && task.end < date}).list([max: max]))
-        invalidate(Stagingfile.where({task.statusCode == 400 && task.end < date}).list([max: max]))
+        invalidate(Instruction.where({task.statusCode == StatusCodeTaskReceipt && task.end < date}).list([max: max]))
+        invalidate(Stagingfile.where({task.statusCode == StatusCodeTaskReceipt && task.end < date}).list([max: max]))
     }
 
     /**
      * invalidate
      *
-     * Sets the task statusCode to 600 to  ( stale )
+     * Sets the task statusCode to 500
      *
      * @param instanceList
      */
@@ -43,7 +45,8 @@ class WorkflowStaleService extends WorkflowJob {
 
         instanceList.each {
             println("The task has become stale for " + it.id + ":" + it.task.name)
-            it.task.statusCode = 600
+            it.task.statusCode = StatusCodeTaskComplete
+            it.task.exitValue = Integer.MAX_VALUE
             save(it)
         }
     }
