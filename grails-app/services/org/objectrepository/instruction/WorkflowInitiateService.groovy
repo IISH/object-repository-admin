@@ -22,12 +22,12 @@ class WorkflowInitiateService extends WorkflowJob {
      * @return
      */
     void job() {
-        cpAdminFolders()
+        cpAdminFolders(Profile.list().collect {it.na})
     }
 
-    private def cpAdminFolders() {
-        for (File folder : home.listFiles()) { // for each CP_ADMIN home directory
-            if (folder.name.isNumber()) cpUserFolders(folder, folder.name)// convention: naming authority is the folder name
+    private def cpAdminFolders(def nas) {
+        for (String na : nas) {
+            cpUserFolders(na)
         }
     }
 
@@ -37,9 +37,9 @@ class WorkflowInitiateService extends WorkflowJob {
      * @param na
      * @return
      */
-    private def cpUserFolders(File folder, def na) {
+    private def cpUserFolders(String na) {
 
-        log.info "Checking for the need of new tasks in " + na
+        File folder = new File(home, na) // CP_ADMIN directory
         for (File dir : folder.listFiles()) {               // for each CP_USER home directory
             if (!dir.name[0].equals(".")) {
                 for (File file : dir.listFiles()) {  // for each fileset folders....
@@ -97,16 +97,10 @@ class WorkflowInitiateService extends WorkflowJob {
         final String fileSet = Normalizers.normalize(entry)
         def instructionInstance = Instruction.findByFileSet(fileSet)
         if (!instructionInstance) { // No declaration of the fileset as Instruction... add one...
-            def profile = Profile.findByNa(na)
-            if (profile) {
-                log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
-                instructionInstance = new Instruction(na: na, fileSet: fileSet)
-                instructionInstance.change = true
-            }
+            log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
+            instructionInstance = new Instruction(na: na, fileSet: fileSet)
+            instructionInstance.change = true
         }
-
-        if (!instructionInstance || instructionInstance.task) return
-
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]

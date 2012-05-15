@@ -307,7 +307,7 @@ class UserController {
         Essence person = new Essence();
         person.password = userInstance.password
         def cprole = UserRole.findByRoleAndUser(new Role(authority: "ROLE_CPADMIN"), userInstance)
-        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.username
+        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
         person.homeDirectory = homeDirectory
         person.gidNumber = currentUser.na as Long
         person.ou = currentUser.na

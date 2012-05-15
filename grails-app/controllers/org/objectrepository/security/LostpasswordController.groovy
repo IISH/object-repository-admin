@@ -97,7 +97,7 @@ class LostpasswordController {
         Essence person = new Essence();
         person.password = password
         def cprole = UserRole.findByRoleAndUser(new Role(authority: "ROLE_CPADMIN"), userInstance)
-        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.getUidNumber()
+        def homeDirectory = (cprole) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
         person.homeDirectory = homeDirectory
         person.gidNumber = userInstance.na as Long
         person.ou = userInstance.na
