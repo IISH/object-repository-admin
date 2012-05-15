@@ -114,6 +114,7 @@ class UserController {
                 UserRole.create userInstance, userRole
             }
 
+            params.ldap = (params.ldap) ?: springSecurityService.hasRole('ROLE_CPADMIN')
             if (params.ldap && ldapUserDetailsManager) {
 
                 // Do not add if the user exists
