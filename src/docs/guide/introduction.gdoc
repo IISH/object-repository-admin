@@ -1,1 +1,7 @@
-Instruction bla
+The object repository is part of a service oriented framework. That is, the latter offers a collection of services:
+
+* ftp upload of files to a staging area (temporary storage)
+* ingesting those files into persistant storage
+* derivative generation
+* persistent identifier creation.
+* an administration interface plus account system to manage the above services with

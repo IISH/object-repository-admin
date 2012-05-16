@@ -1,5 +1,5 @@
 <%@ page import="org.objectrepository.security.User" %>
-<g:set var="entityName" value="${message(code: 'user.label', default: 'User')}"/>
+<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
 <!doctype html>
 <html>
 <head>
@@ -25,8 +25,8 @@
         <tr>
             <g:sortableColumn property="username"
                               title="${message(code: 'user.username.label', default: 'Username')}"/>
-            <g:sortableColumn property="mail" title="${message(code: 'mail', default: 'Email')}"/>
-            <g:sortableColumn property="role" title="${message(code: 'role', default: 'Role')}"/>
+            <g:sortableColumn property="mail" title="${message(code: 'user.email.label', default: 'Email')}"/>
+            <g:sortableColumn property="role" title="${message(code: 'user.role.label', default: 'Role')}"/>
             <g:sortableColumn property="enabled"
                               title="${message(code: 'user.enabled.label', default: 'Account Enabled')}"/>
             <sec:ifAnyGranted roles="ROLE_ADMIN"><g:sortableColumn property="na"

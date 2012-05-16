@@ -46,7 +46,8 @@
 <body>
 
 <div id="hopeLogo"><a href="<g:resource absolute="true"/>"><img
-        src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="Hope logo" border="0"/></a></div>
+        src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="Hope logo" border="0"/></a>
+</div>
 
 <div class="nav" role="navigation">
     <ul>
@@ -61,7 +62,7 @@
 <div id="navHome">
     <ul>
         <li class="dashboard"><g:link controller="dashboard">Dashboard</g:link></li>
-        <li class="users"><g:link controller="user">Users &amp; groups</g:link></li>
+        <li class="users"><g:link controller="user">Accounts</g:link></li>
         <li class="profile"><g:link controller="profile">Profile</g:link></li>
         <li class="policy"><g:link controller="policy">Policies</g:link></li>
         <li class="instruction"><g:link controller="instruction">Instructions</g:link></li>

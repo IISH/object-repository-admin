@@ -127,7 +127,7 @@ class OrUtil {
         map
     }
 
-    static camelCase(def map) {
+    static String camelCase(def map) {
 
         map.inject("") {acc, val ->
             acc + val[0].toUpperCase() + val.substring(1)

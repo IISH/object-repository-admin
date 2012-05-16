@@ -1,5 +1,5 @@
 <%@ page import="org.objectrepository.security.User" %>
-<g:set var="entityName" value="${message(code: 'user.label', default: 'User')}"/>
+<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
 <!doctype html>
 <html>
 <head>
@@ -68,7 +68,7 @@
 
     <g:if test="${token}">
         <tr class="prop">
-            <td valign="top" class="name"><g:message code="webservice.value.label" default="Webservice key"/></td>
+            <td valign="top" class="name"><g:message code="user.key.label" default="Webservice key"/></td>
             <td valign="top" class="value">
                 <table>
                     <tr>
@@ -102,7 +102,7 @@
         <span class="button"><g:actionSubmit class="edit" action="edit"
                                              value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
         <span class="button"><g:actionSubmit class="edit" action="updatekey"
-                                             value="${message(code: 'default.button.changekey.label', default: 'Change key')}"/></span>
+                                             value="${message(code: 'user.changekey.label', default: 'Change key')}"/></span>
         <sec:ifAnyGranted roles="ROLE_ADMIN,ROLE_CPADMIN">
             <g:if test="${userInstance?.username != currentUsername}">
                 <span class="button"><g:actionSubmit class="delete" action="delete"

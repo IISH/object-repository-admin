@@ -3,3 +3,14 @@ introduction:
   changes: Change Log
 stagingarea:
   title: Staging area
+  ftp: FTP connections
+user:
+ title: Ftp accounts
+ userlist: Listing accounts
+profile: Profile
+policy:
+  title: Access policies
+  policylist: Listing policies
+instruction: Instructions
+files: Stored files
+
