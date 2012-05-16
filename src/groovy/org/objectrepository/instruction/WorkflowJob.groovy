@@ -15,6 +15,7 @@ abstract class WorkflowJob {
     def grailsApplication
     File home
     TaskValidationService taskValidationService
+    static def locked = [:]
 
     /**
      * runMethod
@@ -299,7 +300,7 @@ abstract class WorkflowJob {
             if (document.failed.size() == 0) {
                 log.info id(document) + "Stagingfile successfull. Remove document."
                 document.fileSet = null
-                document.delete(flush: true)
+                document.delete()
             } else {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
                 document.task.name = "Start"
@@ -321,7 +322,7 @@ abstract class WorkflowJob {
     void message(def document) {
 
         document.task.identifier = UUID.randomUUID().toString()
-        if (!document.save(flush: true)) {
+        if (!document.save()) {
             return
         }
 
@@ -342,6 +343,30 @@ abstract class WorkflowJob {
     String id(def document) {
         final String file = (document instanceof Instruction) ? document.fileSet : document.location;
         document.id.toString() + ":" + file + "\n"
+    }
+
+    /**
+     * isLocked
+     *
+     * As we schedule database queries, we do not want to cause a thread conflict.
+     * Hence should an identifier we known to exist in a session then we ignore it further.
+     *
+     * Failsafe: more than three skips we assume the lock is stale.
+     *
+     * @param document
+     * @return
+     */
+    boolean isLocked(def document) {
+        def match = locked.get(document.id) ?: 0
+        if (match++ > 5) {
+            log.info id(document) + "Suspect stale lock"
+            match = 1
+        }
+        locked.put(document.id, match) != 1
+    }
+
+    void unlock(def document) {
+        locked.remove(document.id)
     }
 
     /**
@@ -369,7 +394,7 @@ abstract class WorkflowJob {
     }
 
     boolean save(def document) {
-        boolean ok = document.save(flush: true)
+        boolean ok = document.save()
         if (ok) {
             log.info id(document) + "Saved document..."
         } else {

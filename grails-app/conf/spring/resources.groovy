@@ -46,7 +46,7 @@ beans = {
         simpleTriggerWorkflowActiveService(SimpleTriggerBean) {
             jobDetail = ref('jobWorkflowActiveService')
             startDelay = 15000
-            repeatInterval = 10000
+            repeatInterval = 1000
         }
         triggers(SchedulerFactoryBean) {
             triggers = [ref('simpleTriggerInitiateService'), ref('simpleTriggerWorkflowActiveService'), ref('simpleTriggerWorkflowStaleService')]

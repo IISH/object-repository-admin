@@ -33,6 +33,9 @@ class WorkflowActiveService extends WorkflowJob {
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.task) {
+
+            if (isLocked(instruction) ) return
+
             if (instruction.ingest == 'pending') {
                 instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
                 try {
@@ -48,6 +51,9 @@ class WorkflowActiveService extends WorkflowJob {
                             (task.statusCode < 300 || task.statusCode == 500 || task.statusCode == 800)
                 }).list([max: max])
                 for (Stagingfile stagingfile : stagingfileList) {
+
+                    if (isLocked(stagingfile) ) continue
+
                     stagingfile.parent = instruction
                     stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
 
@@ -56,10 +62,14 @@ class WorkflowActiveService extends WorkflowJob {
                     } catch (Exception e) {
                         exception(stagingfile, e)
                     }
+
+                    unlock(stagingfile)
                 }
                 if (instruction.change) { save(instruction) }
             }
         }
+
+        unlock(instruction)
     }
 
 /**
@@ -180,7 +190,7 @@ class WorkflowActiveService extends WorkflowJob {
     void Stagingfile800(document) {
 
         OrUtil.removeFirst(document.workflow)
-        def task = (OrUtil.takeFirst(document.workflow)) ?: 'EndOfTheRoad'
+        def task = OrUtil.takeFirst(document.workflow) ?: 'EndOfTheRoad'
         log.info id(document) + "Stagingfile800 sets changeWorkflow."
         changeWorkflow(task, document)
     }

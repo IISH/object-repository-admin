@@ -66,7 +66,7 @@ class WorkflowInitiateService extends WorkflowJob {
     private void removeInstruction(String na) {
         Instruction.findAllByNa(na)?.each {
             if (!taskValidationService.hasFileSet(it)) {
-                it.delete(flush: true) // We have become a lie... no fileset at all.
+                it.delete() // We have become a lie... no fileset at all.
             }
         }
     }
@@ -80,7 +80,7 @@ class WorkflowInitiateService extends WorkflowJob {
         for (Instruction instructionInstance : instructionList) {
             if (instructionInstance.findFilesWithCursor().count() == 0) {
                 log.info id(instructionInstance) + "Decomissioning (InstructionDone)"
-                instructionInstance.delete(flush: true)
+                instructionInstance.delete()
             }
         }
     }
