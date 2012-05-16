@@ -35,7 +35,7 @@ class WorkflowActiveServiceTest {
             getProperty("action")
         }
 
-        Stagingfile.metaClass.delete = { Map arg->
+        Stagingfile.metaClass.delete = {
             println("Mock delete")
             true
         }
