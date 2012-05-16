@@ -314,7 +314,8 @@ class UserController {
         def currentUser = User.findByUsername(springSecurityService.principal.username)
         Essence person = new Essence();
         person.password = userInstance.password
-        def homeDirectory = (userInstance.uidNumber == userInstance.na) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
+        long na = userInstance.na as Long
+        def homeDirectory = (userInstance.uidNumber == na) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
         person.homeDirectory = homeDirectory
         person.gidNumber = currentUser.na as Long
         person.ou = currentUser.na
