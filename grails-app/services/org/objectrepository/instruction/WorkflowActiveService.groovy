@@ -23,7 +23,7 @@ class WorkflowActiveService extends WorkflowJob {
      * Using a first-in-first-out principle.
      */
     void job() {
-        final List<Instruction> list = Instruction.where({(task.name != 'InstructionDone')}).list([max: max])
+        final List<Instruction> list = Instruction.list()
         for (Instruction instruction : list) {
             progress(instruction)
         }

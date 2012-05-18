@@ -1,10 +1,8 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
+import org.objectrepository.instruction.WorkflowManager
 import org.objectrepository.security.AdminUserDetailsService
 import org.socialhistoryservices.security.MongoOAuth2ProviderTokenServices
-import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean
-import org.springframework.scheduling.quartz.SchedulerFactoryBean
-import org.springframework.scheduling.quartz.SimpleTriggerBean
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 import org.springframework.security.oauth2.provider.OAuth2ProtectedResourceFilter
@@ -17,39 +15,9 @@ beans = {
         Locale.setDefault(Locale.ENGLISH)
     }
 
-    if (application.config.wf) {
-        println("Loading workflow")
-
-        // How can we dry this ?
-        jobWorkflowInitiateService(MethodInvokingJobDetailFactoryBean) {
-            targetObject = ref('workflowInitiateService')
-            targetMethod = 'job'
-        }
-        jobWorkflowActiveService(MethodInvokingJobDetailFactoryBean) {
-            targetObject = ref('workflowActiveService')
-            targetMethod = 'job'
-        }
-        jobWorkflowStaleService(MethodInvokingJobDetailFactoryBean) {
-            targetObject = ref('workflowStaleService')
-            targetMethod = 'job'
-        }
-        simpleTriggerWorkflowStaleService(SimpleTriggerBean) {
-            jobDetail = ref('jobWorkflowStaleService')
-            startDelay = 5000
-            repeatInterval = 10000
-        }
-        simpleTriggerInitiateService(SimpleTriggerBean) {
-            jobDetail = ref('jobWorkflowInitiateService')
-            startDelay = 10000
-            repeatInterval = 10000
-        }
-        simpleTriggerWorkflowActiveService(SimpleTriggerBean) {
-            jobDetail = ref('jobWorkflowActiveService')
-            startDelay = 15000
-            repeatInterval = 1000
-        }
-        triggers(SchedulerFactoryBean) {
-            triggers = [ref('simpleTriggerInitiateService'), ref('simpleTriggerWorkflowActiveService'), ref('simpleTriggerWorkflowStaleService')]
+    if (grailsApplication.config.wf) {
+        workflowManager(WorkflowManager, application) {
+            timeout = 10000
         }
     }
 

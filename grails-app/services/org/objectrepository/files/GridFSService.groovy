@@ -45,7 +45,7 @@ class GridFSService {
     List<Orfile> findAllByNa(def na, def params) {
         def collection = mongo.getDB("or_" + na).getCollection("master.files")
         collection.find().limit(params.max).skip(0).collect { // may dd .sort(key:1)
-            new Orfile(it)
+            it
         }
     }
 

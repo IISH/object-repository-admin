@@ -15,6 +15,7 @@ class BootStrap {
     def springSecurityService
     def grailsApplication
     def clientDetailsService
+    def workflowManager
 
     def init = { servletContext ->
 
@@ -22,6 +23,9 @@ class BootStrap {
         users()
         oauth2()
         bindAccessors()
+        if (workflowManager) {
+            workflowManager.start();
+        }
     }
 
     /**
@@ -35,6 +39,7 @@ class BootStrap {
             switch (Environment.current) {
                 case Environment.PRODUCTION:
                     addUser("0", "admin", "ROLE_ADMIN")
+                    break
                 case Environment.DEVELOPMENT:
                     addUser("0", "admin", "ROLE_ADMIN")
                     addUser("12345", "12345", "ROLE_CPADMIN")
@@ -42,7 +47,7 @@ class BootStrap {
                     break
                 case Environment.TEST:
                     addUser("12345", "12345", "ROLE_CPADMIN")
-                    break;
+                    break
             }
         }
     }
@@ -120,5 +125,6 @@ class BootStrap {
     }
 
     def destroy = {
+        if (workflowManager) workflowManager.cleanup()
     }
 }
