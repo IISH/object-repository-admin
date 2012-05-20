@@ -217,7 +217,7 @@ class InstructionController {
         if (instructionInstance) {
             instructionInstance.task.name = OrUtil.camelCase([controllerName, actionName])
             workflowActiveService.first(instructionInstance)
-            workflowActiveService.saveWorkflow(instructionInstance)
+            instructionInstance.save()
             redirect(controller: 'instruction', action: 'list')
         }
     }

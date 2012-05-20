@@ -14,7 +14,6 @@ import org.objectrepository.util.OrUtil
 class WorkflowActiveService extends WorkflowJob {
 
     def gridFSService
-    private static int max = 50
 
     /**
      * job
@@ -23,8 +22,9 @@ class WorkflowActiveService extends WorkflowJob {
      * Using a first-in-first-out principle.
      */
     void job() {
-        final List<Instruction> list = Instruction.list()
-        for (Instruction instruction : list) {
+        mongo.getDB('sa').instruction.find().each {
+            def instruction = it as Instruction
+            instruction.id = it._id
             progress(instruction)
         }
     }
@@ -33,8 +33,6 @@ class WorkflowActiveService extends WorkflowJob {
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.task) {
-
-            if (isLocked(instruction) ) return
 
             if (instruction.ingest == 'pending') {
                 instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
@@ -46,30 +44,28 @@ class WorkflowActiveService extends WorkflowJob {
             }
             else
             if (instruction.ingest == 'working') {
-                def stagingfileList = Stagingfile.where({
-                    fileSet == instruction.fileSet &&
-                            (task.statusCode < 300 || task.statusCode == 500 || task.statusCode == 800)
-                }).list([max: max])
-                for (Stagingfile stagingfile : stagingfileList) {
-
-                    if (isLocked(stagingfile) ) continue
-
+                mongo.getDB('sa').stagingfile.find(
+                        $and: [[fileSet: instruction.fileSet],
+                                [$or: [
+                                        ['task.statusCode': [$lt: 300]],
+                                        ['task.statusCode': 500],
+                                        ['task.statusCode': 800]
+                                ]]
+                        ]
+                ).each {
+                    Stagingfile stagingfile = it as Stagingfile
+                    stagingfile.id = it._id
                     stagingfile.parent = instruction
                     stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
-
                     try {
                         runMethod(stagingfile)
                     } catch (Exception e) {
                         exception(stagingfile, e)
                     }
-
-                    unlock(stagingfile)
                 }
-                if (instruction.change) { save(instruction) }
             }
+            if (instruction.change) { save(instruction) }
         }
-
-        unlock(instruction)
     }
 
 /**
@@ -190,9 +186,9 @@ class WorkflowActiveService extends WorkflowJob {
     void Stagingfile800(document) {
 
         OrUtil.removeFirst(document.workflow)
-        def task = OrUtil.takeFirst(document.workflow) ?: 'EndOfTheRoad'
-        log.info id(document) + "Stagingfile800 sets changeWorkflow."
-        changeWorkflow(task, document)
+        def task = OrUtil.takeFirst(document.workflow) ?: [name: 'EndOfTheRoad']
+        log.info id(document) + "Stagingfile800 sets changeWorkflow from " + document.task.name + " to " + task.name
+        changeWorkflow(task.name, document)
     }
 
 }

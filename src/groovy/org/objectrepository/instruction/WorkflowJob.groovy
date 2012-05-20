@@ -1,7 +1,9 @@
 package org.objectrepository.instruction
 
+import com.mongodb.WriteResult
 import grails.converters.XML
 import org.apache.camel.CamelExecutionException
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.objectrepository.util.OrUtil
 
 /**
@@ -12,10 +14,18 @@ import org.objectrepository.util.OrUtil
 abstract class WorkflowJob {
 
     static transactional = 'mongo'
+    def mongo
     def grailsApplication
     File home
     TaskValidationService taskValidationService
     static def locked = [:]
+    def taskProperties = []
+
+    public WorkflowJob() {
+        taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
+            it.name
+        }
+    }
 
     /**
      * runMethod
@@ -127,10 +137,6 @@ abstract class WorkflowJob {
         document.task.attempts = 1
         document.task.limit = (workflow[document.task.name].task?.limit) ?: 3
         log.info id(document) + "Changed workflow: " + document.task.name + ":" + document.task.statusCode
-    }
-
-    void changeWorkflow(Task task, def document) {
-        changeWorkflow(task.name, document)
     }
 
     /**
@@ -322,9 +328,7 @@ abstract class WorkflowJob {
     void message(def document) {
 
         document.task.identifier = UUID.randomUUID().toString()
-        if (!document.save()) {
-            return
-        }
+        if (!saveWorkflow(document)) return
 
         try {
             sendMessage(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document))
@@ -343,30 +347,6 @@ abstract class WorkflowJob {
     String id(def document) {
         final String file = (document instanceof Instruction) ? document.fileSet : document.location;
         document.id.toString() + ":" + file + "\n"
-    }
-
-    /**
-     * isLocked
-     *
-     * As we schedule database queries, we do not want to cause a thread conflict.
-     * Hence should an identifier we known to exist in a session then we ignore it further.
-     *
-     * Failsafe: more than three skips we assume the lock is stale.
-     *
-     * @param document
-     * @return
-     */
-    boolean isLocked(def document) {
-        def match = locked.get(document.id) ?: 0
-        if (match++ > 5) {
-            log.info id(document) + "Suspect stale lock"
-            match = 1
-        }
-        locked.put(document.id, match) != 1
-    }
-
-    void unlock(def document) {
-        locked.remove(document.id)
     }
 
     /**
@@ -394,17 +374,26 @@ abstract class WorkflowJob {
     }
 
     boolean save(def document) {
-        boolean ok = document.save()
-        if (ok) {
-            log.info id(document) + "Saved document..."
-        } else {
-            println("Validation problem when saving document.")
-            document.errors.each {
-                println(it)
-            }
-            println("Document:" + document as XML)
+
+        final collection = mongo.getDB('sa').getCollection(document.class.getSimpleName().toLowerCase())
+        def _task = taskProperties.inject([:]) { init, key ->
+            init.putAt(key, document.task."$key")
+            init
         }
-        ok
+        def _workflow = document.workflow?.collect { w ->
+            taskProperties.inject([:]) { init, key ->
+                init.putAt(key, w."$key")
+                init
+            }
+        }
+        WriteResult result = collection.update([_id: document.id],
+                [$set: [task: _task, workflow: _workflow]]
+        )
+        if (result.error) {
+            println("Failure when processing document: " + result.error)
+            println(document as XML)
+        }
+        result.error == null
     }
 
     void exception(def document, Exception e) {

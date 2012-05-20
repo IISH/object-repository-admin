@@ -47,7 +47,7 @@ class WorkflowStaleService extends WorkflowJob {
             println("The task has become stale for " + it.id + ":" + it.task.name)
             it.task.statusCode = StatusCodeTaskComplete
             it.task.exitValue = Integer.MAX_VALUE
-            save(it)
+            it.save()
         }
     }
 }

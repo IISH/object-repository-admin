@@ -27,7 +27,15 @@ class WorkflowInitiateService extends WorkflowJob {
 
     private def cpAdminFolders(def nas) {
         for (String na : nas) {
-            cpUserFolders(na)
+
+            log.info "Checking for new fileSets."
+            addInstruction(na)
+
+            log.info "Checking for instructions that have no fileset."
+            removeInstruction(na)
+
+            log.info "Decommissions instructions that have done their job"
+            decommissionInstruction(na)
         }
     }
 
@@ -37,7 +45,7 @@ class WorkflowInitiateService extends WorkflowJob {
      * @param na
      * @return
      */
-    private def cpUserFolders(String na) {
+    private def addInstruction(String na) {
 
         File folder = new File(home, na) // CP_ADMIN directory
         for (File dir : folder.listFiles()) {               // for each CP_USER home directory
@@ -49,11 +57,6 @@ class WorkflowInitiateService extends WorkflowJob {
                 }
             }
         }
-        log.info "Checking for instructions that have no fileset."
-        removeInstruction(na)
-
-        log.info "Decommissions instructions that have done their job"
-        decommissionInstruction(na)
     }
 
     /**
@@ -104,6 +107,6 @@ class WorkflowInitiateService extends WorkflowJob {
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]
-        saveWorkflow(instructionInstance)
+        instructionInstance.save()
     }
 }

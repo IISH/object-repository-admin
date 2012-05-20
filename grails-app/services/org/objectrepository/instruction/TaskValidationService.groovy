@@ -75,7 +75,7 @@ class TaskValidationService {
     }
 
     boolean hasDBInstruction(def document) {
-        document.findFilesWithCursor().count() != 0
+        Stagingfile.countByFileSet(document.fileSet) != 0
     }
 
     File FSInstruction(def document) {

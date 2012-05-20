@@ -12,9 +12,6 @@ class OrfileController {
     def mongo
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-
-
-
     def index() {
         forward(action: "list", params: params)
     }
