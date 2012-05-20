@@ -358,10 +358,11 @@ abstract class WorkflowJob {
      * @param document
      * @return
      */
-    void saveWorkflow(def document) {
+    boolean saveWorkflow(def document) {
         if (!document.fileSet || document.task.name == document.cacheTask?.name &&
                 document.task.statusCode == document.cacheTask?.statusCode) {
             log.info id(document) + "Skipping save for workflow status... no changes"
+            return true
         } else {
             log.info id(document) + "Saving task."
             document.task.end = new Date()
@@ -369,8 +370,8 @@ abstract class WorkflowJob {
                 log.info id(document) + "Removing task id."
                 document.task.identifier = null
             }
-            save(document)
         }
+        save(document)
     }
 
     boolean save(def document) {
