@@ -217,7 +217,6 @@ abstract class WorkflowJob {
     }
 
     void task100(def document) {
-        document.task.identifier = null
         next(document)
     }
 
