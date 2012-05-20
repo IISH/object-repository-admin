@@ -217,6 +217,7 @@ abstract class WorkflowJob {
     }
 
     void task100(def document) {
+        document.task.identifier = null
         next(document)
     }
 
@@ -320,7 +321,7 @@ abstract class WorkflowJob {
      * This will be for instruction and files.
      *
      * We want to be sure the task identifier is in the database before the message queue client
-     * receives it. Otherwise it will reject he message.
+     * receives it. Hence here we save.
      *
      * @param instructionInstance
      * @return
@@ -366,10 +367,6 @@ abstract class WorkflowJob {
         } else {
             log.info id(document) + "Saving task."
             document.task.end = new Date()
-            if (document.task.identifier && (document.task.statusCode < 300 || document.task.statusCode > 499)) {
-                log.info id(document) + "Removing task id."
-                document.task.identifier = null
-            }
         }
         save(document)
     }
