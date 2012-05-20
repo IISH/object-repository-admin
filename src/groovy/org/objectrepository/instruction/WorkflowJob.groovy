@@ -327,16 +327,16 @@ abstract class WorkflowJob {
      */
     void message(def document) {
 
-        document.task.identifier = UUID.randomUUID().toString()
-        if (!saveWorkflow(document)) return
-
-        try {
-            sendMessage(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document))
-            log.info id(document) + "Send message to queue"
-            next(document)
-        } catch (Exception e) {
-            // message queue may be down
-            log.warn e.message
+        document.task.taskKey()
+        if (save(document)) {
+            try {
+                sendMessage(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document))
+                log.info id(document) + "Send message to queue"
+                next(document)
+            } catch (Exception e) {
+                // message queue may be down
+                log.warn e.message
+            }
         }
     }
 

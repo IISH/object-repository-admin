@@ -22,6 +22,10 @@ class Task {
     int limit = 3 // Three attempts maximum before permanent failure. Default can be overwritten in WorkflowConfig
     int exitValue = Integer.MAX_VALUE // Undetermined
 
+    public String taskKey(){
+        identifier = UUID.randomUUID().toString()
+    }
+
     static constraints = {
         identifier(nullable: true)
         info(nullable: true)
