@@ -1,11 +1,10 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
-import org.objectrepository.instruction.WorkflowManager
+import org.objectrepository.instruction.ServiceManager
 import org.objectrepository.security.AdminUserDetailsService
-import org.socialhistoryservices.security.MongoOAuth2ProviderTokenServices
+import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
-import org.springframework.security.oauth2.provider.OAuth2ProtectedResourceFilter
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
 
 beans = {
@@ -16,7 +15,7 @@ beans = {
     }
 
     if (grailsApplication.config.wf) {
-        workflowManager(WorkflowManager, application) {
+        workflowManager(ServiceManager, application) {
             timeout = 10000
         }
     }
@@ -42,18 +41,13 @@ beans = {
     }
 
     if (conf.oauthProvider.active) {
-        println("Loading OAuth2")
-        oauthTokenServices(MongoOAuth2ProviderTokenServices, ref('mongoBean')) {
+        println("Loading Mongo OAuth2 tokenstore")
+        tokenStore(MongoTokenStore) {
+            mongo = ref('mongoBean')
             database = "security"
-            clientId = "clientId"
-            //authorizedGrantTypes = client.authorizedGrantTypes
-            reuseRefreshToken = conf.oauthProvider.tokenServices.reuseRefreshToken    // true
-            supportRefreshToken = conf.oauthProvider.tokenServices.supportRefreshToken    // true
-            refreshTokenValiditySeconds = 31556925
-            accessTokenValiditySeconds = 31556925
         }
-        oauth2ProtectedResourceFilter(OAuth2ProtectedResourceFilter) {
-            tokenServices = ref('oauthTokenServices')
-        }
+        /*oauth2ProtectedResourceFilter(OAuth2ProtectedResourceFilter) {
+            tokenServices = ref('tokenServices')
+        }*/
     }
 }

@@ -42,26 +42,25 @@
         <g:render template="/layouts/profileInstructionShow" model="[instance: instructionInstance]"/>
     </ol>
 
-    <g:if test="${instructionInstance.ingest == 'pending' && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
-        <div class="buttons">
-            <g:form>
-                <g:hiddenField name="id" value="${instructionInstance?.id}"/>
+    <div class="buttons">
+        <g:form>
+            <g:hiddenField name="id" value="${instructionInstance?.id}"/>
+            <g:if test="${instructionInstance.ingest == 'pending' && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
                 <g:if test="${(instructionInstance.task.statusCode == 0 || instructionInstance.task.statusCode > 699)}">
                     <span class="button"><g:actionSubmit class="edit" action="edit"
                                                          value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
                 </g:if>
-                <g:if test="${(instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
-                    <span class="button"><g:actionSubmit
-                            class="delete" action="delete"
-                            value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                            onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
-                </g:if>
-            </g:form>
-        </div>
-    </g:if>
-    <g:else>
-        <p>This instruction's attributes are now frozen. They cannot be changed whilst a task is in progress until it is completed.</p>
-    </g:else>
+            </g:if>
+            <g:else>
+                <p>This instruction's attributes are now frozen. They cannot be changed whilst a task is in progress until it is completed.</p>
+            </g:else>
+
+            <span class="button"><g:actionSubmit
+                    class="delete" action="delete"
+                    value="${message(code: 'default.button.delete.label', default: 'Delete')}"
+                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
+        </g:form>
+    </div>
 </div>
 
 <g:formRemote name="listremote" update="updateList" url="[action: 'showremote', params: [id: instructionInstance.id]]"/>

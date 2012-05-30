@@ -6,6 +6,8 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.objectrepository.ai.ldap.LdapUser
 import org.objectrepository.ai.ldap.LdapUser.Essence
 import org.springframework.security.oauth2.common.OAuth2AccessToken
+import org.springframework.security.oauth2.provider.OAuth2Authentication
+import org.springframework.security.oauth2.provider.ClientToken
 
 /**
  * UserController
@@ -23,7 +25,9 @@ class UserController {
 
     def springSecurityService
     def ldapUserDetailsManager
-    def oauthTokenServices
+    def tokenStore
+    def tokenServices
+    def clientDetailsService
 
     static allowedMethods = [save: "POST", update: "POST", changekey: "POST"]
     final static loginshell = "/bin/sh"
@@ -188,8 +192,15 @@ class UserController {
 
         OAuth2AccessToken token = null
         if (springSecurityService.hasRole('ROLE_CPADMIN')) {
-            token = oauthTokenServices.selectKeys(userInstance.username)
-            if (!token) token = oauthTokenServices.createToken(springSecurityService.authentication)
+            token = tokenStore.selectKeys(userInstance.username)
+            if (!token) {
+                def client = clientDetailsService.clientDetailsStore.get("clientId")
+                ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                        client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+                final OAuth2Authentication authentication = new OAuth2Authentication(clientToken, springSecurityService.authentication)
+                token = tokenServices.createAccessToken(authentication)
+            }
+
         }
         [userInstance: userInstance, currentUsername: springSecurityService.principal.username, token: token]
     }
@@ -227,9 +238,11 @@ class UserController {
             redirect(action: "list")
             return
         }
-        OAuth2AccessToken token = oauthTokenServices.selectKeys(userInstance.username)
-        if (!token) token = oauthTokenServices.createToken(springSecurityService.authentication)
-        oauthTokenServices.recreateRefreshAccessToken(token.refreshToken.value)
+        OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
+        if (token) {
+            def client = clientDetailsService.clientDetailsStore.get("clientId")
+            tokenServices.refreshAccessToken(token.refreshToken.value, client.scope as Set<String>)
+        }
         redirect(action: "show", id: params.id)
     }
 

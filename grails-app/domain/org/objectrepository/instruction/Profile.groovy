@@ -15,7 +15,6 @@ class Profile extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> workflow = []
 
     // End move
 
@@ -26,7 +25,7 @@ class Profile extends Globals {
         resolverBaseUrl = "http://hdl.handle.net/"
         autoGeneratePIDs = "none"
         pidwebserviceEndpoint = domainClass.grailsApplication.config.pidwebservice.endpoint
-        workflow = OrUtil.availableWorkflows(domainClass.grailsApplication.config.workflow)
+        plan = OrUtil.availablePlans(domainClass.grailsApplication.config.workflow)
         autoIngestValidInstruction = false
     }
 
@@ -40,7 +39,7 @@ class Profile extends Globals {
         pidwebserviceKey(nullable: true)
     }
 
-    static embedded = ['workflow']
+    static embedded = ['plan']
 
     static mapWith = "mongo"
 }

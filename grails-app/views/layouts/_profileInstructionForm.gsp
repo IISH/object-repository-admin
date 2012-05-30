@@ -73,9 +73,9 @@
                                      default="workflow to execute"/></label>
 
     <div id="workflow" style="padding-left:300px">
-        <g:each in="${OrUtil.availableWorkflows(grailsApplication.config.workflow)}" var="task">
-            <g:set var="check" value="${OrUtil.hasTask(instance.workflow, task)}"/>
-            <g:checkBox name="workflow.${task.name}" checked="${check}"/> <g:message
+        <g:each in="${OrUtil.availablePlans(grailsApplication.config.workflow)}" var="task">
+            <g:set var="check" value="${instance.hasTask(task)}"/>
+            <g:checkBox name="plan.${task.name}" checked="${check}"/> <g:message
                 code="${task.name}.0.info" default="${task.name}"/><br/>
         </g:each>
     </div>

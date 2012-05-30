@@ -134,18 +134,6 @@ class OrUtil {
         }
     }
 
-    public static boolean hasTask(def workflow, Task task) {
-
-        hasTask(workflow, task.name)
-    }
-
-    public static boolean hasTask(def workflow, String name) {
-
-        (workflow.find {
-            it.name == name
-        })
-    }
-
     static boolean removeFirst(List list) {
         (emptyList(list)) ? false : list.remove(list.first())
     }
@@ -159,14 +147,14 @@ class OrUtil {
     }
 
 /**
- * availableWorkflows
+ * availablePlans
  *
  * We cannot use the findResults method. It does not seem to work on the remote server.
  *
  * @param workflow
  * @return
  */
-    static List<Task> availableWorkflows(def workflow) {
+    static List<Task> availablePlans(def workflow) {
         def list = []
         workflow.each {
             if (it.key.startsWith("Stagingfile")) {
@@ -187,17 +175,27 @@ class OrUtil {
         }
     }
 
+    /**
+     * putAll
+     *
+     * When parsing XML:
+     * place all attributes in the instruction map to the document instance
+     *
+     * @param workflow
+     * @param document
+     * @param instruction
+     */
     static void putAll(def workflow, def document, Map instruction) {
-        def workflows = availableWorkflows(workflow)
+        def workflows = availablePlans(workflow)
         instruction.each {
-            if (it.key == 'workflow') {
-                document.workflow = []
+            if (it.key == 'plan') {
+                document.plan = []
                 it.value.split(',').each { String name ->
                     def task = workflows.find {
                         it.name == name
                     }
                     if (task) {
-                        document.workflow << task
+                        document.plan << task
                     }
                 }
             } else {

@@ -3,7 +3,6 @@ package org.objectrepository.instruction
 import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import com.mongodb.DBObject
-import com.mongodb.QueryBuilder
 import com.mongodb.util.JSON
 import org.objectrepository.administration.Globals
 
@@ -31,13 +30,13 @@ class Instruction extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> workflow
 
     // End move
 
     String fileSet
     String label = 'enter descriptive tag or title'
     Task task // Current task \ bookmarker
+    List<Task> workflow
 
     protected def _services = null
     protected int status = 200
@@ -62,9 +61,7 @@ class Instruction extends Globals {
 
     protected DBCursor findFilesWithCursorByQuery(String q) { // Could use a where query...
 
-        final DBObject query = QueryBuilder.start().or(
-                new BasicDBObject("fileSet", fileSet),
-                new BasicDBObject("fileSet", id.toString())).get()
+        final DBObject query = new BasicDBObject("fileSet", fileSet)
         if (q != null) query.putAll(JSON.parse(q))
         Stagingfile.collection.find(query)
     }
@@ -107,10 +104,10 @@ class Instruction extends Globals {
         task(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
-        workflow(nullable: true)
+        plan(nullable: true)
     }
 
-    static embedded = ['task', 'workflow']
+    static embedded = ['task', 'plan']
     static mapping = {
         fileSet index: true
         na index: true

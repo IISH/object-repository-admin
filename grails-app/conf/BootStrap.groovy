@@ -68,11 +68,10 @@ class BootStrap {
 
     private void oauth2() {
 
-        def conf = SpringSecurityUtils.securityConfig
-        if (conf.oauthProvider.active) {
+        if (SpringSecurityUtils.securityConfig.oauthProvider.active) {
 
             def client = new BaseClientDetails()
-            client.clientId = "clientId"
+            client.clientId = 'clientId'
             client.authorizedGrantTypes = ["authorization_code", "refresh_token", "client_credentials"]
             clientDetailsService.clientDetailsStore = [
                     "clientId": client

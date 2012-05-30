@@ -3,36 +3,36 @@ package org.objectrepository.instruction
 /**
  * WorkflowRunner
  *
- * Daemon that perpetually runs the assigned workflows
+ * Daemon that perpetually runs the assigned services
  *
  */
-class WorkflowManager extends Thread implements Runnable {
+class ServiceManager extends Thread implements Runnable {
 
-    def workflows = []
+    private def services = []
     private boolean active = true
     long timeout = 10000
 
-    public WorkflowManager(def application) {
+    public ServiceManager(def application) {
         application.serviceClasses.each { artefact ->
             String name = artefact.name
             if (name.startsWith("Workflow")) {
                 println("Adding " + name + " to workflow runner.")
-                workflows << application.getMainContext().getBean(artefact.clazz)
+                services << application.getMainContext().getBean(artefact.clazz)
             }
         }
     }
 
     public void cleanup() {
         active = false
-        workflows.clear()
+        services.clear()
     }
 
     void run() {
-        int count = workflows.size()
+        int count = services.size()
         active = count != 0
         while (active) {
             for (int i = 0; i < count; i++) {
-                if (active) workflows.get(i).job()
+                if (active) services.get(i).job()
             }
             sleep(timeout)
         }

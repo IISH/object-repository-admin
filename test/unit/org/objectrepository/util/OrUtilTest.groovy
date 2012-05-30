@@ -52,12 +52,12 @@ class OrUtilTest {
     void testHasTask() {
 
         Instruction instruction = new Instruction()
-        instruction.workflow = [
+        instruction.plan = [
                 new Task(name: 'a'),
                 new Task(name: 'i am a task')
         ]
-        assert OrUtil.hasTask(instruction.workflow, new Task(name: 'i am a task'))
-        assert !OrUtil.hasTask(instruction.workflow, new Task(name: 'i am not in the list'))
+        assert instruction.hasTask( new Task(name: 'i am a task'))
+        assert !instruction.hasTask( new Task(name: 'i am not in the list'))
     }
 
     void testCamelCase() {
@@ -83,11 +83,11 @@ class OrUtilTest {
 
     void testPutAll()
     {
-        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-workflow.xml")
+        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
         Instruction document = [:]
         OrUtil.putAll( config.workflow, document, instructionFromFile)
-        assert document.workflow.size() == 2
-        assert document.workflow.get(0).limit == Integer.MAX_VALUE
+        assert document.plan.size() == 2
+        assert document.plan.get(0).limit == Integer.MAX_VALUE
     }
 }

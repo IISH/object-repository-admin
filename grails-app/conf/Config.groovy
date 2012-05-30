@@ -1,13 +1,15 @@
 grails.project.groupId = "org.objectrepository" // change this to alter the default package name and Maven publishing destination
 grails.camel.camelContextId = "camelContext"
-grails.views.javascript.library="dojo"
 grails.views.javascript.library = "jquery"
-['ldap', 'oauthProvider', 'wf','addUsers'].each {
+['ldap', 'oauthProvider', 'wf', 'addUsers'].each {
     delegate."$it" = Boolean.parseBoolean(System.properties.getProperty(it, 'false'))
 }
 
 grails.plugins.springsecurity.ldap.active = ldap
 grails.plugins.springsecurity.oauthProvider.active = oauthProvider
+grails.plugins.springsecurity.oauthProvider.tokenServices.accessTokenValiditySeconds = 31536000
+grails.plugins.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
+grails.plugins.springsecurity.controllerAnnotations.staticRules = ['/oauth/authorize.dispatch': ['ROLE_ADMIN', 'ROLE_CPADMIN']]
 
 updateList.interval = 5000 // setInterval in ms for the Javascript Ajax function
 

@@ -95,15 +95,15 @@ class WorkflowActiveService extends WorkflowJob {
  * @return
  */
     def UploadFiles800(Instruction document) {
-        if (!taskValidationService.hasFSFiles(document)) {
-            // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
-            first(document)
-        } else {
+        if (taskValidationService.hasFSFiles(document)) {
             def instruction = taskValidationService.hasFSInstruction(document)
             if (instruction) {
                 OrUtil.putAll(workflow, document, instruction)
                 changeWorkflow('InstructionUpload', document)
             }
+        } else {
+            // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
+            first(document)
         }
     }
 
@@ -129,44 +129,6 @@ class WorkflowActiveService extends WorkflowJob {
         }
         else {
             next(document)
-        }
-    }
-
-/**
- * addUpdateUpsertOrDelete
- *
- * The action indicator determines the flow of the file.
- * Where:
- * action=delete : we move to the delete queue
- * action=add : we go to the next phase
- * action=update : with file location, we proceed like add.
- * action=upsert : no location. A simple metadata update
- *
- * Sets the expected tasks.
- *
- * @param document
- * @return
- */
-    def Start100(def document) {
-
-        switch (document.action) {
-            case 'delete':
-                changeWorkflow('FileRemove', document)
-                break
-            case 'add':
-            case 'update':
-            case 'upsert':
-            default:
-                document.workflow = [document.task]
-                document.failed = []
-                def workflow = (document.parent.workflow.size() == 0) ? document.parent.parent.workflow : document.parent.workflow
-                workflow.each {
-                    it.statusCode = 0
-                    it.processed = 0
-                    document.workflow << it
-                }
-                next(document) // we just go through the mill here. Atomic updates for access should go via the controller
-                break
         }
     }
 

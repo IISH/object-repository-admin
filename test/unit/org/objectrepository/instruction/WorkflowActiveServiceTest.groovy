@@ -152,13 +152,13 @@ class WorkflowActiveServiceTest {
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'add']
         document.parent = [id: new ObjectId()]
-        document.parent.workflow = OrUtil.availableWorkflows(config.workflow)
+        document.parent.plan = OrUtil.availablePlans(config.workflow)
         document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
         def taskList = document.task.info.split(",")
-        document.parent.workflow.each {
+        document.parent.plan.each {
             assert it.name in taskList
         }
     }
@@ -171,9 +171,9 @@ class WorkflowActiveServiceTest {
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'upsert']
-        def allWorkflow = OrUtil.availableWorkflows(config.workflow)
+        def allWorkflow = OrUtil.availablePlans(config.workflow)
         document.parent = [id: new ObjectId()]
-        document.parent.workflow = [
+        document.parent.plan = [
                 allWorkflow[1],
                 allWorkflow[2]
         ] as List<Task>
@@ -182,7 +182,7 @@ class WorkflowActiveServiceTest {
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
         def taskList = document.task.info.split(",")
-        document.parent.workflow.each {
+        document.parent.plan.each {
             assert it.name in taskList
         }
         assert !(allWorkflow[0].name in taskList)
@@ -234,7 +234,7 @@ class WorkflowActiveServiceTest {
 
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', contentType: 'image/jpeg', task: task, action: 'delete']
-        document.parent = [id: new ObjectId(), workflow: OrUtil.availableWorkflows(config.workflow)]
+        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.workflow)]
         document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'

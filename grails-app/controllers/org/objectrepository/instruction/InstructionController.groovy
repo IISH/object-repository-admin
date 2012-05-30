@@ -49,7 +49,7 @@ class InstructionController {
             redirect(action: "list")
         }
         else if (instructionInstance.status == 200) {
-            if (!instructionInstance.workflow) instructionInstance.workflow = instructionInstance.parent.workflow
+            if (!instructionInstance.plan) instructionInstance.plan = instructionInstance.parent.plan
             if (params.view) {
                 render(view: params.view, model: [instructionInstance: instructionInstance])
             } else {
@@ -129,7 +129,7 @@ class InstructionController {
             forward(action: "list")
         }
         else if (instructionInstance.status == 200) {
-            if (OrUtil.emptyList(instructionInstance.workflow)) instructionInstance.workflow = instructionInstance.parent.workflow
+            if (OrUtil.emptyList(instructionInstance.plan)) instructionInstance.plan = instructionInstance.parent.plan
             def policyInstanceList = Policy.findAllByNa(instructionInstance.na)
             [instructionInstance: instructionInstance, policyList: policyInstanceList.access]
         }
@@ -156,25 +156,25 @@ class InstructionController {
             }
             instructionInstance.properties = params
             instructionInstance.action = params.action1
-            if (instructionInstance.workflow) {
-                instructionInstance.workflow.clear()
+            if (instructionInstance.plan) {
+                instructionInstance.plan.clear()
             } else {
-                instructionInstance.workflow = []
+                instructionInstance.plan = []
             }
-            def workflows = OrUtil.availableWorkflows(grailsApplication.config.workflow)
-            params.workflow.each {
+            def workflows = OrUtil.availablePlans(grailsApplication.config.plan)
+            params.plan.each {
                 if (it.value == 'on') {
                     String name = it.key
                     def task = workflows.find {
                         it.name == name
                     }
-                    if (task) instructionInstance.workflow << task
+                    if (task) instructionInstance.plan << task
                 }
             }
 
-            if (OrUtil.emptyList(instructionInstance.workflow)) {
+            if (OrUtil.emptyList(instructionInstance.plan)) {
                 render(view: "edit", model: [instructionInstance: instructionInstance])
-                flash.message = "You need to select at least one workflow"
+                flash.message = "You need to select at least one plan"
                 return
             }
 

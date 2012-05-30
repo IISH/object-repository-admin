@@ -1,4 +1,4 @@
-<%@ page import="org.objectrepository.security.User" %>
+<%@ page import="org.springframework.security.oauth2.common.OAuth2AccessToken; org.objectrepository.security.User" %>
 <g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
 <!doctype html>
 <html>
@@ -86,9 +86,9 @@
                 you.</p>
                 <hr/>
 
-                <p>Place the key in a HTTP header request as expressed in this pseude code:<br/>
-                    HTTP-header("Authorization", "oauth2 ${token.value}")<br/>
-                    Or in your browser url: ?oauth_token=${token.value}</p>
+                <p>Place the key in a HTTP header request as expressed in this pseudo code:<br/>
+                    HTTP-header("Authorization", "${OAuth2AccessToken.BEARER_TYPE} ${token.value}")<br/>
+                    Or in your browser url: ?${OAuth2AccessToken.BEARER_TYPE_PARAMETER}=${token.value}</p>
             </td>
         </tr>
     </g:if>

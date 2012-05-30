@@ -27,14 +27,6 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // group, name, version
-
-        compile("org.quartz-scheduler:quartz:1.8.4") {
-            excludes 'xml-apis', 'commons-logging', 'slf4j-api'
-        }
-        compile("org.codehaus.groovy.modules.http-builder:http-builder:0.5.2")
-        compile('org.springframework.security.oauth:spring-security-oauth:1.0.0.M3') {
-            excludes "spring-security-core", "spring-security-web", "commons-codec"
-        }
     }
 
     plugins {

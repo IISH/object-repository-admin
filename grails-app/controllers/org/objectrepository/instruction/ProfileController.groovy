@@ -97,14 +97,14 @@ class ProfileController {
 
         profileInstance.properties = params
         profileInstance.action = params.action1 // needed to avoid confusion with the controller 'action'
-        profileInstance.workflow.clear()
-        params.workflow.each {
-            if (it.value == 'on') profileInstance.workflow << new Task(name: it.key)
+        profileInstance.plan.clear()
+        params.plan.each {
+            if (it.value == 'on') profileInstance.plan << new Task(name: it.key)
         }
 
-        if (OrUtil.emptyList(profileInstance.workflow)) {
+        if (OrUtil.emptyList(profileInstance.plan)) {
             render(view: "edit", model: [profileInstance: profileInstance])
-            flash.message = "You need to select at least one workflow"
+            flash.message = "You need to select at least one plan"
             return
         }
 
