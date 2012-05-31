@@ -154,6 +154,7 @@ class InstructionController {
                     return
                 }
             }
+
             instructionInstance.properties = params
             instructionInstance.action = params.action1
             if (instructionInstance.plan) {
@@ -161,18 +162,18 @@ class InstructionController {
             } else {
                 instructionInstance.plan = []
             }
-            def workflows = OrUtil.availablePlans(grailsApplication.config.plan)
+            def plans = OrUtil.availablePlans(grailsApplication.config.plan)
             params.plan.each {
                 if (it.value == 'on') {
                     String name = it.key
-                    def task = workflows.find {
-                        it.name == name
+                    def plan = plans.find {
+                        it == name
                     }
-                    if (task) instructionInstance.plan << task
+                    if (plan) instructionInstance.plan << plan
                 }
             }
 
-            if (OrUtil.emptyList(instructionInstance.plan)) {
+            if (instructionInstance.plan.size() == 0) {
                 render(view: "edit", model: [instructionInstance: instructionInstance])
                 flash.message = "You need to select at least one plan"
                 return

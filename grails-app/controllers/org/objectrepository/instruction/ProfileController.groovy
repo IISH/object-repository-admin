@@ -99,10 +99,10 @@ class ProfileController {
         profileInstance.action = params.action1 // needed to avoid confusion with the controller 'action'
         profileInstance.plan.clear()
         params.plan.each {
-            if (it.value == 'on') profileInstance.plan << new Task(name: it.key)
+            if (it.value == 'on') profileInstance.plan << it.key
         }
 
-        if (OrUtil.emptyList(profileInstance.plan)) {
+        if (profileInstance.plan.size() == 0) {
             render(view: "edit", model: [profileInstance: profileInstance])
             flash.message = "You need to select at least one plan"
             return

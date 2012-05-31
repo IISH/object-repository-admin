@@ -1,7 +1,5 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.administration.Globals
-
 class Stagingfile extends Globals {
 
     // Move these attributes to Globals ( see the comment therein )

@@ -1,6 +1,5 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.administration.Globals
 import org.objectrepository.util.OrUtil
 
 class Profile extends Globals {
@@ -15,6 +14,7 @@ class Profile extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    List<Task> plan
 
     // End move
 

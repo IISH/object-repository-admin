@@ -1,7 +1,6 @@
-package org.objectrepository.administration
+package org.objectrepository.instruction
 
 import org.bson.types.ObjectId
-import org.objectrepository.instruction.Task
 
 /**
  * Globals
@@ -34,19 +33,5 @@ abstract class Globals {
    String pidwebserviceEndpoint
    String pidwebserviceKey
     */
-
-    List<Task> plan
-
-    boolean hasTask(Task task) {
-
-        hasTask(task.name)
-    }
-
-    boolean hasTask(String name) {
-
-        plan.find {
-            it.name == name
-        } != null
-    }
 
 }

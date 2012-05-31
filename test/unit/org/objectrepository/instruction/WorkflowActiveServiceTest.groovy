@@ -159,7 +159,7 @@ class WorkflowActiveServiceTest {
         assert document.task.statusCode == 800
         def taskList = document.task.info.split(",")
         document.parent.plan.each {
-            assert it.name in taskList
+            assert it in taskList
         }
     }
 
@@ -183,10 +183,10 @@ class WorkflowActiveServiceTest {
         assert document.task.statusCode == 800
         def taskList = document.task.info.split(",")
         document.parent.plan.each {
-            assert it.name in taskList
+            assert it in taskList
         }
-        assert !(allWorkflow[0].name in taskList)
-        assert !(allWorkflow[3].name in taskList)
+        assert !(allWorkflow[0] in taskList)
+        assert !(allWorkflow[3] in taskList)
     }
 
     /**

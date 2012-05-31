@@ -20,10 +20,10 @@ package org.socialhistoryservices.security;
 import com.mongodb.*;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import java.io.*;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,7 +56,7 @@ final public class MongoTokenStore implements TokenStore {
         DBObject document = collection.findOne(query);
         return (document == null)
                 ? null
-                : (OAuth2AccessToken) SerializationUtils.deserialize((byte[]) document.get("token"));
+                : (OAuth2AccessToken) deserialize((byte[]) document.get("token"));
     }
 
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
@@ -65,12 +65,12 @@ final public class MongoTokenStore implements TokenStore {
         if (token.getRefreshToken() != null) {
             refreshToken = token.getRefreshToken().getValue();
         }
-        final String name = ( authentication.getUserAuthentication() == null ) ? null : authentication.getUserAuthentication().getName();
+        final String name = (authentication.getUserAuthentication() == null) ? null : authentication.getUserAuthentication().getName();
         final BasicDBObject document = new BasicDBObject();
         document.put("token_id", token.getValue());
-        document.put("token", SerializationUtils.serialize(token));
+        document.put("token", serialize(token));
         document.put("authentication_id", null);
-        document.put("authentication", SerializationUtils.serialize(authentication));
+        document.put("authentication", serialize(authentication));
         document.put("refresh_token", refreshToken);
         document.put("name", name);
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
@@ -91,7 +91,7 @@ final public class MongoTokenStore implements TokenStore {
             DBObject document = collection.findOne(query);
             if (document == null) {
             } else {
-                accessToken = SerializationUtils.deserialize((byte[]) document.get("token"));
+                accessToken = deserialize((byte[]) document.get("token"));
                 this.accessTokenStore.put(tokenValue, accessToken);
                 expiration(tokenValue);
             }
@@ -121,7 +121,7 @@ final public class MongoTokenStore implements TokenStore {
             final DBObject document = collection.findOne(query);
             if (document == null) {
             } else {
-                authentication = SerializationUtils.deserialize((byte[]) document.get("authentication"));
+                authentication = deserialize((byte[]) document.get("authentication"));
                 this.authenticationTokenStore.put(tokenValue, authentication);
                 expiration(tokenValue);
             }
@@ -134,8 +134,8 @@ final public class MongoTokenStore implements TokenStore {
         // insert into oauth_refresh_token (token_id, token, authentication) values (?, ?, ?)
         final BasicDBObject document = new BasicDBObject();
         document.put("token_id", refreshToken.getValue());
-        document.put("token", SerializationUtils.serialize(refreshToken));
-        document.put("authentication", SerializationUtils.serialize(authentication));
+        document.put("token", serialize(refreshToken));
+        document.put("authentication", serialize(authentication));
         final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
         collection.insert(document);
     }
@@ -149,7 +149,7 @@ final public class MongoTokenStore implements TokenStore {
         final DBObject document = collection.findOne(query);
         if (document == null) {
         } else {
-            refreshToken = SerializationUtils.deserialize((byte[]) document.get("token"));
+            refreshToken = deserialize((byte[]) document.get("token"));
         }
         return refreshToken;
     }
@@ -171,7 +171,7 @@ final public class MongoTokenStore implements TokenStore {
         final DBObject document = collection.findOne(query);
         if (document == null) {
         } else {
-            authentication = SerializationUtils.deserialize((byte[]) document.get("authentication"));
+            authentication = deserialize((byte[]) document.get("authentication"));
         }
         return authentication;
     }
@@ -190,7 +190,7 @@ final public class MongoTokenStore implements TokenStore {
 
     /**
      * isFresh
-     *
+     * <p/>
      * Determines if we can use the cache...
      *
      * @param tokenValue the token to look for
@@ -237,5 +237,46 @@ final public class MongoTokenStore implements TokenStore {
         final DBCollection c = getCollection(OAUTH_ACCESS_TOKEN);
         c.ensureIndex("token_id");
         c.ensureIndex("token_id");
+    }
+
+    private static byte[] serialize(Object state) {
+        ObjectOutputStream oos = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(512);
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(state);
+            oos.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    // eat it
+                }
+            }
+        }
+    }
+
+    private static <T> T deserialize(byte[] byteArray) {
+        ObjectInputStream oip = null;
+        try {
+            oip = new ObjectInputStream(new ByteArrayInputStream(byteArray));
+            return (T) oip.readObject();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } finally {
+            if (oip != null) {
+                try {
+                    oip.close();
+                } catch (IOException e) {
+                    // eat it
+                }
+            }
+        }
     }
 }

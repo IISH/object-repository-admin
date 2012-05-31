@@ -245,9 +245,7 @@ abstract class WorkflowJob {
                     document.failed = []
                     def plan = (document.parent.plan.size() == 0) ? document.parent.parent.plan : document.parent.plan
                     plan.each {
-                        it.statusCode = 0
-                        it.processed = 0
-                        document.workflow << it
+                        document.workflow << new Task(name: it)
                     }
                     next(document) // we just go through the mill here. Atomic updates for access should go via the controller
                     break

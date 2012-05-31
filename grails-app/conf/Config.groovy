@@ -164,7 +164,7 @@ log4j = {
     }
 
     root {
-        warn()
+        info()
     }
 
     info 'grails.app.controllers'

@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import com.mongodb.DBObject
 import com.mongodb.util.JSON
-import org.objectrepository.administration.Globals
 
 /**
  * Instruction
@@ -30,6 +29,8 @@ class Instruction extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    List<Task> plan
+
 
     // End move
 

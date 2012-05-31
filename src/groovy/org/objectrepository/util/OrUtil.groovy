@@ -154,18 +154,10 @@ class OrUtil {
  * @param workflow
  * @return
  */
-    static List<Task> availablePlans(def workflow) {
-        def list = []
-        workflow.each {
-            if (it.key.startsWith("Stagingfile")) {
-                def attributes = [name: it.key, info: "Default workflow"]
-                it.value.task?.each() {
-                    attributes << it
-                }
-                list << new Task(attributes)
-            }
+    static List<Task> availablePlans(def workflow, String type = "Stagingfile") {
+        workflow.findResults {
+            (it.key.startsWith(type)) ? it.key : null
         }
-        list
     }
 
     static void availablePolicies(String na, def accessMatrix) {
@@ -182,20 +174,20 @@ class OrUtil {
      * place all attributes in the instruction map to the document instance
      *
      * @param workflow
-     * @param document
-     * @param instruction
+     * @param xmlDocumentHeader
+     * @param instructionAttributes
      */
-    static void putAll(def workflow, def document, Map instruction) {
-        def workflows = availablePlans(workflow)
-        instruction.each {
+    static void putAll(def workflow, def document, Map fsInstructionAttributes) {
+        def plans = availablePlans(workflow)
+        fsInstructionAttributes.each {
             if (it.key == 'plan') {
                 document.plan = []
                 it.value.split(',').each { String name ->
-                    def task = workflows.find {
-                        it.name == name
+                    def plan = plans.find {
+                        it == name
                     }
-                    if (task) {
-                        document.plan << task
+                    if (plan) {
+                        document.plan << plan
                     }
                 }
             } else {
