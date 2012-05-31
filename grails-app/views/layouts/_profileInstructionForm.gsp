@@ -73,7 +73,7 @@
                                      default="workflow to execute"/></label>
 
     <div id="workflow" style="padding-left:300px">
-        <g:each in="${OrUtil.availablePlans(grailsApplication.config.workflow)}" var="plan">
+        <g:each in="${OrUtil.availablePlans(grailsApplication.config.plans)}" var="plan">
             <g:set var="check" value="${plan in instance.plan}"/>
             <g:checkBox name="plan.${plan}" checked="${check}"/> <g:message
                 code="${plan}.0.info" default="${plan}"/><br/>

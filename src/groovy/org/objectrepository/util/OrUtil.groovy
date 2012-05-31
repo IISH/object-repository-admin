@@ -201,4 +201,8 @@ class OrUtil {
         String na = m[0]
         na.replace(".", "_").replace("/", "")
     }
+
+    static void setInstructionPlan(def instruction) {
+        if (emptyList(instruction.plan)) instruction.plan = instruction.parent.plan
+    }
 }

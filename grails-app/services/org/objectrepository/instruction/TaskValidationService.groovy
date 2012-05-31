@@ -26,16 +26,16 @@ class TaskValidationService {
          * Each Workflow has a service that invokes it. Hence we also have a controller to invoke the service.
          * Services become available when we have an ingest=pending state.
          *
-         * The services is locked when a workflow is running: statusCode < 700 ( can be set via WorkflowConfig )
+         * The services is locked when a workflow is running: statusCode < 700 ( can be set via PlanConfig )
          * In all other cases the services is free to be called at a default instruction ingest status of 'pending'.
-         * Each service can be filtered in WorkflowConfig in the service: [ingest:[] ] setting
+         * Each service can be filtered in PlanConfig in the service: [ingest:[] ] setting
          *
          * These services are infused in the Instruction class, where other services, controllers and views can
          * access via the getServices property.
          *
          */
         Instruction.metaClass.getServices = {
-            _services = (_services) ?: grailsApplication.config.workflow.inject([]) {acc, v ->
+            _services = (_services) ?: grailsApplication.config.plans.inject([]) {acc, v ->
                 def service = v.value.service
                 if (service) {
                     def method = service.method

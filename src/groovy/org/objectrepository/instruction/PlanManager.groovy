@@ -6,13 +6,13 @@ package org.objectrepository.instruction
  * Daemon that perpetually runs the assigned services
  *
  */
-class ServiceManager extends Thread implements Runnable {
+class PlanManager extends Thread implements Runnable {
 
     private def services = []
     private boolean active = true
     long timeout = 10000
 
-    public ServiceManager(def application) {
+    public PlanManager(def application) {
         application.serviceClasses.each { artefact ->
             String name = artefact.name
             if (name.startsWith("Workflow")) {

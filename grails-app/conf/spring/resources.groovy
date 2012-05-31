@@ -1,11 +1,12 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
-import org.objectrepository.instruction.ServiceManager
+
 import org.objectrepository.security.AdminUserDetailsService
 import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
+import org.objectrepository.instruction.PlanManager
 
 beans = {
 
@@ -14,8 +15,8 @@ beans = {
         Locale.setDefault(Locale.ENGLISH)
     }
 
-    if (grailsApplication.config.wf) {
-        workflowManager(ServiceManager, application) {
+    if (grailsApplication.config.plans) {
+        planManager(PlanManager, application) {
             timeout = 10000
         }
     }

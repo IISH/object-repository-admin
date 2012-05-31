@@ -86,7 +86,7 @@ abstract class WorkflowJob {
      */
     String methodName(def document) {
         def postFix = (document.task.statusCode == 0) ? "" : document.task.statusCode
-        def list = [workflow[document.task.name]?.statusCodes[document.task.statusCode]?.action,
+        def list = [plans[document.task.name]?.statusCodes[document.task.statusCode]?.action,
                 document.task.name + postFix,
                 document.getClass().simpleName + postFix,
                 "task" + postFix]
@@ -105,11 +105,11 @@ abstract class WorkflowJob {
     @SuppressWarnings("GroovyAssignabilityCheck")
     void runMethod(def document, String method) {
         if (method) {
-            log.info id(document) + "Method " + method + ": " + workflow[document.task.name].statusCodes[document.task.statusCode]?.purpose
+            log.info id(document) + "Method " + method + ": " + plans[document.task.name].statusCodes[document.task.statusCode]?.purpose
             "$method"(document)
         }
         else {
-            final task = workflow[method]?.statusCodes
+            final task = plans[method]?.statusCodes
             if (task) {
                 final map = [task: [name: method]]
                 first(map)
@@ -135,7 +135,7 @@ abstract class WorkflowJob {
         document.task.statusCode = statusCode.isNumber() ? statusCode.toInteger() : -1
         if (document.task.statusCode == -1) first(document)
         document.task.attempts = 1
-        document.task.limit = (workflow[document.task.name].task?.limit) ?: 3
+        document.task.limit = (plans[document.task.name].task?.limit) ?: 3
         log.info id(document) + "Changed workflow: " + document.task.name + ":" + document.task.statusCode
     }
 
@@ -147,7 +147,7 @@ abstract class WorkflowJob {
      */
     void next(def document) {
         int statusCode = document.task.statusCode
-        workflow[document.task.name].statusCodes.reverseEach {
+        plans[document.task.name].statusCodes.reverseEach {
             statusCode = (it.key > document.task.statusCode) ? it.key : statusCode
         }
         document.task.statusCode = statusCode
@@ -161,7 +161,7 @@ abstract class WorkflowJob {
      * @return
      */
     void first(def document) {
-        def list = workflow[document.task.name].statusCodes.collect {
+        def list = plans[document.task.name].statusCodes.collect {
             it.key
         }
         document.task.statusCode = list.first()
@@ -174,7 +174,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void last(def document) {
-        def list = workflow[document.task.name].statusCodes.collect {
+        def list = plans[document.task.name].statusCodes.collect {
             it.key
         }
         document.task.statusCode = list.last()
@@ -231,26 +231,38 @@ abstract class WorkflowJob {
      * @param document
      * @return
      */
-        def Start100(def document) {
+    def Start100(def document) {
 
-            switch (document.action) {
-                case 'delete':
-                    changeWorkflow('FileRemove', document)
-                    break
-                case 'add':
-                case 'update':
-                case 'upsert':
-                default:
-                    document.workflow = [document.task]
-                    document.failed = []
-                    def plan = (document.parent.plan.size() == 0) ? document.parent.parent.plan : document.parent.plan
-                    plan.each {
-                        document.workflow << new Task(name: it)
+        switch (document.action) {
+            case 'delete':
+                changeWorkflow('FileRemove', document)
+                break
+            case 'add':
+            case 'update':
+            case 'upsert':
+            default:
+                document.workflow = [document.task]
+                document.failed = []
+                OrUtil.setInstructionPlan(document.parent)
+                document.parent.plan.each { name ->
+                    def wf = plans.find() {
+                        it.key == name
                     }
-                    next(document) // we just go through the mill here. Atomic updates for access should go via the controller
-                    break
-            }
+                    if (wf) {
+                        def attributes = [name: name, info: "Default workflow"]
+                        wf.value.task?.each() {
+                            attributes << it
+                        }
+                        document.workflow << new Task(attributes)
+                    }
+                    else {
+                        log.warn "No such plan ( will ignore ): " + name
+                    }
+                }
+                next(document) // we just go through the mill here. Atomic updates for access should go via the controller
+                break
         }
+    }
 
     void task100(def document) {
         next(document)
@@ -454,7 +466,7 @@ abstract class WorkflowJob {
         this.@home
     }
 
-    def getWorkflow() {
-        grailsApplication.config.workflow
+    def getPlans() {
+        grailsApplication.config.plans
     }
 }

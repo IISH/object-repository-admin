@@ -81,7 +81,7 @@
             <span id="workflow-label" class="property-label"><g:message code="workflow.label"
                                                                         default="Services to execute"/></span>
             <span class="property-value" aria-labelledby="workflow-label">
-                <g:each in="${OrUtil.availablePlans(grailsApplication.config.workflow)}" var="plan">
+                <g:each in="${OrUtil.availablePlans(grailsApplication.config.plans)}" var="plan">
                     <g:set var="check" value="${plan in instance.plan}"/>
                     <g:message code="${plan}.0.info"
                                default="${plan}"/>: <strong>${check ? "enabled" : "skip"}</strong><br/>

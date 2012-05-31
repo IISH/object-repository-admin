@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import com.mongodb.DBObject
 import com.mongodb.util.JSON
+import org.bson.types.ObjectId
 
 /**
  * Instruction
@@ -17,9 +18,10 @@ import com.mongodb.util.JSON
  * Hence we use the fileSet as key to relate the Instruction document and Stagingfile documents
  *
  */
-class Instruction extends Globals {
+class Instruction {
 
     // Move these attributes to Globals ( see the comment therein )
+    ObjectId id
     String na
     String action
     String access
@@ -29,8 +31,7 @@ class Instruction extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> plan
-
+    List<String> plan
 
     // End move
 

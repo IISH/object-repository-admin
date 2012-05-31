@@ -1,8 +1,12 @@
 package org.objectrepository.instruction
 
-class Stagingfile extends Globals {
+import org.bson.types.ObjectId
+
+class Stagingfile {
+
 
     // Move these attributes to Globals ( see the comment therein )
+    ObjectId id
     String na
     String action
     String access = "closed"

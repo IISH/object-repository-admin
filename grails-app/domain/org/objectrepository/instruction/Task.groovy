@@ -19,7 +19,7 @@ class Task {
     int total = 0 // Total number of whatevers
     int processed = 0 // Total number of processed whatevers
     int attempts = 1
-    int limit = 3 // Three attempts maximum before permanent failure. Default can be overwritten in WorkflowConfig
+    int limit = 3 // Three attempts maximum before permanent failure. Default can be overwritten in PlanConfig
     int exitValue = Integer.MAX_VALUE // Undetermined
 
     public String taskKey(){

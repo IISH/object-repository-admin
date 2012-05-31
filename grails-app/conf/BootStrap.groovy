@@ -15,7 +15,7 @@ class BootStrap {
     def springSecurityService
     def grailsApplication
     def clientDetailsService
-    def workflowManager
+    def planManager
 
     def init = { servletContext ->
 
@@ -23,8 +23,8 @@ class BootStrap {
         users()
         oauth2()
         bindAccessors()
-        if (workflowManager) {
-            workflowManager.start();
+        if (planManager) {
+            planManager.start();
         }
     }
 
@@ -124,6 +124,6 @@ class BootStrap {
     }
 
     def destroy = {
-        if (workflowManager) workflowManager.cleanup()
+        if (planManager) planManager.cleanup()
     }
 }

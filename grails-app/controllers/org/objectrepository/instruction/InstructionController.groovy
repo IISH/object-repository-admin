@@ -49,7 +49,7 @@ class InstructionController {
             redirect(action: "list")
         }
         else if (instructionInstance.status == 200) {
-            if (!instructionInstance.plan) instructionInstance.plan = instructionInstance.parent.plan
+            OrUtil.setInstructionPlan(instructionInstance)
             if (params.view) {
                 render(view: params.view, model: [instructionInstance: instructionInstance])
             } else {
@@ -83,7 +83,6 @@ class InstructionController {
         if (!instructionInstance) return
 
         final File file = new File(instructionInstance.fileSet, "instruction.xml")
-        println(file.absolutePath)
         def instruction = (request.method == "POST") ? request.getFile("instruction") : null
         if (instruction && !instruction.empty) {
             instruction.transferTo(file)
@@ -129,7 +128,7 @@ class InstructionController {
             forward(action: "list")
         }
         else if (instructionInstance.status == 200) {
-            if (OrUtil.emptyList(instructionInstance.plan)) instructionInstance.plan = instructionInstance.parent.plan
+            OrUtil.setInstructionPlan(instructionInstance)
             def policyInstanceList = Policy.findAllByNa(instructionInstance.na)
             [instructionInstance: instructionInstance, policyList: policyInstanceList.access]
         }
@@ -162,14 +161,9 @@ class InstructionController {
             } else {
                 instructionInstance.plan = []
             }
-            def plans = OrUtil.availablePlans(grailsApplication.config.plan)
             params.plan.each {
                 if (it.value == 'on') {
-                    String name = it.key
-                    def plan = plans.find {
-                        it == name
-                    }
-                    if (plan) instructionInstance.plan << plan
+                    instructionInstance.plan << it.key
                 }
             }
 

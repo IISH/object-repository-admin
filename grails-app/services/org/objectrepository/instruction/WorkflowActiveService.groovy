@@ -7,7 +7,7 @@ import org.objectrepository.util.OrUtil
  *
  * Looks at each of the instruction and Stagingfile current status
  * For each status, we check if we can proceed with the next phase in the workflow.
- * The methods we call are conventional, based on a combo [Task][StatusCode] name as defined in Config.workflow.
+ * The methods we call are conventional, based on a combo [Task][StatusCode] name as defined in PlansConfig.plans.
  *
  * author: Lucien van Wouw <lwo@iisg.nl>
  */
@@ -98,7 +98,7 @@ class WorkflowActiveService extends WorkflowJob {
         if (taskValidationService.hasFSFiles(document)) {
             def instruction = taskValidationService.hasFSInstruction(document)
             if (instruction) {
-                OrUtil.putAll(workflow, document, instruction)
+                OrUtil.putAll(plans, document, instruction)
                 changeWorkflow('InstructionUpload', document)
             }
         } else {
@@ -119,12 +119,7 @@ class WorkflowActiveService extends WorkflowJob {
     def InstructionIngest600(def document) {
 
         if (document.task.exitValue == 0) {
-            if (OrUtil.emptyList(document.workflow)) document.workflow = document.parent.workflow
-            document.workflow.each {
-                it.statusCode = 0
-                it.processed = 0
-                it.total = document.task.total
-            }
+            if (OrUtil.emptyList(document.plan)) document.plan = document.parent.plan
             last(document)
         }
         else {

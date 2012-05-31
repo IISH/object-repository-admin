@@ -1,7 +1,7 @@
 grails.project.groupId = "org.objectrepository" // change this to alter the default package name and Maven publishing destination
 grails.camel.camelContextId = "camelContext"
 grails.views.javascript.library = "jquery"
-['ldap', 'oauthProvider', 'wf', 'addUsers'].each {
+['ldap', 'oauthProvider', 'plans', 'addUsers'].each {
     delegate."$it" = Boolean.parseBoolean(System.properties.getProperty(it, 'false'))
 }
 
@@ -61,7 +61,7 @@ grails.exceptionresolver.params.exclude = ['password']
 // Get the server port and message queue port.
 def serverPort = System.properties['server.port']
 
-grails.config.locations = [ContentTypeConfig, WorkflowConfig]
+grails.config.locations = [ContentTypeConfig, PlanConfig]
 if (System.properties.containsKey("or.properties")) {
     println("Loading properties from " + System.properties["or.properties"])
     grails.config.locations << "file:" + System.properties["or.properties"]

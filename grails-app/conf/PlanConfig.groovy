@@ -4,7 +4,7 @@ autoGeneratePIDs = [
 
 action = ['upsert', 'add', 'update', 'delete']
 
-workflow = [
+plans = [
         UploadFiles: [ // fileSet and files... but not yet an instruction
                 //service: [name: 'InstructionUpload', controller: 'instruction', action: 'upload'],
                 statusCodes: [

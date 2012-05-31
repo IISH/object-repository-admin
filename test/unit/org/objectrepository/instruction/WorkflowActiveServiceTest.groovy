@@ -20,7 +20,7 @@ class WorkflowActiveServiceTest {
     void setUp() {
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-        config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("WorkflowConfig"))
+        config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
 
         WorkflowJob.metaClass.message = { def document ->  // make sure we skip the message queue method and move right to the last document
             document.task.info += "," + document.task.name
@@ -152,7 +152,7 @@ class WorkflowActiveServiceTest {
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'add']
         document.parent = [id: new ObjectId()]
-        document.parent.plan = OrUtil.availablePlans(config.workflow)
+        document.parent.plan = OrUtil.availablePlans(config.plans)
         document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
@@ -171,7 +171,7 @@ class WorkflowActiveServiceTest {
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'upsert']
-        def allWorkflow = OrUtil.availablePlans(config.workflow)
+        def allWorkflow = OrUtil.availablePlans(config.plans)
         document.parent = [id: new ObjectId()]
         document.parent.plan = [
                 allWorkflow[1],
@@ -234,7 +234,7 @@ class WorkflowActiveServiceTest {
 
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', contentType: 'image/jpeg', task: task, action: 'delete']
-        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.workflow)]
+        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.plans)]
         document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'

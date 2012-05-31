@@ -1,10 +1,12 @@
 package org.objectrepository.instruction
 
+import org.bson.types.ObjectId
 import org.objectrepository.util.OrUtil
 
-class Profile extends Globals {
+class Profile {
 
     // Move these attributes to Globals ( see the comment therein )
+    ObjectId id
     String na
     String action
     String access
@@ -14,7 +16,7 @@ class Profile extends Globals {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> plan
+    List<String> plan
 
     // End move
 
@@ -25,7 +27,7 @@ class Profile extends Globals {
         resolverBaseUrl = "http://hdl.handle.net/"
         autoGeneratePIDs = "none"
         pidwebserviceEndpoint = domainClass.grailsApplication.config.pidwebservice.endpoint
-        plan = OrUtil.availablePlans(domainClass.grailsApplication.config.workflow)
+        plan = OrUtil.availablePlans(domainClass.grailsApplication.config.plans)
         autoIngestValidInstruction = false
     }
 

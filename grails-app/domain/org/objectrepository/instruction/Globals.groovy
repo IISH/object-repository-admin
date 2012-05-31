@@ -1,7 +1,5 @@
 package org.objectrepository.instruction
 
-import org.bson.types.ObjectId
-
 /**
  * Globals
  *
@@ -20,9 +18,8 @@ import org.bson.types.ObjectId
  */
 abstract class Globals {
 
-    ObjectId id
-
     /*
+ObjectId id
    String na
    String action // = "upsert"
    String access // = "closed"
@@ -32,6 +29,7 @@ abstract class Globals {
    Boolean autoIngestValidInstruction // = false
    String pidwebserviceEndpoint
    String pidwebserviceKey
+   List<String> plan
     */
 
 }

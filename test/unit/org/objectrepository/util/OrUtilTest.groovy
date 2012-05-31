@@ -15,11 +15,11 @@ class OrUtilTest {
     void setUp() {
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
                 ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-                config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("WorkflowConfig"))
+                config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
     }
 
     void testAvailablePlans() {
-        final plans = OrUtil.availablePlans(config.workflow)
+        final plans = OrUtil.availablePlans(config.plans)
         assert plans.size() >  1
     }
 
@@ -79,7 +79,7 @@ class OrUtilTest {
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
         Instruction document = [:]
-        OrUtil.putAll( config.workflow, document, instructionFromFile)
+        OrUtil.putAll( config.plans, document, instructionFromFile)
         assert document.plan.size() == 2
         // todo: test this:
         // assert document.workflow.get(0).limit == Integer.MAX_VALUE
