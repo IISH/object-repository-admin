@@ -26,9 +26,9 @@ class InstructionController {
     def listremote = {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
 
-        final List<Instruction> instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
-            Instruction.where({(task.name != 'InstructionDone')}).list([params]) :
-            Instruction.where({(na == springSecurityService.principal.na && task.name != 'InstructionDone')}).list([params])
+        def instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
+            Instruction.list(params) :
+            Instruction.findAllByNa(springSecurityService.principal.na, params)
 
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: instructionInstanceList.size()])

@@ -1,5 +1,6 @@
 package org.objectrepository.instruction
 
+import com.mongodb.DBCollection
 import com.mongodb.WriteResult
 import grails.converters.XML
 import org.apache.camel.CamelExecutionException
@@ -13,13 +14,12 @@ import org.objectrepository.util.OrUtil
  */
 abstract class WorkflowJob {
 
-    static transactional = 'mongo'
+    static transactional = "mongo"
     def mongo
     def grailsApplication
     File home
     TaskValidationService taskValidationService
-    static def locked = [:]
-    def taskProperties = []
+    def taskProperties
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -61,14 +61,6 @@ abstract class WorkflowJob {
             runMethod(document)
         }
         else {
-            if (document instanceof Stagingfile) {
-                def task = document.workflow.find {
-                    it.name == document.task.name
-                }
-                if (task) {
-                    task.statusCode = document.task.statusCode
-                }
-            }
             saveWorkflow(document)
         }
     }
@@ -125,18 +117,36 @@ abstract class WorkflowJob {
      *
      * Migrates to a different task. If the task statusCode is absent, we default to the first task in the workflow
      *
-     * @param task
+     * @param taskName
      * @param document
      * @return
      */
-    void changeWorkflow(String task, def document) {
-        def statusCode = task.substring(task.size() - 3)
-        document.task.name = statusCode.isNumber() ? task.substring(0, task.size() - 3) : task
-        document.task.statusCode = statusCode.isNumber() ? statusCode.toInteger() : -1
-        if (document.task.statusCode == -1) first(document)
-        document.task.attempts = 1
-        document.task.limit = (plans[document.task.name].task?.limit) ?: 3
-        log.info id(document) + "Changed workflow: " + document.task.name + ":" + document.task.statusCode
+    void changeWorkflow(String taskName, def document) {
+        String old = document.task.name + document.task.statusCode
+        def _statusCode = taskName.substring(taskName.size() - 3)
+        String name = _statusCode.isNumber() ? taskName.substring(0, taskName.size() - 3) : taskName
+        int statusCode = _statusCode.isNumber() ? _statusCode.toInteger() : firstStatusCode(name)
+        Task task = new Task(name: name, statusCode: statusCode)
+        plans[name].task?.each {
+            task."$it.key" = it.value
+        }
+        document.workflow.add(0, task)
+        log.info id(document) + "Changed workflow from " + old + " to " + document.task.name + document.task.statusCode
+    }
+
+    /**
+     * nextWorkflow
+     *
+     * Moves a new task to the bottom ( beginning at index 0... depending on the metaphore ) of the workflow.
+     * This way the task becomes active.
+     *
+     * @param document
+     */
+    void nextWorkflow(def document) {
+        String old = document.task.name + document.task.statusCode
+        document.workflow << document.workflow.remove(0)
+        first(document)
+        log.info id(document) + "nextWorkflow from " + old + " to " + document.task.name + document.task.statusCode
     }
 
     /**
@@ -161,11 +171,15 @@ abstract class WorkflowJob {
      * @return
      */
     void first(def document) {
-        def list = plans[document.task.name].statusCodes.collect {
+        document.task.statusCode = firstStatusCode(document.task.name)
+        log.info id(document) + "Moved task to first: " + document.task.name + ":" + document.task.statusCode
+    }
+
+    private int firstStatusCode(String name) {
+        def list = plans[name].statusCodes.collect {
             it.key
         }
-        document.task.statusCode = list.first()
-        log.info id(document) + "Moved task to first: " + document.task.name + ":" + document.task.statusCode
+        list.first()
     }
 
     /**
@@ -193,27 +207,15 @@ abstract class WorkflowJob {
      */
     void retry(def document) {
         if (++document.task.attempts > document.task.limit) {
-            final String info = id(document) + "Failed. Tried " + document.task.limit + " times."
-            log.info info
-            document.failed << new Task(name: document.task.name, info: info)
-            last(document)
+            log.info id(document) + "Failed. Tried " + document.task.limit + " times."
+            document.task.statusCode = 799
+            nextWorkflow(document)
         }
         else {
             final String info = id(document) + "Retry task " + document.task.attempts + "\"" + document.task.limit + " " + document.task.name
             log.info info
             first(document)
         }
-    }
-
-    /**
-     * failed
-     *
-     * Sets the workflow as failed.
-     *
-     * @param document
-     */
-    void failed(def document) {
-        document.task.failure = true
     }
 
     /**
@@ -235,14 +237,12 @@ abstract class WorkflowJob {
 
         switch (document.action) {
             case 'delete':
-                changeWorkflow('FileRemove', document)
+                document.workflow << new Task(name: 'FileRemove')
                 break
             case 'add':
             case 'update':
             case 'upsert':
             default:
-                document.workflow = [document.task]
-                document.failed = []
                 OrUtil.setInstructionPlan(document.parent)
                 document.parent.plan.each { name ->
                     def wf = plans.find() {
@@ -259,9 +259,11 @@ abstract class WorkflowJob {
                         log.warn "No such plan ( will ignore ): " + name
                     }
                 }
-                next(document) // we just go through the mill here. Atomic updates for access should go via the controller
                 break
         }
+
+        document.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
+        next(document) // we just go through the mill here. Atomic updates for access should go via the controller
     }
 
     void task100(def document) {
@@ -299,34 +301,6 @@ abstract class WorkflowJob {
     }
 
     /**
-     * Stagingfile600
-     *
-     * Proceed when successful. Or else just retry.
-     * When we are fine, we'll update the workflow.
-     *
-     * @param document
-     */
-    void Stagingfile600(def document) {
-        if (document.task.exitValue == 0) {
-
-            // Update the staging file's workflow status:
-            document.workflow.find {
-                it.name == document.task.name
-            }?.statusCode = 800
-
-            // Followed by an incremental in the instruction
-            document.parent.workflow.find {
-                it.name == document.task.name
-            }?.processed++
-
-            document.parent.change = true
-            last(document)
-        } else {
-            retry(document)
-        }
-    }
-
-    /**
      * Instruction800
      *
      * When an instruction task is at the end of the job, we see if we should progress.
@@ -351,14 +325,14 @@ abstract class WorkflowJob {
     def EndOfTheRoad800(def document) {
 
         if (document instanceof Stagingfile) {
-            if (document.failed.size() == 0) {
-                log.info id(document) + "Stagingfile successfull. Remove document."
-                document.fileSet = null
-                document.delete()
-            } else {
+            if (document.workflow.find {
+                it.statusCode < 800
+            }) {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
-                document.task.name = "Start"
-                document.task.statusCode = 700
+                document.task.statusCode = 700 // EndOfTheRoad700
+            } else {
+                log.info id(document) + "Stagingfile successfull. Remove document."
+                delete(document)
             }
         }
     }
@@ -418,25 +392,39 @@ abstract class WorkflowJob {
         save(document)
     }
 
+    /**
+     * save
+     *
+     * update to persist the workflow.
+     * All tasks in the workflow will have a map plus index n explicit set, as we cannot
+     * serialize it to a map.
+     *
+     * Persist the workflow
+     * @param document
+     * @return
+     */
     boolean save(def document) {
 
         final collection = mongo.getDB('sa').getCollection(document.class.getSimpleName().toLowerCase())
-        def _task = taskProperties.inject([:]) { init, key ->
-            init.putAt(key, document.task."$key")
-            init
-        }
-        def _workflow = document.workflow?.collect { w ->
+        int n = 0
+        def workflow = document.workflow?.collect { task ->
+            task.n = n++
             taskProperties.inject([:]) { init, key ->
-                init.putAt(key, w."$key")
+                init.putAt(key, task."$key")
                 init
             }
         }
-        WriteResult result = collection.update([_id: document.id],
-                [$set: [task: _task, workflow: _workflow]]
-        )
+        result(collection.update([_id: document.id], [$set: [workflow: workflow]]))
+    }
+
+    boolean delete(def document) {
+        final DBCollection collection = mongo.getDB('sa').getCollection(document.class.getSimpleName().toLowerCase())
+        result(collection.remove(document.id))
+    }
+
+    boolean result(WriteResult result) {
         if (result.error) {
             println("Failure when processing document: " + result.error)
-            println(document as XML)
         }
         result.error == null
     }

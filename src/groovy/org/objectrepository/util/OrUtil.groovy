@@ -142,6 +142,10 @@ class OrUtil {
         (emptyList(list)) ? null : list.first()
     }
 
+    static def takeLast(def List list) {
+        (emptyList(list)) ? null : list.last()
+    }
+
     static boolean emptyList(def list) {
         (!list || list.size() == 0)
     }

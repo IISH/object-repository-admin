@@ -23,7 +23,7 @@ class WorkflowActiveServiceTest {
         config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
 
         WorkflowJob.metaClass.message = { def document ->  // make sure we skip the message queue method and move right to the last document
-            document.task.info += "," + document.task.name
+            document.task.info = document.task.name
             last(document)
         }
 
@@ -36,6 +36,11 @@ class WorkflowActiveServiceTest {
         }
 
         Stagingfile.metaClass.delete = {
+            println("Mock delete")
+            true
+        }
+
+        WorkflowJob.metaClass.delete = { val ->
             println("Mock delete")
             true
         }
@@ -96,23 +101,24 @@ class WorkflowActiveServiceTest {
     }
 
     void testTask800End() {
-        Task task = [name: 'TestTaskLevelB', statusCode: 500]
+        Task task1 = [name: 'TestTaskLevelB', statusCode: 500]
+        Task task2 = [name: 'EndOfTheRoad', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
-                contentType: 'image/jpeg', task: task, action: 'add']
+                contentType: 'image/jpeg', action: 'add']
         document.parent = [id: new ObjectId()]
-        document.workflow = []
+        document.workflow = [task1, task2]
         workflowActiveService.Stagingfile800(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 100
     }
 
     void testTask800EndFromRunMethod() {
-        Task task = [name: 'TestTaskLevelB', statusCode: 500]
+        Task task1 = [name: 'TestTaskLevelB', statusCode: 500]
+        Task task2 = [name: 'EndOfTheRoad', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
-                contentType: 'image/jpeg', task: task, action: 'add']
+                contentType: 'image/jpeg', action: 'add']
         document.parent = [id: new ObjectId()]
-        document.failed = []
-        document.workflow = []
+        document.workflow = [task1, task2]
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
@@ -120,9 +126,9 @@ class WorkflowActiveServiceTest {
 
     void testTask800Next() {
         Task task1 = [name: 'TestTaskLevelB', statusCode: 500]
-        Task task2 = [name: 'TestTaskLevelC', statusCode: 500]
+        Task task2 = [name: 'TestTaskLevelC', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
-                contentType: 'image/jpeg', task: task1, action: 'add']
+                contentType: 'image/jpeg', action: 'add']
         document.parent = [id: new ObjectId()]
         document.workflow = [task1, task2]
         workflowActiveService.Stagingfile800(document)
@@ -132,7 +138,7 @@ class WorkflowActiveServiceTest {
 
     void testTask800NextFromRunMethod() {
         Task task1 = [name: 'TestTaskLevelB', statusCode: 500]
-        Task task2 = [name: 'TestTaskLevelC', statusCode: 500]
+        Task task2 = [name: 'TestTaskLevelC', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task1, action: 'add']
         document.parent = [id: new ObjectId()]
@@ -153,13 +159,14 @@ class WorkflowActiveServiceTest {
                 contentType: 'image/jpeg', task: task, action: 'add']
         document.parent = [id: new ObjectId()]
         document.parent.plan = OrUtil.availablePlans(config.plans)
-        document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
-        def taskList = document.task.info.split(",")
-        document.parent.plan.each {
-            assert it in taskList
+        document.parent.plan.each { plan ->
+            def t = document.workflow.find {
+                it.info == plan
+            }
+            assert t
         }
     }
 
@@ -177,16 +184,22 @@ class WorkflowActiveServiceTest {
                 allWorkflow[1],
                 allWorkflow[2]
         ] as List<Task>
-        document.failed = []
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800
         def taskList = document.task.info.split(",")
-        document.parent.plan.each {
-            assert it in taskList
+        document.parent.plan.each { plan ->
+            def t = document.workflow.find {
+                it.info == plan
+            }
+            assert t
         }
-        assert !(allWorkflow[0] in taskList)
-        assert !(allWorkflow[3] in taskList)
+        assert !document.workflow.find {
+            it.name == allWorkflow[0]
+        }
+        assert !document.workflow.find {
+            it.name == allWorkflow[3]
+        }
     }
 
     /**
@@ -234,8 +247,7 @@ class WorkflowActiveServiceTest {
 
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', contentType: 'image/jpeg', task: task, action: 'delete']
-        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.plans)]
-        document.failed = []
+        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.plans)]   // todo : should be tasks
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 800

@@ -6,7 +6,7 @@
                    value="${task.name}.${task.statusCode}"/>
             <tr>
                 <td class="left"><g:message code="${task.name}.${task.statusCode}.info"/></td>
-                <g:if test="${task.name == stagingfileInstance.task.name}">
+                <g:if test="${task.is(stagingfileInstance.task.name)}">
                     <g:render template="/layouts/task" model="[instance: stagingfileInstance]"/>
                 </g:if>
                 <g:else>
@@ -22,18 +22,5 @@
         </g:each>
         </tbody>
     </table>
-
-    <g:if test="${stagingfileInstance.failed}">
-        <table>
-            <tbody>
-            <g:each in="${stagingfileInstance.failed}" var="task">
-                <tr>
-                    <td class="left">Failed: <g:message code="${task.name}.${task.statusCode}.info"/></td>
-                    <td>${task.info}</td>
-                </tr>
-            </g:each>
-            </tbody>
-        </table>
-    </g:if>
 
 </div>

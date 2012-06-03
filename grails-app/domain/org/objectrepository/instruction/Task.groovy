@@ -10,6 +10,7 @@ package org.objectrepository.instruction
  */
 class Task {
 
+    int n = 0 // index: absolute position of this task in the workflow, starting from zero
     String identifier
     String name
     int statusCode = 0 // 10, 20, 30, etc.

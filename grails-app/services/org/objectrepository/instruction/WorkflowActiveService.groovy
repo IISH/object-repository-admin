@@ -47,9 +47,9 @@ class WorkflowActiveService extends WorkflowJob {
                 mongo.getDB('sa').stagingfile.find(
                         $and: [[fileSet: instruction.fileSet],
                                 [$or: [
-                                        ['task.statusCode': [$lt: 300]],
-                                        ['task.statusCode': 500],
-                                        ['task.statusCode': 800]
+                                        [workflow:[$elemMatch:[n: 0, statusCode:500]]],
+                                        [workflow:[$elemMatch:[n: 0, statusCode:800]]],
+                                        [workflow:[$elemMatch:[n: 0, statusCode:[$lt: 300]]]]
                                 ]]
                         ]
                 ).each {
@@ -142,10 +142,6 @@ class WorkflowActiveService extends WorkflowJob {
  */
     void Stagingfile800(document) {
 
-        OrUtil.removeFirst(document.workflow)
-        def task = OrUtil.takeFirst(document.workflow) ?: [name: 'EndOfTheRoad']
-        log.info id(document) + "Stagingfile800 sets changeWorkflow from " + document.task.name + " to " + task.name
-        changeWorkflow(task.name, document)
+        nextWorkflow(document)
     }
-
 }

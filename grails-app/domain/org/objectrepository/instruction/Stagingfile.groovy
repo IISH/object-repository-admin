@@ -2,8 +2,7 @@ package org.objectrepository.instruction
 
 import org.bson.types.ObjectId
 
-class Stagingfile {
-
+class Stagingfile extends Tasking {
 
     // Move these attributes to Globals ( see the comment therein )
     ObjectId id
@@ -18,17 +17,13 @@ class Stagingfile {
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> workflow
-    List<Task> failed
+    List<Task> workflow = []
     // End move
 
     String pid
     String fileSet
     String lid
     String location
-    Task task
-
-    protected def cacheTask = null
 
     protected Instruction _parent = null
 
@@ -47,7 +42,6 @@ class Stagingfile {
         access(nullable: true)
         contentType(nullable: true)
         lid(nullable: true)
-        task(nullable: true)
         length(nullable: true)
         na(nullable: true)
         resolverBaseUrl(nullable: true)
@@ -55,11 +49,9 @@ class Stagingfile {
         autoIngestValidInstruction(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
-        workflow(nullable: true)
-        failed(nullable: true)
     }
 
-    static embedded = ['task', 'workflow', 'failed']
+    static embedded = ['workflow']
     static mapWith = "mongo"
     static mapping = {
         fileSet index: true

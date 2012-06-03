@@ -76,14 +76,17 @@ class WorkflowInitiateService extends WorkflowJob {
 
     private void decommissionInstruction(String _na) {
 
-        def instructionList = Instruction.where({
-            na == _na && task.name == 'InstructionIngest' &&
-                    task.statusCode == 800
-        }).list()
-        for (Instruction instructionInstance : instructionList) {
+        mongo.getDB('sa').instruction.find(
+                $and: [
+                        [na: _na],
+                        [workflow: [$elemMatch: [n: 0, name: 'InstructionIngest', statusCode: 800]]]
+                ]
+        ).each {
+            Instruction instructionInstance = it as Instruction
+            instructionInstance.id = it._id
             if (instructionInstance.findFilesWithCursor().count() == 0) {
-                log.info id(instructionInstance) + "Decomissioning (InstructionDone)"
-                instructionInstance.delete()
+                log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
+                delete(instructionInstance)
             }
         }
     }
@@ -104,9 +107,18 @@ class WorkflowInitiateService extends WorkflowJob {
         log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
         instructionInstance = new Instruction(na: na, fileSet: fileSet)
         instructionInstance.change = true
+
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]
-        instructionInstance.save()
+        try {
+            if (!instructionInstance.save()) {
+                instructionInstance.errors.each {
+                    log.error "Errors " + it
+                }
+            }
+        } catch (Exception e) {
+            exception(instructionInstance, e)
+        }
     }
 }

@@ -18,7 +18,7 @@ import org.bson.types.ObjectId
  * Hence we use the fileSet as key to relate the Instruction document and Stagingfile documents
  *
  */
-class Instruction {
+class Instruction extends Tasking {
 
     // Move these attributes to Globals ( see the comment therein )
     ObjectId id
@@ -32,21 +32,18 @@ class Instruction {
     String pidwebserviceEndpoint
     String pidwebserviceKey
     List<String> plan
+    List<Task> workflow = []
 
     // End move
 
     String fileSet
     String label = 'enter descriptive tag or title'
-    Task task // Current task \ bookmarker
-    List<Task> workflow
 
     protected def _services = null
     protected int status = 200
     protected boolean change = false
-    protected def cacheTask = null
 
     def beforeDelete() {
-        task = null
         final DBObject query = new BasicDBObject("fileSet", fileSet)
         Stagingfile.collection.remove(query)
     }
@@ -85,7 +82,6 @@ class Instruction {
      */
     protected String getIngest() {
         if (task.name == 'InstructionIngest' && task.statusCode == 800) return 'working'
-        if (task.name == 'InstructionDone') return 'done';
         'pending'
     }
 
@@ -103,13 +99,12 @@ class Instruction {
         resolverBaseUrl(nullable: true)
         autoGeneratePIDs(nullable: true, inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
         autoIngestValidInstruction(nullable: true)
-        task(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
         plan(nullable: true)
     }
 
-    static embedded = ['task', 'plan']
+    static embedded = ['workflow', 'plan']
     static mapping = {
         fileSet index: true
         na index: true
