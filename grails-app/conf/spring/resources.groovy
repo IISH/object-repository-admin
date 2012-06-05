@@ -16,6 +16,7 @@ beans = {
     }
 
     if (grailsApplication.config.plans) {
+        println("Loading plans")
         planManager(PlanManager, application) {
             timeout = 10000
         }
