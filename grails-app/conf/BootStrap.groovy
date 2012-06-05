@@ -15,7 +15,7 @@ class BootStrap {
     def springSecurityService
     def grailsApplication
     def clientDetailsService
-    def planManager
+    def planManagerService
 
     def init = { servletContext ->
 
@@ -23,8 +23,8 @@ class BootStrap {
         users()
         oauth2()
         bindAccessors()
-        if (planManager) {
-            planManager.start();
+        if (planManagerService) {
+            planManagerService.start();
         }
     }
 

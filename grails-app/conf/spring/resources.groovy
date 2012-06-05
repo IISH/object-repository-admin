@@ -1,12 +1,11 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
-
+import org.objectrepository.instruction.PlanManagerService
 import org.objectrepository.security.AdminUserDetailsService
 import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
-import org.objectrepository.instruction.PlanManager
 
 beans = {
 
@@ -15,9 +14,9 @@ beans = {
         Locale.setDefault(Locale.ENGLISH)
     }
 
-    if (grailsApplication.config.plans) {
+    if (Boolean.parseBoolean(System.properties.getProperty("plans"))) {
         println("Loading plans")
-        planManager(PlanManager, application) {
+        planManagerService(PlanManagerService, application) {
             timeout = 10000
         }
     }

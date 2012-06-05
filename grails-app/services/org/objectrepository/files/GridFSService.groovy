@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Update
  */
 class GridFSService {
 
+    static String OR = "or_"
     static transactional = false
     def mongo
 
@@ -29,7 +30,7 @@ class GridFSService {
     def findByPid(String pid, String bucket) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        def db = mongo.getDB("or_" + na)
+        def db = mongo.getDB(OR + na)
         GridFS gridFS = new GridFS(db, bucket)
         gridFS.findOne(new BasicDBObject("metadata.pid", pid))
     }
@@ -43,9 +44,8 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     List<Orfile> findAllByNa(def na, def params) {
-        def collection = mongo.getDB("or_" + na).getCollection("master.files")
-        collection.find().limit(params.max).skip(0).collect { // may dd .sort(key:1)
-            it
+        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(0).collect { // may dd .sort(key:1)
+            it as Orfile
         }
     }
 
@@ -60,12 +60,12 @@ class GridFSService {
     void update(Orfile orFile, def params) {
 
         def update = Update.update("metadata.access", params.access).set("metadata.label", params.label).updateObject
-        final collection = mongo.getDB("or_" + orFile.metadata.na).getCollection("master.files")
+        final collection = mongo.getDB(OR + orFile.metadata.na).getCollection("master.files")
         collection.update(_id: orFile.id, update, false, false)
     }
 
     Orfile get(String na, String id) {
-        mongo.getDB("or_" + na).getCollection("master.files").findOne(_id: id)
+        mongo.getDB(OR + na).getCollection("master.files").findOne(_id: id)
     }
 
     void writeOrfiles(String id, String na, def writer) {
@@ -76,7 +76,7 @@ class GridFSService {
         builder.setEncoding("utf-8")
         builder.setUseDoubleQuotes(true)
 
-        final collection = mongo.getDB("or_" + na).getCollection("master.files")
+        final collection = mongo.getDB(OR + na).getCollection("master.files")
         String comments = String.format('Database contains %s files. Export extracted on %s',
                 collection.count(), new Date().toGMTString())
         def cursor = (id) ? collection.find([_id: id]) : collection.find()

@@ -9,7 +9,6 @@ class OrfileController {
 
     def springSecurityService
     def gridFSService
-    def mongo
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index() {
