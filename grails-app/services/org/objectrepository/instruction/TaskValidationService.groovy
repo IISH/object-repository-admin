@@ -40,8 +40,7 @@ class TaskValidationService {
                 if (service) {
                     def method = service.method
                     def statusCode = (service.statusCode) ?: 700
-                    def ingest = (service.ingest) ?: ['pending']
-                    if (task.statusCode >= statusCode && delegate.ingest in ingest) {
+                    if (task.statusCode >= statusCode && delegate.task.name != 'InstructionIngest') {
                         //noinspection GroovyAssignabilityCheck
                         if (!method || "$method"(delegate)) {
                             def name = (service.name) ?: v.key

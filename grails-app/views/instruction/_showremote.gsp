@@ -3,21 +3,22 @@
 
 %{--When the instruction's files are ingested, we can show progress for each plan.--}%
 <div class="body" id="updateList">
-    <g:if test="${ instructionInstance.ingest == 'working' }">
+    <g:if test="${ instructionInstance.task.name == 'InstructionIngest' }">
         <table>
             <tbody>
-            <g:each in="${instructionInstance.plan}" var="task">
+            <g:each in="${instructionInstance.tasks}" var="task">
                 <g:if test="${task.total > 0}">
                     <g:set var="total"
                            value="${task.processed * 100 / task.total}"/>
                     <tr>
-                        <td class="left"><g:message code="${task.name}.${task.statusCode}.info"/></td>
+                        <td class="left"><g:message code="${task.name}.0.info"/></td>
                         <td>
                             <div class="ui-progress-bar ui-container transition" id="progress_bar_tasks">
                                 <div class="ui-progress" style="width: ${total}%; ">
                                     <span class="ui-label">${task.processed} / ${task.total}</span>
                                 </div>
                             </div>
+                            <p>Success: ${task.success}; failure: ${task.failure}</p>
                         </td>
                     </tr>
                 </g:if>

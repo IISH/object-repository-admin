@@ -73,18 +73,6 @@ class Instruction extends Tasking {
         "/" + file.parentFile.name + "/" + file.name
     }
 
-    /**
-     * ingest
-     *
-     * Helper getter for the statusCode
-     *
-     * @return
-     */
-    protected String getIngest() {
-        if (task.name == 'InstructionIngest' && task.statusCode == 800) return 'working'
-        'pending'
-    }
-
     protected Profile _parent = null
 
     protected def getParent() {

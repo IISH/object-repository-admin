@@ -424,7 +424,7 @@ abstract class WorkflowJob {
 
     boolean result(WriteResult result) {
         if (result.error) {
-            println("Failure when processing document: " + result.error)
+            log.error "Failure when processing document: " + result.error
         }
         result.error == null
     }

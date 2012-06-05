@@ -45,7 +45,7 @@
     <div class="buttons">
         <g:form>
             <g:hiddenField name="id" value="${instructionInstance?.id}"/>
-            <g:if test="${instructionInstance.ingest == 'pending' && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
+            <g:if test="${instructionInstance.task.name != 'InstructionIngest' && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
                 <g:if test="${(instructionInstance.task.statusCode == 0 || instructionInstance.task.statusCode > 699)}">
                     <span class="button"><g:actionSubmit class="edit" action="edit"
                                                          value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>

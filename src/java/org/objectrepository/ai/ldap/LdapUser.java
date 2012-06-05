@@ -63,6 +63,7 @@ public class LdapUser extends InetOrgPerson {
             setUidNumber(Long.valueOf(asLong(ctx.getStringAttribute("uidNumber"))));
             setLoginshell(ctx.getStringAttribute("loginshell"));
             setUsername(ctx.getStringAttribute("uid"));
+            setMail(ctx.getStringAttribute("mail"));
         }
 
         private String asLong(String gidNumber) {
@@ -104,6 +105,10 @@ public class LdapUser extends InetOrgPerson {
 
     private Long getUidNumber() {
         return uidNumber;
+    }
+
+    public String getMail(){
+        return getMail();
     }
 
     public String getNa() {

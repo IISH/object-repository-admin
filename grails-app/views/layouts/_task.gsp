@@ -14,7 +14,7 @@
                  alt="smiley image" title="${instance.task.name}"/>
 
         %{--Where the instruction\file are undergoing service node processing we present the progress here.
-        The instruction will be showing the amount of files processed. The Stagingfile is a little less interesting
+        The instruction will be showing the amount of files processed.
         --}%
             <g:if test="${instance.task.statusCode >= 500 && instance.task.statusCode < 600}">
                 <g:if test="${instance.task.total && instance.task.total >= instance.task.processed}">

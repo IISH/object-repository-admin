@@ -5,7 +5,7 @@
             <g:set var="statusCode"
                    value="${task.name}.${task.statusCode}"/>
             <tr>
-                <td class="left"><g:message code="${task.name}.${task.statusCode}.info"/></td>
+                <td class="left"><g:message code="${task.name}.0.info"/></td>
                 <g:if test="${task.is(stagingfileInstance.task.name)}">
                     <g:render template="/layouts/task" model="[instance: stagingfileInstance]"/>
                 </g:if>

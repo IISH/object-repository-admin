@@ -73,8 +73,7 @@ class OrUtil {
  *
  * Turns the Instruction (without a file) or Stagingfile instance into XML conform the or schema.
  *
- * The xml is not valid when applying an xmlns=or validation, but the end clients do not apply this. Non schema
- * elements will be removed in their marshall
+ * By convention all document fields are mapped to attributes.
  *
  * @param document
  * @return
@@ -93,7 +92,7 @@ class OrUtil {
         xml.doubleQuotes = true
         xml.omitNullAttributes = true
         xml.instruction(orAttributes) {
-            task {
+            workflow {
                 identifier document.task.identifier
                 name document.task.name
                 statusCode document.task.statusCode

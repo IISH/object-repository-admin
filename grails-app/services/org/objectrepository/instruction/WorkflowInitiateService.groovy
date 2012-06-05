@@ -83,7 +83,6 @@ class WorkflowInitiateService extends WorkflowJob {
                 ]
         ).each {
             Instruction instructionInstance = it as Instruction
-            instructionInstance.id = it._id
             if (instructionInstance.findFilesWithCursor().count() == 0) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
                 delete(instructionInstance)

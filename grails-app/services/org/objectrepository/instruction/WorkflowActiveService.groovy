@@ -34,27 +34,17 @@ class WorkflowActiveService extends WorkflowJob {
         log.info id(instruction) + "Checking for task updates."
         if (instruction.task) {
 
-            if (instruction.ingest == 'pending') {
-                instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
-                try {
-                    runMethod(instruction)
-                } catch (Exception e) {
-                    exception(instruction, e)
-                }
-            }
-            else
-            if (instruction.ingest == 'working') {
+            if (instruction.task.name == 'InstructionIngest') {
                 mongo.getDB('sa').stagingfile.find(
                         $and: [[fileSet: instruction.fileSet],
                                 [$or: [
-                                        [workflow:[$elemMatch:[n: 0, statusCode:500]]],
-                                        [workflow:[$elemMatch:[n: 0, statusCode:800]]],
-                                        [workflow:[$elemMatch:[n: 0, statusCode:[$lt: 300]]]]
+                                        [workflow: [$elemMatch: [n: 0, statusCode: 500]]],
+                                        [workflow: [$elemMatch: [n: 0, statusCode: 800]]],
+                                        [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300]]]]
                                 ]]
                         ]
                 ).each {
                     Stagingfile stagingfile = it as Stagingfile
-                    stagingfile.id = it._id
                     stagingfile.parent = instruction
                     stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
                     try {
@@ -62,6 +52,13 @@ class WorkflowActiveService extends WorkflowJob {
                     } catch (Exception e) {
                         exception(stagingfile, e)
                     }
+                }
+            } else {
+                instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
+                try {
+                    runMethod(instruction)
+                } catch (Exception e) {
+                    exception(instruction, e)
                 }
             }
             if (instruction.change) { save(instruction) }
