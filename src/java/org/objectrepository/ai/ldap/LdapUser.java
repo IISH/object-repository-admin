@@ -107,10 +107,6 @@ public class LdapUser extends InetOrgPerson {
         return uidNumber;
     }
 
-    public String getMail(){
-        return getMail();
-    }
-
     public String getNa() {
         return String.valueOf(gidNumber);
     }
