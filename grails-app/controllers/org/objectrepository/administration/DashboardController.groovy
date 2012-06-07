@@ -43,6 +43,8 @@ class DashboardController {
                 log.info "Policies and Profile"
                 OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
                 if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
+
+                springSecurityService.reauthenticate(springSecurityService.principal.username)
             }
         }
     }
