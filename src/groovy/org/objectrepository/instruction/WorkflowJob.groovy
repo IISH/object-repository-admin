@@ -1,5 +1,6 @@
 package org.objectrepository.instruction
 
+import com.mongodb.BasicDBObject
 import com.mongodb.DBCollection
 import com.mongodb.WriteResult
 import grails.converters.XML
@@ -427,8 +428,9 @@ abstract class WorkflowJob {
     }
 
     boolean delete(def document) {
+
         final DBCollection collection = mongo.getDB('sa').getCollection(document.class.getSimpleName().toLowerCase())
-        result(collection.remove(document.id))
+        result(collection.remove(new BasicDBObject("_id", document.id)))
     }
 
     boolean result(WriteResult result) {
