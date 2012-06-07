@@ -244,19 +244,19 @@ abstract class WorkflowJob {
             case 'upsert':
             default:
                 OrUtil.setInstructionPlan(document.parent)
-                document.parent.plan.each { name ->
-                    def wf = plans.find() {
-                        it.key == name
+                plans.each { plan ->  // Iterating from the config plan will ensure the correct order of tasks.
+                    def wf = document.parent.plan.find() {
+                        it == plan.key
                     }
                     if (wf) {
-                        def attributes = [name: name, info: "Default workflow"]
-                        wf.value.task?.each() {
+                        def attributes = [name: wf, info: "Default workflow"]
+                        plan.value.task?.each() {
                             attributes << it
                         }
                         document.workflow << new Task(attributes)
                     }
                     else {
-                        log.warn "No such plan ( will ignore ): " + name
+                        log.warn "No such plan ( will ignore ): " + wf
                     }
                 }
                 break
