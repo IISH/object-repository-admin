@@ -59,7 +59,7 @@ class Instruction extends Tasking {
     }
 
     protected DBCursor findFilesWithCursorByQuery(String q) { // Could use a where query...
-
+        // ToDo: replace the string parsing with a gmongo find method
         final DBObject query = new BasicDBObject("fileSet", fileSet)
         if (q != null) query.putAll(JSON.parse(q))
         Stagingfile.collection.find(query)

@@ -24,7 +24,6 @@ class WorkflowActiveService extends WorkflowJob {
     void job() {
         mongo.getDB('sa').instruction.find().each {
             def instruction = it as Instruction
-            instruction.id = it._id
             progress(instruction)
         }
     }

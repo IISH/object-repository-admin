@@ -32,17 +32,17 @@ abstract class Tasking {
         def s = program.collect {
             def controllerAction = Pattern.compile("([A-Z])").matcher(it).replaceAll(" \$1").trim().toLowerCase().split("\\s", 2)
             final String collection = controllerAction[0]
-            int total = mongo.getDB('sa')."$collection".count([fileSet: fileSet])
-            int working = mongo.getDB('sa')."$collection".count([fileSet: fileSet, 'workflow.statusCode': [$lt: 700]])
-            int success = mongo.getDB('sa')."$collection".count([fileSet: fileSet, 'workflow.statusCode': [$gt: 799]])
-            int failed = total - working - success
-            int processed = total - success - failed
-            [name: it, total: total, working: working, success: success, failed: failed, processed:processed]
+            int total = mongo.getDB('sa')."$collection".count([fileSet: fileSet, 'workflow.name': it])
+            int working = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$lt: 700]]]])
+            int failed = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$gt: 699,$lt: 800]]]])
+            int success = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$gt: 799]]]])
+            int processed = success + failed
+            [name: it, total: total, working: working, success: success, failed: failed, processed: processed]
         }
         s
     }
 
-    def ingesting = {
+    boolean getIngesting() {
         task.name == 'InstructionIngest' && task.statusCode == 800
     }
 }

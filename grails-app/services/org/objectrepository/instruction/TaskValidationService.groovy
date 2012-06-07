@@ -110,7 +110,7 @@ class TaskValidationService {
     }
 
     protected int countInvalidFiles(def document) {
-        document.findFilesWithCursorByQuery("{'workflow.name':'InstructionValidate','workflow.n':0}").count()
+        document.findFilesWithCursorByQuery("{workflow: {\$elemMatch: {n: 0, name: 'InstructionValidate'}}}").count()
     }
 
     /**
