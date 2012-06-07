@@ -18,7 +18,7 @@
                                     <span class="ui-label">${task.processed} / ${task.total}</span>
                                 </div>
                             </div>
-                            <p>Success: ${task.success}; failure: ${task.failure}</p>
+                            <p>Success: ${task.success}; failure: ${task.failed}</p>
                         </td>
                     </tr>
                 </g:if>

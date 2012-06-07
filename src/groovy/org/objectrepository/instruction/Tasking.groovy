@@ -36,7 +36,7 @@ abstract class Tasking {
             int working = mongo.getDB('sa')."$collection".count([fileSet: fileSet, 'workflow.statusCode': [$lt: 700]])
             int success = mongo.getDB('sa')."$collection".count([fileSet: fileSet, 'workflow.statusCode': [$gt: 799]])
             int failed = total - working - success
-            int processed = total - working
+            int processed = total - success - failed
             [name: it, total: total, working: working, success: success, failed: failed, processed:processed]
         }
         s
