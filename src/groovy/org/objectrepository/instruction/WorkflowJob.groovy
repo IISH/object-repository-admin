@@ -201,14 +201,23 @@ abstract class WorkflowJob {
      * A task was not completed for whatever reason. Repeat it by setting the statusCode and try again.
      * The number of attempts is restricted by the task.limit
      *
+     * The exitValue=799 has special meaning. The service node cannot do anything with this document, so it was
+     * ignored. We can proceed.
+     *
      * If the attempt keeps failing, we proceed to the next task
      *
      * @param document
      */
     void retry(def document) {
-        if (++document.task.attempts > document.task.limit) {
-            log.info id(document) + "Failed. Tried " + document.task.limit + " times."
+
+        if (document.task.exitValue == 799) {
+            log.info id(document) + "Skipping task. It cannot be performed by the servicenode."
             document.task.statusCode = 799
+            nextWorkflow(document)
+        }
+        else if (++document.task.attempts > document.task.limit) {
+            log.info id(document) + "Failed. Tried " + document.task.limit + " times."
+            document.task.statusCode = 790
             nextWorkflow(document)
         }
         else {
@@ -326,7 +335,7 @@ abstract class WorkflowJob {
 
         if (document instanceof Stagingfile) {
             if (document.workflow.find {
-                it.statusCode < 800
+                it.statusCode < 799
             }) {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
                 document.task.statusCode = 700 // EndOfTheRoad700
