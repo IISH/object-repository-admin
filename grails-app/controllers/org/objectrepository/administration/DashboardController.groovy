@@ -33,8 +33,12 @@ class DashboardController {
                         mail: springSecurityService.principal.mail
                 )
                 if (currentUser.save(flush: true)) {
-                    UserRole.create currentUser, Role.findByAuthority("ROLE_CPADMIN")
-                } else flash.message = "Could not add user."
+                    def role = (Role.findByAuthority("ROLE_CPADMIN")) ?: new Role(authority: "ROLE_CPADMIN").save(failOnError: true)
+                    UserRole.create currentUser, role
+                } else {
+                    flash.message = "Could not add user."
+                    return
+                }
 
                 log.info "Policies and Profile"
                 OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
