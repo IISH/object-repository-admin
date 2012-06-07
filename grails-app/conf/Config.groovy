@@ -164,9 +164,9 @@ log4j = {
     }
 
     root {
-        debug()
+        info()
     }
-    debug 'grails.app'
+    info 'grails.app'
 
     //info 'grails.app.controllers'
     //info 'grails.app.services'

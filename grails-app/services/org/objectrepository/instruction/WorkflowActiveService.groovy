@@ -34,7 +34,7 @@ class WorkflowActiveService extends WorkflowJob {
         log.info id(instruction) + "Checking for task updates."
         if (instruction.task) {
 
-            if (instruction.task.name == 'InstructionIngest') {
+            if (instruction.ingesting) {
                 mongo.getDB('sa').stagingfile.find(
                         $and: [[fileSet: instruction.fileSet],
                                 [$or: [
@@ -132,7 +132,7 @@ class WorkflowActiveService extends WorkflowJob {
 /**
  * Stagingfile800
  *
- * Detect the next task. If not found, we move to the default end of the Road.
+ * Detect the next task.
  *
  * @param document
  * @return

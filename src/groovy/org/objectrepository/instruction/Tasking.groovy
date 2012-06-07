@@ -41,4 +41,8 @@ abstract class Tasking {
         }
         s
     }
+
+    def ingesting = {
+        task.name == 'InstructionIngest' && task.statusCode == 800
+    }
 }

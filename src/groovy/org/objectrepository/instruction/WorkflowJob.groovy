@@ -308,7 +308,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void Instruction800(def document) {
-        if (document.task.name != 'InstructionIngest' && document.autoIngestValidInstruction && taskValidationService.hasValidDBInstruction(document)) {
+        if (!document.ingesting && document.autoIngestValidInstruction && taskValidationService.hasValidDBInstruction(document)) {
             changeWorkflow('InstructionIngest', document)
         }
     }
@@ -448,7 +448,7 @@ abstract class WorkflowJob {
                 System.exit(-1)
             }
             log.info "Staging area home directory set to " + entry
-            log.info "It will now monitor collect " + entry + "/cpAdminFolder/cpUserFolder/folders"
+            log.info "I will now monitor the pattern: " + entry + "/[cpAdminFolder]/[cpUserFolder]/[fileSet]"
             home = entry
         }
         this.@home

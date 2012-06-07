@@ -3,7 +3,7 @@
 
 %{--When the instruction's files are ingested, we can show progress for each plan.--}%
 <div class="body" id="updateList">
-    <g:if test="${ instructionInstance.task.name == 'InstructionIngest' }">
+    <g:if test="${ instructionInstance.ingesting }">
         <table>
             <tbody>
             <g:each in="${instructionInstance.tasks}" var="task">

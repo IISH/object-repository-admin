@@ -40,7 +40,7 @@ class TaskValidationService {
                 if (service) {
                     def method = service.method
                     def statusCode = (service.statusCode) ?: 700
-                    if (task.statusCode >= statusCode && delegate.task.name != 'InstructionIngest') {
+                    if (task.statusCode >= statusCode && !ingesting) {
                         //noinspection GroovyAssignabilityCheck
                         if (!method || "$method"(delegate)) {
                             def name = (service.name) ?: v.key
@@ -110,7 +110,7 @@ class TaskValidationService {
     }
 
     protected int countInvalidFiles(def document) {
-        document.findFilesWithCursorByQuery("{'workflow.task.name':'InstructionValidate'}").count()
+        document.findFilesWithCursorByQuery("{'workflow.name':'InstructionValidate','workflow.n':0}").count()
     }
 
     /**

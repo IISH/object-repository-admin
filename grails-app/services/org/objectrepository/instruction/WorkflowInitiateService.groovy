@@ -28,13 +28,13 @@ class WorkflowInitiateService extends WorkflowJob {
     private def cpAdminFolders(def nas) {
         for (String na : nas) {
 
-            log.info "Checking for new fileSets."
+            log.info "Checking for new fileSets for " + na
             addInstruction(na)
 
-            log.info "Checking for instructions that have no fileset."
+            log.info "Checking for instructions that have no fileset for " + na
             removeInstruction(na)
 
-            log.info "Decommissions instructions that have done their job"
+            log.info "Decommissions instructions that have done their job for " + na
             decommissionInstruction(na)
         }
     }
@@ -48,6 +48,7 @@ class WorkflowInitiateService extends WorkflowJob {
     private def addInstruction(String na) {
 
         File folder = new File(home, na) // CP_ADMIN directory
+        log.info "Looking in " + folder.absolutePath
         for (File dir : folder.listFiles()) {               // for each CP_USER home directory
             if (!dir.name[0].equals(".")) {
                 for (File file : dir.listFiles()) {  // for each fileset folders....
