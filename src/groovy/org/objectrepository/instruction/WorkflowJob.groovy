@@ -202,8 +202,8 @@ abstract class WorkflowJob {
      * A task was not completed for whatever reason. Repeat it by setting the statusCode and try again.
      * The number of attempts is restricted by the task.limit
      *
-     * The exitValue=799 has special meaning. The service node cannot do anything with this document, so it was
-     * ignored. We can proceed.
+     * The exitValue=255 has special meaning. The service node cannot do anything with this document, so it was
+     * ignored. We can proceed setting it to 799.
      *
      * If the attempt keeps failing, we proceed to the next task
      *
@@ -211,7 +211,7 @@ abstract class WorkflowJob {
      */
     void retry(def document) {
 
-        if (document.task.exitValue == 799) {
+        if (document.task.exitValue == 255) {
             log.info id(document) + "Skipping task. It cannot be performed by the servicenode."
             document.task.statusCode = 799
             nextWorkflow(document)
