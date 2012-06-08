@@ -7,6 +7,7 @@ import org.bson.types.ObjectId
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.objectrepository.files.GridFSService
 import org.objectrepository.util.OrUtil
+import com.gmongo.GMongo
 
 @TestMixin(GrailsUnitTestMixin)
 class WorkflowActiveServiceTest {
@@ -46,6 +47,7 @@ class WorkflowActiveServiceTest {
         }
 
         workflowActiveService = new WorkflowActiveService()
+        workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
         workflowActiveService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
 
