@@ -8,12 +8,12 @@ class Profile {
     // Move these attributes to Globals ( see the comment therein )
     ObjectId id
     String na
-    String action
-    String access
-    String contentType
-    String resolverBaseUrl
-    String autoGeneratePIDs
-    Boolean autoIngestValidInstruction
+    String action = "upsert"
+    String access = "closed"
+    String contentType = "application/octet-stream"
+    String resolverBaseUrl = "http://hdl.handle.net/"
+    String autoGeneratePIDs = "none"
+    Boolean autoIngestValidInstruction = false
     String pidwebserviceEndpoint
     String pidwebserviceKey
     List<String> plan
@@ -21,14 +21,8 @@ class Profile {
     // End move
 
     Profile() {
-        action = "upsert"
-        access = "closed"
-        contentType = "application/octet-stream"
-        resolverBaseUrl = "http://hdl.handle.net/"
-        autoGeneratePIDs = "none"
         pidwebserviceEndpoint = domainClass.grailsApplication.config.pidwebservice.endpoint
         plan = OrUtil.availablePlans(domainClass.grailsApplication.config.plans)
-        autoIngestValidInstruction = false
     }
 
     static constraints = {

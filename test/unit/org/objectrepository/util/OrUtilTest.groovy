@@ -73,7 +73,6 @@ class OrUtilTest {
         assert !OrUtil.removeFirst(list)
     }
 
-
     void testPutAll()
     {
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
@@ -81,7 +80,5 @@ class OrUtilTest {
         Instruction document = [:]
         OrUtil.putAll( config.plans, document, instructionFromFile)
         assert document.plan.size() == 2
-        // todo: test this:
-        // assert document.workflow.get(0).limit == Integer.MAX_VALUE
     }
 }

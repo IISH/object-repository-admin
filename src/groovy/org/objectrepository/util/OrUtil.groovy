@@ -183,19 +183,22 @@ class OrUtil {
      * @param instructionAttributes
      */
     static void putAll(def workflow, def document, Map fsInstructionAttributes) {
+
+        println("Loading instruction: ")
         def plans = availablePlans(workflow)
         fsInstructionAttributes.each {
             if (it.key == 'plan') {
                 document.plan = []
-                it.value.split(',').each { String name ->
-                    def plan = plans.find {
-                        it == name
-                    }
-                    if (plan) {
+                it.value.split(',').each { String plan ->
+                    if (plan in plans) {
+                        println("Add plan " + plan)
                         document.plan << plan
+                    } else {
+                        println("Ignoring plan " + plan)
                     }
                 }
             } else {
+                println(it.key + "=" + it.value)
                 document.setProperty(it.key, it.value)
             }
         }
