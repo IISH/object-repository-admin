@@ -3,7 +3,7 @@ package org.objectrepository.files
 import com.mongodb.BasicDBObject
 import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
-import org.objectrepository.domain.Orfile
+
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
 
@@ -44,8 +44,8 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     List<Orfile> findAllByNa(def na, def params) {
-        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(0).collect { // may dd .sort(key:1)
-            it as Orfile
+        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(0).collect {
+            new Orfile(it)
         }
     }
 

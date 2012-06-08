@@ -211,8 +211,13 @@ abstract class WorkflowJob {
      */
     void retry(def document) {
 
-        if (document.task.exitValue == 255) {
-            log.info id(document) + "Skipping task. It cannot be performed by the servicenode."
+        if (document.task.exitValue == 240) {
+            log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."
+            document.task.statusCode = 798
+            nextWorkflow(document)
+        }
+        else if (document.task.exitValue == 250) {
+            log.info id(document) + "Skipping task. It's design cannot handle this type of document."
             document.task.statusCode = 799
             nextWorkflow(document)
         }

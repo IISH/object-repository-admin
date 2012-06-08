@@ -1,4 +1,4 @@
-<%@ page import="org.objectrepository.domain.Orfile" %>
+<%@ page import="org.objectrepository.files.Orfile" %>
 <!doctype html>
 <html>
 <head>
@@ -34,10 +34,10 @@
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
                 <td><g:link action="show"
-                            id="${orfileInstance.id}">${fieldValue(bean: orfileInstance.metadata, field: "access")}</g:link></td>
-                <td>${fieldValue(bean: orfileInstance.metadata, field: "label")}</td>
-                <td>${fieldValue(bean: orfileInstance.metadata, field: "pid")}</td>
-                <td>${fieldValue(bean: orfileInstance.metadata, field: "lastUploadDate")}</td>
+                            id="${orfileInstance.id}">${orfileInstance.metadata.access}</g:link></td>
+                <td>${orfileInstance.metadata.label}</td>
+                <td>${orfileInstance.metadata.pid}</td>
+                <td>${orfileInstance.metadata.lastUploadDate}</td>
                 <td><g:link action="download" id="${orfileInstance.id}">metadata</g:link></td>
             </tr>
         </g:each>

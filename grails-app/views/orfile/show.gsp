@@ -1,4 +1,4 @@
-<%@ page import="org.objectrepository.domain.Orfile" %>
+<%@ page import="org.objectrepository.files.Orfile" %>
 
 <!doctype html>
 <html>
@@ -47,7 +47,8 @@
             <span id="resolverBaseUrl-label" class="property-label"><g:message code="files.resolverBaseUrl.label"
                                                                                default="Resolver Base Url"/></span>
             <span class="property-value" aria-labelledby="resolverBaseUrl-label">
-                <a href="${pidurl}" target="_blank">${orfileInstance.metadata.resolverBaseUrl}</a>
+                <g:set var="pidurl" value="${orfileInstance.metadata.resolverBaseUrl+orfileInstance.metadata.pid}"/>
+                <a href="${pidurl}" target="_blank">${pidurl}</a>
             </span>
         </li>
 

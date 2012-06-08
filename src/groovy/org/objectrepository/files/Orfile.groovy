@@ -1,6 +1,4 @@
-package org.objectrepository.domain
-
-import com.mongodb.BasicDBObject
+package org.objectrepository.files
 
 class Orfile {
 
@@ -27,24 +25,6 @@ class Orfile {
             'firstUploadDate',
             'lastUploadDate',
             'timesUpdated',
-            'timesAccessed',
+            'timesAccessed'
     ]
 }
-
-class Metadata {
-
-    String bucket = "Bucket"
-    String na
-    String pid
-    String resolverBaseUrl
-    String access
-    String fileSet
-    String label
-    BasicDBObject content
-    Date firstUploadDate
-    Date lastUploadDate
-    int timesAccessed
-    int timesUpdated
-    List<Orfile> cache
-}
-

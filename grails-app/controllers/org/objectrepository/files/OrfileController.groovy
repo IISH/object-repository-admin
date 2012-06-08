@@ -1,7 +1,7 @@
 package org.objectrepository.files
 
 import grails.plugins.springsecurity.Secured
-import org.objectrepository.domain.Orfile
+
 import org.objectrepository.security.Policy
 
 @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
