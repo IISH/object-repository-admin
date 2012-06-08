@@ -64,6 +64,7 @@ class Instruction extends Tasking {
         if (q != null) query.putAll(JSON.parse(q))
         Stagingfile.collection.find(query)
     }
+
     /**
      * We will not show the absolute path of the fileSet. Rather only the cpfolder and the main folder name that can be
      * derived from it.
@@ -71,6 +72,10 @@ class Instruction extends Tasking {
     protected String getFileSetAlias() {
         def file = new File(fileSet)
         "/" + file.parentFile.name + "/" + file.name
+    }
+
+    protected int getDeclaredFiles() {
+        Stagingfile.countByFileSet(fileSet)
     }
 
     protected Profile _parent = null
