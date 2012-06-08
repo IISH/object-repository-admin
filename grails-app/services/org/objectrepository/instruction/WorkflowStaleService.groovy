@@ -17,8 +17,6 @@ package org.objectrepository.instruction
  */
 class WorkflowStaleService extends WorkflowJob {
 
-    def mongo
-    private static int max = 100
     private static int period = 180000 // three minutes of no response from the message queue client. And then the task becomes stale.
     private static final int StatusCodeTaskReceipt = 400;
     private static final int StatusCodeTaskComplete = 500;
@@ -31,7 +29,6 @@ class WorkflowStaleService extends WorkflowJob {
      * This only means the active workflow will pick it up and move it to a 600 check
      */
     void job() {
-
         final date = new Date(new Date().time - period) // past tense
         ['instruction', 'stagingfile'].each {
             mongo.getDB('sa')."$it".update(

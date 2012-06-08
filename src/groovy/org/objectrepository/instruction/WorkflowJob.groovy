@@ -138,7 +138,7 @@ abstract class WorkflowJob {
     /**
      * nextWorkflow
      *
-     * Moves a new task to the bottom ( beginning at index 0... depending on the metaphore ) of the workflow.
+     * Moves a new task to the bottom ( beginning at index 0... depending on the metaphor ) of the workflow.
      * This way the task becomes active.
      *
      * @param document

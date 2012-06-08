@@ -96,6 +96,9 @@ class WorkflowActiveService extends WorkflowJob {
             if (instruction) {
                 OrUtil.putAll(plans, document, instruction)
                 changeWorkflow('InstructionUpload', document)
+                mongo.getDB('sa').instruction.update([_id: document.id],
+                        [$set: [plan: document.plan]], false, false
+                )
             }
         } else {
             // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
