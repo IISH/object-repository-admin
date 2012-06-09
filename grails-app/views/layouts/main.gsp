@@ -24,8 +24,16 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             window.setInterval(function () {
+
+                // FailSafe, in case we accidentally perpetually nestle
+                var failSafe = 0;
                 jQuery('form[id^=listremote]').each(function () {
-                    jQuery(this).submit();
+                    if (++failSafe == 1) {
+                        jQuery(this).submit();
+                    } else {
+                        alert(document.location);
+                        document.location = document.location;
+                    }
                 });
             }, ${grailsApplication.config.updateList.interval});
         });
