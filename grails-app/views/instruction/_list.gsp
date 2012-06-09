@@ -18,8 +18,10 @@
                 <td>
                     <g:link action="show"
                             id="${instructionInstance.id}">${fieldValue(bean: instructionInstance, field: "fileSetAlias")}</g:link>
-                <br/>
-                    ${fieldValue(bean: instructionInstance, field: "declaredFiles")} declared files.
+                    <br/>
+                    <g:if test="${instructionInstance.declaredFiles != 0}">
+                        <g:link controller="stagingfile"
+                                params="[orid: instructionInstance.id]">${fieldValue(bean: instructionInstance, field: "declaredFiles")} declared files.</g:link></g:if>
                 </td>
                 <td>${fieldValue(bean: instructionInstance, field: "label")}</td>
                 <g:render template="/layouts/task" model="[instance: instructionInstance]"/>

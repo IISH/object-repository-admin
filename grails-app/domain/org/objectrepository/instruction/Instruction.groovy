@@ -74,8 +74,10 @@ class Instruction extends Tasking {
         "/" + file.parentFile.name + "/" + file.name
     }
 
+    protected int declaredFiles = -1
     protected int getDeclaredFiles() {
-        Stagingfile.countByFileSet(fileSet)
+        if ( declaredFiles == -1) declaredFiles = Stagingfile.countByFileSet(fileSet)
+        declaredFiles
     }
 
     protected Profile _parent = null

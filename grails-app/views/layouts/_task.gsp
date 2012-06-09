@@ -5,13 +5,16 @@
     <td style="width:50%" title="${statusCode}" class="statusCode${instance.task.statusCode}">
         <g:if test="${instance.services}">
             <div class="nav service" role="service"><ul><g:render template="/layouts/services"
-                                                                  model="[instance:instance]"/></ul>
+                                                                  model="[instance: instance]"/></ul>
             </div>
         </g:if>
         <g:else>
             <img class="smiley"
                  src="${resource(dir: 'images/or', file: instance.task.statusCode + '.gif')}"
                  alt="smiley image" title="${instance.task.name}"/>
+            <g:if test="${instance.ingesting}"><p style="text-align: center">
+                <g:link controller="stagingfile" params="[orid: instance.id]">Monitor file progress</g:link></p>
+            </g:if>
 
         %{--Where the instruction\file are undergoing service node processing we present the progress here.
         The instruction will be showing the amount of files processed.
@@ -37,7 +40,7 @@
         </g:else>
     </td>
     <td>
-      <g:render template="/layouts/status" model="[statusCode:statusCode,instance:instance]"/>
+        <g:render template="/layouts/status" model="[statusCode: statusCode, instance: instance]"/>
     </td>
 </g:if>
 <g:else>
