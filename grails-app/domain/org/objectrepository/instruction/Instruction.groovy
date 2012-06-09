@@ -37,7 +37,7 @@ class Instruction extends Tasking {
     // End move
 
     String fileSet
-    String label = 'enter descriptive tag or title'
+    String label
 
     protected def _services = null
     protected int status = 200
@@ -87,6 +87,7 @@ class Instruction extends Tasking {
     static constraints = {
         fileSet(unique: true)
         access(nullable: true)
+        label(nullable: true)
         action(nullable: true, inList: ['upsert', 'add', 'update', 'delete'])
         contentType(nullable: true)
         resolverBaseUrl(nullable: true)

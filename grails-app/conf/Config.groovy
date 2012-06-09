@@ -166,10 +166,8 @@ log4j = {
     root {
         info()
     }
-    info 'grails.app'
-
-    //info 'grails.app.controllers'
-    //info 'grails.app.services'
+    info 'grails.app.controllers'
+    info 'grails.app.services'
 }
 
 grails.doc.title = "Object-repository"

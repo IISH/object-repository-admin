@@ -10,6 +10,7 @@ class Profile {
     String na
     String action = "upsert"
     String access = "closed"
+    String label = "enter descriptive tag or title"
     String contentType = "application/octet-stream"
     String resolverBaseUrl = "http://hdl.handle.net/"
     String autoGeneratePIDs = "none"

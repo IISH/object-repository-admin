@@ -12,18 +12,19 @@ class Stagingfile extends Tasking {
     String contentType
     String md5
     Long length = 0
+    String pid
+    String fileSet
+    String lid
+    String location
+    String label
     String resolverBaseUrl
     String autoGeneratePIDs
     Boolean autoIngestValidInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
-    List<Task> workflow = []
     // End move
 
-    String pid
-    String fileSet
-    String lid
-    String location
+    List<Task> workflow = []
 
     protected Instruction _parent = null
 
