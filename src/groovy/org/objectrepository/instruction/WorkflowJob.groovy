@@ -200,12 +200,16 @@ abstract class WorkflowJob {
      * retry
      *
      * A task was not completed for whatever reason. Repeat it by setting the statusCode and try again.
-     * The number of attempts is restricted by the task.limit
+     * The number of attempts is restricted by the task.limit. De limit's default is set in the Task class
+     * and can be set in the PlanConfig
      *
      * The exitValue=255 has special meaning. The service node cannot do anything with this document, so it was
-     * ignored. We can proceed setting it to 799.
+     * ignored. We can proceed setting it to 799. Example: create a smaller image for a text file.
      *
-     * If the attempt keeps failing, we proceed to the next task
+     * ExitValid=254 meant the service node tries, but discovered the document to be incompatible.
+     * Example, create a smaller image for an image that is not supported by the conversion software.
+     *
+     * If the attempt keeps failing and the limit is reached, we proceed to the next task
      *
      * @param document
      */
@@ -259,7 +263,7 @@ abstract class WorkflowJob {
             case 'upsert':
             default:
                 OrUtil.setInstructionPlan(document.parent)
-                plans.each { plan ->  // Iterating from the config plan will ensure the correct order of tasks.
+                plans.each { plan ->  // Iterating from the config plan will ensure the correct ordering of tasks.
                     def wf = document.parent.plan.find() {
                         it == plan.key
                     }
@@ -268,10 +272,10 @@ abstract class WorkflowJob {
                         plan.value.task?.each() {
                             attributes << it
                         }
-                        document.workflow << new Task(attributes)
-                    }
-                    else {
-                        log.warn "No such plan ( will ignore ): " + wf
+                        final task = new Task(attributes)
+                        document.workflow << task
+                        log.info id(document) + "Added task:"
+                        log.info task
                     }
                 }
                 break
@@ -341,10 +345,9 @@ abstract class WorkflowJob {
 
         if (document instanceof Stagingfile) {
             if (document.workflow.find {
-                it.statusCode < 799
+                it.statusCode < 791 // See the retry method for acceptable and not so acceptable failures
             }) {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
-                document.task.statusCode = 700 // EndOfTheRoad700
             } else {
                 log.info id(document) + "Stagingfile successfull. Remove document."
                 delete(document)

@@ -118,7 +118,7 @@ class WorkflowActiveService extends WorkflowJob {
     def InstructionIngest600(def document) {
 
         if (document.task.exitValue == 0) {
-            if (OrUtil.emptyList(document.plan)) document.plan = document.parent.plan
+            OrUtil.setInstructionPlan(document)
             last(document)
         }
         else {

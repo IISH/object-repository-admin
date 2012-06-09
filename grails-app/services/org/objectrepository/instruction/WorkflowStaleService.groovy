@@ -25,8 +25,8 @@ class WorkflowStaleService extends WorkflowJob {
      * job
      *
      * Find all documents with a stale task.
-     * Sets the task statusCode to 500 is found stale.
-     * This only means the active workflow will pick it up and move it to a 600 check
+     * Sets the task statusCode to StatusCodeTaskComplete if found stale.
+     * This only means the active workflow will pick it up and move it to a 600 check where it will probably retry it.
      */
     void job() {
         final date = new Date(new Date().time - period) // past tense

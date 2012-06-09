@@ -2,6 +2,7 @@ package org.objectrepository.util
 
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Task
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
@@ -82,6 +83,7 @@ class OrUtil {
 
         def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         final LinkedHashMap map = getPropertiesMap(document, true, ['task', 'workflow', 'plan', 'version'])
+        if ( document instanceof Instruction ) map << 'label'
         map << [id: document.id]
         orAttributes.putAll(map)
 /*
