@@ -81,10 +81,11 @@ class OrUtil {
  */
     static String makeOrType(document) {
 
-        def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
-        final LinkedHashMap map = getPropertiesMap(document, true, ['task', 'workflow', 'plan', 'version'])
-        if ( document instanceof Instruction ) map << ['label', document.label]
+        def filter = ['task', 'workflow', 'plan', 'version']
+        if (document instanceof Instruction) filter << 'label'
+        final LinkedHashMap map = getPropertiesMap(document, true, filter)
         map << [id: document.id]
+        def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         orAttributes.putAll(map)
 /*
         orAttributes << [plan: document.workflow.collect() {
