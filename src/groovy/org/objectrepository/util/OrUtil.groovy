@@ -83,7 +83,7 @@ class OrUtil {
 
         def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         final LinkedHashMap map = getPropertiesMap(document, true, ['task', 'workflow', 'plan', 'version'])
-        if ( document instanceof Instruction ) map << 'label'
+        if ( document instanceof Instruction ) map << ['label', document.label]
         map << [id: document.id]
         orAttributes.putAll(map)
 /*
