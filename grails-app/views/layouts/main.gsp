@@ -31,7 +31,6 @@
                     if (++failSafe == 1) {
                         jQuery(this).submit();
                     } else {
-                        alert(document.location);
                         document.location = document.location;
                     }
                 });
