@@ -32,23 +32,29 @@ class BootStrap {
      * users
      *
      * Adds default SuperAdmin user and test users.
+     * In production the superadmin is set at startup of the application with the VM parameters:
+     * -DadminUsername and -DadminPassword
+     *
+     * In development mode test accounts are created
      */
     private void users() {
 
-        if (grailsApplication.config.addUsers) {
-            switch (Environment.current) {
-                case Environment.PRODUCTION:
-                    addUser("0", "admin", "ROLE_ADMIN")
-                    break
-                case Environment.DEVELOPMENT:
-                    addUser("0", "admin", "ROLE_ADMIN")
-                    addUser("12345", "12345", "ROLE_CPADMIN")
-                    addUser("20000", "20000", "ROLE_CPADMIN")
-                    break
-                case Environment.TEST:
-                    addUser("12345", "12345", "ROLE_CPADMIN")
-                    break
-            }
+        switch (Environment.current) {
+            case Environment.PRODUCTION:
+                final String adminUsername = System.getProperty("adminUsername")
+                final String adminPassword = System.getProperty("adminPassword")
+                if (adminPassword && adminUsername) {
+                    addUser("0", adminUsername, "ROLE_ADMIN", springSecurityService.encodePassword(adminPassword))
+                }
+                break
+            case Environment.DEVELOPMENT:
+                addUser("0", "admin", "ROLE_ADMIN")
+                addUser("12345", "12345", "ROLE_CPADMIN")
+                addUser("20000", "20000", "ROLE_CPADMIN")
+                break
+            case Environment.TEST:
+                addUser("12345", "12345", "ROLE_CPADMIN")
+                break
         }
     }
 
@@ -108,11 +114,11 @@ class BootStrap {
         }
     }
 
-    private void addUser(String na, String username, String authority) {
+    private void addUser(String na, String username, String authority, String password = null) {
 
         log.info "Add user for na " + na + " username " + username + " authority " + authority
         def role = (Role.findByAuthority(authority)) ?: new Role(authority: authority).save(failOnError: true)
-        def password = springSecurityService.encodePassword(username)
+        if (!password) password = springSecurityService.encodePassword(username)
         def user = User.findByUsername(username) ?: new User(username: username, password: password,
                 na: na, o: 'socialhistoryservices', mail: username + '@socialhistoryservices.org').save(failOnError: true)
         if (!(role in user.authorities)) {
