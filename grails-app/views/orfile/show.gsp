@@ -65,10 +65,12 @@
 
                             <tr>
                                 <td><g:message code="file.link" default="Location"/></td>
-                                <td><g:set var="l">file/${cache.metadata.bucket+"/"+cache.metadata.pid}</g:set>
-                                    <a href="/${l}">${l}</a>
+                                <td><g:set var="l">/file/${cache.metadata.bucket+"/"+cache.metadata.pid}</g:set>
+                                    %{--<a href="/${l}" target="_blank">${l}</a>--}%
+                                    <g:createLink absolute="true" controller="file" id="${cache.metadata.bucket+"/"+cache.metadata.pid}" />
                                 </td>
                             </tr>
+
                             <tr>
                                 <td><g:message code="file.contentType" default="Content type"/></td>
                                 <td>${cache.contentType}</td>

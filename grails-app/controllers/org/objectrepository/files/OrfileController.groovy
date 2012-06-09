@@ -18,9 +18,9 @@ class OrfileController {
     def list() {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.set =params.set ? params.int('set') : 10
+        params.offset = params.offset ? params.int('offset') : 0
         def orfileInstanceList = gridFSService.findAllByNa(springSecurityService.principal.na, params)
-        [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size()]
+        [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService.countByNa(springSecurityService.principal.na)]
     }
 
     def show() {

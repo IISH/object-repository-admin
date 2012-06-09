@@ -12,19 +12,16 @@ class Orfile {
     Metadata metadata
     String md5
 
-    String getId() {
-        _id
+    def getProperty(String property) {
+        if ( property == "id" ) return _id
+        if (this.hasProperty(property)) return this.@"$property"
+        metadata."$property"
     }
 
     static List<String> whiteList = [
-            'filename',
-            'length',
-            'md5',
-            'contentType',
-            'content',
-            'firstUploadDate',
-            'lastUploadDate',
-            'timesUpdated',
-            'timesAccessed'
+            'pid',
+            'resolverBaseUrl',
+            'label',
+            'access'
     ]
 }

@@ -44,9 +44,13 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     List<Orfile> findAllByNa(def na, def params) {
-        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(params.set).collect {
+        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(params.offset).collect {
             new Orfile(it)
         }
+    }
+
+    int countByNa(def na) {
+        mongo.getDB(OR + na).getCollection("master.files").count()
     }
 
     /**
@@ -68,6 +72,15 @@ class GridFSService {
         mongo.getDB(OR + na).getCollection("master.files").findOne(_id: id)
     }
 
+    /**
+     * writeOrfiles
+     *
+     * Partial data dump of all technical metadata.
+     *
+     * @param id Identifier of the document. If null all metadata is downloaded.
+     * @param na
+     * @param writer
+     */
     void writeOrfiles(String id, String na, def writer) {
 
         def orfileAttributes = [xmlns: "http://objectrepository.org/orfiles/1.0/"]
@@ -89,13 +102,25 @@ class GridFSService {
                     final Orfile orFile = new Orfile(it)
 
                     orfile {
-                        pid orFile.metadata.pid
-                        resolverBaseUrl orFile.metadata.resolverBaseUrl
-                        access orFile.metadata.access
-                        label orFile.metadata.label
-                        files {
-                            out << cache(orFile.metadata.cache)
+                        Orfile.whiteList.each { String key ->
+                            out << element(orFile, key)
+                            /*if (orFile.hasProperty(key)) {
+                                "$key" orFile."$key"
+                            } else {
+                                "$key" orFile.metadata."$key"
+                            }*/
                         }
+                        master {
+                            Metadata.whiteList.each { String key ->
+                                /*if (orFile.hasProperty(key)) {
+                                    "$key" orFile."$key"
+                                } else {
+                                    "$key" orFile.metadata."$key"
+                                }*/
+                                out << element(orFile, key)
+                            }
+                        }
+                        out << cache(orFile.metadata.cache)
                     }
                 }
             }
@@ -109,14 +134,28 @@ class GridFSService {
 
         return {
             orfiles.each { def cache ->
-                file {
-                    Orfile.whiteList.each { String key ->
+                "$cache.metadata.bucket" {
+                    Metadata.whiteList.each { String key ->
+                        out << element(cache, key)
+                    }
+                }
+/*
+                    Metadata.whiteList.each { String key ->
                         def value = (cache."$key") ?: cache.metadata."$key"
                         if (value) {
                             "$key" value
                         }
-                    }
                 }
+*/
+            }
+        }
+    }
+
+    private element(def element, String key) {
+        return {
+            def value = (element."$key") ?: element.metadata."$key"
+            if (value) {
+                "$key" value
             }
         }
     }
