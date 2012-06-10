@@ -18,6 +18,7 @@ class GridFSService {
     static String OR = "or_"
     static transactional = false
     def mongo
+    def grailsApplication
 
     /**
      * findByPid
@@ -100,27 +101,11 @@ class GridFSService {
             orfiles(orfileAttributes) {
                 cursor.each {
                     final Orfile orFile = new Orfile(it)
-
                     orfile {
                         Orfile.whiteList.each { String key ->
                             out << element(orFile, key)
-                            /*if (orFile.hasProperty(key)) {
-                                "$key" orFile."$key"
-                            } else {
-                                "$key" orFile.metadata."$key"
-                            }*/
                         }
-                        master {
-                            Metadata.whiteList.each { String key ->
-                                /*if (orFile.hasProperty(key)) {
-                                    "$key" orFile."$key"
-                                } else {
-                                    "$key" orFile.metadata."$key"
-                                }*/
-                                out << element(orFile, key)
-                            }
-                        }
-                        out << cache(orFile.metadata.cache)
+                        out << metadata(orFile)
                     }
                 }
             }
@@ -130,23 +115,17 @@ class GridFSService {
         writer.close()
     }
 
-    private cache(List<Orfile> orfiles) {
-
+    private metadata(Orfile orFile) {
+        orFile.metadata.cache.add(0, orFile)
         return {
-            orfiles.each { def cache ->
+            orFile.metadata.cache.each { def cache ->
                 "$cache.metadata.bucket" {
+                    final _resolveUrl = grailsApplication.config.resolveBaseUrl + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid
+                    resolveUrl _resolveUrl
                     Metadata.whiteList.each { String key ->
                         out << element(cache, key)
                     }
                 }
-/*
-                    Metadata.whiteList.each { String key ->
-                        def value = (cache."$key") ?: cache.metadata."$key"
-                        if (value) {
-                            "$key" value
-                        }
-                }
-*/
             }
         }
     }

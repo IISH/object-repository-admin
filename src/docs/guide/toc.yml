@@ -4,13 +4,25 @@ introduction:
 stagingarea:
   title: Staging area
   ftp: FTP connections
-user:
- title: Ftp accounts
- userlist: Listing accounts
-profile: Profile
-policy:
-  title: Access policies
-  policylist: Listing policies
-instruction: Instructions
-files: Stored files
+  datasets: Datasets
+  customderivatives: Your own derivatives
+instruction:
+  title: Managing an ingest via the processing instruction
+pid:
+  title: Calling the PID webservice
+administration:
+  title: Administration interface
+  user:
+    title: Ftp accounts
+    userlist: Listing accounts
+    usercreate: Create
+    usershow: Show
+    useredit: Modify
+  profile:
+    title: Profile
+  policy:
+    title: Access policies
+    policylist: Listing policies
+  files:
+    title: Stored files
 

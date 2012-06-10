@@ -1,7 +1,0 @@
-The Account section will allow you manage two types of accounts:
-* ftp accounts
-* CP administrator accounts.
-
-To create an account, select "Accounts" from the main menu and press "New account".
-Then fill in the details. Leave the password fields blank to automatically create an account.
-: if left blank,

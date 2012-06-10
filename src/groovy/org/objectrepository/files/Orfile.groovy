@@ -13,7 +13,7 @@ class Orfile {
     String md5
 
     def getProperty(String property) {
-        if ( property == "id" ) return _id
+        if (property == "id") return _id
         if (this.hasProperty(property)) return this.@"$property"
         metadata."$property"
     }

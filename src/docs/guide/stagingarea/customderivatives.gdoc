@@ -1,0 +1,20 @@
+Apart from datasets that should contain master files ( a master is what is stored with long term preservation in mind )
+you can also upload derivative material.
+
+{note}The object-repository has a service to create preview and lower lever copies
+of the masters ( for images ).{note}
+
+In that case the following conventions must be applied:
+* the derivative file MUST BE identical ( case sensitive ) to the master file - excluding the file extension. For example
+if the master is called "MyFile.tiff" or "BigVideo.mpg" then the custom derivative must be named MyFile.jpg or BigVideo.mpg"
+* the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3"
+
+A few examples will clarify the point here.
+
+Example 1:
+ * /a/b/c/d/mymaster.tiff
+ * /a/b/c/d/.level1/mymaster.png
+ * /a/b/c/.level1/mymaster.png
+ * /a/b/.level1/d/mymaster.png
+ * /a/.level1/c/d/mymaster.png
+ * /.level1/a/b/c/d/mymaster.png

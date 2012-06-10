@@ -1,0 +1,4 @@
+The account section will allow you manage three types of accounts:
+* ftp accounts (also to be used for webservice keys)
+* CP administrator accounts.
+* A function of both accounts is to supply webservice keys. This key gives access to all stored repository resources.

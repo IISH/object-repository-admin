@@ -126,6 +126,8 @@ grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(memberUID={0})'
 grails.plugins.springsecurity.ldap.useRememberMe = false
 
+resolveBaseUrl="http://localhost:${serverPort}/${appName}"
+
 environments {
     production {
         grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/index"
@@ -177,3 +179,4 @@ grails.doc.license = "Licensed under the Apache License, Version 2.0"
 grails.doc.copyright = "Copyright (c) 2012 Social History Services"
 //grails.doc.footer
 //grails.doc.css
+grails.doc.images = new File("src/docs/images")

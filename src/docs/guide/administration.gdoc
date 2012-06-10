@@ -1,0 +1,8 @@
+The administration interface is where a CP administrator can create ftp accounts and other CP administrator accounts.
+In addition:
+ * You can set your profile. That is, defaults for the processing instruction such as access, mimetype
+ * Define access policies
+ * Oversee the production of instructions and monitor the status
+ * Download technical metadata of stored material
+
+ Access to the administration interface ought to be given by the repository administrator by giving out a CP administrator account.

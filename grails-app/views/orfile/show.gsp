@@ -47,7 +47,7 @@
             <span id="resolverBaseUrl-label" class="property-label"><g:message code="files.resolverBaseUrl.label"
                                                                                default="Resolver Base Url"/></span>
             <span class="property-value" aria-labelledby="resolverBaseUrl-label">
-                <g:set var="pidurl" value="${orfileInstance.metadata.resolverBaseUrl+orfileInstance.metadata.pid}"/>
+                <g:set var="pidurl" value="${orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.pid}"/>
                 <a href="${pidurl}" target="_blank">${pidurl}</a>
             </span>
         </li>
@@ -57,6 +57,9 @@
                 <span id="files-label" class="property-label"><g:message code="files.label"
                                                                          default="Files"/></span>
                 <span class="property-value" aria-labelledby="files-label">
+                    <%
+                        orfileInstance.metadata.cache.add(0, orfileInstance)
+                    %>
                     <g:each in="${orfileInstance.metadata.cache}" var="cache">
                         <table style="text-align: left">
                             <caption style="text-align: left;font-weight: bold;"><g:message
@@ -65,9 +68,8 @@
 
                             <tr>
                                 <td><g:message code="file.link" default="Location"/></td>
-                                <td><g:set var="l">/file/${cache.metadata.bucket+"/"+cache.metadata.pid}</g:set>
-                                    %{--<a href="/${l}" target="_blank">${l}</a>--}%
-                                    <g:createLink absolute="true" controller="file" id="${cache.metadata.bucket+"/"+cache.metadata.pid}" />
+                                <td><g:set var="resolveBaseUrl" value="${grailsApplication.config.resolveBaseUrl + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid}"/>
+                                <a href="${resolveBaseUrl}" target="_blank">${resolveBaseUrl}</a>
                                 </td>
                             </tr>
 

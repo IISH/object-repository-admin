@@ -1,14 +1,5 @@
+h2. File management
 The area is a work space where you can assemble your ingest package. Here you:
-- use ftp to upload files to temporary storage and rearrange these
-- optionally use ftp to upload a XML processing instruction
-
-The reason for having a staging area is to get all files in reach of the services that prepair, validate and ingest them.
-
-
-To connect to the staging area you need one or more ftp accounts which a CP administrator can set at the
-administration interface.
-
-At the moment FileZilla and WinSCP work well with uploading to the service. Use:
-a ftp client that supports an **explicit FTP over TLS** connection
- with **passive mode** enabled.
- The ftp port to use is the default 21.
+* use ftp to upload files to temporary storage and rearrange these
+* optionally upload a XML processing instruction
+* optionally upload derivative material

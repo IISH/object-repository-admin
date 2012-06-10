@@ -1,0 +1,12 @@
+To connect to the staging area you need one or more ftp accounts which a CP administrator can set with the [Accounts section|guide:user].
+
+[FileZilla|http://filezilla-project.org/download.php?type=client] and [WinSCP|http://winscp.net/eng/download.php] are known to work well
+with the staging area. To make a connection:
+* create an ftp-account
+* set the host name of the staging area to the one mentioned in the ftp account confirmation e-mail
+* set the ftp client to support an **explicit FTP over TLS** connection
+* enable **passive mode**.
+* The ftp port to use is the default 21.
+
+As a rule (and avoid confusion) use the CP user account to upload files and XML processing instructions with. Not your
+CP administrator account.

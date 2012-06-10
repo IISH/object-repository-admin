@@ -1,0 +1,23 @@
+A policy determines what an _anonymous user_ ( lets say a person with a webbrowser who is not logged on to the
+object repository ) can and cannot do. Access to each master file and its related derivatives are thus governed by a
+policy.
+
+{note}
+A master file is always closed.
+If you do not explicitly set a policy, the default will be closed.
+{note}
+
+There are three main policies available:
+@access='open'@
+All derivatives are viewable to the world
+
+@access='restricted'@
+Level 1 derivatives are restricted; level 2 and 3 are viewable to the world
+
+@access='closed'@ (default)
+no files can be downloaded or viewed
+
+[You can fdefine your own policies|guide:policycreate] to govern anonymous user access.
+
+
+
