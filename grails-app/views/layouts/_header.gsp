@@ -1,7 +1,8 @@
 <%@ page import="org.objectrepository.util.OrUtil" %>
 <div class="header" role="introduction">
 
-    <a target="_blank" style="float:right" href="${grailsApplication.config.grails.serverURL}/doc/latest/guide/${controllerName}.html#${controllerName+actionName}"><img style="width: 30px;" src="${resource(dir: 'images', file: 'or/help_green_64.png')}" alt="Help icon" border="0"/></a>
+    <a target="_blank" style="float:right" href="${grailsApplication.config.grails.serverURL}/doc/latest/guide/administration/${controllerName}.html#${controllerName+actionName}">
+        <img style="width: 30px;" src="${resource(dir: 'images', file: 'or/help_green_64.png')}" alt="Help icon" border="0"/></a>
     <h1><g:message code="${entityName}.${actionName}.title" args="[$args]"/></h1>
     <p><g:message code="${entityName}.${actionName}.intro" args="[args]" /></p>
     <g:if test="${flash.message}"><div class="message">${flash.message}</div></g:if>
