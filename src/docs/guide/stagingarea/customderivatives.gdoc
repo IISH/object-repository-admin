@@ -1,20 +1,44 @@
-Apart from datasets that should contain master files ( a master is what is stored with long term preservation in mind )
-you can also upload derivative material.
+h3. Levels
+The object-repository has a service to create preview and lower lever copies
+of the masters ( at the moment only images ). It attempts to create three levels:
+* level 1: high print quality
+* level 2: medium screen quality
+* level 3: small, thumbnail quality
 
-{note}The object-repository has a service to create preview and lower lever copies
-of the masters ( for images ).{note}
+However, if you want you can add your own derivative material because it is of
+better quality or the type of derivative manufacturing is not supported.
 
-In that case the following conventions must be applied:
-* the derivative file MUST BE identical ( case sensitive ) to the master file - excluding the file extension. For example
+h3. Conventional offerings
+To offer derivatives the following conventions must be applied:
+* the derivative filename MUST BE identical ( case sensitive ) to the master file - excluding the file extension. For example
 if the master is called "MyFile.tiff" or "BigVideo.mpg" then the custom derivative must be named MyFile.jpg or BigVideo.mpg"
-* the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3"
+* the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice they start with a dot.
+* the derivative must be parallel to the master file.
 
+h3. Examples
 A few examples will clarify the point here.
 
-Example 1:
- * /a/b/c/d/mymaster.tiff
- * /a/b/c/d/.level1/mymaster.png
- * /a/b/c/.level1/mymaster.png
- * /a/b/.level1/d/mymaster.png
- * /a/.level1/c/d/mymaster.png
- * /.level1/a/b/c/d/mymaster.png
+h4. Example 1
+A master is placed deep within some subfolders: @/main_folder/b/c/d/myLargeFile.tiff@
+And the derivative file is called @myLargeFile.png@
+
+Then a level1 derivative can be placed anywhere by *inserting* a *.level1* folder thus:
+ * @/main_folder/b/c/d/.level1/myLargeFile.png@
+ * @/main_folder/b/c/.level1/myLargeFile.png@
+ * @/main_folder/b/.level1/d/myLargeFile.png@
+ * @/main_folder/.level1/c/d/myLargeFile.png@
+
+ Or by *substituting* a folder so:
+  * @/main_folder/b/c/.level1/myLargeFile.png@
+  * @/main_folder/b/.level1/d/myLargeFile.png@
+  * @/main_folder/.level1/c/d/myLargeFile.png@
+
+h4. Example 2
+ A master is placed in the main folder @/mydataset/myVeryLargeMovie.mpg@
+ Then we offer both level1, level2 and a level3 file like this:
+
+ @/mydataset/.level1/myVeryLargeMovie.mpg@
+ @/mydataset/.level2/myVeryLargeMovie.mpg@
+ @/mydataset/.level3/myVeryLargeMovie.mpg@
+
+ {note}The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it{note}
