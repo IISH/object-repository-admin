@@ -1,0 +1,32 @@
+The administration interface and an XML processing instruction together makes it all work.
+An instruction has required and optional values. Those can be set at three levels:
+
+h4. 1. Profile
+Via the administration interface select [profile|guide:profile]. Default [instruction settings|guide:settings] can be
+placed there by a CP administrator. It makes sense therefore, to set all your broad access policies and most frequently
+used file content values here. Settings in the profile substitute any absent values in the XML processing instruction.
+
+h4. 2. instruction.xml
+The instruction.xml is a XML document. It's main element is named @instruction@ and contains attributes identical to
+those you set in the profile. Any setting here will override those in the profile. Typically you would set values that
+are exceptions to your profile's general settings.
+
+The main folder ought to contain the XML document with the filename @instruction.xml@ that tells the Object repository
+how to treat the files and it's content.
+
+[The schema can be found here|https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
+
+h4. 3. Stagingfile
+In the instruction.xml's child elements one should mention @stagingfile@ elements. A stagingfile element represents the
+file and any settings here will override those in the main element and profile.
+
+The stagingfile is the only element that has some unique settings not present in the profile or instruction, such as md5,
+location and pid value.
+
+In short
+Profile settings provide reasonable defaults for an organizations processing instruction.
+Instruction settings in an instruction.xml document override profile values and provide specific defaults for
+stagingfiles.
+Stagingfile settings in their final turn override instruction and profile settings. The smallest always win.
+
+

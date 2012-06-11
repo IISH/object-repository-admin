@@ -6,11 +6,11 @@ home directory. This example illustrates the upload of a main folder called "uni
 
 !fileset.gif!
 
-{node}Any folder or file that starts with a dot, will be ignored by the ingest procedures.
-Also any digital file placed right in the home directory and not in a main folder will be ignored.{node}
+{note}Any folder or file that starts with a dot, will be ignored by the ingest procedures.
+Also any digital file placed right in the home directory and not in a main folder will be ignored.{note}
 
-See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum and
-write this to a file with the same name you upload and add an .md5 extension. This checksum is compared the one you
+See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum. This is
+ stored next to the file in the format @filename.md5@. The checksum it contains is compared the one you
 deliver in a [processing instruction|guide:instruction] in order to assert integrity. It contains something like this:
 {code}181c838e29cbb0602da4a160eece2217  1.1.tif{code}
 

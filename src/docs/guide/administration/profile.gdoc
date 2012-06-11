@@ -1,0 +1,6 @@
+h2. Default settings
+The profile is where you set the default values that are taken over by any processing instruction. That is:  Settings in
+the profile substitute any absent values in the XML processing instruction. It makes sense therefore, to place all your
+broad access policies and most frequently used file content values.
+
+h2.

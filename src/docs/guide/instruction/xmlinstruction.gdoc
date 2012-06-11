@@ -1,46 +1,95 @@
-##Can I change the XML processing instruction after I uploaded it ?
-Yes. A CP administrator can see all current instructions at the **instruction** tab. There the instructions and
- stagingfile elements can be tweaked. This feature is locked after ingest.
+A XML processing instruction should be:
+ * named @instruction.xml@
+ * placed in the main folder of the uploaded dataset.
 
-##Why does the instruction disappear after I uploaded it ?
-Each XML processing instruction is read into a database. After that it will be physically removed from the staging area.
-You can reupload the instruction any time you want. Or download it from the database back to your local PC or the staging area
-main folder using the administration panel.
+For example if you uploaded these five files onto the staging area in the main folder @unittest@ then you must add the
+instruction in the folder @unittest@ as well:
+!filesetxml.gif!
 
-Note: when you download a XML processing instruction, it may have added validation error messages.
+This file will be deleted automatically after you uploaded it, as it is read into a database. You can re upload the
+instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
+using the administration panel.
 
-##When is the XML processing instruction "processed" ?
-First, when a CP user ftps an XML processing instruction in a main folder. The staging area will detect a complete
-instruction.xml document and insert it into a database to enhance viewing pleasure.
+{note}When you download a XML processing instruction, it may have added validation messages.{note}
 
-If you had set the element:
+{code}
+<?xml version="1.0" encoding="utf-8"?>
+<!--Instruction extracted on 11 Jun 2012 11:05:15 GMT-->
+<instruction xmlns="http://objectrepository.org/instruction/1.0/"
+    access="open"
+    action="upsert"
+    autoGeneratePIDs="filename2pid"
+    contentType="image/tiff"
+    label="My five files"
+    resolverBaseUrl="http://hdl.handle.net/">
+    <stagingfile>
+        <pid>12345/1.1</pid>
+            <location>/unittest/TIFF/1.1.tif</location>
+            <md5>181c838e29cbb0602da4a160eece2217</md5>
+    </stagingfile>
+    <stagingfile>
+            <pid>12345/1.3</pid>
+            <location>/unittest/TIFF/1.3.tif</location>
+            <md5>efac78a3f9bc224b581bd9e6003813e3</md5>
+    </stagingfile>
+    <stagingfile>
+            <pid>12345/1.4</pid>
+            <location>/unittest/TIFF/1.4.tif</location>
+            <md5>b2d09024f5c5c9b823ec614a7d7bc8d0</md5>
+    </stagingfile>
+    <stagingfile>
+            <pid>12345/1.5</pid>
+            <location>/unittest/TIFF/1.5.tif</location>
+            <md5>4daae1f298383d440f725f195621cebf</md5>
+            </stagingfile>
+    <stagingfile>
+            <pid>12345/1.2</pid>
+            <location>/unittest/TIFF/1.2.tif</location>
+            <md5>5eaea136b6e49f2dabff2f8f1a278d7c</md5>
+    </stagingfile>
+</instruction>
+{code}
 
-    autoIngestValidInstruction=true
+h3. Validation
+An automatic validation procedure will run the moment you @autocreate@ an instruction or ftp one into the main folder.
+The results of the validation will show up in the CP administration interface per instruction and per file. In addition,
+downloading the file via the CP administration interface will give you the XML instruction with @error@ elements. After
+you correct the issue, you can reupload the XML processing instruction and files.
 
-And the instruction is valid, the ingest of your files will commence.
+The validation will look for a number of issues:
+* all files in the main folder must be in the instruction
+* all stagingfile elements in the instruction must be found the main folder content
+* the md5 checksum values must match
+* A PID ( or lid substitute ) must be present
 
-If you do not use the autoIngestValidInstruction setting, then it needs a manual command. From the administration
-interface select **Ingest instruction** to start.
+h3. Viewing and changing the XML instruction after upload
+All the uploaded datasets's main folders are visible under the @instruction@ tab of the administration interface. There
+the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.
 
-Note: the option **Ingest instruction** will not appear until the instruction is considered valid.
+h3. Run a processing instruction automatically
+When an FTP client has uploaded files and a valid XML processing instruction in a main folder, the instruction will be
+validated. If you had set the element ( in either the XML document itself or if not, at the profile panel ) :
+@autoIngestValidInstruction=true@
+and the instruction is without error, the ingest of your files will commence by itself.
 
-##Should I automatically create an XML processing instruction?
+h3. Run a processing instruction manually
+If you disable the @autoIngestValidInstruction@ setting, then the start it needs a manual command. From the
+administration interface select @Ingest instruction@ to start.
+
+{Note}The option **Ingest instruction** will not appear until the instruction is considered valid.{Note}
+
+
+h3. Should I automatically create an XML processing instruction?
 It can be usefull when you make your own custom instructions. You can use this feature to experiment to see how a
 valid instruction looks like.
 
 Should your PID or LID values be identical to the filenames, you could produce an instruction that is usuable for
 ingest.
 
-## How do I know my instruction is valid ?
-An automatic validation procedure will run the moment you autocreate an instruction or ftp one into the main folder.
-The results of the validation will show up in the CP administration interface per instruction and per file.
-In addition, downloading the file via the CP administration interface will give you the XML instruction with **error** elements.
-
-After you correct the issue, you can reupload the XML processing instruction and files.
 
 ## How do I monitor process ?
-After an ingest command ( manual or automatic ) a progress bar will appear per instruction and per file. This gives the current
-status of the ingest procedures.
+After an ingest command ( manual or automatic ) a progress bar will appear per instruction and per file. This gives th
+current status of the ingest procedures.
 
 ##Two examples of an XML processing instruction
 
@@ -55,8 +104,8 @@ Lets us assume a folder structure of one main folder with five files
         /folderA/Potato.png
         /folderA/SecretRecipe.tiff
 
-And to stretch the borders of our imagination a little further, suppose the CP administrator has set the following default
-settings in the profile via the administration interface:
+And to stretch the borders of our imagination a little further, suppose the CP administrator has set the following
+default settings in the profile via the administration interface:
 
     action=upsert
     access=closed
@@ -127,7 +176,8 @@ And we have set our profile defaults via the administration interface thus:
     contentType=image/tiff
     autoGeneratePIDs='filename2lid' # This does the trick
 
-An **automated instruction creation** or **instruction upload** via the administration interface of an instruction would be equal had you created this:
+An **automated instruction creation** or **instruction upload** via the administration interface of an instruction would
+be equal had you created this:
 
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/">

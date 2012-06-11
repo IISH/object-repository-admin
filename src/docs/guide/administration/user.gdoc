@@ -1,4 +1,28 @@
-The account section will allow you manage three types of accounts:
-* ftp accounts (also to be used for webservice keys)
-* CP administrator accounts.
-* A function of both accounts is to supply webservice keys. This key gives access to all stored repository resources.
+The account section will allow you manage three types of access:
+* ftp accounts for uploading and managing files on the staging area
+* CP administrator accounts to operate the administration interface.
+* A function of both accounts is to supply webservice keys. This key gives access to all admin and stored repository resources.
+
+h2. create a user
+You need to fill in or edit the following fields:
+
+@Role@: *ROLE_CPADMIN* is the account with which a user can manage the administration panel. Although it is possible to upload
+files with this account, it is wiser to use a ROLE_CPUSER account as it will prevent confusion regarding the location of the processing instruction.
+* ROLE_CPUSER is intended for FTP purposes. One cannot operate the administration panel with an CPUSER account.
+@Login name@: A user name containing letters and numbers
+@Password@: If the password is left blank, a random password will be created
+@E-mail@: The end-user's mail address.
+@Enabled@: If on, the account can be used to login.
+
+h2. user display
+This view will also show the webservice key. The key is intended to access an object repository resource that is
+normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
+Or be in the header file of a client that is responsible for downloading the files.
+
+The webservice key has the same effect when a user uses a username and password to access the administration interface.
+
+To modify the webservice key select "Change key"
+
+h2. editing and removing
+Any account can be modified, yet one cannot delete oneself however. Only a CP administrator can remove another CP
+administrator.

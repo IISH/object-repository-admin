@@ -1,0 +1,152 @@
+You can manage the ingest of your files by setting the instruction's elements. As these configurations can be placed
+at different levels ( profile's, XML instruction's and stagingfile's ) we mention that between brackets.
+
+h3. To begin with: a friendly description
+@label@ (profile and instruction element)
+
+A human readable bit of information. This will show up on the administration
+interface when viewing your instructions.
+
+h3. To use the services
+@plan@ (profile and instruction)
+
+Determines what services are to be used and hold several services ( in no particular order ) seperated by a comma.
+
+To tell you want a master ingest or update:
+{code}plan='StagingfileIngestMaster'{code}
+
+To call the PID webservice:
+{code}plan='StagingFileBindPIDs'{code}
+This will invoke the PID webservice to bind the PIDs to the resolve url's of the object repository. One must have
+an account at a PID webservice and have the @pidwebserviceEndpoint@ and @pidwebserviceKey@ set.
+
+To produce derivatives:
+* @plan='StagingfileIngestLevel1'
+* @plan='StagingfileIngestLevel2'
+* @plan='StagingfileIngestLevel3'
+
+If left empty, the default is to use all the services. This is equivalent to:
+{code}plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'{code}
+
+h3. Additions and updates
+@action@ (profile, instruction and stagingfile elements)
+
+This controls how the ingest and dissemination procedures handles the file.
+
+    {code}action='upsert' ( default ){code}
+    Adds the file with the given pid. If a file with the pid already exists, it will be updated with the new file.
+
+    {code}action='add'{code}
+    Add a file with the given pid. But error will occur when the pid already exists in the object repository
+
+    {code}action='update'{code}
+    Updates a file with the given pid. But error will occur if the pid does not exists in the object repository
+
+    {code}action='delete'{code}
+    Removes the file with the specified PID. In this version of the object-repository the delete action does not remove
+    a file. Rather it sets the access value to 'deleted' and makes the digital object unavailable this way.
+
+h3. Access policy
+@access@ (profile, instruction and stagingfile elements)
+
+Determines which dissemination policy to use when anonymous users want to view a level1, level2 or level3 derivative.
+There are three out-of-the-box policies available:
+
+    All derivatives are viewable to the world:
+    {code}access='open'{code}
+
+    Level 1 is restricted; level 2 and 3 are viewable to the world
+    {code}access='restricted'{code}
+
+    no files can be downloaded or viewed
+    {code}access='closed' (default){code}
+
+In the administration interface a CP administrator can add new policies and thus apply custom view levels.
+
+{note}
+master files are always closed.
+{note}
+
+h3. Mimetype
+@contentType@ (profile, instruction and stagingfile elements)
+
+The value indicates the nature of the file ( like "image/jpeg", "application/pdf , etc)
+
+{note}Make sure your mimetype is correct or else the derivative creation or rendering may not go quite according to plan.{note}
+For more on mimetypes see:
+* [http://en.wikipedia.org/wiki/MIME|http://en.wikipedia.org/wiki/MIME]
+* some good examples at [http://www.ltsw.se/knbase/internet/mime.htp|http://www.ltsw.se/knbase/internet/mime.htp|.
+* The object-repository [has a list|https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt] of content types.
+
+h3. Checksum
+@md5@ (stagingfile element)
+
+Used to determine if the transport from one place to another (the staging area; the document database) was in deed
+without flaw.
+
+h3. File location
+@location@ (stagingfile element)
+
+The case sensitive path and filename of the digital file. The beginning of the path is the same as the home directory.
+
+h3. The persistent identifier
+@pid@ (stagingfile element)
+
+The object-repository needs the PID without the base URL, like
+@<pid>12345/mypid</pid>@
+@<pid>hdl:12345/mypid</pid>@
+@<pid>12025/654xz321</pid>@
+@<pid>ark:/12025/654xz321</pid>@
+@<pid>10.1006/jmbi.1998.2354</pid>@
+@<pid>doi:10.1006/jmbi.1998.2354</pid>@
+
+{note}When unable to provide a pid value, use the optional substitute @lid@ stagingfile element. This must contain a system
+(your local organization's system that is ) wide unique local identifier. For examplee a LIS number. Usage of this
+substitute is only possible when you have a PID webservice account.{note}
+
+h3. Set a PID resolver base url
+#resolverBaseUrl@ (profile and instruction element)
+
+The resolver (a website that will redirect the user with the supplied PID to another url) of the PIDs you supplied. If
+the PID is attached to the resolverBaseUrl we ought to have a complete, workable url. This is used at the dissemination
+end of the object-repository to offer a link for the enduser.
+
+For example, for @<pid>12345/mypid</pid>@ and #resolverBaseUrl='http://hdl.handle.net/'@ the complete link on the
+ dissemination interface would become: @http://hdl.handle.net/12345/mypid@
+
+h3. Automated PID creation
+@autoGeneratePIDs@ (profile and instruction element)
+
+Will tricker by the administration interface @autoCreate instruction@ and @upload instruction@ commands.
+
+    autoGeneratePIDs='none' (default)
+
+    The system will provide an empty PID element with a seemingly random string.
+    autoGeneratePIDs='uuid'
+    example: @<pid>12345/10997FB2-1BFD-4191-A7E2-1AA1308960BB@</pid>
+
+    Substitute an empty PID element with the filename ( without suffix ).
+    autoGeneratePIDs='filename2pid'
+    example: @MyLargeFile.tif@ will lead to @<pid>12345/MyLargeFile</pid>@
+
+    Substitute an empty lid element with the filename ( without suffix ).
+    autoGeneratePIDs='filename2lid'
+    example: @MyLargeFile.tif@ will lead to @<lid>12345/MyLargeFile</lid>@
+
+    Ignore an empty PID setting during auto creation and validation as long as it has a LID element
+    autoGeneratePIDs='lid'
+
+h3. The PID webservice
+@pidwebserviceEndpoint@: the endpoint or url of a PID webservice
+
+@pidwebserviceKey@: the webservice key that belongs to your account at the PID webservice
+
+These two settings combined are required to bind the PIDs to the object-repository's resolve URLs.
+
+h3. Automatic ingest ( for automated batch procedures )
+@autoIngestValidInstruction@ (profile and instruction element)
+
+If set to {code}autoIngestValidInstruction='true'{code} will start an instruction process. But only if the instruction that was
+uploaded or automatically generated is valid.
+
+Typically this is useful for batch procedures that involve automated FTP uploads of files and processing instructions.

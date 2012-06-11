@@ -19,6 +19,9 @@
 
 <div class="body" id="updateList">
     <g:render template="list" model="[instructionInstanceList,instructionInstanceTotal]"/>
+    <div class="pagination">
+        <g:paginate total="${instructionInstanceTotal}"/>
+    </div>
 </div>
 
 <g:formRemote name="listremote" update="updateList" url="[action:'listremote', filter:(params.filter)?:'working', order:(params.order)?:'desc',

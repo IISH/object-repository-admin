@@ -17,7 +17,5 @@ Level 1 derivatives are restricted; level 2 and 3 are viewable to the world
 @access='closed'@ (default)
 no files can be downloaded or viewed
 
-[You can fdefine your own policies|guide:policycreate] to govern anonymous user access.
-
 
 

@@ -1,9 +1,0 @@
-See ["Creating a new account"|guide:usercreate] for the meaning of the fields.
-
-This view will also show the webservice key. The key is intended to access a object repository resource that is
-normally closed for anonymous users. The key needs to be attached to the Resolve URL that points to a resource.
-Or be in the header file of a client that is responsible for downloading the files.
-
-The webservice key has the same effect when a user uses a username and password to access the administration interface.
-
-To modify the webservice key select "Change key"

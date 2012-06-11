@@ -7,17 +7,15 @@ stagingarea:
   datasets: Datasets
   customderivatives: Your own derivatives
 instruction:
-  title: Managing an ingest via the processing instruction
+  title: Prepare the ingest
+  settings: Instruction settings
+  xmlinstruction: The XML instruction
 pid:
   title: Calling the PID webservice
 administration:
   title: Administration interface
   user:
     title: Ftp accounts
-    userlist: Listing accounts
-    usercreate: Create
-    usershow: Show
-    useredit: Modify
   profile:
     title: Profile
   policy:
@@ -25,4 +23,3 @@ administration:
     policylist: Listing policies
   files:
     title: Stored files
-

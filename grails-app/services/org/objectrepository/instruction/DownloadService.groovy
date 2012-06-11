@@ -34,7 +34,7 @@ class DownloadService {
         final DBCursor cursor = document.findFilesWithCursor()
         writer << builder.bind {
             mkp.xmlDeclaration()
-            comment << 'Instruction extracted on ' + new Date().toGMTString()
+            comment << 'Instruction extracted on ' + new Date().toGMTString() + " from fileSet " + document.fileSetAlias
             instruction(instructionAttributes) {
                 while (cursor.hasNext()) {
                     out << writeStagingfile(cursor.next().toMap())

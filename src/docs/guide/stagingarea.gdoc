@@ -1,5 +1,4 @@
-h2. File management
-The area is a work space where you can assemble your ingest package. Here you:
+The staging area is a work space where you can assemble your ingest package. Here you:
 * use ftp to upload files to temporary storage and rearrange these
 * optionally upload a XML processing instruction
 * optionally upload derivative material

@@ -29,4 +29,5 @@
         </g:each>
         </tbody>
     </table>
+
 </div>
