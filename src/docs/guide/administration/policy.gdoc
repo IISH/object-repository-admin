@@ -1,21 +1,24 @@
-A policy determines what an _anonymous user_ ( lets say a person with a webbrowser who is not logged on to the
-object repository ) can and cannot do. Access to each master file and its related derivatives are thus governed by a
+A policy determines what an _anonymous user_  can and cannot do. Lets say that is a person with a webbrowser who is not
+logged on to the object repository. Access to each master file and its related derivatives are thus governed by a
 policy.
 
 {note}
 A master file is always closed.
-If you do not explicitly set a policy, the default will be closed.
+If you do not explicitly set a policy, the default policy will will be @closed@.
 {note}
 
 There are three main policies available:
-@access='open'@
-All derivatives are viewable to the world
+{table}
+*policy* | *access*
+ closed | no files can be downloaded or viewed
+ restricted | level 1 derivatives are _restricted_; level 2 and 3 are viewable to the world
+ open | All derivatives are viewable to the world
+ {table}
 
-@access='restricted'@
-Level 1 derivatives are restricted; level 2 and 3 are viewable to the world
+The meaning of *restricted* means the anonymous user can only see the file with a webservice key. Even though
+at this moment this is not the case, this setting can be used to offer for example a "give me persmission to see this
+file" option. This will never be the case when the file is closed.
 
-@access='closed'@ (default)
-no files can be downloaded or viewed
-
-
-
+h3. Custom policies
+You cannot modify these default policies, but to add your own custom policy is easily done by selecting "New Policy".
+For each derivative you can then determine your own access level.

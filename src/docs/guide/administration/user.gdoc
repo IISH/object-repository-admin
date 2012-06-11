@@ -3,7 +3,7 @@ The account section will allow you manage three types of access:
 * CP administrator accounts to operate the administration interface.
 * A function of both accounts is to supply webservice keys. This key gives access to all admin and stored repository resources.
 
-h2. create a user
+h4. Create a user
 You need to fill in or edit the following fields:
 
 @Role@: *ROLE_CPADMIN* is the account with which a user can manage the administration panel. Although it is possible to upload
@@ -14,7 +14,7 @@ files with this account, it is wiser to use a ROLE_CPUSER account as it will pre
 @E-mail@: The end-user's mail address.
 @Enabled@: If on, the account can be used to login.
 
-h2. user display
+h4. User display
 This view will also show the webservice key. The key is intended to access an object repository resource that is
 normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
 Or be in the header file of a client that is responsible for downloading the files.
@@ -23,6 +23,6 @@ The webservice key has the same effect when a user uses a username and password 
 
 To modify the webservice key select "Change key"
 
-h2. editing and removing
+h4. editing and removing
 Any account can be modified, yet one cannot delete oneself however. Only a CP administrator can remove another CP
 administrator.
