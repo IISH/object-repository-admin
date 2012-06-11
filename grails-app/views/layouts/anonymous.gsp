@@ -23,11 +23,6 @@
 
 <body>
 
-<div id="spinner" class="spinner" style="display:none;">
-    <img src="${resource(dir: 'images', file: 'spinner.gif')}"
-         alt="${message(code: 'spinner.alt', default: 'Loading...')}"/>
-</div>
-
 <div id="hopeLogo">
     <a href="<g:resource absolute="true"/>"><img src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="HOPE"
                                                  border="0"/></a>

@@ -33,13 +33,17 @@ h3. Monitoring
 Each phase or step in the creation and running of an instruction can be monitored. The same for each individual files.
 During an ingest, you can see the accumulative result of all files by selecting the link of the main folder.
 
-This is the particular status of an instruction:
+h4. Instruction status
+This is the particular status of an instruction
+
 !statusinstruction.gif!
 
-And here the accumulative progress of all files:
+h4. Files status accumulative
+All progress for the files
+
 !statusfiles.gif!
 
-And per file:
+h4. Per file view
 !statusfile.gif!
 
 h4. Success and failure

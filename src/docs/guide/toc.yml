@@ -23,5 +23,7 @@ administration:
     title: Profile
   policy:
     title: Access policies
+  instructions:
+    title: Managing and monitoring instructions
   orfiles:
     title: Stored files

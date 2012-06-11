@@ -93,12 +93,14 @@ h3. The persistent identifier
 @pid@ (stagingfile element)
 
 The object-repository needs the PID (e.g. a piece of string that can be resolved via Handle System, Ark, DOI) without the base URL, for example like:
-{code}<pid>12345/mypid</pid>
+{code}
+<pid>12345/mypid</pid>
 <pid>hdl:12345/mypid</pid>
 <pid>12025/654xz321</pid>
 <pid>ark:/12025/654xz321</pid>
 <pid>10.1006/jmbi.1998.2354</pid>
-<pid>doi:10.1006/jmbi.1998.2354</pid>{code}
+<pid>doi:10.1006/jmbi.1998.2354</pid>
+{code}
 
 {note}When unable to provide a pid value, use the optional substitute @lid@ stagingfile element.{note}
 
@@ -109,8 +111,12 @@ The resolver is a website that will know what to do with the PID. So if the PID 
 ought to have a complete, workable url. This is used at the dissemination end of the object-repository to offer a link
 for the enduser.
 
-For example, for @<pid>12345/mypid</pid>@ and #resolverBaseUrl='http://hdl.handle.net/'@ the complete link on the
- dissemination interface would become: @http://hdl.handle.net/12345/mypid@
+For example, for
+@<pid>12345/mypid</pid>@
+and
+@resolverBaseUrl='http://hdl.handle.net/'@
+
+the complete link on the dissemination interface would become: @http://hdl.handle.net/12345/mypid@
 
 h3. The optional 'lid' identifier
 This element is a system (your local organization's system that is ) wide unique identifier. For example a LIS number or
