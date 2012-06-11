@@ -3,13 +3,14 @@ introduction:
   changes: Change Log
 stagingarea:
   title: Staging area
-  ftp: FTP connections
+  ftp: FTP
   datasets: Datasets
   customderivatives: Your own derivatives
 instruction:
   title: Prepare the ingest
   settings: Instruction settings
   xmlinstruction: The XML instruction
+  running: Starting\run an instruction
 pid:
   title: Calling the PID webservice
 administration:

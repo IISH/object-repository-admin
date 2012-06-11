@@ -10,8 +10,26 @@ This file will be deleted automatically after you uploaded it, as it is read int
 instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
 using the administration panel.
 
+[The schema can be found here|https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
+
 {note}When you download a XML processing instruction, it may have added validation messages.{note}
 
+h3. Working example of an XML instruction
+Lets say we automatically create an instruction via the administration panel for the five files we just uploaded.
+On the [instructions page|guide:administration] we edit the settings and indicate the following:
+{table}
+*element* | *value*
+Label | My five files
+Action | upsert
+Access | open
+Contenttype\Mimetype | image/tiff
+Auto generate PIDs | filename2pid
+Auto ingest valid instructions : off
+Resolver baseUrl | http://hdl.handle.net/
+Service to execute | all
+{table}
+
+After we press "update" we can download the XML for viewing:
 {code}
 <?xml version="1.0" encoding="utf-8"?>
 <!--Instruction extracted on 11 Jun 2012 11:05:15 GMT-->
@@ -53,74 +71,59 @@ using the administration panel.
 h3. Validation
 An automatic validation procedure will run the moment you @autocreate@ an instruction or ftp one into the main folder.
 The results of the validation will show up in the CP administration interface per instruction and per file. In addition,
-downloading the file via the CP administration interface will give you the XML instruction with @error@ elements. After
-you correct the issue, you can reupload the XML processing instruction and files.
+downloading the file via the CP administration interface will give you the XML instruction with @error@ elements if any.
+After you correct the issue, you can reupload the XML processing instruction and files where needed.
 
 The validation will look for a number of issues:
 * all files in the main folder must be in the instruction
 * all stagingfile elements in the instruction must be found the main folder content
 * the md5 checksum values must match
-* A PID ( or lid substitute ) must be present
+* a PID ( or lid substitute ) must be present
+* the PID or LID values may not occur elsewhere in the instruction
+* a file cannot be zero bytes in length
 
 h3. Viewing and changing the XML instruction after upload
-All the uploaded datasets's main folders are visible under the @instruction@ tab of the administration interface. There
-the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.
+All the uploaded datasets's main folders are visible at the [instructions page|guide:administration] of the administration
+interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.
 
-h3. Run a processing instruction automatically
-When an FTP client has uploaded files and a valid XML processing instruction in a main folder, the instruction will be
-validated. If you had set the element ( in either the XML document itself or if not, at the profile panel ) :
-@autoIngestValidInstruction=true@
-and the instruction is without error, the ingest of your files will commence by itself.
-
-h3. Run a processing instruction manually
-If you disable the @autoIngestValidInstruction@ setting, then the start it needs a manual command. From the
-administration interface select @Ingest instruction@ to start.
-
-{Note}The option **Ingest instruction** will not appear until the instruction is considered valid.{Note}
-
-
-h3. Should I automatically create an XML processing instruction?
-It can be usefull when you make your own custom instructions. You can use this feature to experiment to see how a
+h3. Question: Should I automatically create an XML processing instruction?
+It can be useful when you make your own custom instructions. You can use this feature to experiment to see how a
 valid instruction looks like.
 
-Should your PID or LID values be identical to the filenames, you could produce an instruction that is usuable for
+Should your PID or LID values be identical to the filenames, you could produce an instruction that is perfect for
 ingest.
 
 
-## How do I monitor process ?
-After an ingest command ( manual or automatic ) a progress bar will appear per instruction and per file. This gives th
-current status of the ingest procedures.
+h3. Two more examples of an XML processing instruction
 
-##Two examples of an XML processing instruction
-
-###Example with pid elements
+h4. Example with pid elements.
 Lets us assume a folder structure of one main folder with five files
 
-    home-directory: /
+    {code}home-directory: /
         /folderA
         /folderA/Apple.tiff
         /folderA/Pear.tiff
         /folderA/Banana.tiff
         /folderA/Potato.png
-        /folderA/SecretRecipe.tiff
+        /folderA/SecretRecipe.tiff{code}
 
 And to stretch the borders of our imagination a little further, suppose the CP administrator has set the following
 default settings in the profile via the administration interface:
 
-    action=upsert
+    {code}action=upsert
     access=closed
-    contentType=image/tiff
+    contentType=image/tiff{code}
 
 Now we can mostly fall back on the defaults the profile provides, but we do want to add some exceptions to the
 profile rules by adding new values the XML processing instruction:
 
-1. Notice the **contentType** for the porato ? It is not a tiff but an **image/png**.
-2. And we feel the **access** of the policy is too strict. Lets set it all to **open**.
-3. And lets set the **access** to SecretRecipe.tiff to **restricted**.
+1. Notice the @contentType@ for the potato ? It is not a tiff but an *image/png*.
+2. And we feel the @access@ of the policy is too strict. Lets set it all to *open*.
+3. And lets set the @access@ to SecretRecipe.tiff to *restricted*.
 
 The processing instruction would then could look like this:
 
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+   {code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/" access="open"> <!-- access added here -->
         <stagingfile>
             <pid>12345/a</pid>
@@ -149,37 +152,38 @@ The processing instruction would then could look like this:
             <location>/folderA/SecretRecipe.tiff</location>
             <md5>c741cd201fafb15c5ec874ae16738671</md5>
         </stagingfile>
-    </instruction>
+    </instruction>{code}
 
-###Example with lid elements
-As a second example, lets suggest you are a content provider that can not supply persistant identifiers but only supply
+h4. Example with lid elements
+As a second example, lets suggest you are a content provider that can not supply persistent identifiers but only supply
 local identifiers. Lets also assume that you made things easy and the local identifiers can be derived from the filenames
-but without the extension.
+but without the extension. Here we can automatically create an instruction.
 
-Note: this example would only work in the object repository when it can fall back on a Handle System compatible PID
-webservice for which a naming authority is required. In the example we assume this so and the authority is 12345.
+{note}this example would only work in the object repository when it can fall back on a Handle System compatible PID
+webservice for which a naming authority is required. In the example we assume this so and the authority is 12345.{note}
 
 Lets say these are the files in the staging area:
 
-    home-directory: /
+    {code}home-directory: /
         /folderA
         /folderA/Apple.tiff
         /folderA/Pear.tiff
         /folderA/Banana.tiff
         /folderA/Potato.tiff
-        /folderA/FreeRecipe.tiff
+        /folderA/FreeRecipe.tiff{code}
 
 And we have set our profile defaults via the administration interface thus:
 
-    action=upsert
+    {code}action=upsert
     access=closed
     contentType=image/tiff
-    autoGeneratePIDs='filename2lid' # This does the trick
+    autoGeneratePIDs='filename2lid'{code}
 
-An **automated instruction creation** or **instruction upload** via the administration interface of an instruction would
-be equal had you created this:
+Via the administration interface "instruction" tab, you can now press the autocreate button.
 
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+Alternatively, you could have created the XML instruction yourself so:
+
+    {code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/">
         <stagingfile>
             <lid>12345/Apple</lid>
@@ -206,4 +210,4 @@ be equal had you created this:
             <location>/folderA/FreeRecipe.tiff</location>
             <md5>d241cd201fafb15c5ec874ae167386ee</md5>
         </stagingfile>
-    </instruction>
+    </instruction>{code}

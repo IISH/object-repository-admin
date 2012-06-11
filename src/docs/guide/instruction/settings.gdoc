@@ -7,10 +7,10 @@ h3. To begin with: a friendly description
 A human readable bit of information. This will show up on the administration
 interface when viewing your instructions.
 
-h3. To use the services
+h3. Plan the services
 @plan@ (profile and instruction)
 
-Determines what services are to be used and hold several services ( in no particular order ) seperated by a comma.
+Determines what services are to be used( in no particular order ). Seperated by a comma.
 
 To tell you want a master ingest or update:
 {code}plan='StagingfileIngestMaster'{code}
@@ -75,7 +75,7 @@ The value indicates the nature of the file ( like "image/jpeg", "application/pdf
 {note}Make sure your mimetype is correct or else the derivative creation or rendering may not go quite according to plan.{note}
 For more on mimetypes see:
 * [http://en.wikipedia.org/wiki/MIME|http://en.wikipedia.org/wiki/MIME]
-* some good examples at [http://www.ltsw.se/knbase/internet/mime.htp|http://www.ltsw.se/knbase/internet/mime.htp|.
+* some good examples at [http://www.ltsw.se/knbase/internet/mime.htp|http://www.ltsw.se/knbase/internet/mime.htp]
 * The object-repository [has a list|https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt] of content types.
 
 h3. Checksum
@@ -92,49 +92,33 @@ The case sensitive path and filename of the digital file. The beginning of the p
 h3. The persistent identifier
 @pid@ (stagingfile element)
 
-The object-repository needs the PID without the base URL, like
-@<pid>12345/mypid</pid>@
-@<pid>hdl:12345/mypid</pid>@
-@<pid>12025/654xz321</pid>@
-@<pid>ark:/12025/654xz321</pid>@
-@<pid>10.1006/jmbi.1998.2354</pid>@
-@<pid>doi:10.1006/jmbi.1998.2354</pid>@
+The object-repository needs the PID (e.g. a piece of string that can be resolved via Handle System, Ark, DOI) without the base URL, for example like:
+{code}<pid>12345/mypid</pid>
+<pid>hdl:12345/mypid</pid>
+<pid>12025/654xz321</pid>
+<pid>ark:/12025/654xz321</pid>
+<pid>10.1006/jmbi.1998.2354</pid>
+<pid>doi:10.1006/jmbi.1998.2354</pid>{code}
 
-{note}When unable to provide a pid value, use the optional substitute @lid@ stagingfile element. This must contain a system
-(your local organization's system that is ) wide unique local identifier. For examplee a LIS number. Usage of this
-substitute is only possible when you have a PID webservice account.{note}
+{note}When unable to provide a pid value, use the optional substitute @lid@ stagingfile element.{note}
 
 h3. Set a PID resolver base url
-#resolverBaseUrl@ (profile and instruction element)
+@resolverBaseUrl@ (profile and instruction element)
 
-The resolver (a website that will redirect the user with the supplied PID to another url) of the PIDs you supplied. If
-the PID is attached to the resolverBaseUrl we ought to have a complete, workable url. This is used at the dissemination
-end of the object-repository to offer a link for the enduser.
+The resolver is a website that will know what to do with the PID. So if the PID is attached to the resolverBaseUrl we
+ought to have a complete, workable url. This is used at the dissemination end of the object-repository to offer a link
+for the enduser.
 
 For example, for @<pid>12345/mypid</pid>@ and #resolverBaseUrl='http://hdl.handle.net/'@ the complete link on the
  dissemination interface would become: @http://hdl.handle.net/12345/mypid@
 
-h3. Automated PID creation
-@autoGeneratePIDs@ (profile and instruction element)
+h3. The optional 'lid' identifier
+This element is a system (your local organization's system that is ) wide unique identifier. For example a LIS number or
+database key. Usage of this substitute is only needed if you are unable to supply and manage your own PIDs. You ought to
+have a PID webservice account to use the LID-PID substitute.
 
-Will tricker by the administration interface @autoCreate instruction@ and @upload instruction@ commands.
-
-    autoGeneratePIDs='none' (default)
-
-    The system will provide an empty PID element with a seemingly random string.
-    autoGeneratePIDs='uuid'
-    example: @<pid>12345/10997FB2-1BFD-4191-A7E2-1AA1308960BB@</pid>
-
-    Substitute an empty PID element with the filename ( without suffix ).
-    autoGeneratePIDs='filename2pid'
-    example: @MyLargeFile.tif@ will lead to @<pid>12345/MyLargeFile</pid>@
-
-    Substitute an empty lid element with the filename ( without suffix ).
-    autoGeneratePIDs='filename2lid'
-    example: @MyLargeFile.tif@ will lead to @<lid>12345/MyLargeFile</lid>@
-
-    Ignore an empty PID setting during auto creation and validation as long as it has a LID element
-    autoGeneratePIDs='lid'
+When you submit a LID; the PID webservice will generate a PID value and insert it into the instruction. Any update
+afterwards with the same LID will return this PID.
 
 h3. The PID webservice
 @pidwebserviceEndpoint@: the endpoint or url of a PID webservice
@@ -142,6 +126,29 @@ h3. The PID webservice
 @pidwebserviceKey@: the webservice key that belongs to your account at the PID webservice
 
 These two settings combined are required to bind the PIDs to the object-repository's resolve URLs.
+
+h3. Automated PID creation
+@autoGeneratePIDs@ (profile and instruction element)
+
+Will tricker by the administration interface @autoCreate instruction@ and @upload instruction@ commands.
+
+    {code}autoGeneratePIDs='none' (default){code}
+    Wont do anything for an absent pid element
+
+    {code}autoGeneratePIDs='uuid'{code}
+    The system will provide an empty PID element with a seemingly random string.
+    Example: @<pid>12345/10997FB2-1BFD-4191-A7E2-1AA1308960BB</pid>@
+
+    {code}autoGeneratePIDs='filename2pid'{code}
+    Substitute an empty PID element with the filename ( without suffix ).
+    example: @MyLargeFile.tif@ will lead to @<pid>12345/MyLargeFile</pid>@
+
+    {code}autoGeneratePIDs='filename2lid'{code}
+    Substitute an empty lid element with the filename ( without suffix ).
+    example: @MyLargeFile.tif@ will lead to @<lid>12345/MyLargeFile</lid>@
+
+    {code}autoGeneratePIDs='lid'{code}
+    Ignore an empty PID setting during auto creation and validation as long as it has a LID element
 
 h3. Automatic ingest ( for automated batch procedures )
 @autoIngestValidInstruction@ (profile and instruction element)

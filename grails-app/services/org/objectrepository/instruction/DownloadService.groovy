@@ -10,7 +10,7 @@ class DownloadService {
     static transactional = 'mongo'
 
     def _filter = ['version', '_id', '_class', 'date', 'name', 'na', 'fileSet',
-            'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length']
+            'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length', 'plan']
 
     def messageSource
 
@@ -26,6 +26,10 @@ class DownloadService {
 
         def instructionAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         instructionAttributes.putAll(OrUtil.getPropertiesMap(document, true, _filter))
+        OrUtil.setInstructionPlan(document)
+        instructionAttributes << [plan: document.plan.collect() {
+                    it
+                }.join(",")]
 
         def builder = new StreamingMarkupBuilder()
         builder.setEncoding("utf-8")
