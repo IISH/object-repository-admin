@@ -12,7 +12,9 @@ instruction:
   xmlinstruction: The XML instruction
   running: Starting\run an instruction
 pid:
-  title: Calling the PID webservice
+  title: PIDs and the repository's resolve urls
+  resolveurls: Resolve URLs
+  pids: PIDs created via the PID webservice
 administration:
   title: Administration interface
   user:
@@ -21,6 +23,5 @@ administration:
     title: Profile
   policy:
     title: Access policies
-    policylist: Listing policies
-  files:
+  orfiles:
     title: Stored files

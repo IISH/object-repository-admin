@@ -31,7 +31,16 @@ finish. However no @ingest instruction@ option seems to appear. To make it appea
 
 h3. Monitoring
 Each phase or step in the creation and running of an instruction can be monitored. The same for each individual files.
-During an ingestation, you can see the accumulative result of all files by selecting the link of the main folder.
+During an ingest, you can see the accumulative result of all files by selecting the link of the main folder.
+
+This is the particular status of an instruction:
+!statusinstruction.gif!
+
+And here the accumulative progress of all files:
+!statusfiles.gif!
+
+And per file:
+!statusfile.gif!
 
 h4. Success and failure
 When all services of a file have completed, the file reference will be removed from the staging area. In the end all

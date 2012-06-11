@@ -1,0 +1,6 @@
+The files section will show all persisted files.
+
+Here you can manually after policy and labels.
+
+In addition, download all technical metadata as XML per file of for all
+the files. The XML does not follow a schema and is subject to change.
