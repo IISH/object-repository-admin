@@ -9,10 +9,10 @@ This means there will be several persistent URLs. For example, if this was your 
 URLs will be:
 
 {table}
-*view* | *persistent URL*
-metadata | http://hdl.handle.net/12345/1.1
-master | http://hdl.handle.net/12345/1.1?locatt=view:master
-level 1 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level1
-level 2 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level2
-level 3 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level3
+*view* | *persistent URL* | *Resolve Url*
+metadata | http://hdl.handle.net/12345/1.1 | http://disseminate.objectrepository.org/metadata/12345/1.1
+master | http://hdl.handle.net/12345/1.1?locatt=view:master | http://disseminate.objectrepository.org/file/master/12345/1.1
+level 1 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level1 | http://disseminate.objectrepository.org/file/level1/12345/1.1
+level 2 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level2 | http://disseminate.objectrepository.org/file/level2/12345/1.1
+level 3 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level3 | http://disseminate.objectrepository.org/file/level2/12345/1.1
 {table}
