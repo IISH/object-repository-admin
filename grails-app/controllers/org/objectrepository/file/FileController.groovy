@@ -32,7 +32,7 @@ class FileController {
             response.contentLength = file.length
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
             response.outputStream.flush()
-            gridFSService.update(file, params.bucket)
+            gridFSService.increment(file, params.bucket)
         }
     }
 

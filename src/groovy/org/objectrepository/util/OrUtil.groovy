@@ -207,10 +207,18 @@ class OrUtil {
         }
     }
 
+    /**
+     * getNa
+     *
+     * Find the na part of the PID.
+     *
+     * @param pid
+     * @return
+     */
     static String getNa(String pid) {
         def m = pid =~ na_pattern
-        String na = m[0]
-        na.replace(".", "_").replace("/", "")
+        if (m.size() == 0) return null
+        m[0].replace("/", "").replace(".", "")
     }
 
     static void setInstructionPlan(def instruction) {

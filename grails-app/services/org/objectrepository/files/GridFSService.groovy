@@ -5,6 +5,7 @@ import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
+import com.mongodb.gridfs.GridFSFile
 
 /**
  * GridFSService
@@ -74,6 +75,12 @@ class GridFSService {
         def update = Update.update("metadata.access", params.access).set("metadata.label", params.label).updateObject
         final collection = mongo.getDB(OR + orFile.metadata.na).getCollection("master.files")
         collection.update(_id: orFile.id, update, false, false)
+    }
+
+    void increment(GridFSFile file, String bucket) {
+        def update = new Update().inc("metadata.timesAccessed", 1).getUpdateObject()
+        final collection = mongo.getDB(OR + file.metadata.na).getCollection(bucket + ".files")
+        collection.update(_id: file.id, update, false, false)
     }
 
     Orfile get(String na, String id) {

@@ -14,13 +14,13 @@ class OrUtilTest {
 
     void setUp() {
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
-                ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-                config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
+        ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
+        config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
     }
 
     void testAvailablePlans() {
         final plans = OrUtil.availablePlans(config.plans)
-        assert plans.size() >  1
+        assert plans.size() > 1
     }
 
     void testFSInstruction() {
@@ -73,12 +73,30 @@ class OrUtilTest {
         assert !OrUtil.removeFirst(list)
     }
 
-    void testPutAll()
-    {
+    void testPutAll() {
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
         Instruction document = [:]
-        OrUtil.putAll( config.plans, document, instructionFromFile)
+        OrUtil.putAll(config.plans, document, instructionFromFile)
         assert document.plan.size() == 2
+    }
+
+    /**
+     * testGetOr
+     *
+     * In all these situations ought to be "12345" or "1012345
+     *
+     * 12345/mypid
+     * hdl:12345/mypid
+     * ark:/12345/654xz321
+     * 10.12345/jmbi.1998.2354
+     * doi:10.12345/jmbi.1998.2354
+     */
+    void testGetOr() {
+        def nas = ['12345/mypid', 'hdl:12345/mypid', 'ark:/12345/mypid', '10.12345/mypid.678.9', 'doi:10.12345/mypid.678.9']
+        nas.each {
+            final String na = OrUtil.getNa(it)
+            assert na == "12345" || na == "1012345"
+        }
     }
 }

@@ -96,10 +96,9 @@ The object-repository needs the PID (e.g. a piece of string that can be resolved
 {code}
 <pid>12345/mypid</pid>
 <pid>hdl:12345/mypid</pid>
-<pid>12025/654xz321</pid>
-<pid>ark:/12025/654xz321</pid>
-<pid>10.1006/jmbi.1998.2354</pid>
-<pid>doi:10.1006/jmbi.1998.2354</pid>
+<pid>ark:/12345/654xz321</pid>
+<pid>10.12345/jmbi.1998.2354</pid>
+<pid>doi:10.12345/jmbi.1998.2354</pid>
 {code}
 
 {note}When unable to provide a pid value, use the optional substitute @lid@ stagingfile element.{note}
