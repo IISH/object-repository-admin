@@ -76,9 +76,12 @@ class OrUtilTest {
     void testPutAll() {
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
-        Instruction document = [:]
+        final String label = 'Titel in Database should remain here'
+        Instruction document = [label: label]
         OrUtil.putAll(config.plans, document, instructionFromFile)
         assert document.plan.size() == 2
+        assert document.action == 'upsert'
+        assert document.label == label
     }
 
     /**

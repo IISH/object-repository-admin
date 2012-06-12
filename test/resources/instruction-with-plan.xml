@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Instruction extracted on 15 Apr 2012 09:52:02 GMT-->
 <instruction xmlns="http://objectrepository.org/instruction/1.0/" access="closed" action="upsert"
-             autoGeneratePIDs="filename2lid" contentType="image/tiff" label="enter descriptive tag title here"
+             autoGeneratePIDs="filename2lid" contentType="image/tiff"
              resolverBaseUrl="http://hdl.handle.net/"
              plan="StagingfileIngestMaster,StagingfileBindPIDs">
     <stagingfile><!--<pid>12345/12561A73-B0DF-4593-8BD0-7FC8953C44B3</pid>-->
