@@ -1,8 +1,8 @@
 For each master and derivative there is a resolve url. The PID of the file is part of that url. The convention here
-is that the:
-resolve URL = http;//domain-of-the-repository/file/level]/[pid]
+is that the resolve URL = @http;//domain-of-the-repository/file/level]/[pid]@
 
 For example, if this was your PID: @12345/1.1@
+
 And you created a level1, level2 and level3 derivative, then there are four resolve URLs in total to link to:
 
 * http://disseminate.objectrepository.org/file/master/12345/1.1
@@ -10,4 +10,4 @@ And you created a level1, level2 and level3 derivative, then there are four reso
 * http://disseminate.objectrepository.org/file/level2/12345/1.1
 * http://disseminate.objectrepository.org/file/level3/12345/1.1
 
-If you create and bind your own PIDs, you know in advance ( before you ingest ) what the resolve URLs are.
+{node}If you create and bind your own PIDs, you know in advance ( before you ingest ) what the resolve URLs are.{node}

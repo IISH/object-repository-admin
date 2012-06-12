@@ -3,7 +3,6 @@ package org.objectrepository.files
 import com.mongodb.BasicDBObject
 import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
-
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
 
@@ -34,6 +33,14 @@ class GridFSService {
         def db = mongo.getDB(OR + na)
         GridFS gridFS = new GridFS(db, bucket)
         gridFS.findOne(new BasicDBObject("metadata.pid", pid))
+    }
+
+    Orfile findByPidAsOrfile(String pid) {
+        if (!pid || pid.isEmpty()) return null
+        String na = OrUtil.getNa(pid)
+        def orfile = mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid)
+        if (orfile) orfile.metadata.cache.add(0, orfile)
+        orfile
     }
 
     /**

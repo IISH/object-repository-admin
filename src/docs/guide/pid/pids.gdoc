@@ -1,1 +1,18 @@
-To be added... explanation how the multiple PID binds look like when the webservice binds the resolve URLs to the PID.
+When the StagingfileBindPIDs option was used, a call to the PID webservice will be made to bind the object-repository's
+resolve URLs to this PID.
+
+It will do so by convention:
+
+@http://hdl.handle.net/[pid]?locatt=view:[level or master]@
+
+This means there will be several persistent URLs. For example, if this was your PID: @12345/1.1@ then the persistent
+URLs will be:
+
+{table}
+*view* | *persistent URL*
+metadata | http://hdl.handle.net/12345/1.1
+master | http://hdl.handle.net/12345/1.1?locatt=view:master
+level 1 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level1
+level 2 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level2
+level 3 derivative | http://hdl.handle.net/12345/1.1?locatt=view:level3
+{table}

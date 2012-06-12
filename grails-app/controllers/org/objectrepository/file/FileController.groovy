@@ -33,17 +33,22 @@ class FileController {
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
             response.outputStream.flush()
             gridFSService.update(file, params.bucket)
-        } else {
-            render(view: '404', statuscode: 404)
         }
     }
 
     def metadata = {
 
-        def file = getFile(params)
-        if (file) {
-            response.contentType = "text/xml"
-            file
+        String pid = params.pid
+                if (!pid) {
+                    redirect(action: "about")
+                    return null
+                }
+
+        def orfileInstance = gridFSService.findByPidAsOrfile(pid)
+        if (orfileInstance) {
+            [orfileInstance:orfileInstance]
+        } else {
+            render(view: '404', statuscode: 404)
         }
     }
 
@@ -57,14 +62,13 @@ class FileController {
 
         def fileInstance = gridFSService.findByPid(pid, params.bucket)
         if (fileInstance == null) {
+            render(view: '404', statuscode: 404)
             return null
         }
 
-        if (actionName == 'metadata') return fileInstance
-
         if (fileInstance.metadata.access == "deleted") {
-            render(view: fileInstance.metadata.access)
-            return
+            render(view: '404', statuscode: 404)
+            return null
         }
 
         Policy policy = policyService.getPolicy(fileInstance)
