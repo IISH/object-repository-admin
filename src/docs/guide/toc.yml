@@ -1,6 +1,8 @@
 introduction:
   title: Introduction
   changes: Change Log
+  milestones: Milestones
+  roadmap: Roadmap
 stagingarea:
   title: Staging area
   ftp: FTP

@@ -14,4 +14,4 @@ level 2 | http://disseminate.objectrepository.org/file/level2/12345/1.1
 level 3 | http://disseminate.objectrepository.org/file/level3/12345/1.1
 {table}
 
-{node}If you create and bind your own PIDs, you know in advance ( before you ingest ) what the resolve URLs are.{node}
+{note}If you create and bind your own PIDs, you know in advance ( before you ingest ) what the resolve URLs are.{note}

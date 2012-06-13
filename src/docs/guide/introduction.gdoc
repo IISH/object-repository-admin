@@ -1,13 +1,15 @@
 The object repository is part of a service oriented framework. That is, the latter offers a collection of services:
 
 * ftp upload of files to a staging area (temporary storage)
-* ingesting those files for persistent storage
+* ingesting those files into persistent storage
 * image derivative generation of three levels: level 1 ( high quality ); level 2 ( screen quality ) and level 3 ( thumbnail\preview )
-* accepts self made derivative ( of any type )
-* persistent identifier creation; binding handles via a PID webservice.
-* an administration interface plus account system to manage the above services with
+* accepts custom made derivatives of any content type
+* persistent identifier creation by calling a PID webservice (binding handles via a PID webservice.)
+* dissemination of the resources
+* an administration interface plus account system to manage the above services and access policies
 
 With the exception of the ftp upload and administration interface which are more like components, the
  remaining services are optional in their use.
 
+New services will be added. Those are part of the [application's development|https://github.com/IISH/object-repository-admin/blob/master/README.md].
 
