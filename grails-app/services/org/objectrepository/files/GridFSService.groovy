@@ -53,6 +53,8 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     List<Orfile> findAllByNa(def na, def params) {
+
+        // Todo: add sorting
         mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(params.offset).collect {
             new Orfile(it)
         }

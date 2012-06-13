@@ -19,10 +19,10 @@
     <table>
         <thead>
         <tr>
-            <g:sortableColumn property="metadata.access"
-                              title="${message(code: 'orfile.access.label', default: 'Access')}"/>
             <g:sortableColumn property="metadata.label"
                               title="${message(code: 'orfile.label.label', default: 'Label')}"/>
+            <g:sortableColumn property="metadata.access"
+            title="${message(code: 'orfile.access.label', default: 'Access')}"/>
             <g:sortableColumn property="metadata.pid" title="${message(code: 'orfile.pid.label', default: 'Pid')}"/>
             <g:sortableColumn property="metadata.lastUploadDate"
                               title="${message(code: 'orfile.pid.label', default: 'Last uploaddate')}"/>
@@ -34,8 +34,8 @@
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
                 <td><g:link action="show"
-                            id="${orfileInstance.id}">${orfileInstance.metadata.access}</g:link></td>
-                <td>${orfileInstance.metadata.label}</td>
+                            id="${orfileInstance.id}">${orfileInstance.metadata.label}</g:link></td>
+                <td>${orfileInstance.metadata.access}</td>
                 <td>${orfileInstance.metadata.pid}</td>
                 <td>${orfileInstance.metadata.lastUploadDate}</td>
                 <td><g:link action="download" id="${orfileInstance.id}">metadata</g:link></td>

@@ -7,6 +7,7 @@ class Metadata {
     String bucket = "Bucket"
     String na
     String pid
+    String lid
     String resolverBaseUrl
     String access
     String fileSet

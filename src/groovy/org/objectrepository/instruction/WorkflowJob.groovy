@@ -349,8 +349,8 @@ abstract class WorkflowJob {
             }) {
                 log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
             } else {
-                log.info id(document) + "Stagingfile successfull. Remove document."
-                delete(document)
+                log.info id(document) + "Stagingfile successfull."
+                //delete(document)
             }
         }
     }
