@@ -1,4 +1,4 @@
-var q = {fileSet:'/Users/lwo/object-repository/object-repository-admin/test/resources/home/12345/folder_of_cpuser/test-collection'};
+var q = {fileSet:'/test/resources/home/12345/folder_of_cpuser/test-collection'};
 
 var m = function () {
     this.workflow.forEach(
