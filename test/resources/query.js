@@ -21,8 +21,8 @@ var r = function (key, values) {
         total += task.total;
         success += task.success;
         failure += task.failure;
-        if (task.time > 0) time += task.time;
+        time += task.time;
     }
 
-    return { total:total, success:success, failure:failure };
+    return { total:total, success:success, failure:failure, time:time };
 };
