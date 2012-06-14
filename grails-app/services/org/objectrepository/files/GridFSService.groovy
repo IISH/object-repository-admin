@@ -132,7 +132,7 @@ class GridFSService {
     }
 
     private metadata(Orfile orFile) {
-        orFile.metadata.cache.add(0, orFile)
+        //orFile.metadata.cache.add(0, orFile)
         return {
             orFile.metadata.cache.each { def cache ->
                 "$cache.metadata.bucket" {

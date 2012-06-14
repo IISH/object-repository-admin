@@ -57,9 +57,9 @@
                 <span id="files-label" class="property-label"><g:message code="files.label"
                                                                          default="Files"/></span>
                 <span class="property-value" aria-labelledby="files-label">
-                    <%
+                    %{--<%
                         orfileInstance.metadata.cache.add(0, orfileInstance)
-                    %>
+                    %>--}%
                     <g:each in="${orfileInstance.metadata.cache}" var="cache">
                         <table style="text-align: left">
                             <caption style="text-align: left;font-weight: bold;"><g:message
