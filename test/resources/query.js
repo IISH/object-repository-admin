@@ -23,7 +23,7 @@ var r = function (key, values) {
         failure += task.failure;
         time += task.time;
     }
-    var average = ( time == 0 ) ? 0 : time / success;
+    var average = ( success == 0 ) ? 0 : time / success;
 
     return { total:total, success:success, failure:failure, average:average };
 };
