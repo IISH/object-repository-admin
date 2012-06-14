@@ -27,7 +27,7 @@ abstract class Tasking {
         }
     }
 
-    private int _total = -1
+    protected int _total = -1
 
     List getTasks() {
         def program = (plan) ?: parent.plan
