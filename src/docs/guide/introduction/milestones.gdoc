@@ -16,6 +16,10 @@ The Mets will have:
 
 {note}Mets can already be ingested by a content provider.{note}
 
+A alternative method that will be introduced is the allowance for an order number and OBJID in the XML processing
+instruction itself per staged file. This is the alternative "light" way to express a logical relationship between data
+and will create a Mets document automatically at post-ingest time.
+
 h3. Rendering of the Mets
 Once ingested, the Mets will be used:
 * by the derivative service to produce a multipage PDF
