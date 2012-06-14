@@ -25,5 +25,5 @@ var r = function (key, values) {
     }
     var average = ( time == 0 ) ? 0 : time / success;
 
-    return { total:total, success:success, failure:failure, time:time };
+    return { total:total, success:success, failure:failure, average:average };
 };
