@@ -21,9 +21,8 @@ var r = function (key, values) {
         total += task.total;
         success += task.success;
         failure += task.failure;
-        if (task.time) time += task.time;
+        if (task.time > 0) time += task.time;
     }
-    var average = (success == 0) ? 0 : time / success;
 
-    return { total:total, success:success, failure:failure, average:average };
+    return { total:total, success:success, failure:failure };
 };
