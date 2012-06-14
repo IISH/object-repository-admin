@@ -32,6 +32,9 @@ produce a presentation.{note}
 h3. Video and audio derivative
 Will have a service extension to produce lower level copies and preview renderings of audio and video content.
 
+h3. Statistics
+[For reports and alerts.|https://jira.socialhistoryservices.org/browse/OR-8]
+
 h2. Version 3 alpha
 As from December 2013
 Ready for production
