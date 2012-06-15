@@ -31,7 +31,7 @@ class Profile {
         contentType(blank: false)
         resolverBaseUrl(blank: false)
         action(inList: ['upsert', 'add', 'update', 'delete'])
-        autoGeneratePIDs(inList: ['none', 'uuid', 'lid', 'filename'])
+        autoGeneratePIDs(inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
     }
