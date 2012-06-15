@@ -5,7 +5,6 @@ import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
-import com.mongodb.gridfs.GridFSFile
 
 /**
  * GridFSService
@@ -32,16 +31,14 @@ class GridFSService {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
-        GridFS gridFS = new GridFS(db, bucket)
+        def gridFS = new GridFS(db, bucket)
         gridFS.findOne(new BasicDBObject("metadata.pid", pid))
     }
 
     Orfile findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        def orfile = mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid)
-        if (orfile) orfile.metadata.cache.add(0, orfile)
-        orfile
+        mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid)
     }
 
     /**
@@ -79,7 +76,7 @@ class GridFSService {
         collection.update(_id: orFile.id, update, false, false)
     }
 
-    void increment(GridFSFile file, String bucket) {
+    void increment(def file, String bucket) {
         def update = new Update().inc("metadata.timesAccessed", 1).getUpdateObject()
         final collection = mongo.getDB(OR + file.metadata.na).getCollection(bucket + ".files")
         collection.update(_id: file.id, update, false, false)
@@ -132,7 +129,6 @@ class GridFSService {
     }
 
     private metadata(Orfile orFile) {
-        //orFile.metadata.cache.add(0, orFile)
         return {
             orFile.metadata.cache.each { def cache ->
                 "$cache.metadata.bucket" {
