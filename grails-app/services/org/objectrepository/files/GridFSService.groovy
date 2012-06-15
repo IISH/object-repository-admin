@@ -136,7 +136,7 @@ class GridFSService {
         return {
             orFile.metadata.cache.each { def cache ->
                 "$cache.metadata.bucket" {
-                    final _resolveUrl = grailsApplication.config.resolveBaseUrl + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid
+                    final _resolveUrl = grailsApplication.config.serverURL + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid
                     resolveUrl _resolveUrl
                     Metadata.whiteList.each { String key ->
                         out << element(cache, key)

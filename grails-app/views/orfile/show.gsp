@@ -68,7 +68,7 @@
 
                             <tr>
                                 <td><g:message code="file.link" default="Location"/></td>
-                                <td><g:set var="resolveBaseUrl" value="${grailsApplication.config.resolveBaseUrl + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid}"/>
+                                <td><g:set var="resolveBaseUrl" value="${grailsApplication.config.grails.serverURL + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid}"/>
                                 <a href="${resolveBaseUrl}" target="_blank">${resolveBaseUrl}</a>
                                 </td>
                             </tr>

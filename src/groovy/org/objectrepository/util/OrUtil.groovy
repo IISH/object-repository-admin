@@ -2,6 +2,7 @@ package org.objectrepository.util
 
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.objectrepository.files.Orfile
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Task
 import org.objectrepository.security.Bucket

@@ -9,7 +9,7 @@
 
 <body>
 <a href="#list-orfile" class="skip" tabindex="-1"><g:message code="default.link.skip.label"
-                                                              default="Skip to content&hellip;"/></a>
+                                                             default="Skip to content&hellip;"/></a>
 
 <g:render template="/layouts/header" model="[instance: orfileInstanceList]"/>
 
@@ -19,10 +19,11 @@
     <table>
         <thead>
         <tr>
+            <th>Type</th>
             <g:sortableColumn property="metadata.label"
                               title="${message(code: 'orfile.label.label', default: 'Label')}"/>
             <g:sortableColumn property="metadata.access"
-            title="${message(code: 'orfile.access.label', default: 'Access')}"/>
+                              title="${message(code: 'orfile.access.label', default: 'Access')}"/>
             <g:sortableColumn property="metadata.pid" title="${message(code: 'orfile.pid.label', default: 'Pid')}"/>
             <g:sortableColumn property="metadata.lastUploadDate"
                               title="${message(code: 'orfile.pid.label', default: 'Last uploaddate')}"/>
@@ -32,7 +33,19 @@
         <tbody>
         <g:each in="${orfileInstanceList}" status="i" var="orfileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-
+                <td>
+                    <g:set var="hasPreview"
+                           value="${orfileInstance.metadata.cache.find {
+                                       it.metadata.bucket == 'level3' && it.contentType.startsWith('image')
+                                   }}"/>
+                    <g:if test="${hasPreview}">
+                        <img src="${grailsApplication.config.grails.serverURL + "/file/level3/" + orfileInstance.metadata.pid}" width="100px"/>
+                    </g:if>
+                    <g:else>
+                        <g:set var="file" value="${orfileInstance.contentType.split('/')[0] + '.png'}"/>
+                       <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
+                    </g:else>
+                </td>
                 <td><g:link action="show"
                             id="${orfileInstance.id}">${orfileInstance.metadata.label}</g:link></td>
                 <td>${orfileInstance.metadata.access}</td>
