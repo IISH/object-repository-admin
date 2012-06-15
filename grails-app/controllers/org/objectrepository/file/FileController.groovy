@@ -30,9 +30,13 @@ class FileController {
         if (file) {
             response.contentType = file.contentType
             response.contentLength = file.length
+            log.info "Writing file to browser"
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
+            log.info "Flushing"
             response.outputStream.flush()
+            log.info "Increment statistics"
             gridFSService.increment(file, params.bucket)
+            log.info "Done"
         }
     }
 
