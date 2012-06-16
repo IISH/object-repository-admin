@@ -13,12 +13,12 @@
                     <tr>
                         <td class="left"><g:message code="${task.name}.0.info"/></td>
                         <td>
-                            <div class="ui-progress-bar ui-container transition" id="progress_bar_tasks">
+                            <div class="ui-progress-bar ui-container transition">
                                 <div class="ui-progress" style="width: ${total}%; ">
-                                    <span class="ui-label">${task.processed} / ${task.total}</span>
+                                    <span class="ui-label">success: ${task.success}; failure: ${task.failure}; total: ${task.processed} / ${task.total}</span>
                                 </div>
                             </div>
-                            <p>Success: ${task.success}; failure: ${task.failed}</p>
+                            <p></p>
                         </td>
                     </tr>
                 </g:if>
