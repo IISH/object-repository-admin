@@ -63,10 +63,20 @@
                                     code="policy.access.${cache.metadata.bucket}"
                                     default="Bucket name"/></caption>
 
+                            <g:if test="${cache.metadata.pidUrl}">
+                                <tr>
+                                    <td><g:message code="file.pidurl" default="Persistent url"/></td>
+                                    <td>
+                                        <a href="${cache.metadata.pidUrl}" target="_blank">${cache.metadata.pidUrl}</a>
+                                    </td>
+                                </tr>
+                            </g:if>
+
                             <tr>
-                                <td><g:message code="file.link" default="Location"/></td>
-                                <td><g:set var="resolveBaseUrl" value="${grailsApplication.config.grails.serverURL + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid}"/>
-                                <a href="${resolveBaseUrl}" target="_blank">${resolveBaseUrl}</a>
+                                <td><g:message code="file.link" default="Local url"/></td>
+                                <td><g:set var="resolveBaseUrl"
+                                           value="${grailsApplication.config.grails.serverURL + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid}"/>
+                                    <a href="${resolveBaseUrl}" target="_blank">${resolveBaseUrl}</a>
                                 </td>
                             </tr>
 

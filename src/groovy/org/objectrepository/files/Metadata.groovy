@@ -9,6 +9,8 @@ class Metadata {
     String pid
     String lid
     String resolverBaseUrl
+    String pidUrl
+    String pidType
     String access
     String fileSet
     String label
@@ -20,6 +22,7 @@ class Metadata {
     List<Orfile> cache
 
     static List<String> whiteList = [
+            'pidUrl',
             'filename',
             'length',
             'md5',

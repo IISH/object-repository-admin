@@ -12,9 +12,12 @@
             <img class="smiley"
                  src="${resource(dir: 'images/or', file: instance.task.statusCode + '.gif')}"
                  alt="smiley image" title="${instance.task.name}"/>
-            <g:if test="${instance.ingesting}"><p style="text-align: center">
+            <g:if test="${instance.task.statusCode == 900}">
+                            <p style="text-align: center">Tasks completed</p>
+                        </g:if><g:elseif test="${instance.ingesting}"><p style="text-align: center">
                 <g:link controller="stagingfile" params="[orid: instance.id]">Monitor file progress</g:link></p>
-            </g:if>
+            </g:elseif>
+
 
         %{--Where the instruction\file are undergoing service node processing we present the progress here.
         The instruction will be showing the amount of files processed.

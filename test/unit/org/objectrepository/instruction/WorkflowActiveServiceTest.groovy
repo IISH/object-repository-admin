@@ -123,7 +123,7 @@ class WorkflowActiveServiceTest {
         document.workflow = [task1, task2]
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
-        assert document.task.statusCode == 800
+        assert document.task.statusCode == 900
     }
 
     void testTask800Next() {
@@ -163,7 +163,7 @@ class WorkflowActiveServiceTest {
         document.parent.plan = OrUtil.availablePlans(config.plans)
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
-        assert document.task.statusCode == 800
+        assert document.task.statusCode == 900
         document.parent.plan.each { plan ->
             def t = document.workflow.find {
                 it.info == plan
@@ -188,7 +188,7 @@ class WorkflowActiveServiceTest {
         ] as List<Task>
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
-        assert document.task.statusCode == 800
+        assert document.task.statusCode == 900
         def taskList = document.task.info.split(",")
         document.parent.plan.each { plan ->
             def t = document.workflow.find {
@@ -252,7 +252,7 @@ class WorkflowActiveServiceTest {
         document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.plans)]   // todo : should be tasks
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
-        assert document.task.statusCode == 800
+        assert document.task.statusCode == 900
     }
 
     void testChange() {
