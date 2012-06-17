@@ -88,7 +88,7 @@ class WorkflowInitiateService extends WorkflowJob {
             int count900 = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
             if (countStagingfiles == count900) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
-                instructionInstance.task.statusCode == 900
+                instructionInstance.task.statusCode = 900
                 save(instructionInstance)
             }
         }
