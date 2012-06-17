@@ -89,7 +89,7 @@ class WorkflowInitiateService extends WorkflowJob {
             if (countStagingfiles == count900) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
                 instructionInstance.task.statusCode == 900
-                saveWorkflow(instructionInstance)
+                save(instructionInstance)
             }
         }
     }
