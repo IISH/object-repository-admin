@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main"/>
+    <meta name="layout" content="${System.getProperty("layout")}"/>
     <title></title>
     <script type="text/javascript">
         jQuery(document).ready(function () {

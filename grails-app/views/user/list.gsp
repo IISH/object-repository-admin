@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main"/>
+    <meta name="layout" content="${System.getProperty("layout")}"/>
     <title><g:message code="default.list.label" args="[entityName]"/></title>
 </head>
 

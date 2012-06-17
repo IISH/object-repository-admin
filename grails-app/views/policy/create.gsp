@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-    <meta name="layout" content="main">
+    <meta name="layout" content="${System.getProperty("layout")}">
     <g:set var="entityName" value="${message(code: 'policy.label', default: 'Policy')}"/>
     <title><g:message code="default.create.label" args="[entityName]"/></title>
 </head>
