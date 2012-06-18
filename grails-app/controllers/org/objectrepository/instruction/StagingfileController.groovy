@@ -32,6 +32,13 @@ class StagingfileController {
         }
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
+
+        /*def stagingfileInstanceList = Stagingfile.collection.find(
+                fileSet : instructionInstance.fileSet , workflow: [$elemMatch: [name: 'StagingfileIngestMaster']]
+        ).collect() {
+            it as Stagingfile
+        }*/
+
         def stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
         if (params.view) {
             render(view: params.view, model: [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance])

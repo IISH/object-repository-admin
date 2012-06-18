@@ -30,18 +30,6 @@ abstract class Tasking {
     //protected int _total = -1
 
     List getTasks() {
-        /*def program = (plan) ?: parent.plan
-        program.collect {
-            def controllerAction = Pattern.compile("([A-Z])").matcher(it).replaceAll(" \$1").trim().toLowerCase().split("\\s", 2)
-            final String collection = controllerAction[0]
-            int total = (_total == -1) ? mongo.getDB('sa')."$collection".count([fileSet: fileSet]) : _total
-            int working = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$lt: 700]]]])
-            int failed = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$gt: 699, $lt: 800]]]])
-            int success = mongo.getDB('sa')."$collection".count([fileSet: fileSet, workflow: [$elemMatch: ['name': it, 'statusCode': [$gt: 799]]]])
-            int processed = success + failed
-            [name: it, total: total, working: working, success: success, failed: failed, processed: processed]
-        }*/
-
         MapReduceOutput output = mongo.getDB('sa').stagingfile.mapReduce(
                 """
             function map() {
