@@ -215,7 +215,12 @@ abstract class WorkflowJob {
      */
     void retry(def document) {
 
-        if (document.task.exitValue == 240) {
+        if (document.task.exitValue == 230) {
+            log.info id(document) + "Freezing task. Severe problem and should not continue."
+            document.task.statusCode = 797
+            nextWorkflow(document)
+        }
+        else if (document.task.exitValue == 240) {
             log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."
             document.task.statusCode = 798
             nextWorkflow(document)
