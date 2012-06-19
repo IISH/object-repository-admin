@@ -35,6 +35,14 @@
                                                                                    field="metadata.pid"/></span>
         </li>
 
+        <g:if test="${orfileInstance.metadata.lid}">
+            <li class="fieldcontain">
+                <span id="lid-label" class="property-label"><g:message code="files.lid.label" default="Pid"/></span>
+                <span class="property-value" aria-labelledby="lid-label"><g:fieldValue bean="${orfileInstance}"
+                                                                                       field="metadata.lid"/></span>
+            </li>
+        </g:if>
+
         <li class="fieldcontain">
             <span id="resolverBaseUrl-label" class="property-label"><g:message code="files.resolverBaseUrl.label"
                                                                                default="Resolver Base Url"/></span>
