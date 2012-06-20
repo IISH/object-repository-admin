@@ -4,7 +4,7 @@
     <g:message code="${statusCode}.info"/>
 </g:if>
 <g:else>
-    <g:link style="color:red" controller="stagingfile" params="[orid: instance.id]"><g:message
+    <g:link style="color:red" controller="stagingfile" params="[orid: instance.id, filter_status:'failure']"><g:message
             code="instruction.hasNoValidFiles" args="[countInvalidFiles]"/></g:link>
 </g:else>
 <g:if test="${instance.task.info}">

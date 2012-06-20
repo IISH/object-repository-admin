@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action:'listremote', filter:(params.filter)?:'working', order:(params.order)?:'desc',
+<g:formRemote name="listremote" update="updateList" url="[action:'listremote', order:(params.order)?:'desc',
     sort:(params.sort)?:'task.statusCode',
     offset:(params.offset)?:0]"  on302="javascript:document.location='.'"/>
 </body>

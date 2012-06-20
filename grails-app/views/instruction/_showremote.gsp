@@ -3,7 +3,7 @@
 
 %{--When the instruction's files are ingested, we can show progress for each plan.--}%
 <div class="body" id="updateList">
-    <g:if test="${ instructionInstance.ingesting || instructionInstance.task.statusCode == 900 }">
+    <g:if test="${instructionInstance.ingesting || instructionInstance.task.statusCode == 900}">
         <table>
             <tbody>
             <g:each in="${instructionInstance.tasks}" var="task">
@@ -15,9 +15,19 @@
                         <td>
                             <div class="ui-progress-bar ui-container transition">
                                 <div class="ui-progress" style="width: ${total}%; ">
-                                    <span class="ui-label">success: ${task.success}; failure: ${task.failure}; total: ${task.processed} / ${task.total}</span>
+                                    %{--<span class="ui-label">success: ${task.success}; failure: ${task.failure}; total: ${task.processed} / ${task.total}</span>--}%
+                                    <span class="ui-label">success: <g:link controller="stagingfile"
+                                                                            action="list"
+                                                                            params="[orid: instructionInstance.id, 'filter_status':'success','filter_name':$task.name]">${task.success}</g:link>; failure: <g:link
+                                            controller="stagingfile"
+                                            action="list"
+                                            params="[orid: instructionInstance.id, 'filter_status':'failure','filter_name':$task.name]">${task.failure}</g:link>; total: <g:link
+                                            controller="stagingfile"
+                                            action="list"
+                                            params="[orid: instructionInstance.id]">${task.processed} / ${task.total}</g:link></span>
                                 </div>
                             </div>
+
                             <p></p>
                         </td>
                     </tr>
@@ -44,7 +54,8 @@
             </tbody>
         </table>
     </g:elseif>
-    <g:else><g:render template="/layouts/status" model="[statusCode:statusCode,instance:instructionInstance]"/></g:else>
+    <g:else><g:render template="/layouts/status"
+                      model="[statusCode: statusCode, instance: instructionInstance]"/></g:else>
 </div>
 
 

@@ -33,13 +33,32 @@ class StagingfileController {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
 
-        /*def stagingfileInstanceList = Stagingfile.collection.find(
-                fileSet : instructionInstance.fileSet , workflow: [$elemMatch: [name: 'StagingfileIngestMaster']]
-        ).collect() {
-            it as Stagingfile
+        def stagingfileInstanceList
+        def elemMatch = null
+        if (params.filter_name) {
+            if (params.filter_status) {
+                elemMatch = (params.filter_status == 'success') ? [name: params.filter_name, statusCode: [$gt: 799]] : [name: params.filter_name, statusCode: [$gt: 699, $lt: 800]]
+            } else {
+                elemMatch = [name: params.filter_name]
+            }
+        } else {
+            if (params.filter_status) {
+                elemMatch = (params.filter_status == 'success') ? [statusCode: [$gt: 799]] : [statusCode: [$gt: 699, $lt: 800]]
+            }
+        }
+        /*def elemMatch = (params.filter_name) ? [name: params.filter_name] : []
+        if (params.filter_status) {
+            elemMatch << (params.filter_status == 'success') ? [statusCode: [$gt: 799]] : [statusCode: [$gt: 699, $lt: 800]]
         }*/
+        if (elemMatch) {
+            def query = [fileSet: instructionInstance.fileSet, workflow: [$elemMatch: elemMatch]]
+            stagingfileInstanceList = Stagingfile.collection.find(query).collect() {
+                it as Stagingfile
+            }
+        } else {
+            stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
+        }
 
-        def stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
         if (params.view) {
             render(view: params.view, model: [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance])
         }

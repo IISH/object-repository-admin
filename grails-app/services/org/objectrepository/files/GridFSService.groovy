@@ -1,10 +1,12 @@
 package org.objectrepository.files
 
-import com.mongodb.BasicDBObject
+import com.mongodb.DBObject
+import com.mongodb.QueryBuilder
 import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
+import com.mongodb.BasicDBObject
 
 /**
  * GridFSService
@@ -32,15 +34,17 @@ class GridFSService {
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
         def gridFS = new GridFS(db, bucket)
-        //def query = QueryBuilder.start("metadata.pid").is(pid).or(new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
-        gridFS.findOne(new BasicDBObject('metadata.pid', pid))
+        gridFS.findOne(queryPidOrLid(pid))
     }
 
     Orfile findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        //def query = QueryBuilder.start("metadata.pid").is(pid).or(new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
-        mongo.getDB(OR + na).getCollection("master.files").findOne(new BasicDBObject('metadata.pid', pid))
+        mongo.getDB(OR + na).getCollection("master.files").findOne(queryPidOrLid(pid))
+    }
+
+    private static DBObject queryPidOrLid(String pid) {
+        QueryBuilder.start().or(new BasicDBObject('metadata.pid', pid), new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
     }
 
     /**

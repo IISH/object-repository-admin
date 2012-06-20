@@ -2,7 +2,6 @@ package org.objectrepository.util
 
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.objectrepository.files.Orfile
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Task
 import org.objectrepository.security.Bucket
@@ -218,6 +217,11 @@ class OrUtil {
         def m = pid =~ na_pattern
         if (m.size() == 0) return null
         m[0].replace("/", "").replace(".", "")
+    }
+
+    static String stripNa(String lid) {
+        String na = getNa(lid)
+        lid.substring(na.length() + 1)
     }
 
     static void setInstructionPlan(def instruction) {
