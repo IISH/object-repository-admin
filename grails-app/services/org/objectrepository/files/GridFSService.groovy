@@ -1,7 +1,6 @@
 package org.objectrepository.files
 
 import com.mongodb.BasicDBObject
-import com.mongodb.QueryBuilder
 import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
@@ -33,14 +32,15 @@ class GridFSService {
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
         def gridFS = new GridFS(db, bucket)
-        def query = QueryBuilder.start("metadata.pid").is(pid).or(new BasicDBObject("metadata.lid", pid)).get()
-        gridFS.findOne(query)
+        //def query = QueryBuilder.start("metadata.pid").is(pid).or(new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
+        gridFS.findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     Orfile findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid)
+        //def query = QueryBuilder.start("metadata.pid").is(pid).or(new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
+        mongo.getDB(OR + na).getCollection("master.files").findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     /**
