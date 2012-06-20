@@ -50,7 +50,9 @@
                 <td><g:link action="show"
                             id="${orfileInstance.id}">${orfileInstance.metadata.label}</g:link></td>
                 <td>${orfileInstance.metadata.access}</td>
-                <td>${orfileInstance.metadata.pid}</td>
+                <td>${orfileInstance.metadata.pid}
+                    <g:if test="${orfileInstance.metadata.lid}"><br/>${orfileInstance.metadata.lid}</g:if>
+                </td>
                 <td>${orfileInstance.metadata.lastUploadDate}</td>
                 <td><g:link action="download" id="${orfileInstance.id}">metadata</g:link></td>
             </tr>
