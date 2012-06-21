@@ -13,7 +13,9 @@
 
 <g:render template="/layouts/header" model="[instance: orfileInstanceList]"/>
 
-<p><g:link action="download">Download metadata</g:link></p>
+<p><g:link action="download">Download metadata</g:link> |
+    Show: <g:select name="label" from="${labels}" value="${params.label}"
+                    onchange="document.location='?label='+this.value + '&offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}'"/></p>
 
 <div id="list-orfile" class="content scaffold-list" role="main">
     <table>

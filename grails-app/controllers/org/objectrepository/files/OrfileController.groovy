@@ -21,8 +21,15 @@ class OrfileController {
         params.offset = params.offset ? params.int('offset') : 0
         params.order = !params.order || params.order == "asc" ? 1 : -1
         params.sort = params.sort ?: "_id"
+        if (params.label && params.label == 'everything') params.label = null
         def orfileInstanceList = gridFSService.findAllByNa(springSecurityService.principal.na, params)
-        [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService.countByNa(springSecurityService.principal.na)]
+        def labels = ['everything']
+        gridFSService.labels(springSecurityService.principal.na).each{
+            labels << it.label
+        }
+        [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
+                .countByNa(springSecurityService.principal.na, params),
+                labels: labels]
     }
 
     def show() {

@@ -7,6 +7,7 @@ import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
 import com.mongodb.BasicDBObject
+import com.mongodb.MapReduceOutput
 
 /**
  * GridFSService
@@ -58,13 +59,15 @@ class GridFSService {
     List<Orfile> findAllByNa(def na, def params) {
 
         // Todo: add sorting
-        mongo.getDB(OR + na).getCollection("master.files").find().limit(params.max).skip(params.offset).collect {
+        final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
+        mongo.getDB(OR + na).getCollection("master.files").find(query).limit(params.max).skip(params.offset).collect {
             new Orfile(it)
         }
     }
 
-    int countByNa(def na) {
-        mongo.getDB(OR + na).getCollection("master.files").count()
+    int countByNa(def na, def params) {
+        final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
+        mongo.getDB(OR + na).getCollection("master.files").count(query)
     }
 
     /**
@@ -160,5 +163,37 @@ class GridFSService {
     boolean delete(String pid) {
         // this method is not implemented
         false
+    }
+
+    def labels(String na) {
+
+        MapReduceOutput output = mongo.getDB(OR + na)."master.files".mapReduce(
+                """
+        function map() {
+            var label = this.metadata.label;
+            emit(label, { total:1 });
+        }
+                """,
+                """
+        function reduce(key, values) {
+            var total = 0;
+            var labels = [];
+            for (var i = 0; i < values.length; i++) {
+                var value = values[i];
+                total += value.total;
+            }
+            return { total:total };
+        }
+                """,
+                "mrlabel",
+                [:] // All documents
+        )
+
+        output.results().collect {
+            [
+                    label: it._id,
+                    total: it.value.total as Integer
+            ]
+        }
     }
 }
