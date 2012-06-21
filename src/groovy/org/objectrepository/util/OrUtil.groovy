@@ -185,24 +185,22 @@ class OrUtil {
      * @param xmlDocumentHeader
      * @param instructionAttributes
      */
-    static void putAll(def workflow, def dbDocument, Map fsDocument) {
+    static void putAll(def workflow, Map fsDocument) {
 
         println("Loading instruction: ")
         def plans = availablePlans(workflow)
+        def p = []
         fsDocument.each {
             if (it.key == 'plan') {
-                dbDocument.plan = []
                 it.value.split(',').each { String plan ->
                     if (plan in plans) {
                         println("Add plan " + plan)
-                        dbDocument.plan << plan
+                        p << plan
                     }
                 }
-            } else {
-                println(it.key + "=" + it.value)
-                dbDocument.setProperty(it.key, it.value)
             }
         }
+        fsDocument.plan = p
     }
 
     /**

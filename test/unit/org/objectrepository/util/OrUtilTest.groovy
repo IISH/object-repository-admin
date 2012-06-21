@@ -5,7 +5,6 @@ import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
 import groovy.io.FileType
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.objectrepository.instruction.Instruction
 
 @TestMixin(GrailsUnitTestMixin)
 class OrUtilTest {
@@ -76,12 +75,9 @@ class OrUtilTest {
     void testPutAll() {
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
-        final String label = 'Titel in Database should remain here'
-        Instruction document = [label: label]
-        OrUtil.putAll(config.plans, document, instructionFromFile)
-        assert document.plan.size() == 2
-        assert document.action == 'upsert'
-        assert document.label == label
+        OrUtil.putAll(config.plans, instructionFromFile)
+        assert instructionFromFile.plan.size() == 2
+        assert instructionFromFile.action == 'upsert'
     }
 
     /**

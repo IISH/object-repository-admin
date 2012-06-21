@@ -13,6 +13,7 @@ class DashboardController {
 
     def springSecurityService
     def ldapUserDetailsManager
+    def gridFSService
 
     /**
      * See if we need to create a user
@@ -47,5 +48,6 @@ class DashboardController {
                 springSecurityService.reauthenticate(springSecurityService.principal.username)
             }
         }
+        //[contentTypes: gridFSService.stats(na)]
     }
 }

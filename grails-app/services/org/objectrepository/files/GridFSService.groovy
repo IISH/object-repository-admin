@@ -196,4 +196,54 @@ class GridFSService {
             ]
         }
     }
+
+    def stats(String na) {
+        if (!na) na = "0"
+        MapReduceOutput output = mongo.getDB(OR + na)."master.files".mapReduce(
+                """
+        function map() {
+            emit(this.contentType, { total:1, length:this.length, timesAccessed:this.metadata.timesAccessed });
+        }
+        """,
+                """
+        function reduce(key, values) {
+            var total = 0;
+            var timesAccessed = 0;
+            var length = 0;
+            var smallest = 0;
+            var largest = 0;
+            for (var i = 0; i < values.length; i++) {
+                var value = values[i];
+                total += value.total;
+                timesAccessed += value.timesAccessed;
+                length += value.length;
+                if (value.length < smallest) smallest = value.length;
+                if (value.length > largest) largest = value.length;
+            }
+            var average = length / total;
+            return { total:total, timesAccessed:timesAccessed, length:length, average:average, smallest:smallest, largest:largest };
+        }
+        """,
+                "mrstats",
+                [:])
+
+        int length = 0
+        int total = 0
+        def results = output.results().collect {
+            length += it.value.length
+            total += it.value.total
+            [
+                    contentType: it._id,
+                    length: it.value.length as Integer,
+                    total: it.value.total as Integer,
+                    timesAccessed: it.value.timesAccessed as Integer,
+                    smallest: it.value.smallest,
+                    largest: it.value.largest,
+                    average: it.value.average
+            ]
+
+        }
+        results << [length: length, total: total]
+        results
+    }
 }

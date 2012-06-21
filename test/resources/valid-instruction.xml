@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <instruction xmlns="http://objectrepository.org/instruction/1.0/" action="add" access="open" contentType="image/jpg" na="12345"
-     resolverBaseUrl="http://hdl.handle.net/" autoGeneratePIDs="lid"
+     resolverBaseUrl="http://hdl.handle.net/" autoGeneratePIDs='lid'
     label="I was put in this folder."
     fileSet="/folder">
     <task>
