@@ -24,8 +24,8 @@ class OrfileController {
         if (params.label && params.label == 'everything') params.label = null
         def orfileInstanceList = gridFSService.findAllByNa(springSecurityService.principal.na, params)
         def labels = ['everything']
-        gridFSService.labels(springSecurityService.principal.na).each{
-            labels << it.label
+        gridFSService.labels(springSecurityService.principal.na).each {
+            if (it.label) labels << it.label
         }
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(springSecurityService.principal.na, params),

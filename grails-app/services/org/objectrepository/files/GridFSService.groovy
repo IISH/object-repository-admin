@@ -1,13 +1,14 @@
 package org.objectrepository.files
 
+import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
+import com.mongodb.MapReduceOutput
 import com.mongodb.QueryBuilder
 import com.mongodb.gridfs.GridFS
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
-import com.mongodb.BasicDBObject
-import com.mongodb.MapReduceOutput
+import com.mongodb.gridfs.GridFSDBFile
 
 /**
  * GridFSService
@@ -61,8 +62,25 @@ class GridFSService {
         // Todo: add sorting
         final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
         mongo.getDB(OR + na).getCollection("master.files").find(query).limit(params.max).skip(params.offset).collect {
-            new Orfile(it)
+            parseOrFile(it)
         }
+    }
+
+    Orfile parseOrFile(def document) {
+        Orfile orfile = null
+        if (document instanceof GridFSDBFile) // Sometimes this oddity happens... returns an error: Could not find matching constructor for: org.objectrepository.files.Orfile(com.mongodb.gridfs.GridFSDBFile)
+        {
+            orfile = new Orfile()
+            ["_id", "filename", "contentType", "length", "chunkSize",
+                    "uploadDate", "aliases", "md5", "metaData"].each {
+
+            }.each { p ->
+                orfile.setProperty(p, document.getProperty(p))
+            }
+        } else {
+            orfile = new Orfile(document)
+        }
+        orfile
     }
 
     int countByNa(def na, def params) {
@@ -122,7 +140,7 @@ class GridFSService {
             comment << comments
             orfiles(orfileAttributes) {
                 cursor.each {
-                    final Orfile orFile = new Orfile(it)
+                    final Orfile orFile = parseOrFile(it)
                     orfile {
                         Orfile.whiteList.each { String key ->
                             out << element(orFile, key)

@@ -13,9 +13,11 @@
 
 <g:render template="/layouts/header" model="[instance: orfileInstanceList]"/>
 
+<g:set var="filter" value="offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}"/>
+
 <p><g:link action="download">Download metadata</g:link> |
     Show: <g:select name="label" from="${labels}" value="${params.label}"
-                    onchange="document.location='?label='+this.value + '&offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}'"/></p>
+                    onchange="document.location='?label='+this.value + '&${filter}'"/></p>
 
 <div id="list-orfile" class="content scaffold-list" role="main">
     <table>
@@ -49,8 +51,7 @@
                         <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
                     </g:else></g:link>
                 </td>
-                <td><g:link action="show"
-                            id="${orfileInstance.id}">${orfileInstance.metadata.label}</g:link></td>
+                <td><a href="?label=${orfileInstance.metadata.label + '&' + filter}">${orfileInstance.metadata.label}</a></td>
                 <td>${orfileInstance.metadata.access}</td>
                 <td>${orfileInstance.metadata.pid}
                     <g:if test="${orfileInstance.metadata.lid}"><br/>${orfileInstance.metadata.lid}</g:if>
