@@ -64,7 +64,7 @@
     </table>
 
     <div class="pagination">
-        <g:paginate total="${orfileInstanceListTotal}"/>
+        <g:paginate total="${orfileInstanceListTotal}" params="[label:params.label]" />
     </div>
 </div>
 </body>
