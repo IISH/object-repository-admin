@@ -70,12 +70,12 @@ class GridFSService {
         Orfile orfile = null
         if (document instanceof GridFSDBFile) // Sometimes this oddity happens... returns an error: Could not find matching constructor for: org.objectrepository.files.Orfile(com.mongodb.gridfs.GridFSDBFile)
         {
-            orfile = new Orfile()
+            orfile = new Orfile(metadata: new Metadata(document.metaData))
             ["_id", "filename", "contentType", "length", "chunkSize",
-                    "uploadDate", "aliases", "md5", "metaData"].each {
+                    "uploadDate", "aliases", "md5"].each {
 
             }.each { p ->
-                orfile.setProperty(p, document.getProperty(p))
+                orfile.setProperty(p, document.get(p))
             }
         } else {
             orfile = new Orfile(document)
