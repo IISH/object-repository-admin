@@ -110,7 +110,7 @@ class GridFSService {
     }
 
     Orfile get(String na, String id) {
-        mongo.getDB(OR + na).getCollection("master.files").findOne(_id: id)
+        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne(_id: id))
     }
 
     /**
