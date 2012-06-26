@@ -1,3 +1,22 @@
+h3. Detailed Roadmap (until June 2013)
+
+{table}
+*date* | *function*
+June 2012 | Maintain code on GitHub and documentation
+July - November 2012 (August Vacation period) | Derivative production for video
+July - November 2012 (August Vacation period) | Derivative production for audio
+July 2012 | oauth2 administrative Interface
+July 2012 | Captcha to administrative Interface
+July 2012 | Add IPv6 compatibility to Infrastructure and software
+July 2012 | Maintain and support SOR  helpdesk
+July 2012 | Documenting the Object repository infrastructure
+September 2012 | Content and usage statistics
+November 2012 | Secure Key-based delivery of content ( e.g. for webshop )
+September 2012 |  ‘delete-files’ and/or ‘delete-collections’
+January 2013 | Add METSmaker
+February 2013 | METS to pdf converter
+{table}
+
 h3. Mets production service
 As having structural metadata has a range of advantages, a service to create XML Mets documents ( profile 3 and 5;
 logical map ) is introduced that used simple means to make it: CSV documents.
