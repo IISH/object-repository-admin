@@ -410,7 +410,7 @@ contentType = ['application/x-bytecode.python',
         'x-world/x-vrml',
         'x-world/x-vrt']
 
-def derivative2queue = {
-    audio: 'Video'
-    video: 'Video'
-}
+derivative2queue = [
+        audio: 'Video',
+        video: 'Video'
+]

@@ -42,7 +42,7 @@ class GridFSService {
     Orfile findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        mongo.getDB(OR + na).getCollection("master.files").findOne(queryPidOrLid(pid))
+        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne(queryPidOrLid(pid)))
     }
 
     private static DBObject queryPidOrLid(String pid) {

@@ -361,8 +361,13 @@ abstract class WorkflowJob {
     }
 
     /**
-     * Writes an InstructionType into XML and expresses that as text
+     * message
+     *
+     * Places a message on the queue. It writes an InstructionType into a XML message as text
      * This will be for instruction and files.
+     *
+     * The name of the queue is the same as the task. For the derivative tasks the message may be redirected
+     * by appending the contentType's type to it.
      *
      * We want to be sure the task identifier is in the database before the message queue client
      * receives it. Hence here we save.
@@ -375,7 +380,17 @@ abstract class WorkflowJob {
         document.task.taskKey()
         if (save(document)) {
             try {
-                sendMessage(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document))
+                String queue
+                if (document.task.name.startsWith('StagingfileIngestLevel')) {
+                    def type = document.contentType?.split('/')[0]
+                    def postfix = grailsApplication.config.derivative2queue.find() {
+                        it.key == type
+                    }
+                    queue = (postfix) ? document.task.name + postfix.value : document.task.name
+                } else {
+                    queue = document.task.name
+                }
+                sendMessage(["activemq", queue].join(":"), OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue"
                 next(document)
             } catch (Exception e) {
