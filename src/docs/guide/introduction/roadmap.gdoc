@@ -1,4 +1,4 @@
-{note}This section is to be extended{note}
+{note}This section is to be extended with the milestones that are not any planning{note}
 
 h3. Integrity assurance service
 The object-repository needs a further integrity validation of stored master material. This involves random checksum
@@ -8,4 +8,4 @@ h3. Auto-reparations
 When file degradation is detected reparations should be performed using the replicas; or master.
 
 h3. File identification and validation service
-A service that invokes Fido and DROID for file identification to assist determining and verifying a given contenttype.
+A service that invokes Fido and DROID for file identification to assist determining and verifying a given content type.

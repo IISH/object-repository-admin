@@ -1,7 +1,7 @@
-h3. Detailed Roadmap (until June 2013)
+h3. Detailed milestones (until June 2013)
 
 {table}
-*date* | *function*
+*date* | *milestone*
 June 2012 | Maintain code on GitHub and documentation
 July - November 2012 (August Vacation period) | Derivative production for video
 July - November 2012 (August Vacation period) | Derivative production for audio
@@ -13,11 +13,11 @@ July 2012 | Documenting the Object repository infrastructure
 September 2012 | Content and usage statistics
 November 2012 | Secure Key-based delivery of content ( e.g. for webshop )
 September 2012 |  ‘delete-files’ and/or ‘delete-collections’
-January 2013 | Add METSmaker
-February 2013 | METS to pdf converter
+January 2013 | Add METSmaker*
+February 2013 | METS to pdf converter*
 {table}
 
-h3. Mets production service
+h3. Mets production service*
 As having structural metadata has a range of advantages, a service to create XML Mets documents ( profile 3 and 5;
 logical map ) is introduced that used simple means to make it: CSV documents.
 
@@ -35,7 +35,6 @@ A alternative method that will be introduced is the allowance for an order numbe
 instruction itself per staged file. This is the alternative "light" way to express a logical relationship between data
 and will create a Mets document automatically at post-ingest time.
 
-h3. Rendering of the Mets
 Once ingested, the Mets will be used:
 * by the derivative service to produce a multipage PDF
 * to extend it's given access policy ( open, restricted and closed ) to all master and derivative material
@@ -43,9 +42,3 @@ Once ingested, the Mets will be used:
 
 {note}External services such as Mets viewers can be used to access the Mets document and it's file references to
 produce a presentation.{note}
-
-h3. Video and audio derivative
-Will have a service extension to produce lower level copies and preview renderings of audio and video content.
-
-h3. Statistics
-[For reports and alerts.|https://jira.socialhistoryservices.org/browse/OR-8]
