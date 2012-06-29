@@ -1,6 +1,7 @@
-The files section will show all persisted files.
+The files section will show all persisted files. Using a popup, you can filter by instruction label. Each file can
+ be edited to change the policy and labeling.
 
-Here you can manually after policy and labels.
+!fileset.gif!
 
-In addition, download all technical metadata as XML per file of for all
-the files. The XML does not follow a schema and is subject to change.
+In addition, download all technical metadata as XML per file of for all the files. The XML does not follow a schema
+and is subject to change.
