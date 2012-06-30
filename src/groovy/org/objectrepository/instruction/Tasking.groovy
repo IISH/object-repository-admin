@@ -1,7 +1,8 @@
 package org.objectrepository.instruction
 
+import com.mongodb.BasicDBObject
+import com.mongodb.MapReduceCommand
 import org.objectrepository.util.OrUtil
-import com.mongodb.MapReduceOutput
 
 /**
  * Tasking
@@ -30,7 +31,9 @@ abstract class Tasking {
     //protected int _total = -1
 
     List getTasks() {
-        MapReduceOutput output = mongo.getDB('sa').stagingfile.mapReduce(
+
+        final c = mongo.getDB('sa').stagingfile
+        MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
                 """
             function map() {
                 this.workflow.forEach(
@@ -64,11 +67,11 @@ abstract class Tasking {
                     return { total:total, success:success, failure:failure, processed:processed, average:average };
             }
             """,
-                "mrresult",
-                [fileSet: fileSet]
+                null,
+                MapReduceCommand.OutputType.INLINE,
+                new BasicDBObject("fileSet", fileSet)
         )
-
-        output.results().collect {
+        c.mapReduce(mapReduceCommand).results().collect {
             [
                     name: it._id,
                     success: it.value.success as Integer,

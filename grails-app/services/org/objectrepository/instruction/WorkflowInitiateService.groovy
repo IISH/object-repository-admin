@@ -79,6 +79,7 @@ class WorkflowInitiateService extends WorkflowJob {
      * decommissionInstruction
      *
      * Sets the statusCode of the instruction to 900 should all task be completed.
+     * Completed without issues: all stagingfiles have a statusCode of 800 or higher
      * ToDo: make the check with mapReduce so we know the failure count in one go.
      *
      * @param _na
@@ -93,7 +94,7 @@ class WorkflowInitiateService extends WorkflowJob {
         ).each {
             Instruction instructionInstance = it as Instruction
             int countStagingfiles = Stagingfile.countByFileSet(instructionInstance.fileSet)
-            int count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: [$gt:799]]]])
+            int count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: [$gt:789]]]])
             if (countStagingfiles == count) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
                 instructionInstance.task.statusCode = 900

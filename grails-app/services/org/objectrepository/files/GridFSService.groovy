@@ -2,13 +2,13 @@ package org.objectrepository.files
 
 import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
-import com.mongodb.MapReduceOutput
+import com.mongodb.MapReduceCommand
 import com.mongodb.QueryBuilder
 import com.mongodb.gridfs.GridFS
+import com.mongodb.gridfs.GridFSDBFile
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
-import com.mongodb.gridfs.GridFSDBFile
 
 /**
  * GridFSService
@@ -117,7 +117,7 @@ class GridFSService {
 
 
         def query
-        if ( params.label) {
+        if (params.label) {
             query = ['metadata.label': params.label]
         }
         else {
@@ -127,7 +127,7 @@ class GridFSService {
         writer << builder.bind {
             mkp.xmlDeclaration()
             comment << String.format('Selection contains %s documents. Export extracted on %s',
-                            cursor.count(), new Date().toGMTString())
+                    cursor.count(), new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
                     final Orfile orFile = parseOrFile(it)
@@ -175,29 +175,30 @@ class GridFSService {
 
     def labels(String na) {
 
-        MapReduceOutput output = mongo.getDB(OR + na)."master.files".mapReduce(
+        def c = mongo.getDB(OR + na)."master.files"
+        MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
                 """
-        function map() {
-            var label = this.metadata.label;
-            emit(label, { total:1 });
-        }
-                """,
+                        function map() {
+                            var label = this.metadata.label;
+                            emit(label, { total:1 });
+                        }
+                                """,
                 """
-        function reduce(key, values) {
-            var total = 0;
-            var labels = [];
-            for (var i = 0; i < values.length; i++) {
-                var value = values[i];
-                total += value.total;
-            }
-            return { total:total };
-        }
-                """,
-                "mrlabel",
-                [:] // All documents
+                        function reduce(key, values) {
+                            var total = 0;
+                            var labels = [];
+                            for (var i = 0; i < values.length; i++) {
+                                var value = values[i];
+                                total += value.total;
+                            }
+                            return { total:total };
+                        }
+                                """,
+                null,
+                MapReduceCommand.OutputType.INLINE,
+                new BasicDBObject() // All documents
         )
-
-        output.results().collect {
+        c.mapReduce(mapReduceCommand).results().collect {
             [
                     label: it._id,
                     total: it.value.total as Integer
@@ -206,7 +207,7 @@ class GridFSService {
     }
 
     def stats(String na) {
-        if (!na) na = "0"
+        /*if (!na) na = "0"
         MapReduceOutput output = mongo.getDB(OR + na)."master.files".mapReduce(
                 """
         function map() {
@@ -252,7 +253,7 @@ class GridFSService {
 
         }
         results << [length: length, total: total]
-        results
+        results*/
     }
 
     private Orfile parseOrFile(def document) {
