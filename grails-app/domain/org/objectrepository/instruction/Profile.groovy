@@ -15,6 +15,7 @@ class Profile {
     String resolverBaseUrl = "http://hdl.handle.net/"
     String autoGeneratePIDs = "none"
     Boolean autoIngestValidInstruction = false
+    Boolean deleteCompletedInstruction = false
     String pidwebserviceEndpoint
     String pidwebserviceKey
     List<String> plan

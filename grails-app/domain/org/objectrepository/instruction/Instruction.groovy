@@ -29,6 +29,7 @@ class Instruction extends Tasking {
     String resolverBaseUrl
     String autoGeneratePIDs
     Boolean autoIngestValidInstruction
+    Boolean deleteCompletedInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
     List<String> plan
@@ -95,6 +96,7 @@ class Instruction extends Tasking {
         resolverBaseUrl(nullable: true)
         autoGeneratePIDs(nullable: true, inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
         autoIngestValidInstruction(nullable: true)
+        deleteCompletedInstruction(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
         plan(nullable: true)

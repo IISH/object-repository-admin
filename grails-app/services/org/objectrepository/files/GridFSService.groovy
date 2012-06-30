@@ -66,23 +66,6 @@ class GridFSService {
         }
     }
 
-    Orfile parseOrFile(def document) {
-        Orfile orfile = null
-        if (document instanceof GridFSDBFile) // Sometimes this oddity happens... returns an error: Could not find matching constructor for: org.objectrepository.files.Orfile(com.mongodb.gridfs.GridFSDBFile)
-        {
-            orfile = new Orfile(metadata: new Metadata(document.metaData))
-            ["_id", "filename", "contentType", "length", "chunkSize",
-                    "uploadDate", "aliases", "md5"].each {
-
-            }.each { p ->
-                orfile.setProperty(p, document.get(p))
-            }
-        } else {
-            orfile = new Orfile(document)
-        }
-        orfile
-    }
-
     int countByNa(def na, def params) {
         final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
         mongo.getDB(OR + na).getCollection("master.files").count(query)
@@ -122,7 +105,7 @@ class GridFSService {
      * @param na
      * @param writer
      */
-    void writeOrfiles(String id, String na, def writer) {
+    void writeOrfiles(def params, String na, def writer) {
 
         def orfileAttributes = [xmlns: "http://objectrepository.org/orfiles/1.0/"]
 
@@ -131,13 +114,20 @@ class GridFSService {
         builder.setUseDoubleQuotes(true)
 
         final collection = mongo.getDB(OR + na).getCollection("master.files")
-        String comments = String.format('Database contains %s files. Export extracted on %s',
-                collection.count(), new Date().toGMTString())
-        def cursor = (id) ? collection.find([_id: id]) : collection.find()
 
+
+        def query
+        if ( params.label) {
+            query = ['metadata.label': params.label]
+        }
+        else {
+            query = (params.id) ? [_id: params.id] : ['metadata': [$exists: true]]
+        }
+        def cursor = collection.find(query)
         writer << builder.bind {
             mkp.xmlDeclaration()
-            comment << comments
+            comment << String.format('Selection contains %s documents. Export extracted on %s',
+                            cursor.count(), new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
                     final Orfile orFile = parseOrFile(it)
@@ -263,5 +253,22 @@ class GridFSService {
         }
         results << [length: length, total: total]
         results
+    }
+
+    private Orfile parseOrFile(def document) {
+        Orfile orfile = null
+        if (document instanceof GridFSDBFile) // Sometimes this oddity happens... returns an error: Could not find matching constructor for: org.objectrepository.files.Orfile(com.mongodb.gridfs.GridFSDBFile)
+        {
+            orfile = new Orfile(metadata: new Metadata(document.metaData))
+            ["_id", "filename", "contentType", "length", "chunkSize",
+                    "uploadDate", "aliases", "md5"].each {
+
+            }.each { p ->
+                orfile.setProperty(p, document.get(p))
+            }
+        } else {
+            orfile = new Orfile(document)
+        }
+        orfile
     }
 }

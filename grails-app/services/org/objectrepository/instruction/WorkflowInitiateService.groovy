@@ -75,7 +75,7 @@ class WorkflowInitiateService extends WorkflowJob {
         }
     }
 
-    /***
+    /**
      * decommissionInstruction
      *
      * Sets the statusCode of the instruction to 900 should all task be completed.
@@ -99,7 +99,10 @@ class WorkflowInitiateService extends WorkflowJob {
                 instructionInstance.task.statusCode = 900
                 count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 800]]])
                 instructionInstance.task.info = ( count == 0 ) ? "Completed" : "Done, but with some unresolved issues"
-                save(instructionInstance)
+                if (count == 0 && instructionInstance.deleteCompletedInstruction) {
+                    delete(instructionInstance)
+                } else
+                    save(instructionInstance)
             }
         }
     }

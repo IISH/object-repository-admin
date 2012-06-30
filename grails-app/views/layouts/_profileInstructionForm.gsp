@@ -45,6 +45,14 @@
     <g:checkBox name="autoIngestValidInstruction" value="${instance.autoIngestValidInstruction}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'deleteCompletedInstruction', 'error')} ">
+    <label for="deleteCompletedInstruction">
+        <g:message code="profile.deleteCompletedInstruction.label" default="Delete a completed instruction"/>
+
+    </label>
+    <g:checkBox name="deleteCompletedInstruction" value="${instance.deleteCompletedInstruction}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'resolverBaseUrl', 'error')} ">
     <label for="resolverBaseUrl">
         <g:message code="profile.resolverBaseUrl.label" default="Resolver Base Url"/>

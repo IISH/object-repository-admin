@@ -55,6 +55,15 @@
         </li>
 
         <li class="fieldcontain">
+            <span id="deleteCompletedInstruction-label" class="property-label"><g:message
+                    code="profile.deleteCompletedInstruction.label" default="Delete a completed instruction"/></span>
+
+            <span class="property-value" aria-labelledby="deleteCompletedInstruction-label"><g:formatBoolean
+                    boolean="${instance?.deleteCompletedInstruction}"/></span>
+
+        </li>
+
+        <li class="fieldcontain">
             <span id="resolverBaseUrl-label" class="property-label"><g:message code="profile.resolverBaseUrl.label"
                                                                                default="Resolver Base Url"/></span>
 

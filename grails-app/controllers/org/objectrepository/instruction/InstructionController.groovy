@@ -25,8 +25,8 @@ class InstructionController {
 
     def listremote = {
         params.max = Math.min(params.max ? params.int('max') : 25, 100)
-        if ( !params.sort ) params.sort = 'label' ;
-      //  if ( !params.order ) params.order = 'asc' ;
+        if (!params.sort) params.sort = 'label';
+        //  if ( !params.order ) params.order = 'asc' ;
 
         def instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
             Instruction.list(params) :
@@ -192,6 +192,10 @@ class InstructionController {
     def delete = {
         def instructionInstance = Instruction.get(params.id)
         if (instructionInstance) {
+            if (!springSecurityService.hasValidNa(instructionInstance.na)) {// Is the user authorised to use this service ?
+                response 401
+                forward(action: "show")
+            }
             try {
                 instructionInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
