@@ -41,10 +41,12 @@ class FileController {
                 final String ip = request.getHeader('X-Forwarded-For') ?: request.getRemoteAddr()
                 def document = [pid: file.metaData.pid,
                         bucket: params.bucket,
-                        referer: request.getHeader('referer'),
                         ip: ip,
                         downloadDate: begin,
                         downloadTime: downloadTime]
+                request.getHeaderNames().each {
+                    document.put(it, request.getHeader(it))
+                }
                 gridFSService.siteusage(file.metaData.na, document)
             }
             log.info "Done"
