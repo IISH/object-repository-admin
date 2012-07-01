@@ -48,6 +48,5 @@ class DashboardController {
                 springSecurityService.reauthenticate(springSecurityService.principal.username)
             }
         }
-        //[contentTypes: gridFSService.stats(na)]
     }
 }

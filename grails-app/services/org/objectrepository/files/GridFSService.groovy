@@ -1,14 +1,11 @@
 package org.objectrepository.files
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
-import com.mongodb.MapReduceCommand
-import com.mongodb.QueryBuilder
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 import org.springframework.data.mongodb.core.query.Update
+import com.mongodb.*
 
 /**
  * GridFSService
@@ -86,10 +83,8 @@ class GridFSService {
         collection.update(_id: orFile.id, update, false, false)
     }
 
-    void increment(def file, String bucket) {
-        def update = new Update().inc("metadata.timesAccessed", 1).getUpdateObject()
-        final collection = mongo.getDB(OR + file.metadata.na).getCollection(bucket + ".files")
-        collection.update(_id: file.id, update, false, false)
+    void siteusage(String na, def document) {
+        mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
     Orfile get(String na, String id) {

@@ -20,7 +20,7 @@ class WorkflowStaleService extends WorkflowJob {
 
     private static final int StatusCodeQueued = 300;
     private static final int StatusCodeRestartQueued = 100;
-    private static int periodQueued = 3600000 // One hour of queueing status. And then the task becomes stale.
+    private static int periodQueued = 7200000 // Two hours of queueing status. And then the task becomes stale.
     private static final int StatusCodeTaskReceipt = 400;
     private static final int StatusCodeTaskCompleteReceipt = 500;
     private static int periodTaskReceipt = 180000 // three minutes of no response from the message queue client. And then the task becomes stale.

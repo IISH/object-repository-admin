@@ -31,11 +31,21 @@ class FileController {
             response.contentType = file.contentType
             response.contentLength = file.length
             log.info "Writing file to browser"
+            Date begin = new Date()
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
             log.info "Flushing"
             response.outputStream.flush()
-            log.info "Increment statistics"
-            gridFSService.increment(file, params.bucket)
+            int downloadTime = new Date().time - begin.time
+            if (System.getProperty("layout", "not") == 'disseminate') {
+                log.info "Increment statistics"
+                final String ip = request.getHeader('X-Forwarded-For') ?: request.getRemoteAddr()
+                def document = [pid: file.metaData.pid,
+                        bucket: params.bucket,
+                        ip: ip,
+                        downloadDate: begin,
+                        downloadTime: downloadTime]
+                gridFSService.siteusage(file.metaData.na, document)
+            }
             log.info "Done"
         }
     }
@@ -43,14 +53,14 @@ class FileController {
     def metadata = {
 
         String pid = params.pid
-                if (!pid) {
-                    redirect(action: "about")
-                    return null
-                }
+        if (!pid) {
+            redirect(action: "about")
+            return null
+        }
 
         def orfileInstance = gridFSService.findByPidAsOrfile(pid)
         if (orfileInstance) {
-            [orfileInstance:orfileInstance]
+            [orfileInstance: orfileInstance]
         } else {
             render(view: '404', statuscode: 404)
         }
