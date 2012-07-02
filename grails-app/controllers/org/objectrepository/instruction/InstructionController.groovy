@@ -26,7 +26,7 @@ class InstructionController {
     def listremote = {
         println(new Date())
         println("Incoming")
-        params.max = Math.min(params.max ? params.int('max') : 25, 100)
+        params.max = Math.min(params.max ? params.int('max') : 10, 100)
         if (!params.sort) params.sort = 'label';
         //  if ( !params.order ) params.order = 'asc' ;
 
