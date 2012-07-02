@@ -4,9 +4,11 @@ autoGeneratePIDs = [
 
 action = ['upsert', 'add', 'update', 'delete']
 
+/**
+ * Place methods for determining if the service should be offered in the service.method key
+ */
 plans = [
         UploadFiles: [ // fileSet and files... but not yet an instruction
-                //service: [name: 'InstructionUpload', controller: 'instruction', action: 'upload'],
                 statusCodes: [
                         // In the beginning, there is nothing
                         000: [purpose: 'A fileset appeared'],
@@ -70,6 +72,11 @@ plans = [
                         600: [purpose: 'Check if the ingest command was completed'],
                         700: [purpose: 'Something went wrong'],
                         800: [purpose: 'Instruction is ongoing. Files are now processed individualy']
+                ],
+        ], InstructionRetry: [
+                service: [method: 'hasFailedTasks', statusCode: 900],
+                statusCodes: [
+                        100: [purpose: 'The user has made a request to retry failed tasks in this instruction']
                 ],
         ],
         Start: [

@@ -290,6 +290,31 @@ abstract class WorkflowJob {
         next(document) // we just go through the mill here. Atomic updates for access should go via the controller
     }
 
+    /**
+     * InstructionRetry100
+     *
+     * Resets all failed tasks to 100 for a re-run.
+     *
+     * @param document
+     */
+    def InstructionRetry100(def document) {
+        mongo.getDB('sa').stagingfile.find(
+                [fileSet: document.fileSet, 'workflow.statusCode': [$gt: 699, $lt: 800]]
+        ).each {
+            Stagingfile stagingfile = it as Stagingfile
+            stagingfile.parent = document
+            document.workflow = stagingfile.workflow.findAll {
+                it.statusCode > 699 && it.statusCode < 800
+            }
+            document.workflow.each {
+                it.statusCode = 100
+            }
+            document.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
+            next(document) // we just go through the mill here. Atomic updates for access should go via the controller
+        }
+        changeWorkflow('InstructionIngest800', document)
+    }
+
     void task100(def document) {
         next(document)
     }

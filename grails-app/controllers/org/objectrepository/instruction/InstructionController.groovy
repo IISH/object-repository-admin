@@ -76,6 +76,10 @@ class InstructionController {
         runMethod()
     }
 
+    def retry = {
+        runMethod()
+    }
+
     def validate = {
         runMethod()
     }

@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 class TaskValidationService {
 
     static transactional = 'mongo'
-
+    def mongo
     def grailsApplication
 
     TaskValidationService() {
@@ -111,6 +111,10 @@ class TaskValidationService {
 
     protected int countInvalidFiles(def document) {
         document.findFilesWithCursorByQuery("{workflow: {\$elemMatch: {n: 0, name: 'InstructionValidate'}}}").count()
+    }
+
+    protected boolean hasFailedTasks(def document) {
+        ( document.delegate instanceof Instruction && document.task.statusCode == 900 ) ? mongo.getDB('sa').stagingfile.count([fileSet: document.fileSet, 'workflow.statusCode': [$lt: 800]]) != 0 : false
     }
 
     /**
