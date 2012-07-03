@@ -16,6 +16,7 @@ import com.mongodb.*
 class GridFSService {
 
     static String OR = "or_"
+    def dates = [:]
     static transactional = false
     def mongo
     def grailsApplication
@@ -170,6 +171,8 @@ class GridFSService {
 
     def labels(String na) {
 
+        final Date uploadDate = dates.get(na, new Date(1000L))
+        dates.put(na, new Date()) // cache this on the server to make the list independent from the view time.
         def c = mongo.getDB(OR + na)."master.files"
         MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
                 """
@@ -189,9 +192,9 @@ class GridFSService {
                             return { total:total };
                         }
                                 """,
-                null,
-                MapReduceCommand.OutputType.INLINE,
-                new BasicDBObject() // All documents
+                'label',
+                MapReduceCommand.OutputType.REDUCE,
+                QueryBuilder.start('uploadDate').greaterThan(uploadDate).get()
         )
         c.mapReduce(mapReduceCommand).results().collect {
             [

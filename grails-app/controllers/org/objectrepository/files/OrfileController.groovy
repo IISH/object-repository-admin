@@ -16,8 +16,6 @@ class OrfileController {
     }
 
     def list() {
-        println(new Date())
-        println("Incoming")
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         params.offset = params.offset ? params.int('offset') : 0
         params.order = !params.order || params.order == "asc" ? 1 : -1
@@ -28,8 +26,6 @@ class OrfileController {
         gridFSService.labels(springSecurityService.principal.na).each {
             if (it.label) labels << it.label
         }
-        println(new Date())
-        println("Outgoing")
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(springSecurityService.principal.na, params),
                 labels: labels]
