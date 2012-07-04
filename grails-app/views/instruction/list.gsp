@@ -15,16 +15,16 @@
 
 <body>
 
-<g:render template="/layouts/header" model="[instance:instructionInstanceList]"/>
+<g:render template="/layouts/header" model="[instance: instructionInstanceList]"/>
 
 <div class="body" id="updateList">
-    <g:render template="list" model="[instructionInstanceList,instructionInstanceTotal]"/>
-    <div class="pagination">
-        <g:paginate total="${instructionInstanceTotal}"/>
-    </div>
+    <g:render template="list" model="[instructionInstanceList, instructionInstanceTotal]"/>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action:'listremote', order:(params.order)?:'desc',
-    sort:(params.sort)?:'label', offset:(params.offset)?:0]"/>
+<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params:params]" />
+
+<div class="pagination">
+    <g:paginate action="list" total="${instructionInstanceTotal}"/>
+</div>
 </body>
 </html>

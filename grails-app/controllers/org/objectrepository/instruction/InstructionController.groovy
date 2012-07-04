@@ -34,9 +34,10 @@ class InstructionController {
 
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
+            params.remove('view')
         }
         else
-            [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: instructionInstanceList.size()]
+            [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count]
     }
 
     def show = {

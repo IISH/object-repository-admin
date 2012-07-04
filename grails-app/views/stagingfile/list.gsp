@@ -23,18 +23,20 @@
 
 <p>Filter on: <g:link
         action="list" params="[orid: instructionInstance.id, 'filter_status': 'failure']">failure</g:link>. <g:link
+        action="list" params="[orid: instructionInstance.id, 'filter_status': 'complete']">complete</g:link>. <g:link
         action="list" params="[orid: instructionInstance.id]">Show all</g:link></p>
 
 <div class="body" id="updateList">
     <g:render template="list" model="[orid: instructionInstance.id, stagingfileInstanceList: stagingfileInstanceList]"/>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params: [orid: instructionInstance.id,
+%{--<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params: [orid: instructionInstance.id,
         order: (params.order) ?: 'asc',
         sort: (params.sort) ?: 'id',
         offset: (params.offset) ?: 0,
         'filter_name': (params.filter_name) ?: null,
-        'filter_status': (params.filter_status) ?: null]]"/>
+        'filter_status': (params.filter_status) ?: null]]"/>--}%
+<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params: params]"/>
 
 <div class="pagination">
     <g:paginate total="${stagingfileInstanceTotal}" params="[orid: instructionInstance.id]"/>

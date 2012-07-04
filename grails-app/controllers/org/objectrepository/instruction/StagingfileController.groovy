@@ -34,33 +34,27 @@ class StagingfileController {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
 
         def stagingfileInstanceList
-        def elemMatch = null
-        if (params.filter_name) {
-            if (params.filter_status) {
-                elemMatch = (params.filter_status == 'success') ? [name: params.filter_name, statusCode: [$gt: 799]] : [name: params.filter_name, statusCode: [$gt: 699, $lt: 800]]
-            } else {
-                elemMatch = [name: params.filter_name]
-            }
-        } else {
-            if (params.filter_status) {
-                elemMatch = (params.filter_status == 'success') ? [statusCode: [$gt: 799]] : [statusCode: [$gt: 699, $lt: 800]]
-            }
+        def elemMatch = (params.filter_name) ? [name: params.filter_name] : [:]
+        switch (params.filter_status) {
+            case 'complete':
+                elemMatch << [name: params.filter_name, statusCode: [$gt: 799]]
+                break
+            case 'failure':
+                elemMatch << [name: params.filter_name, statusCode: [$gt: 699, $lt: 800]]
+                break
         }
-        /*def elemMatch = (params.filter_name) ? [name: params.filter_name] : []
-        if (params.filter_status) {
-            elemMatch << (params.filter_status == 'success') ? [statusCode: [$gt: 799]] : [statusCode: [$gt: 699, $lt: 800]]
-        }*/
-        if (elemMatch) {
+        if (elemMatch.size() == 0) {
+            stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
+        } else {
             def query = [fileSet: instructionInstance.fileSet, workflow: [$elemMatch: elemMatch]]
             stagingfileInstanceList = Stagingfile.collection.find(query).collect() {
                 it as Stagingfile
             }
-        } else {
-            stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
         }
 
         if (params.view) {
             render(view: params.view, model: [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance])
+            params.remove('view')
         }
         else
             [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance]
@@ -124,7 +118,7 @@ class StagingfileController {
             }
             stagingfileInstance.properties = params
             if (!stagingfileInstance.hasErrors() && stagingfileInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'stagingfile.label', default: 'Staginfile'), stagingfileInstance.id])}"
+                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'stagingfile', default: 'Stagingfile'), stagingfileInstance.id])}"
                 redirect(action: "show", id: stagingfileInstance.id)
             }
             else {
@@ -132,7 +126,7 @@ class StagingfileController {
             }
         }
         else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'stagingfile.label', default: 'Staginfile'), params.id])}"
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'stagingfile.label', default: 'Stagingfile'), params.id])}"
             redirect(action: "list")
         }
     }
