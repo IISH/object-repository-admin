@@ -299,7 +299,7 @@ abstract class WorkflowJob {
      */
     def InstructionRetry100(def document) {
         mongo.getDB('sa').stagingfile.find(
-                [fileSet: document.fileSet, 'workflow.statusCode': [$gt: 699, $lt: 800]]
+                fileSet: document.fileSet, 'workflow.statusCode': [$lt: 900]
         ).each {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
