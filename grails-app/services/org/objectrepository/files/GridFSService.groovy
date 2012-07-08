@@ -16,7 +16,6 @@ import com.mongodb.*
 class GridFSService {
 
     static String OR = "or_"
-    def dates = [:]
     static transactional = false
     def mongo
     def grailsApplication
@@ -169,89 +168,56 @@ class GridFSService {
         false
     }
 
+    /**
+     * labels
+     *
+     * Presents all collection labels using mapReduce.
+     *
+     * ToDo: move all logic to the backend put.js
+     *
+     * @param na
+     * @return
+     */
     def labels(String na) {
 
-        final Date uploadDate = dates.get(na, new Date(1000L))
-        dates.put(na, new Date()) // cache this on the server to make the list independent from the view time.
+        def d = mongo.getDB(OR + na).'label.inc'.findOne([_id: 'label'])
+        Date uploadDate = (d) ? d.uploadDate as Date : new Date(1L)
         def c = mongo.getDB(OR + na)."master.files"
         MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
                 """
                         function map() {
-                            var label = this.metadata.label;
-                            emit(label, { total:1 });
+                            emit(this.metadata.label, { total:1, uploadDate: this.uploadDate });
                         }
-                                """,
+                """,
                 """
                         function reduce(key, values) {
                             var total = 0;
+                            var uploadDate = new ISODate('1900-01-01');
                             var labels = [];
                             for (var i = 0; i < values.length; i++) {
                                 var value = values[i];
+                                if ( value.uploadDate > uploadDate ) uploadDate = value.uploadDate;
                                 total += value.total;
                             }
-                            return { total:total };
+                            return { uploadDate: uploadDate, total:total };
                         }
-                                """,
+                """,
                 'label',
-                MapReduceCommand.OutputType.REDUCE,
+                MapReduceCommand.OutputType.MERGE,
                 QueryBuilder.start('uploadDate').greaterThan(uploadDate).get()
         )
-        c.mapReduce(mapReduceCommand).results().collect {
+        def labels = c.mapReduce(mapReduceCommand).results().collect {
             [
                     label: it._id,
+                    uploadDate: it.value.uploadDate,
                     total: it.value.total as Integer
             ]
         }
-    }
-
-    def stats(String na) {
-        /*if (!na) na = "0"
-        MapReduceOutput output = mongo.getDB(OR + na)."master.files".mapReduce(
-                """
-        function map() {
-            emit(this.contentType, { total:1, length:this.length, timesAccessed:this.metadata.timesAccessed });
+        uploadDate = labels.inject(uploadDate) { init, v ->
+            (init < v.uploadDate) ? v.uploadDate : init
         }
-        """,
-                """
-        function reduce(key, values) {
-            var total = 0;
-            var timesAccessed = 0;
-            var length = 0;
-            var smallest = 0;
-            var largest = 0;
-            for (var i = 0; i < values.length; i++) {
-                var value = values[i];
-                total += value.total;
-                timesAccessed += value.timesAccessed;
-                length += value.length;
-                if (value.length < smallest) smallest = value.length;
-                if (value.length > largest) largest = value.length;
-            }
-            var average = length / total;
-            return { total:total, timesAccessed:timesAccessed, length:length, average:average, smallest:smallest, largest:largest };
-        }
-        """,
-                "mrstats",
-                [:])
-
-        int length = 0
-        int total = 0
-        def results = output.results().collect {
-            length += it.value.length
-            total += it.value.total
-            [
-                    contentType: it._id,
-                    length: it.value.length as Integer,
-                    total: it.value.total as Integer,
-                    timesAccessed: it.value.timesAccessed as Integer,
-                    smallest: it.value.smallest,
-                    largest: it.value.largest,
-                    average: it.value.average
-            ]
-
-        }
-        results << [length: length, total: total]
-        results*/
+        mongo.getDB(OR + na).'label.inc'.save([_id: 'label', uploadDate: uploadDate])
+        labels
     }
 
     private Orfile parseOrFile(def document) {

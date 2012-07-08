@@ -310,7 +310,7 @@ abstract class WorkflowJob {
                 it.statusCode = 100
             }
             stagingfile.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
-            save(stagingfile) // we just go through the mill here. Atomic updates for access should go via the controller
+            save(stagingfile) // we just go through the mill here.
         }
         changeWorkflow('InstructionIngest800', document)
     }
