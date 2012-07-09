@@ -37,12 +37,20 @@ class StagingfileController {
         def elemMatch = (params.filter_name) ? [name: params.filter_name] : [:]
         switch (params.filter_status) {
             case 'complete':
-                elemMatch << [name: params.filter_name, statusCode: [$gt: 799]]
+                elemMatch << [statusCode: [$gt: 799]]
+                break
+            case 'running':
+                elemMatch << [statusCode: [$lt: 700]]
                 break
             case 'failure':
-                elemMatch << [name: params.filter_name, statusCode: [$gt: 699, $lt: 800]]
+                elemMatch << [statusCode: [$gt: 699, $lt: 800]]
                 break
         }
+        // ToDo: remove after debugging
+        println("params:")
+        println(params)
+        println("elemMatch:")
+        println(elemMatch)
         if (elemMatch.size() == 0) {
             stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
         } else {
