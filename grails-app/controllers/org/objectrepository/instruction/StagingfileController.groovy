@@ -46,11 +46,6 @@ class StagingfileController {
                 elemMatch << [statusCode: [$gt: 699, $lt: 800]]
                 break
         }
-        // ToDo: remove after debugging
-        println("params:")
-        println(params)
-        println("elemMatch:")
-        println(elemMatch)
         if (elemMatch.size() == 0) {
             stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
         } else {
