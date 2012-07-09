@@ -410,7 +410,8 @@ contentType = ['application/x-bytecode.python',
         'x-world/x-vrml',
         'x-world/x-vrt']
 
+/* See WorkflowJob: void message(def document)
 derivative2queue = [
         audio: 'Video',
         video: 'Video'
-]
+]*/
