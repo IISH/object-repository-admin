@@ -24,7 +24,7 @@ class InstructionController {
     }
 
     def listremote = {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        params.max = Math.min(params.max ? params.int('max') : 5, 10)
         if (!params.sort) params.sort = 'label';
 
         def instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
