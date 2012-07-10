@@ -39,8 +39,11 @@ class StagingfileController {
             case 'complete':
                 elemMatch << [statusCode: [$gt: 799]]
                 break
+            case 'waiting':
+                elemMatch << [statusCode: [$lt: 400]]
+                break
             case 'running':
-                elemMatch << [statusCode: [$lt: 700]]
+                elemMatch << [statusCode: [$gt: 399, $lt: 700]]
                 break
             case 'failure':
                 elemMatch << [statusCode: [$gt: 699, $lt: 800]]

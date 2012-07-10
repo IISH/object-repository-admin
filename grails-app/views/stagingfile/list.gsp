@@ -22,6 +22,7 @@
           model="[instance: stagingfileInstanceList, args: instructionInstance.fileSetAlias]"/>
 
 <p>Filter on: <g:link
+        action="list" params="[orid: instructionInstance.id, 'filter_status': 'waiting']">waiting</g:link>. <g:link
         action="list" params="[orid: instructionInstance.id, 'filter_status': 'running']">running</g:link>. <g:link
         action="list" params="[orid: instructionInstance.id, 'filter_status': 'failure']">failure</g:link>. <g:link
         action="list" params="[orid: instructionInstance.id, 'filter_status': 'complete']">complete</g:link>. <g:link
