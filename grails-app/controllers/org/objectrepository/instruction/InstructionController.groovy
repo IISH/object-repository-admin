@@ -30,7 +30,7 @@ class InstructionController {
         def instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
             Instruction.list(params) :
             Instruction.findAllByNa(springSecurityService.principal.na, params)
-        int count = (springSecurityService.hasRole('ROLE_ADMIN')) ? instructionInstanceList.size() : Instruction.countByNa(springSecurityService.principal.na)
+        int count = (springSecurityService.hasRole('ROLE_ADMIN')) ? Instruction.count() : Instruction.countByNa(springSecurityService.principal.na)
 
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
