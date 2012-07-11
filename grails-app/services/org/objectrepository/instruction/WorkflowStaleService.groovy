@@ -59,8 +59,8 @@ class WorkflowStaleService extends WorkflowJob {
      * Should we find a task identifier then we encountered a stale lock, which we remove here.
      */
     private void checkStaleness() {
-        mongo.getDB('sa').'shardprefix'.find(identifier: [$exists: true]).each {
-            def task = mongo.getDB('stagingfile').findOne('workflow.identifier': it.identifier, [_id: 1])
+        mongo.getDB('sa').'shardprefix'.find([identifier: [$exists: true]]).each {
+            def task = mongo.getDB('stagingfile').findOne(['workflow.identifier': it.identifier, [_id: 1]])
             if (!task) {
                 mongo.getDB('sa').'shardprefix'.update(
                         _id: it._id,
