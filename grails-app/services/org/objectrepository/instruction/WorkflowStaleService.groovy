@@ -60,7 +60,7 @@ class WorkflowStaleService extends WorkflowJob {
      */
     private void checkStaleness() {
         mongo.getDB('sa').'shardprefix'.find([identifier: [$exists: true]]).each {
-            def task = mongo.getDB('stagingfile').findOne(['workflow.identifier': it.identifier], [_id: 1])
+            def task = mongo.getDB('stagingfile').findOne(['workflow.identifier': it.identifier])
             if (!task) {
                 mongo.getDB('sa').'shardprefix'.update(
                         _id: it._id,
