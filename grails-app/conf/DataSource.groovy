@@ -2,26 +2,20 @@
 
 environments {
     production {
-        grails {
-            mongo {
-                databaseName = "sa"
-                host = "localhost" // mongos
-            }
+        dataSource {
+            databaseName = "sa"
+            host = "localhost" // mongos
         }
     }
     development {
-        grails {
-            mongo {
-                databaseName = "sa"
-                host = "localhost" // mongod
-            }
+        dataSource {
+            databaseName = "sa"
+            host = "localhost" // mongod
         }
     }
     test {
-        grails {
-            mongo {
-                databaseName = "test"
-            }
+        dataSource {
+            databaseName = "test"
         }
     }
 }

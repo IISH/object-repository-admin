@@ -21,6 +21,7 @@ class Orfile {
     static List<String> whiteList = [
             'pid',
             'lid',
+            'filename',
             'resolverBaseUrl',
             'label',
             'access'
