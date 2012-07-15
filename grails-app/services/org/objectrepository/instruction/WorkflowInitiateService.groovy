@@ -89,7 +89,7 @@ class WorkflowInitiateService extends WorkflowJob {
         mongo.getDB('sa').instruction.find(
                 $and: [
                         [na: _na],
-                        [workflow: [$elemMatch: [n: 0, name: 'InstructionIngest', statusCode: 800]]]
+                        [workflow: [$elemMatch: [name: 'InstructionIngest', statusCode: 800]]]
                 ]
         ).each {
             Instruction instructionInstance = it as Instruction
