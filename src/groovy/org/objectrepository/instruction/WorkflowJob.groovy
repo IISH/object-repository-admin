@@ -214,11 +214,8 @@ abstract class WorkflowJob {
         if (document.task.exitValue == 230) {
             log.info id(document) + "Freezing task. Severe problem and should not continue."
             document.workflow.each {
-                it.statusCode = TASK_FREEZE
+                it.statusCode = (it.name == 'EndOfTheRoad') ? 800 : TASK_FREEZE
             }
-            def task = document.workflow.remove {it.name == 'EndOfTheRoad'}
-            task.statusCode = 800
-            document.workflow.putAt(0, task)
         }
         else if (document.task.exitValue == 240) {
             log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."
