@@ -34,7 +34,7 @@ class Profile {
         action(inList: ['upsert', 'add', 'update', 'delete'])
         autoGeneratePIDs(inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
         pidwebserviceEndpoint(nullable: true)
-        pidwebserviceKey(nullable: true)
+        pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
     }
 
     static embedded = ['plan']
