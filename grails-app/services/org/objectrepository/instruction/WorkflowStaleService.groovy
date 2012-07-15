@@ -38,7 +38,6 @@ class WorkflowStaleService extends WorkflowJob {
         final long time = new Date().time
         checkStaleness(StatusCodeQueued, StatusCodeRestartQueued, new Date(time - periodQueued))
         checkStaleness(StatusCodeTaskReceipt, StatusCodeTaskCompleteReceipt, new Date(time - periodTaskReceipt))
-        //checkStaleness()
     }
 
     private void checkStaleness(int currentStatusCode, int newStatusCode, Date date) {
@@ -51,24 +50,4 @@ class WorkflowStaleService extends WorkflowJob {
             )
         }
     }
-
-    /**
-     * checkStaleness
-     *
-     * The shardprefix collection is used to offer slots to the clients that perform put operations.
-     * Should we find a task identifier then we encountered a stale lock, which we remove here.
-     */
-    /*private void checkStaleness() {
-        mongo.getDB('sa').'shardprefix'.find([identifier: [$exists: true]]).each {
-            def task = mongo.getDB('sa').'stagingfile'.findOne(['workflow.identifier': it.identifier], [_id:1])
-            if (!task) {
-                mongo.getDB('sa').'shardprefix'.update(
-                        _id: it._id,
-                        [$unset: [identifier: 1, hostname: 1]],
-                        false,
-                        true
-                )
-            }
-        }
-    }*/
 }

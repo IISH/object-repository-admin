@@ -22,6 +22,8 @@ abstract class WorkflowJob {
     TaskValidationService taskValidationService
     def taskProperties
 
+    private static int TASK_FREEZE = 797
+
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
             it.name
@@ -144,7 +146,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void nextWorkflow(def document) {
-        String old = document.task.name + document.task.statusCode
+        final String old = document.task.name + document.task.statusCode
         document.workflow << document.workflow.remove(0)
         first(document)
         log.info id(document) + "nextWorkflow from " + old + " to " + document.task.name + document.task.statusCode
@@ -203,12 +205,6 @@ abstract class WorkflowJob {
      * The number of attempts is restricted by the task.limit. De limit's default is set in the Task class
      * and can be set in the PlanConfig
      *
-     * The exitValue=255 has special meaning. The service node cannot do anything with this document, so it was
-     * ignored. We can proceed setting it to 799. Example: create a smaller image for a text file.
-     *
-     * ExitValid=254 meant the service node tries, but discovered the document to be incompatible.
-     * Example, create a smaller image for an image that is not supported by the conversion software.
-     *
      * If the attempt keeps failing and the limit is reached, we proceed to the next task
      *
      * @param document
@@ -217,7 +213,12 @@ abstract class WorkflowJob {
 
         if (document.task.exitValue == 230) {
             log.info id(document) + "Freezing task. Severe problem and should not continue."
-            document.task.statusCode = 791
+            document.workflow.each {
+                it.statusCode = TASK_FREEZE
+            }
+            def task = document.workflow.remove {it.name == 'EndOfTheRoad'}
+            task.statusCode = 800
+            document.workflow.putAt(0, task)
         }
         else if (document.task.exitValue == 240) {
             log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."

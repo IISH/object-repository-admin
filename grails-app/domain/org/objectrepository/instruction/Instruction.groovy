@@ -98,7 +98,7 @@ class Instruction extends Tasking {
         autoIngestValidInstruction(nullable: true)
         deleteCompletedInstruction(nullable: true)
         pidwebserviceEndpoint(nullable: true)
-        pidwebserviceKey(nullable: true)
+        pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
         plan(nullable: true)
     }
 

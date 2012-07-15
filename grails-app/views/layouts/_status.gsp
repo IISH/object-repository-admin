@@ -7,6 +7,10 @@
     <g:link style="color:red" controller="stagingfile" params="[orid: instance.id, filter_status:'failure']"><g:message
             code="instruction.hasNoValidFiles" args="[countInvalidFiles]"/></g:link>
 </g:else>
-<g:if test="${instance.task.info}">
-    <p style="color:red">${instance.task.info}</p>
-</g:if>
+
+<g:each var="task" in="instance.workflow">
+    <g:if test="${task.info && task.statusCode < 800}">
+        <p style="color:red">${instance.task.info}</p>
+    </g:if>
+</g:each>
+
