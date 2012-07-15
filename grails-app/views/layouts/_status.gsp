@@ -9,7 +9,7 @@
 </g:else>
 
 <g:each var="task" in="instance.workflow">
-    <g:if test="${task.info && task.statusCode < 800}">
+    <g:if test="${task.info && task.statusCode > 699 && task.statusCode < 800}">
         <p style="color:red">${task.info}</p>
     </g:if>
 </g:each>
