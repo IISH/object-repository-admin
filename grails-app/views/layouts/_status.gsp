@@ -12,5 +12,8 @@
     <g:if test="${task.info && task.statusCode > 699 && task.statusCode < 800}">
         <p style="color:red">${task.info}</p>
     </g:if>
+    <g:elseif test="${task.info && task.statusCode > 799}">
+        <p style="color:green;">${task.info}</p>
+    </g:elseif>
 </g:each>
 
