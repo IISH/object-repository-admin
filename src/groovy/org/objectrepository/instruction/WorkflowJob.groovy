@@ -215,7 +215,7 @@ abstract class WorkflowJob {
         if (document.task.exitValue == 230) {
             log.info id(document) + "Freezing task. Severe problem and should not continue."
             document.workflow.each {
-                it.statusCode = (it.name == 'EndOfTheRoad') ? 800 : TASK_FREEZE
+                it.statusCode = (it.statusCode < 800) ? TASK_FREEZE : it.statusCode
             }
         }
         else if (document.task.exitValue == 240) {
