@@ -22,7 +22,7 @@ abstract class WorkflowJob {
     TaskValidationService taskValidationService
     def taskProperties
 
-    private static int TASK_FREEZE = 797
+    static int TASK_FREEZE = 797
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -214,7 +214,6 @@ abstract class WorkflowJob {
 
         if (document.task.exitValue == 230) {
             log.info id(document) + "Freezing task. Severe problem and should not continue."
-            println("Freezing task. Severe problem and should not continue.")
             document.workflow.each {
                 it.statusCode = (it.name == 'EndOfTheRoad') ? 800 : TASK_FREEZE
             }
