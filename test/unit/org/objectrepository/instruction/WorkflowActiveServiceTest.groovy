@@ -189,7 +189,6 @@ class WorkflowActiveServiceTest {
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 900
-        def taskList = document.task.info.split(",")
         document.parent.plan.each { plan ->
             def t = document.workflow.find {
                 it.info == plan

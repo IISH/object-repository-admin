@@ -94,9 +94,10 @@ class WorkflowInitiateService extends WorkflowJob {
         ).each {
             Instruction instructionInstance = it as Instruction
             int countStagingfiles = Stagingfile.countByFileSet(instructionInstance.fileSet)
-            int count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: [$gt:699]]]])
+            int count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch:
+                    [name: 'EndOfTheRoad', statusCode: [$gt:699]]]]) // statusCode ought to be 850 or 900
             if (countStagingfiles == count) {
-                log.info id(instructionInstance) + "Decomissioning (Instruction is done or without files)"
+                log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900
                 count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
                 instructionInstance.task.info = ( count == countStagingfiles ) ? "Completed" : "Done, but with some unresolved issues"

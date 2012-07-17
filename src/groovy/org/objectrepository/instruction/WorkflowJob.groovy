@@ -305,7 +305,7 @@ abstract class WorkflowJob {
                 it.statusCode = (it.statusCode > 699 && it.statusCode < 800) ? 100 : it.statusCode
             }
             stagingfile.workflow.remove(stagingfile.workflow.find {it.name == 'EndOfTheRoad'})
-            document.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
+            stagingfile.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
             save(stagingfile) // we just go through the mill here.
         }
         changeWorkflow('InstructionIngest800', document)
@@ -359,7 +359,7 @@ abstract class WorkflowJob {
     }
 
     /**
-     * EndOfTheRoad800
+     * StagingfileEndOfTheRoad800
      *
      * Done with workflow.
      * There ought to be no failures.
