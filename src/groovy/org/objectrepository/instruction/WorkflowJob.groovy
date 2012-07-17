@@ -79,12 +79,13 @@ abstract class WorkflowJob {
      * @param m
      * @return
      */
-    String methodName(def document) {
+    private String methodName(def document) {
         def postFix = (document.task.statusCode == 0) ? "" : document.task.statusCode
         def list = [plans[document.task.name]?.statusCodes[document.task.statusCode]?.action,
-                document.task.name + postFix,
-                document.getClass().simpleName + postFix,
-                "task" + postFix]
+                document.task.name + postFix,  // e.g. SomeTask123
+                document.getClass().simpleName + document.task.name + postFix, // e.g. SomeClassSomeTask123
+                document.getClass().simpleName + postFix, // SomeClass123
+                "task" + postFix]   // e.g. task800
         list.find {
             it && delegate.metaClass.respondsTo(this, it, document)
         }
@@ -300,13 +301,9 @@ abstract class WorkflowJob {
         ).each {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
-            stagingfile.workflow = stagingfile.workflow.findAll {
-                it.statusCode > 699 && it.statusCode < 800
-            }
             stagingfile.workflow.each {
-                it.statusCode = 100
+                it.statusCode = (it.statusCode > 699 && it.statusCode < 800 || it.name == 'EndOfTheRoad') ? 100 : it.statusCode
             }
-            stagingfile.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
             save(stagingfile) // we just go through the mill here.
         }
         changeWorkflow('InstructionIngest800', document)
@@ -368,18 +365,11 @@ abstract class WorkflowJob {
      * @param document
      * @return
      */
-    def EndOfTheRoad800(def document) {
+    def StagingfileEndOfTheRoad800(def document) {
 
-        if (document instanceof Stagingfile) {
-            if (document.workflow.find {
-                it.statusCode < 791 // See the retry method for acceptable and not so acceptable failures
-            }) {
-                log.info id(document) + "Not all tasks are completed as we liked to. We leave it up to the enduser what to do with them."
-            } else {
-                log.info id(document) + "Stagingfile successfull."
-                document.task.statusCode = 900
-            }
-        }
+        document.task.statusCode = (document.workflow.find {
+            it.statusCode < 800 // See the retry method for acceptable and not so acceptable failures
+        }) ? 850 : 900
     }
 
     /**
