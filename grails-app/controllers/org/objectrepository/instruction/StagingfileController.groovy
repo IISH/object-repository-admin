@@ -46,7 +46,7 @@ class StagingfileController {
                 elemMatch << [statusCode: [$gt: 399, $lt: 700]]
                 break
             case 'failure':
-                elemMatch << [statusCode: [$gt: 699, $lt: 800]]
+                elemMatch << [$or: [[statusCode: [$gt: 699, $lt: 800]], [statusCode: 850]]]
                 break
         }
         if (elemMatch.size() == 0) {
