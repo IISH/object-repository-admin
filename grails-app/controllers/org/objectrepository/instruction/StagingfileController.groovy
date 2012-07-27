@@ -56,7 +56,7 @@ class StagingfileController {
             count = Stagingfile.countByFileSet(instructionInstance.fileSet)
         } else {
             def query = [fileSet: instructionInstance.fileSet, workflow: [$elemMatch: elemMatch]]
-            stagingfileInstanceList = Stagingfile.collection.find(query, params).collect() {
+            stagingfileInstanceList = Stagingfile.collection.find(query).collect() {
                 it as Stagingfile
             }
             count = Stagingfile.collection.count(query)
