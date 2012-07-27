@@ -1,39 +1,16 @@
-package org.objectrepository.instruction
+package org.objectrepository.stats
 
-import com.mongodb.BasicDBObject
 import com.mongodb.MapReduceCommand
-import org.objectrepository.util.OrUtil
+import com.mongodb.BasicDBObject
+import org.objectrepository.instruction.Stagingfile
 
-/**
- * Tasking
- *
- * Profiles the getter and setter and accessibility for the primary task in a workflow
- */
-abstract class Tasking {
+class StatisticsService {
 
-    def mongo
-    def cacheTask = null
+    List getTasks(String na) {
 
-    Task getTask() {
-        OrUtil.takeFirst(workflow)
-    }
 
-    void setTask(def map) {
-        setTask(new Task(map.properties))
-    }
 
-    void setTask(Task _task) {
-        if (_task.name) {
-            workflow.push(_task)
-        }
-    }
-
-    //protected int _total = -1
-
-    List getTasks() {
-
-        final c = mongo.getDB('sa').stagingfile
-        MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
+        MapReduceCommand mapReduceCommand = new MapReduceCommand(Stagingfile.collection,
                 """
             function map() {
                 this.workflow.forEach(
@@ -69,9 +46,9 @@ abstract class Tasking {
             """,
                 null,
                 MapReduceCommand.OutputType.INLINE,
-                new BasicDBObject("fileSet", fileSet)
+                new BasicDBObject("na", na)
         )
-        c.mapReduce(mapReduceCommand).results().collect {
+        Stagingfile.collection.mapReduce(mapReduceCommand).results().collect {
             [
                     name: it._id,
                     success: it.value.success as Integer,
@@ -81,9 +58,5 @@ abstract class Tasking {
                     average: it.value.average
             ]
         }
-    }
-
-    boolean getIngesting() {
-        task.name == 'InstructionIngest' && task.statusCode == 800
     }
 }

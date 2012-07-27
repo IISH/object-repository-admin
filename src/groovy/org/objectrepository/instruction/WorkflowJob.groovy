@@ -143,12 +143,18 @@ abstract class WorkflowJob {
      *
      * Moves a new task to the bottom ( beginning at index 0... depending on the metaphor ) of the workflow.
      * This way the task becomes active.
+     * In case that last task is already finished ( statusCode > 799 ) we move on again to the next, etc.
+     *
      *
      * @param document
      */
     void nextWorkflow(def document) {
         final String old = document.task.name + document.task.statusCode
-        document.workflow << document.workflow.remove(0)
+        boolean next = true // The do-while loop is not yet supported in this groovy version
+        while ( next ) {
+            document.workflow << document.workflow.remove(0)
+            next = ( document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad' )
+        }
         first(document)
         log.info id(document) + "nextWorkflow from " + old + " to " + document.task.name + document.task.statusCode
     }

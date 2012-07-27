@@ -49,21 +49,28 @@ class StagingfileController {
                 elemMatch << [$or: [[statusCode: [$gt: 699, $lt: 800]], [statusCode: 850]]]
                 break
         }
+
+        int count
         if (elemMatch.size() == 0) {
             stagingfileInstanceList = Stagingfile.findAllByFileSet(instructionInstance.fileSet, params)
+            count = Stagingfile.countByFileSet(instructionInstance.fileSet)
         } else {
             def query = [fileSet: instructionInstance.fileSet, workflow: [$elemMatch: elemMatch]]
-            stagingfileInstanceList = Stagingfile.collection.find(query).collect() {
+            stagingfileInstanceList = Stagingfile.collection.find(query, params).collect() {
                 it as Stagingfile
             }
+            count = Stagingfile.collection.count(query)
         }
 
         if (params.view) {
-            render(view: params.view, model: [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance])
+            render(view: params.view, model: [stagingfileInstanceList: stagingfileInstanceList,
+                    stagingfileInstanceTotal: count,
+                    instructionInstance: instructionInstance])
             params.remove('view')
         }
         else
-            [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: Stagingfile.countByFileSet(instructionInstance.fileSet), instructionInstance: instructionInstance]
+            [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: count,
+                    instructionInstance: instructionInstance]
     }
 
     def show = {
