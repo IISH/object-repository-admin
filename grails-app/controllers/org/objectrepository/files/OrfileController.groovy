@@ -21,25 +21,27 @@ class OrfileController {
         params.order = !params.order || params.order == "asc" ? 1 : -1
         params.sort = params.sort ?: "_id"
         if (params.label && params.label == 'everything') params.label = null
-        def orfileInstanceList = gridFSService.findAllByNa(springSecurityService.principal.na, params)
+        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        def orfileInstanceList = gridFSService.findAllByNa(na, params)
         def labels = ['everything']
-        gridFSService.labels(springSecurityService.principal.na).each {
+        gridFSService.labels(na).each {
             if (it.label) labels << it.label
         }
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
-                .countByNa(springSecurityService.principal.na, params),
+                .countByNa(na, params),
                 labels: labels]
     }
 
     def show() {
-        def orfileInstance = gridFSService.get(springSecurityService.principal.na, params.id)
+        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        def orfileInstance = gridFSService.get(na, params.id)
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             redirect(action: "list")
             return
         }
 
-        if (!springSecurityService.hasValidNa(orfileInstance.metadata.na)) {
+        if (!springSecurityService.hasValidNa(na)) {
             response 401
             forward(action: "list")
         }
@@ -48,31 +50,33 @@ class OrfileController {
     }
 
     def edit() {
-        def orfileInstance = gridFSService.get(springSecurityService.principal.na, params.id)
+        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        def orfileInstance = gridFSService.get(na, params.id)
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             forward(action: "list")
             return
         }
 
-        if (!springSecurityService.hasValidNa(orfileInstance.metadata.na)) {
+        if (!springSecurityService.hasValidNa(na)) {
             response 401
             forward(action: "list")
         }
 
-        def policyList = Policy.findAllByNa(orfileInstance.metadata.na)
+        def policyList = Policy.findAllByNa(na)
         [orfileInstance: orfileInstance, policyList: policyList]
     }
 
     def update() {
-        def orfileInstance = gridFSService.get(springSecurityService.principal.na, params.id)
+        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        def orfileInstance = gridFSService.get(na, params.id)
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
             redirect(action: "list")
             return
         }
 
-        if (!springSecurityService.hasValidNa(orfileInstance.metadata.na)) {
+        if (!springSecurityService.hasValidNa(na)) {
             response 401
             forward(action: "list")
         }
