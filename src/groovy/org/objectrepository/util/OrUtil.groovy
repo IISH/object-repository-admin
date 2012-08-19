@@ -37,6 +37,7 @@ class OrUtil {
             return readElement(xsr)
         } catch (Exception e) {
             println(e)
+            println(file.getAbsolutePath())
         }
         null
     }
