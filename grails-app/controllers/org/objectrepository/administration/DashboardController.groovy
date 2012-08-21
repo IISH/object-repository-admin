@@ -14,6 +14,7 @@ class DashboardController {
     def springSecurityService
     def ldapUserDetailsManager
     def gridFSService
+    def statisticsService
 
     /**
      * See if we need to create a user
@@ -48,5 +49,8 @@ class DashboardController {
                 springSecurityService.reauthenticate(springSecurityService.principal.username)
             }
         }
+
+        //final stats = statisticsService.getStats(na)
+        //[collections: stats, tasks: statisticsService.getTasks(na)]
     }
 }
