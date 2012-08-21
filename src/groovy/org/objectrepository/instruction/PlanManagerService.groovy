@@ -32,7 +32,10 @@ class PlanManagerService extends Thread implements Runnable {
         active = count != 0
         while (active) {
             for (int i = 0; i < count; i++) {
-                if (active) services.get(i).job()
+                if (active) {
+                    println("Running job: " + services.get(i).class.name)
+                    services.get(i).job()
+                }
             }
             sleep(timeout)
         }
