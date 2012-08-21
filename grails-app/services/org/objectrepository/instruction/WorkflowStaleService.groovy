@@ -46,7 +46,7 @@ class WorkflowStaleService extends WorkflowJob {
                     workflow: [$elemMatch: [n: 0, statusCode: currentStatusCode, end: [$lt: date]]],
                     [$set: ['workflow.$.statusCode': newStatusCode, 'workflow.$.exitValue': Integer.MAX_VALUE, 'workflow.$.identifier': null]],
                     false,
-                    false
+                    true
             )
         }
     }
