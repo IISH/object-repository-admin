@@ -86,6 +86,7 @@ class WorkflowInitiateService extends WorkflowJob {
      */
     private void decommissionInstruction(String _na) {
 
+        //noinspection GroovyAssignabilityCheck
         mongo.getDB('sa').instruction.find(
                 $and: [
                         [na: _na],

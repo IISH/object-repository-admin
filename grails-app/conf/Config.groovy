@@ -157,6 +157,8 @@ final String catalinaBase = System.properties.getProperty('catalina.base', './ta
 File logFile = new File(catalinaBase)
 logFile.mkdirs()
 println("log directory: " + logFile.absolutePath)
+
+String loglevel = System.properties.getProperty('loglevel', 'warn')
 log4j = {
 
     appenders {
@@ -166,10 +168,10 @@ log4j = {
     }
 
     root {
-        warn()
+        "$loglevel"()
     }
-    warn 'grails.app.controllers'
-    warn 'grails.app.services'
+    "$loglevel" 'grails.app.controllers'
+    "$loglevel" 'grails.app.services'
 }
 
 grails.doc.title = "Object-repository"
