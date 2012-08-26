@@ -129,7 +129,7 @@ class TaskValidationService {
             if (file.isFile()) return true;
             return hasFSFiles(file)
         }
-        false;
+        false
     }
 
     /**

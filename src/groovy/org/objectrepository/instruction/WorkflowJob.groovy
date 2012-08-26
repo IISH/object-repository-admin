@@ -23,6 +23,8 @@ abstract class WorkflowJob {
     def taskProperties
 
     static int TASK_FREEZE = 797
+    static int periodQueued = 7200000 // Two hours of queueing status. And then the task becomes stale.
+
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -411,7 +413,8 @@ abstract class WorkflowJob {
                     queue = document.task.name
                 }*/
                 queue = document.task.name
-                sendMessage(["activemq", queue].join(":"), OrUtil.makeOrType(document))
+                final headers = [Expiration: System.currentTimeMillis() + periodQueued]
+                sendMessageAndHeaders(["activemq", queue].join(":"), OrUtil.makeOrType(document), headers)
                 log.info id(document) + "Send message to queue"
                 next(document)
             } catch (Exception e) {
