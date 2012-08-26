@@ -402,7 +402,7 @@ abstract class WorkflowJob {
         document.task.taskKey()
         if (save(document)) {
             try {
-                String queue
+                //String queue
                 /*if (document.task.name.startsWith('StagingfileIngestLevel')) {
                     def type = document.contentType?.split('/')[0]
                     def postfix = grailsApplication.config.derivative2queue.find() {
@@ -412,9 +412,9 @@ abstract class WorkflowJob {
                 } else {
                     queue = document.task.name
                 }*/
-                queue = document.task.name
-                final headers = [Expiration: System.currentTimeMillis() + periodQueued]
-                sendMessageAndHeaders(["activemq", queue].join(":"), OrUtil.makeOrType(document), headers)
+                final long ttl = System.currentTimeMillis() + periodQueued
+                final headers = [Expiration: ttl, JMSExpiration: ttl]
+                sendMessageAndHeaders(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document), headers)
                 log.info id(document) + "Send message to queue"
                 next(document)
             } catch (Exception e) {

@@ -10,13 +10,13 @@ class PlanManagerService extends Thread implements Runnable {
 
     private def services = []
     private boolean active = true
-    long timeout = 10000
+    long timeout = 10101
 
     public PlanManagerService(def application) {
         application.serviceClasses.each { artefact ->
             String name = artefact.name
             if (name.startsWith("Workflow")) {
-                println("Adding " + name + " to workflow runner.")
+                log.info "Adding " + name + " to workflow runner."
                 services << application.getMainContext().getBean(artefact.clazz)
             }
         }
@@ -33,8 +33,12 @@ class PlanManagerService extends Thread implements Runnable {
         while (active) {
             for (int i = 0; i < count; i++) {
                 if (active) {
-                    println("Running job: " + services.get(i).class.name)
+                    log.info "Running job: " + services.get(i).class.name
+                    try {
                     services.get(i).job()
+                    } catch (Exception e) {
+                        println(e.message)
+                    }
                 }
             }
             sleep(timeout)
