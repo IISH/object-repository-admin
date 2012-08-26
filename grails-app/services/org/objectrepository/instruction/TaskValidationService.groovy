@@ -114,7 +114,7 @@ class TaskValidationService {
     }
 
     protected boolean hasFailedTasks(def document) {
-        ( document.delegate instanceof Instruction && document.task.statusCode == 900 ) ? mongo.getDB('sa').stagingfile.count([fileSet: document.fileSet, 'workflow.statusCode': [$lt: 800]]) != 0 : false
+        (document.delegate instanceof Instruction && document.task.statusCode == 900) ? mongo.getDB('sa').stagingfile.count([fileSet: document.fileSet, 'workflow.statusCode': [$lt: 800]]) != 0 : false
     }
 
     /**
@@ -124,11 +124,15 @@ class TaskValidationService {
      */
     private boolean hasFSFiles(File dir) {
 
-        for (File file : dir.listFiles()) {
-            if (file.name[0].equals(".")) continue;
-            if (file.isFile()) return true;
-            return hasFSFiles(file)
-        }
+        final files = dir.listFiles()
+        if (files)
+            for (File file : files) {
+                if (file.name[0].equals(".")) continue
+                if (file.name.equals("instruction.xml")) continue
+                if (file.name.endsWith(".md5")) continue
+                if (file.isFile()) return true
+                return hasFSFiles(file)
+            }
         false
     }
 
@@ -139,6 +143,6 @@ class TaskValidationService {
      * @return
      */
     boolean hasFSFiles(def document) {
-        return hasFSFiles(new File(document.fileSet as String))
+        hasFSFiles(new File(document.fileSet as String))
     }
 }
