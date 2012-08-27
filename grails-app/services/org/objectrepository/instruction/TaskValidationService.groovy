@@ -127,10 +127,14 @@ class TaskValidationService {
         final files = dir.listFiles()
         if (files)
             for (File file : files) {
+                println("hasFSFiles filename: " + file.absolutePath)
                 if (file.name[0].equals(".")) continue
                 if (file.name.equals("instruction.xml")) continue
                 if (file.name.endsWith(".md5")) continue
-                if (file.isFile()) return true
+                if (file.isFile()) {
+                    println("File found")
+                    return true
+                }
                 return hasFSFiles(file)
             }
         false
