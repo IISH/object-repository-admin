@@ -142,7 +142,7 @@ class TaskValidationService {
      * @param document
      * @return
      */
-    boolean hasFSFiles(Instruction document) {
+    boolean hasFSFiles(def document) {
         hasFSFiles(new File(document.fileSet as String))
     }
 }

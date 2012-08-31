@@ -23,7 +23,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static int TASK_FREEZE = 797
-    static int periodQueued = 7200000 // Two hours of queueing status. And then the task becomes stale.
+    static int periodQueued = 28800000 // Eight hours of queueing status. And then the task becomes stale.
 
 
     public WorkflowJob() {
@@ -413,7 +413,7 @@ abstract class WorkflowJob {
                     queue = document.task.name
                 }*/
                 final long ttl = System.currentTimeMillis() + periodQueued
-                final headers = [Expiration: ttl, JMSExpiration: ttl]
+                final headers = [expiration: ttl, JMSExpiration: ttl]
                 sendMessageAndHeaders(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document), headers)
                 log.info id(document) + "Send message to queue"
                 next(document)
