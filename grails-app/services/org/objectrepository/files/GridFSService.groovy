@@ -32,6 +32,7 @@ class GridFSService {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
+        db.setReadPreference(ReadPreference.SECONDARY)
         def gridFS = new GridFS(db, bucket)
         gridFS.findOne(queryPidOrLid(pid))
     }
