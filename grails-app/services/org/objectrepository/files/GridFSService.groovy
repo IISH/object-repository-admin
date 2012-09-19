@@ -178,7 +178,7 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        def labels = mongo.getDB(OR + na).'label'.find().collect() { it._id }
+        def labels = mongo.getDB(OR + na).'label'.find().sort([_id:1]).collect() { it._id }
         labels.putAt(0, 'everything')
         labels
     }
