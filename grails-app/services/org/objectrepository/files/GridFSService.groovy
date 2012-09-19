@@ -32,7 +32,7 @@ class GridFSService {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
-        db.setReadPreference(ReadPreference.SECONDARY)
+//        db.setReadPreference(ReadPreference.SECONDARY) // defined in DataSource.groovy
         def gridFS = new GridFS(db, bucket)
         gridFS.findOne(queryPidOrLid(pid))
     }
@@ -174,50 +174,12 @@ class GridFSService {
      *
      * Presents all collection labels using mapReduce.
      *
-     * ToDo: move all logic to the backend put.js
-     *
      * @param na
      * @return
      */
     def labels(String na) {
-
-        def d = mongo.getDB(OR + na).'label.inc'.findOne([_id: 'label'])
-        Date uploadDate = (d) ? d.uploadDate as Date : new Date(1L)
-        def c = mongo.getDB(OR + na)."master.files"
-        MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
-                """
-                        function map() {
-                            emit(this.metadata.label, { total:1, uploadDate: this.uploadDate });
-                        }
-                """,
-                """
-                        function reduce(key, values) {
-                            var total = 0;
-                            var uploadDate = new ISODate('1900-01-01');
-                            var labels = [];
-                            for (var i = 0; i < values.length; i++) {
-                                var value = values[i];
-                                if ( value.uploadDate > uploadDate ) uploadDate = value.uploadDate;
-                                total += value.total;
-                            }
-                            return { uploadDate: uploadDate, total:total };
-                        }
-                """,
-                'label',
-                MapReduceCommand.OutputType.MERGE,
-                QueryBuilder.start('uploadDate').greaterThan(uploadDate).get()
-        )
-        def labels = c.mapReduce(mapReduceCommand).results().collect {
-            [
-                    label: it._id,
-                    uploadDate: it.value.uploadDate,
-                    total: it.value.total as Integer
-            ]
-        }
-        uploadDate = labels.inject(uploadDate) { init, v ->
-            (init < v.uploadDate) ? v.uploadDate : init
-        }
-        mongo.getDB(OR + na).'label.inc'.save([_id: 'label', uploadDate: uploadDate])
+        def labels = mongo.getDB(OR + na).'label'.find().collect() { it._id }
+        labels.putAt(0, 'everything')
         labels
     }
 
