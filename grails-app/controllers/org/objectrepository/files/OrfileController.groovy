@@ -23,13 +23,9 @@ class OrfileController {
         if (params.label && params.label == 'everything') params.label = null
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
         def orfileInstanceList = gridFSService.findAllByNa(na, params)
-        def labels = ['everything']
-        gridFSService.labels(na).each {
-            if (it.label) labels << it.label
-        }
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(na, params),
-                labels: labels]
+                labels: gridFSService.labels(na)]
     }
 
     def show() {

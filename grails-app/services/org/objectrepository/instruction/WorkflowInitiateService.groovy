@@ -95,28 +95,33 @@ class WorkflowInitiateService extends WorkflowJob {
         ).each {
             Instruction instructionInstance = it as Instruction
             int countStagingfiles = Stagingfile.countByFileSet(instructionInstance.fileSet)
-            int count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch:
-                    [name: 'EndOfTheRoad', statusCode: [$gt:699]]]]) // statusCode ought to be 850 or 900
+            int count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch:
+                    [name: 'EndOfTheRoad', statusCode: [$gt: 699]]]]) // statusCode ought to be 850 or 900
             if (countStagingfiles == count) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900
-                count = mongo.getDB('sa').stagingfile.count([fileSet:instructionInstance.fileSet,workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
-                instructionInstance.task.info = ( count == countStagingfiles ) ? "Completed" : "Done, but with some unresolved issues"
-                if (count == 0 && instructionInstance.deleteCompletedInstruction) {
-                    delete(instructionInstance)
-                } else
-                    save(instructionInstance)
+                count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
+                instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
+                if (count == 0) {
+                    if (instructionInstance.deleteCompletedInstruction) {
+                        delete(instructionInstance)
+                        return
+                    }
+                } else {
+                    if (instructionInstance.task.attempts == 0) retry(instructionInstance)
+                }
             }
+            save(instructionInstance)
         }
     }
 
-    /**
-     * Checks for a workflow..... if not available, create one with defaults.
-     *
-     * @param na
-     * @param entry
-     * @return
-     */
+/**
+ * Checks for a workflow..... if not available, create one with defaults.
+ *
+ * @param na
+ * @param entry
+ * @return
+ */
     private void addInstruction(def na, File entry) {
 
         final String fileSet = Normalizers.normalize(entry)
