@@ -5,7 +5,7 @@
 
 <body>
 
-<table style="width:400px">
+%{--<table style="width:400px">
     <caption>Stored master and derivative material as of now</caption>
     <thead>
 
@@ -22,7 +22,7 @@
         <g:if test="${stat.bucket=='total'}"></tfoot></g:if>
     </g:each>
 
-</table>
+</table>--}%
 
 %{--<table>
     <thead>
