@@ -10,8 +10,8 @@ environments {
             databaseName = "sa"
             host = "localhost" // mongos
             options {
-                            readPreference = _readPreference
-                        }
+                readPreference = _readPreference
+            }
         }
     }
     development {

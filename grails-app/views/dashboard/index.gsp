@@ -5,28 +5,40 @@
 
 <body>
 
-%{--<table>
+<table style="width:400px">
+    <caption>Stored master and derivative material as of now</caption>
+    <thead>
+
     <tr>
-        <th>ContentType</th>
-        <th>File count</th>
-        <th>File size</th>
+        <th>type</th>
+        <th>filecount</th>
+        <th>size</th>
     </tr>
-    <g:each in="${contentTypes}" var="c">
-        <g:if test="${c.contentType}">
+    </thead>
+
+    <g:each in="${stats}" var="stat">
+        <g:if test="${stat.bucket=='total'}"><tfoot style="font-weight: bold;"></g:if>
+        <tr><td>${stat.bucket}</td><td>${stat.count}</td><td><g:formatNumber number="${stat.storageSize / 1024 / 1024}" maxFractionDigits="2"/>GB</td></tr>
+        <g:if test="${stat.bucket=='total'}"></tfoot></g:if>
+    </g:each>
+
+</table>
+
+%{--<table>
+    <thead>
+    <tr>
+        <th>task</th>
+        <th>count</th>
+    </tr>
+    </thead>
+    <g:each in="${tasks}" var="task">
         <tr>
-            <td>${c.contentType}</td>
-            <td>${c.total}</td>
-            <td>${c.length}</td>
-        </tr></g:if>
-        <g:else>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </g:else>
+            <td class="left"><g:message code="${task.name}.0.info"/></td>
+            <td>${total}</td>
+        </tr>
     </g:each>
 </table>--}%
+
 
 <img src="${resource(dir: 'images', file: 'or/forthcoming.png')}"/>
 

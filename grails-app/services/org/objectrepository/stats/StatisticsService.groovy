@@ -1,14 +1,15 @@
 package org.objectrepository.stats
 
-import com.mongodb.MapReduceCommand
 import com.mongodb.BasicDBObject
+import com.mongodb.MapReduceCommand
 import org.objectrepository.instruction.Stagingfile
 
 class StatisticsService {
 
+    def grailsApplication
+    def mongo
+
     List getTasks(String na) {
-
-
 
         MapReduceCommand mapReduceCommand = new MapReduceCommand(Stagingfile.collection,
                 """
@@ -58,5 +59,37 @@ class StatisticsService {
                     average: it.value.average
             ]
         }
+    }
+
+    /**
+     * getStats
+     *
+     * Get a list of stats from our db.
+     *
+     * @param na
+     * @return
+     */
+    def getStats(String na) {
+
+
+        def stats = grailsApplication.config.accessMatrix.closed.collect {
+            it.bucket
+        }.collect {
+            final collectionFiles = mongo.getDB('or_' + na).getCollection(it + ".files").getStats()
+            final collectionChunks = mongo.getDB('or_' + na).getCollection(it + ".chunks").getStats()
+            [
+                    bucket: it,
+                    count: collectionFiles.count,
+                    storageSize: collectionChunks.storageSize + collectionFiles.storageSize
+            ]
+        }
+        long count = 0, storageSize = 0
+        stats.each {
+            count += it.count
+            storageSize += it.storageSize
+        }
+        stats << [bucket: 'replica', count: count, storageSize: storageSize]
+        stats << [bucket: 'total', count: count * 2, storageSize: storageSize * 2]
+        stats
     }
 }

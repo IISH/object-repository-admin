@@ -50,7 +50,8 @@ class DashboardController {
             }
         }
 
-        //final stats = statisticsService.getStats(na)
-        //[collections: stats, tasks: statisticsService.getTasks(na)]
+        // Add statistic data
+        // Todo: move to another controller ? StatController ? DataController ?
+        [stats: statisticsService.getStats(na), tasks: null]
     }
 }
