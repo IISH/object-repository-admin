@@ -172,33 +172,13 @@ class GridFSService {
     /**
      * labels
      *
-     * Presents all collection labels using mapReduce.
+     * Presents all collection labels.
      *
      * @param na
      * @return
      */
     def labels(String na) {
-        //mongo.getDB(OR + na).'label'.find().sort([_id:1]).collect() { it._id }.plus(0, 'everything')  // Will lead to pageing...
-        def c = mongo.getDB(OR + na).'label'
-        MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
-                """
-                                function map() {
-                                    emit(this._id, { total:1 });
-                                }
-                                        """,
-                """
-                                function reduce(key, values) {
-                                    return { _id:key };
-                                }
-                                        """,
-                null,
-                MapReduceCommand.OutputType.INLINE,  // No collection
-                new BasicDBObject() // No Query
-        )
-
-        c.mapReduce(mapReduceCommand).results().collect {
-            it._id
-        }.plus(0, 'everything')
+        mongo.getDB(OR + na).'label'.find().sort([_id:1]).collect() { it._id }.plus(0, 'everything')
     }
 
     private Orfile parseOrFile(def document) {
