@@ -18,7 +18,7 @@
 
     <g:each in="${stats}" var="stat">
         <g:if test="${stat.bucket=='total'}"><tfoot style="font-weight: bold;"></g:if>
-        <tr><td>${stat.bucket}</td><td>${stat.count}</td><td><g:formatNumber number="${stat.storageSize / 1024 / 1024}" maxFractionDigits="2"/>GB</td></tr>
+        <tr><td>${stat.bucket}</td><td>${stat.count}</td><td><g:formatNumber number="${stat.storageSize / 1073741824}" maxFractionDigits="2"/>GB</td></tr>
         <g:if test="${stat.bucket=='total'}"></tfoot></g:if>
     </g:each>
 
