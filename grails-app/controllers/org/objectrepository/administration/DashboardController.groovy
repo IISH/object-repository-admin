@@ -52,6 +52,6 @@ class DashboardController {
 
         // Add statistic data
         // Todo: move to another controller ? StatController ? DataController ?
-        //[stats: statisticsService.getStats(na), tasks: null]
+        [stats: statisticsService.getStats(na, (params.interval) ?: 'year'), tasks: null]
     }
 }

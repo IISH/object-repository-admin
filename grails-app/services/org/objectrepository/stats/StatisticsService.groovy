@@ -69,27 +69,9 @@ class StatisticsService {
      * @param na
      * @return
      */
-    def getStats(String na) {
+    def getStats(String na, String bucket) {
 
-
-        def stats = grailsApplication.config.accessMatrix.closed.collect {
-            it.bucket
-        }.collect {
-            final collectionFiles = mongo.getDB('or_' + na).getCollection(it + ".files").getStats()
-            final collectionChunks = mongo.getDB('or_' + na).getCollection(it + ".chunks").getStats()
-            [
-                    bucket: it,
-                    count: collectionFiles.count,
-                    storageSize: collectionChunks.storageSize + collectionFiles.storageSize
-            ]
-        }
-        long count = 0, storageSize = 0
-        stats.each {
-            count += it.count
-            storageSize += it.storageSize
-        }
-        stats << [bucket: 'replica', count: count, storageSize: storageSize]
-        stats << [bucket: 'total', count: count * 2, storageSize: storageSize * 2]
-        stats
+        final String collection = bucket + ".statistics"
+        mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
     }
 }
