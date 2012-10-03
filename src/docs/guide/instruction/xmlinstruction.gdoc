@@ -10,7 +10,7 @@ This file will be deleted automatically after you uploaded it, as it is read int
 instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
 using the administration panel.
 
-[The schema can be found here|https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
+[The schema can be found here | https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
 
 {note}When you download a XML processing instruction, it may have added validation messages.{note}
 

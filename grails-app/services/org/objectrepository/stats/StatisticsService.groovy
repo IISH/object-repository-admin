@@ -71,7 +71,7 @@ class StatisticsService {
      */
     def getStats(String na, String bucket) {
 
-        final String collection = bucket + ".statistics"
+        final String collection = bucket + ".storage.statistics"
         mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
     }
 }
