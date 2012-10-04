@@ -50,8 +50,8 @@ class DashboardController {
             }
         }
 
-        // Add statistic data
-        // Todo: move to another controller ? StatController ? DataController ?
-        [stats: statisticsService.getStats(na, (params.interval) ?: 'year'), tasks: null]
+        // Add statistic data. Could be moved to another controller...
+        final interval = (params.interval) ?: 'year'
+        [storage: statisticsService.getStorage(na, interval),siteusage:statisticsService.getSiteusage(na, interval), tasks: null]
     }
 }
