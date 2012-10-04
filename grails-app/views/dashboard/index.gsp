@@ -1,7 +1,6 @@
 <html>
 <head>
     <meta name="layout" content="${System.getProperty("layout")}"/>
-    %{--<script type="text/javascript" src="js/dojo/1.7.2/dojo/dojo.js"/>--}%
     <style type="text/css">
     .stat {
         float: left;
@@ -32,7 +31,7 @@
             <th>GB</th>
         </tr>
         </thead>
-        <g:each in="${stats}" var="interval" status="i">
+        <g:each in="${storage}" var="interval" status="i">
             <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
                 <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                     <td><g:if test="${j == 0}"><g:formatDate date="${interval._id}"
@@ -74,18 +73,18 @@
             <th>count</th>
         </tr>
         </thead>
-        <g:each in="${stats}" var="interval" status="i">
+        <g:each in="${storage}" var="interval" status="i">
             <g:set var="first" value="true"/>
             <g:each in="${interval.value}" var="item">
                 <g:if test="${item.key.startsWith('access.count.')}">
                     <g:if test="${!item.value}"><g:set var="item.value" value="0"/></g:if>
-                        <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                            <td><g:if test="${first}"><g:formatDate date="${interval._id}"
-                                                                    format="yyyy-MM-dd"/></g:if></td>
-                            <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
-                            <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
-                            <g:set var="first" value="false"/>
-                        </tr>
+                    <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                        <td><g:if test="${first}"><g:formatDate date="${interval._id}"
+                                                                format="yyyy-MM-dd"/></g:if></td>
+                        <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
+                        <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
+                        <g:set var="first" value="false"/>
+                    </tr>
                 </g:if>
             </g:each>
         </g:each>
@@ -102,26 +101,54 @@
             <th>count</th>
         </tr>
         </thead>
-        <g:each in="${stats}" var="interval" status="i">
+        <g:each in="${storage}" var="interval" status="i">
             <g:set var="first" value="true"/>
             <g:each in="${interval.value}" var="item">
                 <g:if test="${item.key.startsWith('contentType.count.')}">
                     <g:if test="${!item.value}"><g:set var="item.value" value="0"/></g:if>
-                        <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                            <td><g:if test="${first}"><g:formatDate date="${interval._id}"
-                                                                    format="yyyy-MM-dd"/></g:if></td>
-                            <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
-                            <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
-                            <g:set var="first" value="false"/>
-                        </tr>
+                    <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                        <td><g:if test="${first}"><g:formatDate date="${interval._id}"
+                                                                format="yyyy-MM-dd"/></g:if></td>
+                        <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
+                        <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
+                        <g:set var="first" value="false"/>
+                    </tr>
                 </g:if>
             </g:each>
         </g:each>
     </table>
 </div>
 
-
-%{--<img src="${resource(dir: 'images', file: 'or/forthcoming.png')}"/>--}%
+<div class="stat" style="clear: both;">
+    <table style="width:400px;white-space: nowrap;">
+        <caption>Site usage</caption>
+        <thead>
+        <tr>
+            <th>date</th>
+            <th colspan="4">types</th>
+        </tr>
+        </thead>
+        <g:each in="${siteusage}" var="interval" status="i">
+            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+            <td><g:if test="${first}"><g:formatDate date="${interval._id}"
+                                                    format="yyyy-MM-dd"/></g:if></td>
+            <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
+                <td>
+                    <table>
+                        <caption>${bucket}</caption>
+                        <g:each in="${interval.value.findAll {it.key.endsWith('.' + bucket)}}" var="item" status="k">
+                            <tr class="${(k % 2) == 0 ? 'even' : 'odd'}">
+                                <td><g:message code="${item.key.substring(0, 2).toLowerCase()}"/></td>
+                                <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
+                            </tr>
+                        </g:each>
+                    </table>
+                </td>
+            </g:each>
+            </tr>
+        </g:each>
+    </table>
+</div>
 
 <div id="badges" style="clear: both;">
     <a href="http://www.mongodb.org/" title="MongoDB"><img border="0"

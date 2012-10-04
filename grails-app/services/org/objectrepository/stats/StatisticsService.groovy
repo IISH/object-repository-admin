@@ -62,16 +62,30 @@ class StatisticsService {
     }
 
     /**
-     * getStats
+     * getStorage
      *
      * Get a list of stats from our db.
      *
      * @param na
      * @return
      */
-    def getStats(String na, String bucket) {
+    def getStorage(String na, String interval) {
 
-        final String collection = bucket + ".storage.statistics"
+        final String collection = interval + ".storage.statistics"
+        mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
+    }
+
+    /**
+     * getSiteusage
+     *
+     * Get a list of stats from our db.
+     *
+     * @param na
+     * @return
+     */
+    def getSiteusage(String na, String interval) {
+
+        final String collection = interval + ".siteusage.statistics"
         mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
     }
 }
