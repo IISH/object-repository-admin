@@ -100,15 +100,18 @@ class WorkflowInitiateService extends WorkflowJob {
             if (countStagingfiles == count) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900
-                count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
-                instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
                 if (count == 0) {
+                    // ToDo: sent message notification
                     if (instructionInstance.deleteCompletedInstruction) {
                         delete(instructionInstance)
                         return
                     }
                 } else {
-                    if (instructionInstance.task.attempts == 0) retry(instructionInstance)
+                    count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
+                    instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
+                    log.info "Retry instruction."
+                    //retry(instructionInstance)
+                    log.warn("No retry for a failed instruction is implemented... use retry(instructionInstance) to enable.")
                 }
             }
             save(instructionInstance)
