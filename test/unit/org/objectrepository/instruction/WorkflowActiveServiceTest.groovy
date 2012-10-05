@@ -36,16 +36,6 @@ class WorkflowActiveServiceTest {
             getProperty("action")
         }
 
-        Stagingfile.metaClass.delete = {
-            println("Mock delete")
-            true
-        }
-
-        WorkflowJob.metaClass.delete = { val ->
-            println("Mock delete")
-            true
-        }
-
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
@@ -242,16 +232,6 @@ class WorkflowActiveServiceTest {
         workflowActiveService.UploadFiles800(document)
         assert document.task.name == 'UploadFiles'
         assert document.task.statusCode == 0
-    }
-
-    void testFileFlowsDelete() {
-
-        Task task = [name: 'Start', statusCode: 100]
-        Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', contentType: 'image/jpeg', task: task, action: 'delete']
-        document.parent = [id: new ObjectId(), workflow: OrUtil.availablePlans(config.plans)]   // todo : should be tasks
-        workflowActiveService.runMethod(document)
-        assert document.task.name == 'EndOfTheRoad'
-        assert document.task.statusCode == 900
     }
 
     void testChange() {
