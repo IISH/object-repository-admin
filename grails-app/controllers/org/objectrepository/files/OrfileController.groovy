@@ -89,24 +89,6 @@ class OrfileController {
         redirect(action: "show", id: orfileInstance.id)
     }
 
-    def delete() {
-        def filesInstance = Orfile.get(params.id)
-        if (!filesInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
-            redirect(action: "list")
-            return
-        }
-
-        if (!springSecurityService.hasValidNa(filesInstance.na)) {
-            response 401
-            forward(action: "list")
-        }
-
-        filesUDService.delete(filesInstance.pid)
-        flash.message = message(code: 'default.deleted.message', args: [message(code: 'files.label', default: 'Files'), filesInstance.id])
-        redirect(action: "show", id: filesInstance.id)
-    }
-
     def download() {
 
         response.setCharacterEncoding("utf-8");

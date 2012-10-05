@@ -126,11 +126,6 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
-    def FileRemove400(def document) {
-        gridFSService.delete(document.pid)
-        next(document)
-    }
-
 /**
  * Stagingfile800
  *

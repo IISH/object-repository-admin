@@ -153,9 +153,9 @@ abstract class WorkflowJob {
     void nextWorkflow(def document) {
         final String old = document.task.name + document.task.statusCode
         boolean next = true // The do-while loop is not yet supported in this groovy version
-        while ( next ) {
+        while (next) {
             document.workflow << document.workflow.remove(0)
-            next = ( document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad' )
+            next = (document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad')
         }
         first(document)
         log.info id(document) + "nextWorkflow from " + old + " to " + document.task.name + document.task.statusCode
@@ -265,31 +265,21 @@ abstract class WorkflowJob {
      */
     def Start100(def document) {
 
-        switch (document.action) {
-            case 'delete':
-                document.workflow << new Task(name: 'FileRemove')
-                break
-            case 'add':
-            case 'update':
-            case 'upsert':
-            default:
-                OrUtil.setInstructionPlan(document.parent)
-                plans.each { plan ->  // Iterating from the config plan will ensure the correct ordering of tasks.
-                    def wf = document.parent.plan.find() {
-                        it == plan.key
-                    }
-                    if (wf) {
-                        def attributes = [name: wf, info: "Default workflow"]
-                        plan.value.task?.each() {
-                            attributes << it
-                        }
-                        final task = new Task(attributes)
-                        document.workflow << task
-                        log.info id(document) + "Added task:"
-                        log.info task
-                    }
+        OrUtil.setInstructionPlan(document.parent)
+        plans.each { plan ->  // Iterating from the config plan will ensure the correct ordering of tasks.
+            def wf = document.parent.plan.find() {
+                it == plan.key
+            }
+            if (wf) {
+                def attributes = [name: wf, info: "Default workflow"]
+                plan.value.task?.each() {
+                    attributes << it
                 }
-                break
+                final task = new Task(attributes)
+                document.workflow << task
+                log.info id(document) + "Added task:"
+                log.info task
+            }
         }
 
         document.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
