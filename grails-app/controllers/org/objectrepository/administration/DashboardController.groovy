@@ -14,6 +14,7 @@ class DashboardController {
     def springSecurityService
     def ldapUserDetailsManager
     def gridFSService
+    def statisticsService
 
     /**
      * See if we need to create a user
