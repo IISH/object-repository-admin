@@ -88,8 +88,8 @@ class GridFSService {
         mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
-    Orfile get(String na, String id) {
-        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne(_id: id))
+    Orfile get(String na, String pid) {
+        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid))
     }
 
     /**

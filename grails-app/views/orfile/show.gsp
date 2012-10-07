@@ -131,8 +131,8 @@
     </ol>
     <g:form>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance?.id}"/>
-            <g:link class="edit" action="edit" id="${orfileInstance?.id}"><g:message code="default.button.edit.label"
+            <g:hiddenField name="id" value="${orfileInstance?.metadata.pid}"/>
+            <g:link class="edit" action="edit" id="${orfileInstance?.metadata.pid}"><g:message code="default.button.edit.label"
                                                                                      default="Edit"/></g:link>
             %{--<g:actionSubmit class="delete" action="delete"
                             value="${message(code: 'default.button.delete.label', default: 'Delete')}"

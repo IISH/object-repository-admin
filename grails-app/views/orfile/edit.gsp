@@ -97,7 +97,7 @@
 
         </ol>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance?.id}"/>
+            <g:hiddenField name="id" value="${orfileInstance?.metadata.pid}"/>
             <g:actionSubmit class="update" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
             %{--<g:actionSubmit class="delete" action="delete"
