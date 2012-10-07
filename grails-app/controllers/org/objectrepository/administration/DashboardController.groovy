@@ -8,13 +8,12 @@ import org.objectrepository.security.Role
 import org.objectrepository.instruction.Profile
 import org.objectrepository.util.OrUtil
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
 class DashboardController {
 
     def springSecurityService
     def ldapUserDetailsManager
     def gridFSService
-    def statisticsService
 
     /**
      * See if we need to create a user
@@ -41,17 +40,14 @@ class DashboardController {
                     flash.message = "Could not add user."
                     return
                 }
-
-                log.info "Policies and Profile"
-                OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
-                if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
-
                 springSecurityService.reauthenticate(springSecurityService.principal.username)
             }
+            log.info "Policies and Profile"
+            OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
+            if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
         }
 
-        // Add statistic data. Could be moved to another controller...
         final interval = (params.interval) ?: 'year'
-        [storage: statisticsService.getStorage(na, interval),siteusage:statisticsService.getSiteusage(na, interval), tasks: null]
+        [storage: statisticsService.getStorage(na, interval), siteusage: statisticsService.getSiteusage(na, interval), tasks: null]
     }
 }
