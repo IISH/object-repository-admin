@@ -37,67 +37,9 @@
                 <g:textField name="label" value="${orfileInstance.metadata.label}"/>
             </li>
 
-            %{--        <g:if test="${orfileInstance.metadata.cache}">
-                <li class="fieldcontain">
-                    <span id="files-label" class="property-label"><g:message code="files.label"
-                                                                             default="Files"/></span>
-                    <span class="property-value" aria-labelledby="files-label">
-                        <g:each in="${orfileInstance.metadata.cache}" var="cache">
-                            <table style="text-align: left">
-                                <caption style="text-align: left;font-weight: bold;"><g:message
-                                                        code="policy.access.${cache.metadata.bucket}" default="${cache.metadata.bucket}"/></caption>
-
-                                <tr>
-                                    <td><g:message code="file.link" default="Location"/></td>
-                                    <td><g:set var="l"><g:createLink controller="file" pid="${orfileInstance.metadata.pid}"
-                                                                     action="${cache.metadata.bucket}" id="${orfileInstance.metadata.pid}"
-                                                                     absolute="true"/></g:set>
-                                        <a href="${l}">${l}</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.contentType" default="Content type"/></td>
-                                    <td>${cache.contentType}</td>
-                                </tr>
-                                <g:if test="${cache.metadata.content}">
-                                    <tr>
-                                        <td><g:message code="file.metadata.dpi" default="Content"/></td>
-                                        <td>${cache.metadata.content}</td>
-                                    </tr>
-                                </g:if>
-                                <tr>
-                                    <td><g:message code="file.length" default="Content length"/></td>
-                                    <td>${cache.length}</td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.md5" default="md5 checksum"/></td>
-                                    <td>${cache.md5}</td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.timesAccessed" default="Times accessed"/></td>
-                                    <td>${cache.metadata.timesAccessed}</td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.firstUploadDate" default="First upload"/></td>
-                                    <td>${cache.metadata.firstUploadDate}</td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.lastUploadDate" default="Last update"/></td>
-                                    <td>${cache.metadata.lastUploadDate}"/></td>
-                                </tr>
-                                <tr>
-                                    <td><g:message code="file.timesUpdated" default="Times updated"/></td>
-                                    <td>${cache.metadata.timesUpdated}</td>
-                                </tr>
-                            </table>
-                        </g:each>
-                    </span>
-                </li>
-            </g:if>--}%
-
         </ol>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance?.metadata.pid}"/>
+            <g:hiddenField name="id" value="${orfileInstance?.metadata.pid.bytes.encodeBase64().toString()}"/>
             <g:actionSubmit class="update" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
             %{--<g:actionSubmit class="delete" action="delete"

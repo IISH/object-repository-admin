@@ -30,9 +30,9 @@ class OrfileController {
 
     def show() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, params.id)
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
         }
@@ -47,9 +47,9 @@ class OrfileController {
 
     def edit() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, params.id)
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             forward(action: "list")
             return
         }
@@ -65,9 +65,9 @@ class OrfileController {
 
     def update() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, params.id)
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
         }

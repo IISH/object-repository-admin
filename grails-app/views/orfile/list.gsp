@@ -37,7 +37,7 @@
         <tbody>
         <g:each in="${orfileInstanceList}" status="i" var="orfileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td><g:link action="show" id="${orfileInstance.metadata.pid}">
+                <td><g:link action="show" id="${orfileInstance.metadata.pid.bytes.encodeBase64().toString()}">
                     <g:set var="hasPreview"
                            value="${orfileInstance.metadata.cache.find {
                                it.metadata.bucket == 'level3' && it.contentType.startsWith('image')
@@ -57,7 +57,7 @@
                     <g:if test="${orfileInstance.metadata.lid}"><br/>${orfileInstance.metadata.lid}</g:if>
                 </td>
                 <td>${orfileInstance.metadata.lastUploadDate}</td>
-                <td><g:link action="download" id="${orfileInstance.metadata.pid}">metadata</g:link></td>
+                <td><g:link action="download" id="${orfileInstance.metadata.pid.bytes.encodeBase64().toString()}">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>
