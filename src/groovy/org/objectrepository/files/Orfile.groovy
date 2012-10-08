@@ -11,6 +11,7 @@ class Orfile {
     String[] aliases
     Metadata metadata
     String md5
+    String old_id
 
     def getProperty(String property) {
         if (property == "id") return _id
