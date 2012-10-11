@@ -30,7 +30,7 @@ class UserController {
     def clientDetailsService
 
     static allowedMethods = [save: "POST", update: "POST", changekey: "POST"]
-    final static loginshell = "/bin/sh"
+    final static loginshell = "/bin/false"
 
     def index = {
 

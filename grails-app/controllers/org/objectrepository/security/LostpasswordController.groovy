@@ -104,7 +104,7 @@ class LostpasswordController {
         person.o = userInstance.o
         person.username = userInstance.username
         person.uidNumber = userInstance.uidNumber
-        person.loginshell = "/bin/sh"
+        person.loginshell = "/bin/false"
         person.mail = userInstance.mail
         person.enabled = userInstance.enabled
         person.sn = userInstance.username
