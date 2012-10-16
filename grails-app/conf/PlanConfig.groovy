@@ -111,7 +111,18 @@ plans = [
                         800: [purpose: 'PID are bound to the resolve URLs']
                 ]
         ],
-
+        StagingfileIngestCustom: [
+                        statusCodes: [
+                                100: [purpose: 'The system received a request to ingest a derivative'],
+                                200: [purpose: 'Sending request to the queue'],
+                                300: [purpose: 'The object\'s location has been sent to the queue for custom derivative ingest'],
+                                400: [purpose: 'Ingesting custom derivative'],
+                                500: [purpose: 'The service node completed the task.'],
+                                600: [purpose: 'Verifying if the task was successfull.'],
+                                700: [purpose: 'We could not see if a derivative was ingested'],
+                                800: [purpose: 'Custom derivate file is stored']
+                        ],
+                ],
         StagingfileIngestLevel1: [
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],

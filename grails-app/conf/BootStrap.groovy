@@ -68,7 +68,7 @@ class BootStrap {
             principal.authorities*.authority
         }
         springSecurityService.metaClass.hasValidNa = { def na ->
-            hasRole('ROLE_ADMIN') || na == getPrincipal().na  // Any user with an NA is authorized
+            hasRole('ROLE_ADMIN') || na == getPrincipal().na  // Any user with a NA is authorized
         }
     }
 

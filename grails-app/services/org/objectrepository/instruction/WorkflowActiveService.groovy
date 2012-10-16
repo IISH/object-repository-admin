@@ -126,6 +126,30 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
+    /**
+     * StagingfileIngestCustom600
+     *
+     * For each custom derivative we can disable the production of a derivative
+     *
+     * @param document
+     * @return
+     */
+    def StagingfileIngestCustom600(def document) {
+
+        if (document.task.exitValue < 0 || document.task.exitValue > 63) return next(document)
+
+        Integer.toBinaryString(document.task.exitValue).reverse().eachWithIndex { num, idx ->
+            if ( num == 1 ) {
+                def task = document.workflow.find {
+                    it.name == "StagingfileIngestLevel" + idx
+                }
+                task?.exitValue = 0
+                task?.statusCode = 800
+            }
+        }
+        last(document)
+    }
+
 /**
  * Stagingfile800
  *
