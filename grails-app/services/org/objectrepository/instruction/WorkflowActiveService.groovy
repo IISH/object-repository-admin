@@ -155,7 +155,7 @@ class WorkflowActiveService extends WorkflowJob {
             }?.statusCode = 800
             last(document)
         } else {
-            next(document)
+            retry(document)
         }
     }
 
