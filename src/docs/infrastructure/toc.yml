@@ -1,0 +1,9 @@
+introduction:
+  title: Service oriented
+  changes: Change Log
+services:
+  title: Services
+database:
+  title: Datalayers
+dissemination:
+  title: Administration interface

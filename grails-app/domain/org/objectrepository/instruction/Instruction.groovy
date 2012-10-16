@@ -32,6 +32,7 @@ class Instruction extends Tasking {
     Boolean deleteCompletedInstruction
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    String notificationEMail
     List<String> plan
     List<Task> workflow = []
 
@@ -91,6 +92,7 @@ class Instruction extends Tasking {
         fileSet(unique: true)
         access(nullable: true)
         label(nullable: true)
+        notificationEMail(nullable: true)
         action(nullable: true, inList: ['upsert', 'add', 'update', 'delete'])
         contentType(nullable: true)
         resolverBaseUrl(nullable: true)

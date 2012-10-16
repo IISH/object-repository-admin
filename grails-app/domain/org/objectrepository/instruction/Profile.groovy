@@ -18,6 +18,7 @@ class Profile {
     Boolean deleteCompletedInstruction = false
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    String notificationEMail
     List<String> plan
 
     // End move
@@ -29,6 +30,7 @@ class Profile {
 
     static constraints = {
         access(blank: false)
+        notificationEMail(nullable: true)
         contentType(blank: false)
         resolverBaseUrl(blank: false)
         action(inList: ['upsert', 'add', 'update', 'delete'])

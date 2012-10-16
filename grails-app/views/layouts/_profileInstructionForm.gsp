@@ -75,6 +75,13 @@
     <g:textField name="pidwebserviceKey" value="${instance.pidwebserviceKey}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'notificationEMail', 'error')} ">
+    <label for="notificationEMail">
+        <g:message code="notificationEMail.label" default="Notification e-mail"/>
+    </label>
+    <g:textField name="notificationEMail" value="${instance.notificationEMail}"/>
+</div>
+
 
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'workflow', 'error')} ">
     <label for="workflow"><g:message code="workflow.label"
