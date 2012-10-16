@@ -88,11 +88,7 @@ class OrUtil {
         map << [id: document.id]
         def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         orAttributes.putAll(map)
-/*
-        orAttributes << [plan: document.workflow.collect() {
-            it.name
-        }.join(",")]
-*/
+
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
         xml.doubleQuotes = true
@@ -158,14 +154,15 @@ class OrUtil {
 /**
  * availablePlans
  *
- * We cannot use the findResults method. It does not seem to work on the remote server.
+ * All available plans start with 'Stagingfile'
+ * Exceptions for those visible set to true
  *
  * @param workflow
  * @return
  */
     static List<Task> availablePlans(def workflow, String type = "Stagingfile") {
         workflow.findResults {
-            (it.key.startsWith(type)) ? it.key : null
+            (it.key.startsWith(type) && ((it.value.visible == null) ? true : it.value.visible)) ? it.key : null
         }
     }
 
