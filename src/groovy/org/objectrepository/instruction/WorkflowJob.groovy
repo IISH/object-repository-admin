@@ -276,13 +276,14 @@ abstract class WorkflowJob {
                 it == plan.key
             }
             if (wf) {
-                def attributes = []
+                def attributes = [name: 'EndOfTheRoad', info: "Default workflow"]
                 plan.value.task?.each() {
                     attributes << it
                 }
 
-                if (wf.executeBefore) {
-                    attributes.name = wf.executeBefore
+                if (plan.value.executeBefore) {
+                    attributes.name = plan.value.executeBefore
+                    attributes.info = "System workflow"
                     log.info id(document) + "Added executeBefore task " + attributes.name
                     document.workflow << new Task(attributes)
                 }
@@ -291,8 +292,9 @@ abstract class WorkflowJob {
                 document.workflow << new Task(attributes)
                 log.info id(document) + "Added task " + attributes.name
 
-                if (wf.executeAfter) {
-                    attributes.name = wf.executeAfter
+                if (plan.value.executeAfter) {
+                    attributes.name = plan.value.executeAfter
+                    attributes.info = "System workflow"
                     log.info id(document) + "Added executeAfter task " + attributes.name
                     document.workflow << new Task(attributes)
                 }

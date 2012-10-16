@@ -111,8 +111,32 @@ plans = [
                         800: [purpose: 'PID are bound to the resolve URLs']
                 ]
         ],
+        IngestCustomLevel1: [
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
         StagingfileIngestLevel1: [
-                executeBefore:'StagingfileIngestCustomLevel1',
+                executeBefore: 'IngestCustomLevel1',
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        IngestCustomLevel2: [
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -125,7 +149,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
-                executeBefore:'StagingfileIngestCustomLevel2',
+                executeBefore: 'IngestCustomLevel2',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -137,8 +161,21 @@ plans = [
                         800: [purpose: 'Derivate file is produced and stored']
                 ],
         ],
+        IngestCustomLevel3: [
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ]
+        ,
         StagingfileIngestLevel3: [
-                executeBefore:'StagingfileIngestCustomLevel3',
+                executeBefore: 'IngestCustomLevel3',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
