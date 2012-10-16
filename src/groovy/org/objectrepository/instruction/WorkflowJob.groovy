@@ -231,6 +231,11 @@ abstract class WorkflowJob {
             document.task.statusCode = 798
             nextWorkflow(document)
         }
+        else if (document.task.exitValue == 245) {
+            log.info id(document) + "Skipping task. The document cannot proceed because the required files are not there."
+            document.task.statusCode = 799
+            nextWorkflow(document)
+        }
         else if (document.task.exitValue == 250) {
             log.info id(document) + "Skipping task. It's design cannot handle this type of document."
             document.task.statusCode = 799
@@ -271,14 +276,26 @@ abstract class WorkflowJob {
                 it == plan.key
             }
             if (wf) {
-                def attributes = [name: wf, info: "Default workflow"]
+                def attributes = []
                 plan.value.task?.each() {
                     attributes << it
                 }
-                final task = new Task(attributes)
-                document.workflow << task
-                log.info id(document) + "Added task:"
-                log.info task
+
+                if (wf.executeBefore) {
+                    attributes.name = wf.executeBefore
+                    log.info id(document) + "Added executeBefore task " + attributes.name
+                    document.workflow << new Task(attributes)
+                }
+
+                attributes.name = wf
+                document.workflow << new Task(attributes)
+                log.info id(document) + "Added task " + attributes.name
+
+                if (wf.executeAfter) {
+                    attributes.name = wf.executeAfter
+                    log.info id(document) + "Added executeAfter task " + attributes.name
+                    document.workflow << new Task(attributes)
+                }
             }
         }
 

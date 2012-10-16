@@ -127,27 +127,36 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     /**
-     * StagingfileIngestCustom600
+     * StagingfileIngestCustomLevel1
+     * StagingfileIngestCustomLevel2
+     * StagingfileIngestCustomLevel3
      *
      * For each custom derivative we can disable the production of a derivative
      *
      * @param document
      * @return
      */
-    def StagingfileIngestCustom600(def document) {
+    def StagingfileIngestCustomLevel1(def document) {
+        StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel1')
+    }
 
-        if (document.task.exitValue < 0 || document.task.exitValue > 63) return next(document)
+    def StagingfileIngestCustomLevel2(def document) {
+        StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel2')
+    }
 
-        Integer.toBinaryString(document.task.exitValue).reverse().eachWithIndex { num, idx ->
-            if ( num == 1 ) {
-                def task = document.workflow.find {
-                    it.name == "StagingfileIngestLevel" + idx
-                }
-                task?.exitValue = 0
-                task?.statusCode = 800
-            }
+    def StagingfileIngestCustomLevel3(def document) {
+        StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel3')
+    }
+
+    private void StagingfileIngestCustomLevel(def document, String name) {
+        if (document.task.exitValue == 0) {
+            document.workflow.find {
+                it.name == name
+            }?.statusCode = 800
+            last(document)
+        } else {
+            next(document)
         }
-        last(document)
     }
 
 /**

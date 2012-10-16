@@ -30,7 +30,7 @@ plans = [
                 ]
         ],
         InstructionDownload: [
-                service: [method: 'hasDBInstruction', ingest:['pending','working']],
+                service: [method: 'hasDBInstruction', ingest: ['pending', 'working']],
                 statusCodes: [
                         100: [purpose: 'A user asked to download an instruction.']
                 ]
@@ -74,11 +74,11 @@ plans = [
                         800: [purpose: 'Instruction is ongoing. Files are now processed individualy']
                 ],
         ], InstructionRetry: [
-                service: [method: 'hasFailedTasks', statusCode: 900],
-                statusCodes: [
-                        100: [purpose: 'The user has made a request to retry failed tasks in this instruction']
-                ],
+        service: [method: 'hasFailedTasks', statusCode: 900],
+        statusCodes: [
+                100: [purpose: 'The user has made a request to retry failed tasks in this instruction']
         ],
+],
         Start: [
                 statusCodes: [
                         000: [purpose: 'The file is ready for ingest'],
@@ -111,19 +111,8 @@ plans = [
                         800: [purpose: 'PID are bound to the resolve URLs']
                 ]
         ],
-        StagingfileIngestCustom: [
-                        statusCodes: [
-                                100: [purpose: 'The system received a request to ingest a derivative'],
-                                200: [purpose: 'Sending request to the queue'],
-                                300: [purpose: 'The object\'s location has been sent to the queue for custom derivative ingest'],
-                                400: [purpose: 'Ingesting custom derivative'],
-                                500: [purpose: 'The service node completed the task.'],
-                                600: [purpose: 'Verifying if the task was successfull.'],
-                                700: [purpose: 'We could not see if a derivative was ingested'],
-                                800: [purpose: 'Custom derivate file is stored']
-                        ],
-                ],
         StagingfileIngestLevel1: [
+                executeBefore:'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -136,6 +125,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
+                executeBefore:'StagingfileIngestCustomLevel2',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -148,6 +138,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel3: [
+                executeBefore:'StagingfileIngestCustomLevel3',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
