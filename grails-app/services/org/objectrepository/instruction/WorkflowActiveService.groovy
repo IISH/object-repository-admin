@@ -136,15 +136,15 @@ class WorkflowActiveService extends WorkflowJob {
      * @param document
      * @return
      */
-    def StagingfileIngestCustomLevel1(def document) {
+    def StagingfileIngestCustomLevel1600(def document) {
         StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel1')
     }
 
-    def StagingfileIngestCustomLevel2(def document) {
+    def StagingfileIngestCustomLevel2600(def document) {
         StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel2')
     }
 
-    def StagingfileIngestCustomLevel3(def document) {
+    def StagingfileIngestCustomLevel3600(def document) {
         StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel3')
     }
 
