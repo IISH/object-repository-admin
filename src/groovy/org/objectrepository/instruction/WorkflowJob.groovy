@@ -280,25 +280,11 @@ abstract class WorkflowJob {
                 plan.value.task?.each() {
                     attributes << it
                 }
-
-                if (plan.value.executeAfter) {
-                    attributes.queue = plan.value.executeAfter
-                    attributes.info = "System workflow"
-                    log.info id(document) + "Added executeAfter task " + attributes.name
-                    document.workflow << new Task(attributes)
-                }
-
-                attributes.name = wf
                 document.workflow << new Task(attributes)
                 log.info id(document) + "Added task " + attributes.name
 
-                if (plan.value.method) "$plan.value.method"(document)
-
-                if (plan.value.executeBefore) {
-                    attributes.queue = plan.value.executeBefore
-                    attributes.info = "System workflow"
-                    log.info id(document) + "Added executeBefore task " + attributes.name
-                    document.workflow << new Task(attributes)
+                plan.value.methods?.each {
+                    if ( it.value ) "$it.key"(it.value, document) else "$it.key"(document)
                 }
             }
         }
@@ -308,12 +294,44 @@ abstract class WorkflowJob {
     }
 
     /**
-     * Changes the name of the current workflow based on the Content Type.
+     * executeBefore
+     *
+     * This task should and complete and then run a system task.
+     *
+     * @param document
+     * @param args
+     * @return
+     */
+    def executeBefore(def args, def document) {
+        def attributes = [name: args, info: "System workflow"]
+        log.info id(document) + "Added executeAfter task " + attributes.name
+        document.workflow << new Task(attributes)
+    }
+
+    /**
+     * executeAfter
+     *
+     * This task should wait until a system task is complete.
+     *
+     * @param document
+     * @param args
+     * @return
+     */
+    def executeAfter(def args, def document) {
+        def attributes = [name: args, info: "System workflow"]
+        log.info id(document) + "Added executeAfter task " + attributes.name
+        def task = document.workflow.remove(document.workflow.last())
+        document.workflow << new Task(attributes)
+        document.workflow << task
+    }
+
+    /**
+     * Changes the name of the current queue based on the Content Type.
      * For example: image/jpeg appends 'Image' to the name.
      *
      * @param document
      */
-    def renameQueueWithContentType(Stagingfile document) {
+    def renameQueueWithContentType(def document) {
 
         final String type = OrUtil.camelCase([document.contentType.split('/', 2)[0]])
         switch (type) {

@@ -111,8 +111,21 @@ plans = [
                         800: [purpose: 'PID are bound to the resolve URLs']
                 ]
         ],
+        StagingfileIngestCustomLevel1: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
         StagingfileIngestLevel1: [
-                method: 'renameQueueWithContentType',
+                methods: [executeAfter:'StagingfileIngestCustomLevel1',renameQueueWithContentType:null],
                 executeAfter: 'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -125,9 +138,8 @@ plans = [
                         800: [purpose: 'Derivate file is produced and stored']
                 ],
         ],
-        StagingfileIngestLevel2: [
-                method: 'renameQueueWithContentType',
-                executeAfter: 'StagingfileIngestCustomLevel2',
+        StagingfileIngestCustomLevel2: [
+                visible: false,
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -139,9 +151,35 @@ plans = [
                         800: [purpose: 'Derivate file is produced and stored']
                 ],
         ],
+        StagingfileIngestLevel2: [
+                methods: [executeAfter:'StagingfileIngestCustomLevel2',renameQueueWithContentType:null],
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestCustomLevel3: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ]
+        ,
         StagingfileIngestLevel3: [
-                method: 'renameQueueWithContentType',
-                executeAfter: 'StagingfileIngestCustomLevel3',
+                methods: [executeAfter:'StagingfileIngestCustomLevel3',renameQueueWithContentType:null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
