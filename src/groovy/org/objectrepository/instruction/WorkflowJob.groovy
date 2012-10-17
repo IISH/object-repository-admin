@@ -233,7 +233,7 @@ abstract class WorkflowJob {
         }
         else if (document.task.exitValue == 245) {
             log.info id(document) + "Skipping task. The document cannot proceed because the required files are not there."
-            document.task.statusCode = 799
+            document.task.statusCode = 800
             nextWorkflow(document)
         }
         else if (document.task.exitValue == 250) {
@@ -317,10 +317,10 @@ abstract class WorkflowJob {
      * @param args
      * @return
      */
-    def executeAfter(def args, def document) {
+    def executeAfter(def args, Stagingfile document) {
         def attributes = [name: args, info: "System workflow"]
         log.info id(document) + "Added executeAfter task " + attributes.name
-        def task = document.workflow.remove(document.workflow.last())
+        def task = document.workflow.remove(document.workflow.size()-1)
         document.workflow << new Task(attributes)
         document.workflow << task
     }
