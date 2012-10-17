@@ -288,9 +288,11 @@ abstract class WorkflowJob {
                     document.workflow << new Task(attributes)
                 }
 
-                attributes.name = OrUtil.changeQueueName(plans.value.changeQueueName, wf)
+                attributes.name = wf
                 document.workflow << new Task(attributes)
                 log.info id(document) + "Added task " + attributes.name
+
+                if (plan.value.method) "$plan.value.method"(document)
 
                 if (plan.value.executeBefore) {
                     attributes.name = plan.value.executeBefore
@@ -303,6 +305,24 @@ abstract class WorkflowJob {
 
         document.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
         next(document) // we just go through the mill here. Atomic updates for access should go via the controller
+    }
+
+    /**
+     * Changes the name of the current workflow based on the Content Type.
+     * For example: image/jpeg appends 'Image' to the name.
+     *
+     * @param document
+     */
+    def renameQueueWithContentType(Stagingfile document) {
+
+        final String type = OrUtil.camelCase([document.contentType.split('/', 2)[0]])
+        switch (type) {
+            case 'Audio':
+            case 'Image':
+            case 'Video':
+                document.workflow.last().name += type
+                break;
+        }
     }
 
     /**

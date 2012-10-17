@@ -112,7 +112,7 @@ plans = [
                 ]
         ],
         StagingfileIngestCustomLevel1: [
-                visible:false,
+                visible: false,
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -125,7 +125,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel1: [
-                changeQueueName:'contentType',
+                method: 'renameQueueWithContentType',
                 executeAfter: 'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -139,7 +139,7 @@ plans = [
                 ],
         ],
         StagingfileIngestCustomLevel2: [
-                visible:false,
+                visible: false,
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -152,7 +152,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
-                changeQueueName:'contentType',
+                method: 'renameQueueWithContentType',
                 executeAfter: 'StagingfileIngestCustomLevel2',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -166,7 +166,7 @@ plans = [
                 ],
         ],
         StagingfileIngestCustomLevel3: [
-                visible:false,
+                visible: false,
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -180,7 +180,7 @@ plans = [
         ]
         ,
         StagingfileIngestLevel3: [
-                changeQueueName:'contentType',
+                method: 'renameQueueWithContentType',
                 executeAfter: 'StagingfileIngestCustomLevel3',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -193,6 +193,125 @@ plans = [
                         800: [purpose: 'Derivate file is produced and stored,']
                 ]
         ],
+        StagingfileIngestLevel1Image: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel2Image: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel3Image: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored,']
+                ]
+        ]
+        ,
+        StagingfileIngestLevel1Audio: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel2Audio: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel3Audio: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored,']
+                ]
+        ],
+        StagingfileIngestLevel1Video: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel2Video: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored']
+                ],
+        ],
+        StagingfileIngestLevel3Video: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce this derivative'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
+                        400: [purpose: 'Creating derivative'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a derivative was created'],
+                        800: [purpose: 'Derivate file is produced and stored,']
+                ]
+        ]
+        ,
         EndOfTheRoad: [
                 statusCodes: [
                         100: [purpose: 'End of the factory line. The file can now be removed'],

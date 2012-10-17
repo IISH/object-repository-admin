@@ -223,9 +223,4 @@ class OrUtil {
     static void setInstructionPlan(def instruction) {
         if (emptyList(instruction.plan)) instruction.plan = instruction.parent.plan
     }
-
-    static String changeQueueName(String method, String currentName) {
-        if (method && OrUtil.metaClass.respondsTo(method) ) "$method"(currentName)
-        currentName
-    }
 }

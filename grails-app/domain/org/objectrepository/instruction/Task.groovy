@@ -22,6 +22,7 @@ class Task {
     int attempts = 1
     int limit = 3 // Three attempts maximum before permanent failure. Default can be overwritten in PlanConfig
     int exitValue = Integer.MAX_VALUE // Undetermined
+    String alias
 
     public String taskKey() {
         identifier = UUID.randomUUID().toString()
@@ -49,6 +50,7 @@ class Task {
     static constraints = {
         identifier(nullable: true)
         info(nullable: true)
+        alias(nullable: true)
     }
     static mapping = {
         identifier index: false
