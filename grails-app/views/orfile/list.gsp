@@ -57,7 +57,7 @@
                     <g:if test="${orfileInstance.metadata.lid}"><br/>${orfileInstance.metadata.lid}</g:if>
                 </td>
                 <td>${orfileInstance.metadata.lastUploadDate}</td>
-                <td><g:link action="download" id="${orfileInstance.metadata.pid.bytes.encodeBase64().toString()}">metadata</g:link></td>
+                <td><g:link action="download" params="[pid:orfileInstance.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>

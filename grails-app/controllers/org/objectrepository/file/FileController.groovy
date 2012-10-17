@@ -1,6 +1,7 @@
 package org.objectrepository.file
 
 import org.objectrepository.security.Policy
+import org.objectrepository.util.OrUtil
 
 /**
  *     FileController
@@ -61,11 +62,24 @@ class FileController {
             return null
         }
 
-        def orfileInstance = gridFSService.findByPidAsOrfile(pid)
-        if (orfileInstance) {
-            [orfileInstance: orfileInstance]
-        } else {
-            render(view: '404', statuscode: 404)
+        def accept = params.accept
+        switch (accept) {
+            case 'application/xml':
+            case 'text/xml':
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("text/xml")
+                gridFSService.writeOrfiles(params, OrUtil.getNa(params.pid), response.outputStream)
+                break;
+            case 'text/javascript':
+            case 'text/json':
+            default:
+                def orfileInstance = gridFSService.findByPidAsOrfile(pid)
+                if (orfileInstance) {
+                    [orfileInstance: orfileInstance]
+                }
+                else {
+                    render(view: '404', statuscode: 404)
+                }
         }
     }
 

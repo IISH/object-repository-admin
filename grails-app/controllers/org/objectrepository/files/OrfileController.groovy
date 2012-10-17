@@ -94,6 +94,7 @@ class OrfileController {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/xml")
         response.addHeader("content-disposition", "attachment; filename=orfiles.xml")
+        params.pid = new String(params.pid.decodeBase64())
         gridFSService.writeOrfiles(params, springSecurityService.principal.na, response.outputStream)
     }
 }

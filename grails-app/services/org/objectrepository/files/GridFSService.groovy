@@ -117,7 +117,7 @@ class GridFSService {
             query = ['metadata.label': params.label]
         }
         else {
-            query = (params.id) ? [_id: params.id] : ['metadata': [$exists: true]]
+            query = (params.pid) ? ['metadata.pid': params.pid] : ['metadata': [$exists: true]]
         }
         def cursor = collection.find(query)
         writer << builder.bind {

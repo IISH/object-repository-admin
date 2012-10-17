@@ -125,7 +125,8 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel1: [
-                executeBefore: 'StagingfileIngestCustomLevel1',
+                changeQueueName:'contentType',
+                executeAfter: 'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -151,7 +152,8 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
-                executeBefore: 'StagingfileIngestCustomLevel2',
+                changeQueueName:'contentType',
+                executeAfter: 'StagingfileIngestCustomLevel2',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -178,7 +180,8 @@ plans = [
         ]
         ,
         StagingfileIngestLevel3: [
-                executeBefore: 'StagingfileIngestCustomLevel3',
+                changeQueueName:'contentType',
+                executeAfter: 'StagingfileIngestCustomLevel3',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],

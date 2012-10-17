@@ -281,21 +281,21 @@ abstract class WorkflowJob {
                     attributes << it
                 }
 
-                if (plan.value.executeBefore) {
-                    attributes.name = plan.value.executeBefore
-                    attributes.info = "System workflow"
-                    log.info id(document) + "Added executeBefore task " + attributes.name
-                    document.workflow << new Task(attributes)
-                }
-
-                attributes.name = wf
-                document.workflow << new Task(attributes)
-                log.info id(document) + "Added task " + attributes.name
-
                 if (plan.value.executeAfter) {
                     attributes.name = plan.value.executeAfter
                     attributes.info = "System workflow"
                     log.info id(document) + "Added executeAfter task " + attributes.name
+                    document.workflow << new Task(attributes)
+                }
+
+                attributes.name = OrUtil.changeQueueName(plans.value.changeQueueName, wf)
+                document.workflow << new Task(attributes)
+                log.info id(document) + "Added task " + attributes.name
+
+                if (plan.value.executeBefore) {
+                    attributes.name = plan.value.executeBefore
+                    attributes.info = "System workflow"
+                    log.info id(document) + "Added executeBefore task " + attributes.name
                     document.workflow << new Task(attributes)
                 }
             }
