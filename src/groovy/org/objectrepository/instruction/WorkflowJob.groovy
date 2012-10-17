@@ -276,13 +276,13 @@ abstract class WorkflowJob {
                 it == plan.key
             }
             if (wf) {
-                def attributes = [name: 'EndOfTheRoad', info: "Default workflow"]
+                def attributes = [name: wf, info: "Default workflow"]
                 plan.value.task?.each() {
                     attributes << it
                 }
 
                 if (plan.value.executeAfter) {
-                    attributes.name = plan.value.executeAfter
+                    attributes.queue = plan.value.executeAfter
                     attributes.info = "System workflow"
                     log.info id(document) + "Added executeAfter task " + attributes.name
                     document.workflow << new Task(attributes)
@@ -295,7 +295,7 @@ abstract class WorkflowJob {
                 if (plan.value.method) "$plan.value.method"(document)
 
                 if (plan.value.executeBefore) {
-                    attributes.name = plan.value.executeBefore
+                    attributes.queue = plan.value.executeBefore
                     attributes.info = "System workflow"
                     log.info id(document) + "Added executeBefore task " + attributes.name
                     document.workflow << new Task(attributes)
@@ -320,7 +320,7 @@ abstract class WorkflowJob {
             case 'Audio':
             case 'Image':
             case 'Video':
-                document.workflow.last().name += type
+                document.workflow.last().queue = document.workflow.last().queue + type
                 break;
         }
     }
@@ -431,19 +431,9 @@ abstract class WorkflowJob {
         document.task.taskKey()
         if (save(document)) {
             try {
-                //String queue
-                /*if (document.task.name.startsWith('StagingfileIngestLevel')) {
-                    def type = document.contentType?.split('/')[0]
-                    def postfix = grailsApplication.config.derivative2queue.find() {
-                        it.key == type
-                    }
-                    queue = (postfix) ? document.task.name + postfix.value : document.task.name
-                } else {
-                    queue = document.task.name
-                }*/
                 final long ttl = System.currentTimeMillis() + periodQueued
                 final headers = [expiration: ttl, JMSExpiration: ttl]
-                sendMessageAndHeaders(["activemq", document.task.name].join(":"), OrUtil.makeOrType(document), headers)
+                sendMessageAndHeaders(["activemq", document.task.queue].join(":"), OrUtil.makeOrType(document), headers)
                 log.info id(document) + "Send message to queue"
                 next(document)
             } catch (Exception e) {
