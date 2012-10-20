@@ -240,8 +240,13 @@ class UserController {
         }
         OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
         if (token) {
+            tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
+            tokenStore.removeRefreshToken(token.refreshToken.value)
             def client = clientDetailsService.clientDetailsStore.get("clientId")
-            tokenServices.refreshAccessToken(token.refreshToken.value, client.scope as Set<String>)
+            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken, springSecurityService.authentication)
+            tokenServices.createAccessToken(authentication)
         }
         redirect(action: "show", id: params.id)
     }
