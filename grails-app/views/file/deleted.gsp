@@ -12,7 +12,9 @@
 
 <div id="show-file" class="content scaffold-show" role="main">
     <h1>File removed</h1>
-    <p>This file has been removed from the repository.</p>
+    <p>Identifier: ${params.pid}</p>
+    <p>Bucket: ${params.bucket}</p>
+    <p>The file has been removed from the repository</p>
 </div>
 </body>
 </html>
