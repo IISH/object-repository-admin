@@ -33,8 +33,6 @@ class FileController {
             log.info "Writing file to browser"
             Date begin = new Date()
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
-            log.info "Flushing"
-            response.outputStream.flush()
             int downloadTime = new Date().time - begin.time
             if (System.getProperty("layout", "not") == 'disseminate') {
                 log.info "Increment statistics"
