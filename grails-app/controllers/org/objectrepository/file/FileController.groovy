@@ -107,8 +107,6 @@ class FileController {
 
         final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
         if (access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
-            println("springSecurityService.principal")
-            println(springSecurityService.principal)
             render(view: "denied", status: 401, model: [access: access])
         }
         else
