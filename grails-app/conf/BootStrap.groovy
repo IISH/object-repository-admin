@@ -9,6 +9,7 @@ import org.objectrepository.security.User
 import org.objectrepository.security.UserRole
 import org.objectrepository.util.OrUtil
 import org.springframework.security.oauth2.provider.BaseClientDetails
+import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
 
 class BootStrap {
 
@@ -62,13 +63,16 @@ class BootStrap {
 
         // Add helpers methods:
         springSecurityService.metaClass.hasRole = { def role = 'ROLE_ADMIN' ->
-            role in roles
+            role in principal.authorities*.authority
         }
-        springSecurityService.metaClass.getRoles() {
-            principal.authorities*.authority
-        }
+
+        /**
+         *  hasValidNa
+         *
+         *  Check to see if the principal is allowed to see this file by na or administrative authority
+         */
         springSecurityService.metaClass.hasValidNa = { def na ->
-            hasRole('ROLE_ADMIN') || na == getPrincipal().na  // Any user with a NA is authorized
+            ( principal instanceof GrailsUser && (na == principal.na || hasRole('ROLE_ADMIN')))
         }
     }
 

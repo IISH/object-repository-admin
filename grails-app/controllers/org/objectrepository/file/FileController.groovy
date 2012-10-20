@@ -1,6 +1,5 @@
 package org.objectrepository.file
 
-import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
 
 /**
@@ -102,16 +101,11 @@ class FileController {
             return null
         }
 
-        Policy policy = policyService.getPolicy(fileInstance)
-        String access = policy.getAccessForBucket(params.bucket)
-        if (access != "open" && !springSecurityService.hasRole('ROLE_ADMIN')) {
-            if (springSecurityService.principal == "anonymousUser"
-                    || !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
-                render(view: "denied", status: 401, model: [access: access])
-                return null
-            }
+        final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
+        if (access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
+            render(view: "denied", status: 401, model: [access: access])
         }
-
-        fileInstance
+        else
+            fileInstance
     }
 }
