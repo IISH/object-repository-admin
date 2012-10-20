@@ -71,6 +71,9 @@ class BootStrap {
          *  Check to see if the principal is allowed to see this file by na or administrative authority
          */
         springSecurityService.metaClass.hasValidNa = { def na ->
+            print('na:' + principal.na)
+            print('authorities:' + principal.authorities)
+            print('principal.hasProperty(authorities):' + principal.hasProperty('authorities') )
             (principal.hasProperty('authorities') && (na == principal.na || hasRole('ROLE_ADMIN')))
         }
     }
