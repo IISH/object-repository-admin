@@ -1,11 +1,12 @@
 package org.objectrepository.files
 
+import com.mongodb.BasicDBObject
+import com.mongodb.DBObject
+import com.mongodb.QueryBuilder
+import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
-import com.mongodb.gridfs.GridFSDBFile
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
-import org.springframework.data.mongodb.core.query.Update
-import com.mongodb.*
 
 /**
  * GridFSService
@@ -20,6 +21,18 @@ class GridFSService {
     def mongo
     def grailsApplication
 
+    private static String collate = "function(){" +
+            "var cache = [];" +
+            "['master.files', 'level1.files', 'level2.files', 'level3.files'].forEach(function (c) {" +
+            "    var bucket = db.getCollection(c).findOne({'metadata.pid':'%s'});" +
+            "    if (bucket) {" +
+            "        cache.push(" +
+            "            bucket" +
+            "        )" +
+            "    }" +
+            "});" +
+            "return cache;}"
+
     /**
      * findByPid
      *
@@ -32,15 +45,14 @@ class GridFSService {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         def db = mongo.getDB(OR + na)
-//        db.setReadPreference(ReadPreference.SECONDARY) // defined in DataSource.groovy
         def gridFS = new GridFS(db, bucket)
         gridFS.findOne(queryPidOrLid(pid))
     }
 
-    Orfile findByPidAsOrfile(String pid) {
+    List findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne(queryPidOrLid(pid)))
+        mongo.getDB(OR + na).command([$eval: String.format(collate, pid, pid, pid), nolock: true]).retval
     }
 
     private static DBObject queryPidOrLid(String pid) {
@@ -55,12 +67,12 @@ class GridFSService {
      * @param na
      * @param params for sorting, paging and filtering
      */
-    List<Orfile> findAllByNa(def na, def params) {
+    List findAllByNa(def na, def params) {
 
         // Todo: add sorting
         final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
-        mongo.getDB(OR + na).getCollection("master.files").find(query).limit(params.max).skip(params.offset).collect {
-            parseOrFile(it)
+        mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect {
+            mongo.getDB(OR + na).command([$eval: String.format(collate, it.metadata.pid, it.metadata.pid, it.metadata.pid), nolock: true]).retval
         }
     }
 
@@ -77,19 +89,18 @@ class GridFSService {
      * @param gridFS
      * @param file
      */
-    void update(Orfile orFile, def params) {
+    void update(def document) {
 
-        def update = Update.update("metadata.access", params.access).set("metadata.label", params.label).updateObject
-        final collection = mongo.getDB(OR + orFile.metadata.na).getCollection("master.files")
-        collection.update(_id: orFile.id, update, false, false)
+        mongo.getDB(OR + document.metadata.na).getCollection("master.files").update([_id: document._id],
+                [$set: ['metadata.access': document.metadata.access, 'metadata.label': document.metadata.label]], false, false)
     }
 
     void siteusage(String na, def document) {
         mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
-    Orfile get(String na, String pid) {
-        parseOrFile(mongo.getDB(OR + na).getCollection("master.files").findOne('metadata.pid': pid))
+    List get(String na, String pid) {
+        mongo.getDB(OR + na).command([$eval: String.format(collate, pid, pid, pid), nolock: true]).retval
     }
 
     /**
@@ -111,28 +122,36 @@ class GridFSService {
 
         final collection = mongo.getDB(OR + na).getCollection("master.files")
 
+        def cursor
+        int count = 0
+        if (params.pid) {
+            cursor = [[metadata: [pid: params.pid]]] // should be the same map as returned by a cursor
+            count = 0
+        } else {
+            cursor = (params.label?.length() == 0) ? collection.find([:], ['metadata.pid': 1]) : collection.find(['metadata.label': params.label], ['metadata.pid': 1])
+            count = cursor.count()
+        }
 
-        def query
-        if (params.label) {
-            query = ['metadata.label': params.label]
-        }
-        else {
-            query = (params.pid) ? ['metadata.pid': params.pid] : ['metadata': [$exists: true]]
-        }
-        def cursor = collection.find(query)
         writer << builder.bind {
             mkp.xmlDeclaration()
             comment << String.format('Selection contains %s documents. Export extracted on %s',
-                    cursor.count(), new Date().toGMTString())
+                    count, new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
-                    final Orfile orFile = parseOrFile(it)
-                    orfile {
-                        Orfile.whiteList.each { String key ->
-                            out << element(orFile, key)
+                    final String p = it.metadata.pid
+                    def documents = collection.getDB().command([$eval: String.format(collate, p, p, p), nolock: true]).retval
+                    def master = documents[0]
+                    if (master)
+                        orfile {
+                            pid master.metadata.pid
+                            resolverBaseUrl master.metadata.resolverBaseUrl
+                            pidurl master.metadata.resolverBaseUrl + master.metadata.pid
+                            if (master.metadata.lid) { lid master.metadata.lid }
+                            filename master.filename
+                            label master.metadata.label
+                            access master.metadata.access
+                            out << metadata(documents, master)
                         }
-                        out << metadata(orFile)
-                    }
                 }
             }
         }
@@ -141,25 +160,32 @@ class GridFSService {
         writer.close()
     }
 
-    private metadata(Orfile orFile) {
+    private metadata(def documents, def master) {
         return {
-            orFile.metadata.cache.each { def cache ->
-                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + cache.metadata.bucket + "/" + cache.metadata.pid
-                "$cache.metadata.bucket" {
+            documents.each { document ->
+                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + document.metadata.bucket + "/" + document.metadata.pid
+                "$document.metadata.bucket" {
+                    if (master.metadata.pidType) {
+                        pidurl document.metadata.resolverBaseUrl + document.metadata.pid + "?locatt=view:" + document.metadata.bucket
+                    }
                     resolveUrl _resolveUrl
-                    Metadata.whiteList.each { String key ->
-                        out << element(cache, key)
+                    ['contentType',
+                            'length',
+                            'content',
+                            'md5',
+                            'uploadDate',
+                            'firstUploadDate',
+                            'lastUploadDate',
+                            'timesAccessed',
+                            'timesUpdated'].each {
+                        if (document[it]) {
+                            "$it" document[it]
+                        } else if (document.metadata[it]) {
+                            "$it" document.metadata[it]
+                        }
                     }
                 }
-            }
-        }
-    }
 
-    private element(def element, String key) {
-        return {
-            def value = (element."$key") ?: element.metadata."$key"
-            if (value) {
-                "$key" value
             }
         }
     }
@@ -173,23 +199,6 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        mongo.getDB(OR + na).'label'.find().sort([_id:1]).collect() { it._id }.plus(0, 'everything')
-    }
-
-    private Orfile parseOrFile(def document) {
-        Orfile orfile = null
-        if (document instanceof GridFSDBFile) // Sometimes this oddity happens... returns an error: Could not find matching constructor for: org.objectrepository.files.Orfile(com.mongodb.gridfs.GridFSDBFile)
-        {
-            orfile = new Orfile(metadata: new Metadata(document.metaData))
-            ["_id", "filename", "contentType", "length", "chunkSize",
-                    "uploadDate", "aliases", "md5"].each {
-
-            }.each { p ->
-                orfile.setProperty(p, document.get(p))
-            }
-        } else {
-            orfile = new Orfile(document)
-        }
-        orfile
+        mongo.getDB(OR + na).'label'.find().sort([_id: 1]).collect() { it._id }.plus(0, 'everything')
     }
 }

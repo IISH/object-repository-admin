@@ -30,8 +30,8 @@ class OrfileController {
 
     def show() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstance) {
+        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstanceList) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
@@ -42,13 +42,13 @@ class OrfileController {
             forward(action: "list")
         }
 
-        [orfileInstance: orfileInstance]
+        [orfileInstanceList: orfileInstanceList]
     }
 
     def edit() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstance) {
+        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstanceList) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             forward(action: "list")
             return
@@ -60,13 +60,13 @@ class OrfileController {
         }
 
         def policyList = Policy.findAllByNa(na)
-        [orfileInstance: orfileInstance, policyList: policyList]
+        [orfileInstanceList: orfileInstanceList, policyList: policyList]
     }
 
     def update() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstance) {
+        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstanceList) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
@@ -77,16 +77,14 @@ class OrfileController {
             forward(action: "list")
         }
 
-        orfileInstance.metadata.access = params.access
-        orfileInstance.metadata.label = params.label
-        orfileInstance.metadata.label = params.label
-        orfileInstance.metadata.cache.get(0).metadata.access = params.access
-        orfileInstance.metadata.cache.get(0).metadata.label = params.label
+        def master = orfileInstanceList[0]
+        master.metadata.access = params.access
+        master.metadata.label = params.label
 
-        gridFSService.update(orfileInstance, params)
+        gridFSService.update(master)
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), orfileInstance.id])
-        redirect(action: "show", id: orfileInstance.id)
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), params.id])
+        redirect(action: "show", id: params.id)
     }
 
     def download() {
@@ -94,7 +92,7 @@ class OrfileController {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/xml")
         response.addHeader("content-disposition", "attachment; filename=orfiles.xml")
-        params.pid = new String(params.pid.decodeBase64())
+        params.pid = (params.pid) ? new String(params.pid.decodeBase64()) : null
         gridFSService.writeOrfiles(params, springSecurityService.principal.na, response.outputStream)
     }
 }

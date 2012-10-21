@@ -1,5 +1,3 @@
-<%@ page import="org.objectrepository.files.Orfile" %>
-
 <!doctype html>
 <html>
 <head>
@@ -18,7 +16,8 @@
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance: orfileInstance]"/>
+<g:set var="master" value="${orfileInstanceList[0]}"/>
+<g:render template="/layouts/header" model="[instance: master]"/>
 
 <div id="edit-files" class="content scaffold-edit" role="main">
     <g:form method="post">
@@ -28,18 +27,18 @@
                 <span id="access-label" class="property-label"><g:message code="files.access.label"
                                                                           default="Access"/></span>
                 <span class="property-value" aria-labelledby="access-label">
-                    <g:select from="${policyList.access}" name="access" value="${orfileInstance.metadata.access}"/>
+                    <g:select from="${policyList.access}" name="access" value="${master.metadata.access}"/>
             </li>
 
             <li class="fieldcontain">
                 <span id="label-label" class="property-label"><g:message code="files.label.label"
                                                                          default="Label"/></span>
-                <g:textField name="label" value="${orfileInstance.metadata.label}"/>
+                <g:textField name="label" value="${master.metadata.label}"/>
             </li>
 
         </ol>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance?.metadata.pid.bytes.encodeBase64().toString()}"/>
+            <g:hiddenField name="id" value="${master.metadata.pid.bytes.encodeBase64().toString()}"/>
             <g:actionSubmit class="update" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
             %{--<g:actionSubmit class="delete" action="delete"
