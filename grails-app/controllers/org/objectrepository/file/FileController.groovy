@@ -70,9 +70,9 @@ class FileController {
             case 'text/javascript':
             case 'text/json':
             default:
-                def orfileInstance = gridFSService.findByPidAsOrfile(pid)
-                if (orfileInstance) {
-                    [orfileInstance: orfileInstance]
+                def orfileInstanceList = gridFSService.findByPidAsOrfile(pid)
+                if (orfileInstanceList) {
+                    [orfileInstanceList: orfileInstanceList]
                 }
                 else {
                     render(view: '404', statuscode: 404)
