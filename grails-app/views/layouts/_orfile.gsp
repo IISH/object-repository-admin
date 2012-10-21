@@ -45,7 +45,7 @@
                                     default="Bucket name"/></caption>
 
                             <g:if test="${master.metadata.pidType}">
-                                <g:set var="pidurlqualifier" value="${pidurl + '?locatt=view'}"/>
+                                <g:set var="pidurlqualifier" value="${pidurl + '?locatt=view:' + orfileInstance.metadata.bucket}"/>
                                 <tr>
                                     <td><g:message code="file.pidurl" default="Persistent url"/></td>
                                     <td>
