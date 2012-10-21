@@ -68,12 +68,12 @@
 
 <div id="navHome">
     <ul>
-        <li class="dashboard"><g:link base="${params.na}" controller="dashboard">Dashboard</g:link></li>
-        <li class="users"><g:link base="${params.na}" controller="user">Accounts</g:link></li>
-        <li class="profile"><g:link base="${params.na}" controller="profile">Profile</g:link></li>
-        <li class="policy"><g:link base="${params.na}" controller="policy">Policies</g:link></li>
-        <li class="instruction"><g:link base="${params.na}" controller="instruction">Instructions</g:link></li>
-        <li class="convert"><g:link base="${params.na}" controller="orfile">Stored objects</g:link></li>
+        <li class="dashboard"><g:link controller="dashboard">Dashboard</g:link></li>
+        <li class="users"><g:link controller="user">Accounts</g:link></li>
+        <li class="profile"><g:link controller="profile">Profile</g:link></li>
+        <li class="policy"><g:link controller="policy">Policies</g:link></li>
+        <li class="instruction"><g:link controller="instruction">Instructions</g:link></li>
+        <li class="convert"><g:link controller="orfile">Stored objects</g:link></li>
     </ul>
 </div>
 
