@@ -1,10 +1,9 @@
 package org.objectrepository.files
 
 import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
-import com.mongodb.QueryBuilder
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
+import com.mongodb.gridfs.GridFSDBFile
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 
@@ -41,22 +40,15 @@ class GridFSService {
      * @param pid
      * @return
      */
-    def findByPid(String pid, String bucket) {
+    GridFSDBFile findByPid(String pid, String bucket) {
         if (!pid || pid.isEmpty()) return null
-        String na = OrUtil.getNa(pid)
-        def db = mongo.getDB(OR + na)
-        def gridFS = new GridFS(db, bucket)
-        gridFS.findOne(queryPidOrLid(pid))
+        new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     List findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         mongo.getDB(OR + na).command([$eval: String.format(collate, pid, pid, pid), nolock: true]).retval
-    }
-
-    private static DBObject queryPidOrLid(String pid) {
-        QueryBuilder.start().or(new BasicDBObject('metadata.pid', pid), new BasicDBObject("metadata.lid", OrUtil.stripNa(pid))).get()
     }
 
     /**
@@ -69,9 +61,8 @@ class GridFSService {
      */
     List findAllByNa(def na, def params) {
 
-        // Todo: add sorting
         final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
-        mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect {
+        mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect { BasicDBObject it ->  // prevent a cast to GridFSDBFile
             mongo.getDB(OR + na).command([$eval: String.format(collate, it.metadata.pid, it.metadata.pid, it.metadata.pid), nolock: true]).retval
         }
     }
