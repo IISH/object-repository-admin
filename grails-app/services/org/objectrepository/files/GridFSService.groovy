@@ -62,7 +62,8 @@ class GridFSService {
     List findAllByNa(def na, def params) {
 
         final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
-        mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect { BasicDBObject it ->  // prevent a cast to GridFSDBFile
+        //mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect { BasicDBObject it ->  // casts to GridFSDBFile
+        mongo.getDB(OR + na).getCollection("master.files").find(query).limit(params.max).skip(params.offset).collect {
             mongo.getDB(OR + na).command([$eval: String.format(collate, it.metadata.pid, it.metadata.pid, it.metadata.pid), nolock: true]).retval
         }
     }
