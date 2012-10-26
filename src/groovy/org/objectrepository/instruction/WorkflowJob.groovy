@@ -455,7 +455,7 @@ abstract class WorkflowJob {
                 final long ttl = System.currentTimeMillis() + periodQueued
                 final headers = [expiration: ttl, JMSExpiration: ttl]
                 sendMessageAndHeaders(["activemq", document.task.queue].join(":"), OrUtil.makeOrType(document), headers)
-                log.info id(document) + "Send message to queue"
+                log.info id(document) + "Send message to queue " + document.task.queue
                 next(document)
             } catch (Exception e) {
                 // message queue may be down
