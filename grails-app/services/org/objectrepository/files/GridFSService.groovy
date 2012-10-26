@@ -58,7 +58,7 @@ class GridFSService {
     }
 
     List get(String na, String pid) {
-        query(OR + na, String.format("{'metadata.pid':'%s'}", pid))
+        query(OR + na, String.format("{'metadata.pid':'%s'}", pid))[0]
     }
 
     /**
@@ -132,8 +132,7 @@ class GridFSService {
                     count, new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
-                    final String p = it.metadata.pid
-                    def documents = get(na, p)
+                    def documents = get(na, it.metadata.pid)
                     def master = documents[0]
                     if (master)
                         orfile {
@@ -206,7 +205,7 @@ class GridFSService {
      * @param skip
      * @return
      */
-    private List query(String db, String query, int limit = 1, int skip = 1) {
+    private List query(String db, String query, int limit = 1, int skip = 0) {
         mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
     }
 }
