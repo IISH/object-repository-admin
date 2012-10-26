@@ -47,14 +47,6 @@ class Task {
         String.format(format, h, m, s);
     }
 
-    public String setQueue(String value) {
-        ( value == this.@name) ? null : value
-    }
-
-    public String getQueue() {
-        (this.@queue) ?: this.@name
-    }
-
     static constraints = {
         identifier(nullable: true)
         info(nullable: true)
