@@ -22,7 +22,7 @@ class Task {
     int attempts = 1
     int limit = 3 // Three attempts maximum before permanent failure. Default can be overwritten in PlanConfig
     int exitValue = Integer.MAX_VALUE // Undetermined
-    String queue
+    String queue = null
 
     public String taskKey() {
         identifier = UUID.randomUUID().toString()
