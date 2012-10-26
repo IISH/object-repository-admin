@@ -156,8 +156,10 @@ abstract class WorkflowJob {
     void nextWorkflow(def document) {
         final String old = document.task.name + document.task.statusCode
         boolean next = true // The do-while loop is not yet supported in this groovy version
+        final String currentTaskName = document.task.name
         while (next) {
             document.workflow << document.workflow.remove(0)
+            if ( currentTaskName == document.task.name) return
             next = (document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad')
         }
         first(document)
