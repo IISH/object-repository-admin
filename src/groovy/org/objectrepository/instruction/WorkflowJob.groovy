@@ -344,7 +344,7 @@ abstract class WorkflowJob {
             case 'Image':
             case 'Video':
                 log.info id(document) + "renameQueueWithContentType " + type
-                document.workflow.last().queue = document.workflow.last().queue + type
+                document.workflow.last().queue = document.workflow.last().name + type
                 break;
         }
     }

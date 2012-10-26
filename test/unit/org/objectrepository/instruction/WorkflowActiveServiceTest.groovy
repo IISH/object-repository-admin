@@ -180,10 +180,12 @@ class WorkflowActiveServiceTest {
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 900
         document.parent.plan.each { plan ->
-            def t = document.workflow.find {
+            assert document.workflow.find {
                 it.info == plan
             }
-            assert t
+            assert document.workflow.find {
+                it.queue == 'StagingfileIngestLevel1Image'
+            }
         }
         assert !document.workflow.find {
             it.name == allWorkflow[0]
@@ -259,4 +261,5 @@ class WorkflowActiveServiceTest {
         workflowActiveService.changeWorkflow('StagingfileIngestMaster', document)
         assert document.task.limit == Integer.MAX_VALUE
     }
+
 }
