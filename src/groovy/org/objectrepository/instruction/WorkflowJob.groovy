@@ -12,6 +12,9 @@ import org.objectrepository.util.OrUtil
  * WorkflowJob
  *
  * Iterates over the home directories.
+ *
+ * General, task agnostic decisions are placed here.
+ * For task specific logic see WorkflowActiveService
  */
 abstract class WorkflowJob {
 

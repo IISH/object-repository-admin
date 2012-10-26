@@ -20,17 +20,23 @@ class GridFSService {
     def mongo
     def grailsApplication
 
-    private static String collate = "function(){" +
-            "var cache = [];" +
-            "['master.files', 'level1.files', 'level2.files', 'level3.files'].forEach(function (c) {" +
-            "    var bucket = db.getCollection(c).findOne({'metadata.pid':'%s'});" +
-            "    if (bucket) {" +
-            "        cache.push(" +
-            "            bucket" +
-            "        )" +
-            "    }" +
-            "});" +
-            "return cache;}"
+    private static String collate = "function() {\n" +
+            "            var documents=[];\n" +
+            "            db.getCollection('master.files').find(%s).limit(%s).skip(%s).forEach(function(d){\n" +
+            "                var cache = [d];\n" +
+            "                ['level1.files', 'level2.files', 'level3.files'].forEach(function (c) {\n" +
+            "                    if ( d.metadata.pid ){\n" +
+            "                        var bucket = db.getCollection(c).findOne({'metadata.pid':d.metadata.pid});\n" +
+            "                        if (bucket) {\n" +
+            "                            cache.push(\n" +
+            "                                bucket\n" +
+            "                            )\n" +
+            "                        }\n" +
+            "                    }\n" +
+            "                });\n" +
+            "                documents.push(cache)})\n" +
+            "            return documents;" +
+            "}"
 
     /**
      * findByPid
@@ -48,7 +54,11 @@ class GridFSService {
     List findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
-        mongo.getDB(OR + na).command([$eval: String.format(collate, pid, pid, pid), nolock: true]).retval
+        get(na, pid)
+    }
+
+    List get(String na, String pid) {
+        query(OR + na, String.format("{'metadata.pid':'%s'}", pid))
     }
 
     /**
@@ -60,17 +70,13 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     List findAllByNa(def na, def params) {
-
-        final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
-        //mongo.getDB(OR + na).getCollection("master.files").find(query, ['metadata.pid': 1]).limit(params.max).skip(params.offset).collect { BasicDBObject it ->  // casts to GridFSDBFile
-        mongo.getDB(OR + na).getCollection("master.files").find(query).limit(params.max).skip(params.offset).collect {
-            mongo.getDB(OR + na).command([$eval: String.format(collate, it.metadata.pid, it.metadata.pid, it.metadata.pid), nolock: true]).retval
-        }
+        final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
+        query(OR + na, q, params.max, params.offset)
     }
 
     int countByNa(def na, def params) {
-        final query = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
-        mongo.getDB(OR + na).getCollection("master.files").count(query)
+        final q = (params?.label) ? ['metadata.label': params.label] : ['metadata': [$exists: true]]
+        mongo.getDB(OR + na).getCollection("master.files").count(q)
     }
 
     /**
@@ -89,10 +95,6 @@ class GridFSService {
 
     void siteusage(String na, def document) {
         mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
-    }
-
-    List get(String na, String pid) {
-        mongo.getDB(OR + na).command([$eval: String.format(collate, pid, pid, pid), nolock: true]).retval
     }
 
     /**
@@ -131,7 +133,7 @@ class GridFSService {
             orfiles(orfileAttributes) {
                 cursor.each {
                     final String p = it.metadata.pid
-                    def documents = collection.getDB().command([$eval: String.format(collate, p, p, p), nolock: true]).retval
+                    def documents = get(na, p)
                     def master = documents[0]
                     if (master)
                         orfile {
@@ -191,6 +193,20 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        mongo.getDB(OR + na).'label'.find().sort([_id: 1]).collect() { it._id }.plus(0, 'everything')
+        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval.plus(0, 'everything')
+    }
+
+    /**
+     * Returns all technical metadata concerning the PID value.
+     * The nolock option may cause read inconsistency. Not to use when writes are going on with splitting.
+     *
+     * @param db
+     * @param query
+     * @param limit
+     * @param skip
+     * @return
+     */
+    private List query(String db, String query, int limit = 1, int skip = 1) {
+        mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
     }
 }

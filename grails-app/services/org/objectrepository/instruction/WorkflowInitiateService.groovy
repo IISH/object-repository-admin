@@ -110,8 +110,7 @@ class WorkflowInitiateService extends WorkflowJob {
                     count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
                     instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
                     log.info "Retry instruction."
-                    //retry(instructionInstance)
-                    log.warn("No retry for a failed instruction is implemented... use retry(instructionInstance) to enable.")
+                    retry(instructionInstance)
                 }
             }
             save(instructionInstance)

@@ -131,7 +131,8 @@ class WorkflowActiveService extends WorkflowJob {
      * StagingfileIngestCustomLevel2
      * StagingfileIngestCustomLevel3
      *
-     * For each custom derivative we can disable the production of a derivative or continue.
+     * For each custom derivative we can disable the production of a derivative if it was already ingested as a custome file
+     * or continue if this wsa not the case.
      *
      * @param document
      * @return
