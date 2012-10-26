@@ -241,7 +241,7 @@ abstract class WorkflowJob {
         }
         else if (document.task.exitValue == 250) {
             log.info id(document) + "Skipping task. It's design cannot handle this type of document."
-            document.task.statusCode = 799
+            document.task.statusCode = 800
             nextWorkflow(document)
         }
         else if (++document.task.attempts > document.task.limit) {
