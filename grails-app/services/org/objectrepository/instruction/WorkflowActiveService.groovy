@@ -1,6 +1,7 @@
 package org.objectrepository.instruction
 
 import org.objectrepository.util.OrUtil
+import org.bson.types.ObjectId
 
 /**
  * WorkflowActiveService
@@ -22,45 +23,63 @@ class WorkflowActiveService extends WorkflowJob {
      * Using a first-in-first-out principle.
      */
     void job() {
-        mongo.getDB('sa').instruction.find().each {
+        /*final Date expired = new Date(new Date().time - messageExpire); // five minutes
+        mongo.getDB('sa').instruction.find([workflow: [$elemMatch: [n: 0, end: [$lt: expired]]]]).each {
             def instruction = it as Instruction
-            progress(instruction)
-        }
+            progress(instruction, expired)
+        }*/
     }
 
-    private progress(Instruction instruction) {
+    private progress(Instruction instruction, Date expired) {
 
         log.info id(instruction) + "Checking for task updates."
-        if (instruction.task) {
 
-            if (instruction.ingesting) {
-                mongo.getDB('sa').stagingfile.find(
-                        $and: [[fileSet: instruction.fileSet],
-                                [$or: [
-                                        [workflow: [$elemMatch: [n: 0, statusCode: 500]]],
-                                        [workflow: [$elemMatch: [n: 0, statusCode: 800]]],
-                                        [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300]]]]
-                                ]]
-                        ]
-                ).each {
-                    Stagingfile stagingfile = it as Stagingfile
-                    stagingfile.parent = instruction
-                    stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
-                    try {
-                        runMethod(stagingfile)
-                    } catch (Exception e) {
-                        exception(stagingfile, e)
-                    }
-                }
-            } else {
-                instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
+        if (instruction.ingesting) {
+            mongo.getDB('sa').stagingfile.find(
+                    $and: [[fileSet: instruction.fileSet],
+                            [$or: [
+                                    [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: expired]]]],
+                                    [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: expired]]]],
+                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: expired]]]]
+                            ]]
+                    ]
+            ).each {
+                Stagingfile stagingfile = it as Stagingfile
+                stagingfile.parent = instruction
+                stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
                 try {
-                    runMethod(instruction)
+                    runMethod(stagingfile)
                 } catch (Exception e) {
-                    exception(instruction, e)
+                    exception(stagingfile, e)
                 }
             }
-            if (instruction.change) { save(instruction) }
+        } else {
+            instruction.cacheTask = [name: instruction.task.name, statusCode: instruction.task.statusCode]
+            try {
+                runMethod(instruction)
+            } catch (Exception e) {
+                exception(instruction, e)
+            }
+        }
+        if (instruction.change) save(instruction)
+    }
+
+    /**
+     * status
+     *
+     * Incoming message from the messagequeue
+     *
+     * @param identifier
+     */
+    public void status(String identifier) {
+
+        final Date expired = new Date(new Date().time - messageExpire); // five minutes
+        final query = (ObjectId.isValid(identifier)) ? [_id: new ObjectId(identifier)] : [workflow: [$elemMatch: [n: 0, identifier: identifier, end: [$gt: expired]]]]
+        def document = mongo.getDB('sa').instruction.findOne(query) as Instruction
+        if (!document) document = mongo.getDB('sa').stagingfile.findOne(query) as Stagingfile
+        if (document) {
+            log.info id(document) + "From message queue activemq:status"
+            if (document instanceof Instruction) progress(document, expired) else runMethod(document)
         }
     }
 

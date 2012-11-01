@@ -27,7 +27,7 @@ abstract class WorkflowJob {
 
     static int TASK_FREEZE = 797
     static int periodQueued = 28800000 // Eight hours of queueing status. And then the task becomes stale.
-
+    static int messageExpire = 300000 // Five minutes when a task run expires. We wont rely on the queue then.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -159,7 +159,7 @@ abstract class WorkflowJob {
         final String currentTaskName = document.task.name
         while (next) {
             document.workflow << document.workflow.remove(0)
-            if ( currentTaskName == document.task.name) return
+            if (currentTaskName == document.task.name) return
             next = (document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad')
         }
         first(document)
@@ -289,7 +289,7 @@ abstract class WorkflowJob {
                 log.info id(document) + "Added task " + attributes.name
 
                 plan.value.methods?.each {
-                    if ( it.value ) "$it.key"(it.value, document) else "$it.key"(document)
+                    if (it.value) "$it.key"(it.value, document) else "$it.key"(document)
                 }
             }
         }
@@ -325,7 +325,7 @@ abstract class WorkflowJob {
     def executeAfter(def args, Stagingfile document) {
         def attributes = [name: args, info: "System workflow"]
         log.info id(document) + "Added executeAfter task " + attributes.name
-        def task = document.workflow.remove(document.workflow.size()-1)
+        def task = document.workflow.remove(document.workflow.size() - 1)
         document.workflow << new Task(attributes)
         document.workflow << task
     }
@@ -490,12 +490,11 @@ abstract class WorkflowJob {
         if (!document.fileSet || document.task.name == document.cacheTask?.name &&
                 document.task.statusCode == document.cacheTask?.statusCode) {
             log.info id(document) + "Skipping save for workflow status... no changes"
-            return true
+            true
         } else {
             log.info id(document) + "Saving task."
-            document.task.end = new Date()
+            save(document)
         }
-        save(document)
     }
 
     /**
@@ -520,6 +519,7 @@ abstract class WorkflowJob {
                 init
             }
         }
+        document.task?.end = new Date()
         result(collection.update([_id: document.id], [$set: [workflow: workflow]]))
     }
 

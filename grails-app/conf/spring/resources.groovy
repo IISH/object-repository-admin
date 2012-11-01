@@ -47,8 +47,5 @@ beans = {
             mongo = ref('mongoBean')
             database = "security"
         }
-        /*oauth2ProtectedResourceFilter(OAuth2ProtectedResourceFilter) {
-            tokenServices = ref('tokenServices')
-        }*/
     }
 }

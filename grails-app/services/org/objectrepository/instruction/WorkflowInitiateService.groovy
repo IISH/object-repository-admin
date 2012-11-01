@@ -112,8 +112,8 @@ class WorkflowInitiateService extends WorkflowJob {
                     log.info "Retry instruction: no"
                     //retry(instructionInstance)
                 }
+                save(instructionInstance)
             }
-            save(instructionInstance)
         }
     }
 
@@ -128,7 +128,10 @@ class WorkflowInitiateService extends WorkflowJob {
 
         final String fileSet = Normalizers.normalize(entry)
         def instructionInstance = Instruction.findByFileSet(fileSet)
-        if (instructionInstance) return
+        if (instructionInstance) {
+            sendMessage("activemq:status", instructionInstance.id.toString())
+            return
+        }
 
         log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
         instructionInstance = new Instruction(na: na, fileSet: fileSet)
@@ -138,7 +141,9 @@ class WorkflowInitiateService extends WorkflowJob {
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]
         try {
-            if (!instructionInstance.save()) {
+            if (instructionInstance.save(flush: true)) {
+                // ok
+            } else {
                 instructionInstance.errors.each {
                     log.error "Errors " + it
                 }
