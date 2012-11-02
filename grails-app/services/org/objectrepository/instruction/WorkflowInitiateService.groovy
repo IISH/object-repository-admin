@@ -128,10 +128,7 @@ class WorkflowInitiateService extends WorkflowJob {
 
         final String fileSet = Normalizers.normalize(entry)
         def instructionInstance = Instruction.findByFileSet(fileSet)
-        if (instructionInstance) {
-            sendMessage("activemq:status", instructionInstance.id.toString())
-            return
-        }
+        if (instructionInstance) return
 
         log.info "Fileset found, but no declaration in database. Creation declaration for " + entry
         instructionInstance = new Instruction(na: na, fileSet: fileSet)

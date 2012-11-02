@@ -23,17 +23,16 @@ class WorkflowActiveService extends WorkflowJob {
      * Using a first-in-first-out principle.
      */
     void job() {
-        /*final Date expired = new Date(new Date().time - messageExpire); // five minutes
+        final Date expired = new Date(new Date().time - messageExpire); // five minutes
         mongo.getDB('sa').instruction.find([workflow: [$elemMatch: [n: 0, end: [$lt: expired]]]]).each {
             def instruction = it as Instruction
             progress(instruction, expired)
-        }*/
+        }
     }
 
     private progress(Instruction instruction, Date expired) {
 
         log.info id(instruction) + "Checking for task updates."
-
         if (instruction.ingesting) {
             mongo.getDB('sa').stagingfile.find(
                     $and: [[fileSet: instruction.fileSet],
