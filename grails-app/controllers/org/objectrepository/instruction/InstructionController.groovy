@@ -223,11 +223,9 @@ class InstructionController {
         if (instructionInstance) {
             instructionInstance.task.name = OrUtil.camelCase([controllerName, actionName])
             workflowActiveService.first(instructionInstance)
-            instructionInstance.task.end = new Date()
-            String identifier = instructionInstance.task.taskKey()
             if (instructionInstance.save(flush: true)) {
                 try {
-                    sendMessage("activemq:status", identifier)
+                    sendMessage("activemq:status", instructionInstance.id)
                 }
                 catch (Exception e) {
                     // message queue may be down

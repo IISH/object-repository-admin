@@ -23,14 +23,15 @@ class WorkflowActiveService extends WorkflowJob {
      * Using a first-in-first-out principle.
      */
     void job() {
-        final Date expired = new Date(new Date().time - messageExpire); // five minutes
-        mongo.getDB('sa').instruction.find([workflow: [$elemMatch: [n: 0, end: [$lt: expired]]]]).each {
+        mongo.getDB('sa').instruction.find().each {
             def instruction = it as Instruction
-            progress(instruction, expired)
+            progress(instruction)
         }
     }
 
-    private progress(Instruction instruction, Date expired) {
+    private progress(Instruction instruction, Date expired = new Date(new Date().time - messageExpire)) {
+
+        if (isLocked(instruction)) return
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.ingesting) {
@@ -39,7 +40,7 @@ class WorkflowActiveService extends WorkflowJob {
                             [$or: [
                                     [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: expired]]]],
                                     [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: expired]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: expired]]]]
+                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300]]]]
                             ]]
                     ]
             ).each {
@@ -58,6 +59,7 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     private void stagingfile(Stagingfile stagingfile) {
+        if (isLocked(stagingfile)) return
         stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
         try {
             runMethod(stagingfile)
@@ -75,19 +77,19 @@ class WorkflowActiveService extends WorkflowJob {
      */
     public void status(String identifier) {
 
-        final Date expired = new Date(new Date().time - messageExpire); // five minutes
-        if ((ObjectId.isValid(identifier))) {
-            Instruction document = mongo.getDB('sa').instruction.findOne([_id: new ObjectId(identifier)]) as Instruction
-
-            if (document) {
-                log.info id(document) + "Status from message queue for instruction"
-                progress(document, expired)
-            }
-        } else {
-            Stagingfile document = mongo.getDB('sa').stagingfile.findOne([workflow: [$elemMatch: [n: 0, identifier: identifier, end: [$gt: expired]]]]) as Stagingfile
-            if (document) {
-                log.info id(document) + "Status from message queue for stagingfile"
-                stagingfile(document)
+        if (identifier) {
+            if ((ObjectId.isValid(identifier))) {
+                Instruction document = mongo.getDB('sa').instruction.findOne([_id: new ObjectId(identifier)]) as Instruction
+                if (document) {
+                    log.info id(document) + "Status from message queue for instruction"
+                    progress(document)
+                }
+            } else {
+                Stagingfile document = mongo.getDB('sa').stagingfile.findOne([workflow: [$elemMatch: [n: 0, identifier: identifier]]]) as Stagingfile
+                if (document) {
+                    log.info id(document) + "Status from message queue for stagingfile"
+                    stagingfile(document)
+                }
             }
         }
     }

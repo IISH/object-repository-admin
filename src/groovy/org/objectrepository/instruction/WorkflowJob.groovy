@@ -24,6 +24,7 @@ abstract class WorkflowJob {
     File home
     TaskValidationService taskValidationService
     def taskProperties
+    LinkedHashMap<String, Date> locks = [:]
 
     static int TASK_FREEZE = 797
     static int periodQueued = 28800000 // Eight hours of queueing status. And then the task becomes stale.
@@ -119,6 +120,19 @@ abstract class WorkflowJob {
                 }
             }
         }
+    }
+
+    boolean isLocked(def document) {
+        if (document.task?.identifier) {
+            def lock = locks[document.task.identifier]
+            if (lock) {
+                if (lock > new Date(new Date().time - 120000)) return true
+                locks.remove(lock)
+            } else {
+                locks.put(document.task.identifier, new Date())
+            }
+        }
+        false
     }
 
     /**
@@ -520,7 +534,13 @@ abstract class WorkflowJob {
             }
         }
         document.task?.end = new Date()
-        result(collection.update([_id: document.id], [$set: [workflow: workflow]]))
+        if (result(collection.update([_id: document.id], [$set: [workflow: workflow]]))) {
+            if (document.task.statusCode == firstStatusCode(document.task.name)) {
+                sendMessage('activemq:status', document.task.identifier)
+            }
+            return true
+        }
+        false
     }
 
     boolean delete(def document) {
