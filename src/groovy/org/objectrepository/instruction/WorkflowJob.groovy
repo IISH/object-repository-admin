@@ -535,6 +535,7 @@ abstract class WorkflowJob {
         }
         document.task?.end = new Date()
         if (result(collection.update([_id: document.id], [$set: [workflow: workflow]]))) {
+            locks.remove(document.task.identifier)
             if (document.task.statusCode == firstStatusCode(document.task.name)) {
                 sendMessage('activemq:status', document.task.identifier)
             }
