@@ -192,7 +192,7 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}']).retval.plus(0, 'everything')
+        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval.plus(0, 'everything')
     }
 
     /**
@@ -205,6 +205,6 @@ class GridFSService {
      * @return
      */
     private List query(String db, String query, int limit = 1, int skip = 0) {
-        mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip)]).retval
+        mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
     }
 }
