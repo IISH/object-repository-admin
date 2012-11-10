@@ -40,7 +40,7 @@ class WorkflowActiveService extends WorkflowJob {
                             [$or: [
                                     [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: expired]]]],
                                     [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: expired]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300]]]]
+                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: expired]]]]
                             ]]
                     ]
             ).each {

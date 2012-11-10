@@ -188,6 +188,10 @@ class GridFSService {
      *
      * Presents all collection labels.
      *
+     * note on the nolock setting:
+     * There are some circumstances where the eval() implements a strictly-read only operation that need not
+     * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
+     *
      * @param na
      * @return
      */
@@ -202,6 +206,11 @@ class GridFSService {
      * @param query
      * @param limit
      * @param skip
+     *
+     * note on the nolock setting:
+     * There are some circumstances where the eval() implements a strictly-read only operation that need not
+     * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
+     *
      * @return
      */
     private List query(String db, String query, int limit = 1, int skip = 0) {
