@@ -26,7 +26,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static int TASK_FREEZE = 797
-    static int messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
+    static long messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -387,7 +387,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task300(def document) {
-        final long expired = new Date().time - messageTTL
+        final Date expired = OrUtil.expirationDate(messageTTL)
         if (document.task?.end < expired) {
             first(document)
         }
@@ -401,7 +401,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task400(def document) {
-        final long expired = new Date().time - messageTTL
+        final Date expired = OrUtil.expirationDate(messageTTL)
         if (document.task?.end < expired) {
             next(document)
         }

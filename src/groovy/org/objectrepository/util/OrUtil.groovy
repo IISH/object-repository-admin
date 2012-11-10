@@ -223,4 +223,16 @@ class OrUtil {
     static void setInstructionPlan(def instruction) {
         if (emptyList(instruction.plan)) instruction.plan = instruction.parent.plan
     }
+
+    /**
+     * expirationDate
+     *
+     * Give the expiration date based on the offset
+     *
+     * @param i
+     * @return
+     */
+    static Date expirationDate(long t) {
+        new Date(new Date().time - t)
+    }
 }

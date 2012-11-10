@@ -21,10 +21,10 @@ class WorkflowActiveService extends WorkflowJob {
      * Process the documents in the staging area.
      */
     void job() {
-        final Date check = new Date(new Date().time - messageTTL)
-        mongo.getDB('sa').instruction.find(['workflow.end': [$lt: check]]).each {
+        final Date expired = OrUtil.expirationDate(messageTTL)
+        mongo.getDB('sa').instruction.find(['workflow.end': [$lt: expired]]).each {
             def instruction = it as Instruction
-            progress(instruction, check)
+            progress(instruction, expired)
         }
     }
 
