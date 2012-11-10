@@ -35,7 +35,7 @@ class WorkflowStaleService extends WorkflowJob {
     void job() {
 
         final long time = new Date().time
-        checkStaleness(StatusCodeQueued, StatusCodeRestartQueued, new Date(time - periodQueued))
+        checkStaleness(StatusCodeQueued, StatusCodeRestartQueued, new Date(time - messageTTL))
         checkStaleness(StatusCodeTaskReceipt, StatusCodeTaskCompleteReceipt, new Date(time - periodTaskReceipt))
     }
 

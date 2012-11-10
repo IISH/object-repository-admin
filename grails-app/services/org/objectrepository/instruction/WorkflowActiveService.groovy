@@ -20,7 +20,6 @@ class WorkflowActiveService extends WorkflowJob {
      * job
      *
      * Process the documents in the staging area.
-     * Using a first-in-first-out principle.
      */
     void job() {
         mongo.getDB('sa').instruction.find().each {
@@ -29,7 +28,15 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
-    private progress(Instruction instruction, Date expired = new Date(new Date().time - messageExpire)) {
+    /**
+     * progress
+     *
+     * @param instruction
+     * @param check The system communicated via messages. However, messages can get lost. A separate query will check
+     * the status of the task if these are older than the check data.
+     * @return
+     */
+    private progress(Instruction instruction, Date check = new Date(new Date().time - messageDBCheck)) {
 
         if (isLocked(instruction)) return
 
@@ -38,9 +45,9 @@ class WorkflowActiveService extends WorkflowJob {
             mongo.getDB('sa').stagingfile.find(
                     $and: [[fileSet: instruction.fileSet],
                             [$or: [
-                                    [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: expired]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: expired]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: expired]]]]
+                                    [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: check]]]],
+                                    [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: check]]]],
+                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: check]]]]
                             ]]
                     ]
             ).each {

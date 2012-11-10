@@ -27,8 +27,8 @@ abstract class WorkflowJob {
     LinkedHashMap<String, Date> locks = [:]
 
     static int TASK_FREEZE = 797
-    static int periodQueued = 28800000 // Eight hours of queueing status. And then the task becomes stale.
-    static int messageExpire = 300000 // Five minutes when a task run expires. We wont rely on the queue then.
+    static int messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
+    static int messageDBCheck = 300000 // Five minutes when a task run ought to be checked. We wont rely on the queue then.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -372,7 +372,7 @@ abstract class WorkflowJob {
      */
     def InstructionRetry100(def document) {
         mongo.getDB('sa').stagingfile.find(
-                fileSet: document.fileSet, 'workflow.statusCode': [$gt: 699, $lt: 800]
+                fileSet: document.fileSet, 'workflow.statusCode': [$lt: 800]
         ).each {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
@@ -461,6 +461,8 @@ abstract class WorkflowJob {
      * We want to be sure the task identifier is in the database before the message queue client
      * receives it. Hence here we save.
      *
+     * The message will expire given the messageTTL setting minus a minute offset
+     *
      * @param instructionInstance
      * @return
      */
@@ -469,10 +471,8 @@ abstract class WorkflowJob {
         document.task.taskKey()
         if (save(document)) {
             try {
-                final long ttl = System.currentTimeMillis() + periodQueued
-                final headers = [expiration: ttl, JMSExpiration: ttl]
                 final String queue = (document.task.queue) ?: document.task.name
-                sendMessageAndHeaders(["activemq", queue].join(":"), OrUtil.makeOrType(document), headers)
+                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + messageTTL - 60000, OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue " + queue
                 next(document)
             } catch (Exception e) {
