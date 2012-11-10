@@ -26,7 +26,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static int TASK_FREEZE = 797
-    static int messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
+    static int messageTTL = 60000 //3600000 // One hour of queueing status. And then the task becomes stale.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -380,6 +380,34 @@ abstract class WorkflowJob {
     }
 
     /**
+     * task300
+     *
+     * In case the message is expired we will reset all.
+     *
+     * @param document
+     */
+    void task300(def document) {
+        final long expired = new Date().time - messageTTL
+        if (document.task?.end < expired) {
+            first(document)
+        }
+    }
+
+    /**
+     * task400
+     *
+     * In case the worker node has become unresponsive we skip so we can evaluate.
+     *
+     * @param document
+     */
+    void task400(def document) {
+        final long expired = new Date().time - messageTTL
+        if (document.task?.end < expired) {
+            next(document)
+        }
+    }
+
+    /**
      * task500
      *
      * Walk to the next step
@@ -457,8 +485,7 @@ abstract class WorkflowJob {
         if (save(document)) {
             try {
                 final String queue = (document.task.queue) ?: document.task.name
-                long ttl = messageTTL - 60000
-                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + ttl, OrUtil.makeOrType(document))
+                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + messageTTL, OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue " + queue
                 next(document)
             } catch (Exception e) {

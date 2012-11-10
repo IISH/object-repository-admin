@@ -41,12 +41,9 @@ class WorkflowActiveService extends WorkflowJob {
         log.info id(instruction) + "Checking for task updates."
         if (instruction.ingesting) {
             mongo.getDB('sa').stagingfile.find(
-                    $and: [[fileSet: instruction.fileSet],
-                            [$or: [
-                                    [workflow: [$elemMatch: [n: 0, statusCode: 500, end: [$lt: check]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: 800, end: [$lt: check]]]],
-                                    [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 300], end: [$lt: check]]]]
-                            ]]
+                    $and: [
+                            [fileSet: instruction.fileSet],
+                            [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 801], end: [$lt: check]]]]
                     ]
             ).each {
                 it.parent = instruction
