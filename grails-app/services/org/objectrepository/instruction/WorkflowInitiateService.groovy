@@ -96,7 +96,7 @@ class WorkflowInitiateService extends WorkflowJob {
             Instruction instructionInstance = it as Instruction
             int countStagingfiles = Stagingfile.countByFileSet(instructionInstance.fileSet)
             int count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch:
-                    [name: 'EndOfTheRoad', statusCode: [$gt: 699]]]]) // statusCode ought to be 850 or 900
+                    [name: 'EndOfTheRoad', statusCode: [$gt: 699]]]]) // statusCode ought to be 850 (problems) or 900
             if (countStagingfiles == count) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900

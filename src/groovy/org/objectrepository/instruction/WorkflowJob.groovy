@@ -25,7 +25,6 @@ abstract class WorkflowJob {
     TaskValidationService taskValidationService
     def taskProperties
 
-    static int TASK_FREEZE = 797
     static long messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
 
     public WorkflowJob() {
@@ -155,10 +154,10 @@ abstract class WorkflowJob {
     void nextWorkflow(def document) {
         final String old = document.task.name + document.task.statusCode
         boolean next = true // The do-while loop is not yet supported in this groovy version
-        final String currentTaskName = document.task.name
+        final String failSave = document.task.name
         while (next) {
             document.workflow << document.workflow.remove(0)
-            if (currentTaskName == document.task.name) return
+            if (failSave == document.task.name) return
             next = (document.task.statusCode > 799 && document.task.name != 'EndOfTheRoad')
         }
         first(document)
@@ -225,10 +224,14 @@ abstract class WorkflowJob {
     void retry(def document) {
 
         if (document.task.exitValue == 230) {
-            log.info id(document) + "Freezing task. Severe problem and should not continue."
-            document.workflow.each {
-                it.statusCode = (it.statusCode < 800) ? TASK_FREEZE : it.statusCode
+            log.info id(document) + "Severe problem and should not continue. Usually a checksum mismatch."
+            final String failSafe = document.task.name
+            while (document.task.name != 'EndOfTheRoad') {
+                document.workflow << document.workflow.remove(0)
+                if (failSafe == document.task.name) return
+                document.task.statusCode = (document.task.statusCode < 800) ? 797 : document.task.statusCode
             }
+            last(document)
         }
         else if (document.task.exitValue == 240) {
             log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."
