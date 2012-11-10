@@ -27,7 +27,7 @@ class WorkflowStaleService extends WorkflowJob {
     /**
      * job
      *
-     * Find all documents with a stale task.
+     * Find all documents with a stale task: a statusCode that cannot be a reliable value.
      * Sets the task statusCode 300 to StatusCodeStart if found stale.
      * Sets the task statusCode 400 to StatusCodeTaskCompleteReceipt if found stale.
      * This only means the active workflow will pick it up and move it to a 600 check where it will probably retry it.

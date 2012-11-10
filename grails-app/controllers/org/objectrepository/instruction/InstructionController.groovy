@@ -222,10 +222,11 @@ class InstructionController {
         def instructionInstance = serviceAvailable()
         if (instructionInstance) {
             instructionInstance.task.name = OrUtil.camelCase([controllerName, actionName])
+            instructionInstance.task.taskKey()
             workflowActiveService.first(instructionInstance)
             if (instructionInstance.save(flush: true)) {
                 try {
-                    sendMessage("activemq:status", instructionInstance.id)
+                    sendMessage("activemq:status", instructionInstance.task.identifier)
                 }
                 catch (Exception e) {
                     // message queue may be down

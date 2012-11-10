@@ -1,7 +1,6 @@
 package org.objectrepository.instruction
 
 import org.objectrepository.util.OrUtil
-import org.bson.types.ObjectId
 
 /**
  * WorkflowActiveService
@@ -22,9 +21,10 @@ class WorkflowActiveService extends WorkflowJob {
      * Process the documents in the staging area.
      */
     void job() {
-        mongo.getDB('sa').instruction.find().each {
+        final Date check = new Date(new Date().time - messageTTL)
+        mongo.getDB('sa').instruction.find(['workflow.end': [$lt: check]]).each {
             def instruction = it as Instruction
-            progress(instruction)
+            progress(instruction, check)
         }
     }
 
@@ -36,9 +36,7 @@ class WorkflowActiveService extends WorkflowJob {
      * the status of the task if these are older than the check data.
      * @return
      */
-    private progress(Instruction instruction, Date check = new Date(new Date().time - messageDBCheck)) {
-
-        if (isLocked(instruction)) return
+    private progress(Instruction instruction, Date check = new Date(new Date().time - messageTTL)) {
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.ingesting) {
@@ -66,7 +64,6 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     private void stagingfile(Stagingfile stagingfile) {
-        if (isLocked(stagingfile)) return
         stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
         try {
             runMethod(stagingfile)
@@ -85,14 +82,13 @@ class WorkflowActiveService extends WorkflowJob {
     public void status(String identifier) {
 
         if (identifier) {
-            if ((ObjectId.isValid(identifier))) {
-                Instruction document = mongo.getDB('sa').instruction.findOne([_id: new ObjectId(identifier)]) as Instruction
-                if (document) {
-                    log.info id(document) + "Status from message queue for instruction"
-                    progress(document)
-                }
+            def query = [workflow: [$elemMatch: [n: 0, identifier: identifier]]]
+            def document = mongo.getDB('sa').instruction.findOne(query) as Instruction
+            if (document) {
+                log.info id(document) + "Status from message queue for instruction"
+                progress(document)
             } else {
-                Stagingfile document = mongo.getDB('sa').stagingfile.findOne([workflow: [$elemMatch: [n: 0, identifier: identifier]]]) as Stagingfile
+                document = mongo.getDB('sa').stagingfile.findOne(query) as Stagingfile
                 if (document) {
                     log.info id(document) + "Status from message queue for stagingfile"
                     stagingfile(document)

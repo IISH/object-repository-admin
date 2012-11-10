@@ -137,9 +137,10 @@ class WorkflowInitiateService extends WorkflowJob {
         log.info "FileSet found: " + fileSet
         //noinspection GroovyAssignabilityCheck
         instructionInstance.task = [name: 'UploadFiles', statusCode: 0]
+        instructionInstance.task.taskKey()
         try {
             if (instructionInstance.save(flush: true)) {
-                // ok
+                sendMessage("activemq:status", instructionInstance.task.identifier)
             } else {
                 instructionInstance.errors.each {
                     log.error "Errors " + it

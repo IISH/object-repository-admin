@@ -24,11 +24,9 @@ abstract class WorkflowJob {
     File home
     TaskValidationService taskValidationService
     def taskProperties
-    LinkedHashMap<String, Date> locks = [:]
 
     static int TASK_FREEZE = 797
     static int messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
-    static int messageDBCheck = 300000 // Five minutes when a task run ought to be checked. We wont rely on the queue then.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -120,19 +118,6 @@ abstract class WorkflowJob {
                 }
             }
         }
-    }
-
-    boolean isLocked(def document) {
-        if (document.task?.identifier) {
-            def lock = locks[document.task.identifier]
-            if (lock) {
-                if (lock > new Date(new Date().time - 120000)) return true
-                locks.remove(lock)
-            } else {
-                locks.put(document.task.identifier, new Date())
-            }
-        }
-        false
     }
 
     /**
@@ -472,7 +457,8 @@ abstract class WorkflowJob {
         if (save(document)) {
             try {
                 final String queue = (document.task.queue) ?: document.task.name
-                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + messageTTL - 60000, OrUtil.makeOrType(document))
+                long ttl = messageTTL - 60000
+                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + ttl, OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue " + queue
                 next(document)
             } catch (Exception e) {
@@ -535,7 +521,6 @@ abstract class WorkflowJob {
         }
         document.task?.end = new Date()
         if (result(collection.update([_id: document.id], [$set: [workflow: workflow]]))) {
-            locks.remove(document.task.identifier)
             if (document.task.statusCode == firstStatusCode(document.task.name)) {
                 sendMessage('activemq:status', document.task.identifier)
             }
