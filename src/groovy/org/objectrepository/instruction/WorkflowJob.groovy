@@ -26,7 +26,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static int TASK_FREEZE = 797
-    static int messageTTL = 60000 //3600000 // One hour of queueing status. And then the task becomes stale.
+    static int messageTTL = 3600000 // One hour of queueing status. And then the task becomes stale.
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
