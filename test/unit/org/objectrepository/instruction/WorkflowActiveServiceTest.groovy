@@ -13,6 +13,7 @@ import com.gmongo.GMongo
 class WorkflowActiveServiceTest {
 
     def WorkflowActiveService workflowActiveService
+    def WorkflowInitiateService workflowInitiateService
     def TaskValidationService taskValidationService
     def fileSet_Instruction
     def fileSet_NoInstruction
@@ -40,6 +41,11 @@ class WorkflowActiveServiceTest {
         workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
         workflowActiveService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
+
+        workflowInitiateService = new WorkflowInitiateService()
+        workflowInitiateService.metaClass.mongo = new GMongo()
+        workflowInitiateService.taskValidationService = taskValidationService = new TaskValidationService()
+        workflowInitiateService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
 
         // This fileSet has a instruction.xml in it
         fileSet_NoInstruction = System.properties['base.dir'] + "/test/resources/home/12345/folder_of_cpuser/test-templates"
@@ -201,7 +207,7 @@ class WorkflowActiveServiceTest {
     void testUploadFiles() {
         Task task = [name: 'UploadFiles', statusCode: 0]
         Instruction document = [fileSet: '.', na: '00000', contentType: 'image/jpeg', task: task]
-        workflowActiveService.UploadFiles(document)
+        workflowInitiateService.UploadFiles(document)
         assert document.task.name == 'UploadFiles'
         assert document.task.statusCode == 800
 
@@ -209,7 +215,7 @@ class WorkflowActiveServiceTest {
         document.fileSet = 'i.do.not.exist'
         def method = null
         try {
-            workflowActiveService.UploadFiles(document)
+            workflowInitiateService.UploadFiles(document)
         } catch (Exception e) {
             method = e.method
         }
@@ -219,19 +225,19 @@ class WorkflowActiveServiceTest {
     void testUploadFiles800() {
         Task task = [name: 'TestTaskLevelA', statusCode: 800]
         Instruction document = [fileSet: '.', na: '00000', contentType: 'image/jpeg', task: task]
-        workflowActiveService.UploadFiles800(document)
+        workflowInitiateService.UploadFiles800(document)
         assert document.task.name == 'TestTaskLevelA'// As the folder '.' exist, but has no instruction; it ought to remain where it is
         assert document.task.statusCode == 800
 
         document.fileSet = fileSet_Instruction // This has an instruction, so there should be an advancement
-        workflowActiveService.UploadFiles800(document)
+        workflowInitiateService.UploadFiles800(document)
         assert document.task.name == 'InstructionUpload'
         assert document.task.statusCode == 100
 
         document.fileSet = 'i.am.a.lie'
         document.task.name = 'UploadFiles'
         document.task.statusCode = 800
-        workflowActiveService.UploadFiles800(document)
+        workflowInitiateService.UploadFiles800(document)
         assert document.task.name == 'UploadFiles'
         assert document.task.statusCode == 0
     }
