@@ -1,6 +1,7 @@
 package org.objectrepository.instruction
 
 import org.objectrepository.util.Normalizers
+import org.objectrepository.util.OrUtil
 
 /**
  * WorkflowInitiateService
@@ -32,7 +33,7 @@ class WorkflowInitiateService extends WorkflowJob {
             addInstruction(na)
 
             log.info "Checking for instructions that have no fileset for " + na
-            removeInstruction(na)
+            uploadInstruction(na)
 
             log.info "Decommissions instructions that have done their job for " + na
             decommissionInstruction(na)
@@ -61,16 +62,19 @@ class WorkflowInitiateService extends WorkflowJob {
     }
 
     /**
-     * removeInstruction
+     * uploadInstruction
      *
+     * Checks if an instruction is present or not.
      * Remove an instruction when there is no associate fileSet
      *
      * @param na
      */
-    private void removeInstruction(String na) {
+    private void uploadInstruction(String na) {
         Instruction.findAllByNa(na)?.each {
             if (!taskValidationService.hasFileSet(it)) {
                 it.delete() // We have become a lie... no fileset at all.
+            } else if (it.task.name == 'UploadFiles') {
+                runMethod(it)
             }
         }
     }
@@ -148,6 +152,48 @@ class WorkflowInitiateService extends WorkflowJob {
             }
         } catch (Exception e) {
             exception(instructionInstance, e)
+        }
+    }
+
+/**
+ * UploadFiles
+ *
+ * We have an empty fileSet ?
+ * The moment we see files, we can proceed offering services.
+ * Yet if the folder disappears, we can remove our document.
+ *
+ * @param document
+ * @return
+ */
+    def UploadFiles(def document) {
+        log.info id(document) + "See if we have any files here"
+        if (taskValidationService.hasFSFiles(document)) {
+            log.info id(document) + "Files seen in fileset"
+            last(document)
+        }
+    }
+
+    /**
+     * We have files and possibly an xml document processing instruction.
+     * If the files are removed, we reset the task.
+     * When an instruction is seen (upload), we can proceed reading it in.
+     *
+     * @param document
+     * @return
+     */
+    def UploadFiles800(Instruction document) {
+        if (taskValidationService.hasFSFiles(document)) {
+            def instruction = taskValidationService.hasFSInstruction(document)
+            if (instruction) {
+                OrUtil.putAll(plans, instruction)
+                mongo.getDB('sa').instruction.update([_id: document.id],
+                        [$set: instruction], false, false
+                )
+                changeWorkflow('InstructionUpload', document)
+            }
+        } else {
+            // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
+            first(document)
         }
     }
 }

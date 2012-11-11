@@ -365,7 +365,7 @@ abstract class WorkflowJob {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
             stagingfile.workflow.each {
-                it.statusCode = (it.statusCode > 699 && it.statusCode < 800) ? 100 : it.statusCode
+                it.statusCode = (it.statusCode < 800) ? 100 : it.statusCode
             }
             stagingfile.workflow.remove(stagingfile.workflow.find {it.name == 'EndOfTheRoad'})
             stagingfile.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
@@ -390,10 +390,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task300(def document) {
-        final Date expired = OrUtil.expirationDate(messageTTL)
-        if (document.task?.end < expired) {
-            first(document)
-        }
+        if (document.task.end < OrUtil.expirationDate(messageTTL)) first(document)
     }
 
     /**
@@ -404,10 +401,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task400(def document) {
-        final Date expired = OrUtil.expirationDate(messageTTL)
-        if (document.task?.end < expired) {
-            next(document)
-        }
+        if (document.task.end < OrUtil.expirationDate(messageTTL)) next(document)
     }
 
     /**

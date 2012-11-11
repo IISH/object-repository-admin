@@ -61,6 +61,7 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     private void stagingfile(Stagingfile stagingfile) {
+
         stagingfile.cacheTask = [name: stagingfile.task.name, statusCode: stagingfile.task.statusCode]
         try {
             runMethod(stagingfile)
@@ -91,48 +92,6 @@ class WorkflowActiveService extends WorkflowJob {
                     stagingfile(document)
                 }
             }
-        }
-    }
-
-/**
- * UploadFiles
- *
- * We have an empty fileSet ?
- * The moment we see files, we can proceed offering services.
- * Yet if the folder disappears, we can remove our document.
- *
- * @param document
- * @return
- */
-    def UploadFiles(def document) {
-        log.info id(document) + "See if we have any files here"
-        if (taskValidationService.hasFSFiles(document)) {
-            log.info id(document) + "Files seen in fileset"
-            last(document)
-        }
-    }
-
-/**
- * We have files and possibly an xml document processing instruction.
- * If the files are removed, we reset the task.
- * When an instruction is seen (upload), we can proceed reading it in.
- *
- * @param document
- * @return
- */
-    def UploadFiles800(Instruction document) {
-        if (taskValidationService.hasFSFiles(document)) {
-            def instruction = taskValidationService.hasFSInstruction(document)
-            if (instruction) {
-                OrUtil.putAll(plans, instruction)
-                mongo.getDB('sa').instruction.update([_id: document.id],
-                        [$set: instruction], false, false
-                )
-                changeWorkflow('InstructionUpload', document)
-            }
-        } else {
-            // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
-            first(document)
         }
     }
 
