@@ -15,30 +15,6 @@ class Policy {
     String access
     List<Bucket> buckets
 
-    /**
-     * Master files are always closed
-     *
-     * @return
-     */
-    protected def beforeChange() {
-        buckets.find {
-            it.bucket == "master"
-        }.access = "closed"
-
-    }
-
-    def beforeUpdate() {
-        beforeChange()
-    }
-
-    def beforeSave() {
-        beforeChange()
-    }
-
-    def beforeInsert() {
-        beforeChange()
-    }
-
     public String getAccessForBucket(String bucket) {
         buckets.find {
             it.bucket == bucket

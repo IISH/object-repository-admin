@@ -2,11 +2,6 @@ A policy determines what an _anonymous user_  can and cannot do. Lets say that i
 logged on to the object repository. Access to each master file and its related derivatives are thus governed by a
 policy.
 
-{note}
-A master file is always closed.
-If you do not explicitly set a policy, the default policy will will be @closed@.
-{note}
-
 There are three main policies available:
 {table}
 *policy* | *access*
@@ -21,4 +16,4 @@ file" option. This will never be the case when the file is closed.
 
 h3. Custom policies
 You cannot modify these default policies, but to add your own custom policy is easily done by selecting "New Policy".
-For each derivative you can then determine your own access level.
+For each master and derivative you can  determine it's access level.
