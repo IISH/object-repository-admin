@@ -28,9 +28,10 @@ class FileController {
     def file = {
         def file = getFile(params)
         if (file) {
-            response.contentType = file.contentType
+            response.contentType = (params.contentType) ?: file.contentType
             response.contentLength = file.length
-            log.info "Writing file to browser"
+            if ( params.contentType == 'application/octet-stream') response.setHeader 'Content-disposition", "attachment; filename="${file.filename}"'
+            log.info "Writing file to client"
             Date begin = new Date()
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
             int downloadTime = new Date().time - begin.time
