@@ -30,7 +30,7 @@ class FileController {
         if (file) {
             response.contentType = (params.contentType) ?: file.contentType
             response.contentLength = file.length
-            if ( params.contentType == 'application/octet-stream') response.setHeader 'Content-disposition", "attachment; filename="${file.filename}"'
+            if (params.contentType == 'application/save') response.setHeader 'Content-disposition', '"attachment; filename="' + file.filename + '"'
             log.info "Writing file to client"
             Date begin = new Date()
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
@@ -82,7 +82,7 @@ class FileController {
     }
 
     def deleted = {
-        [params:params]
+        [params: params]
     }
 
     protected def getFile(def params) {
@@ -105,7 +105,7 @@ class FileController {
         }
 
         final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
-        if (access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
+        if (false && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
             render(view: "denied", status: 401, model: [access: access])
         }
         else
