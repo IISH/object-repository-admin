@@ -34,6 +34,7 @@ class FileController {
             log.info "Writing file to client"
             Date begin = new Date()
             file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
+            response.outputStream.flush()
             int downloadTime = new Date().time - begin.time
             if (System.getProperty("layout", "not") == 'disseminate') {
                 log.info "Increment statistics"
@@ -49,7 +50,6 @@ class FileController {
                 gridFSService.siteusage(file.metaData.na, document)
             }
             log.info "Done writing file"
-            response.outputStream.flush()
             null
         }
     }

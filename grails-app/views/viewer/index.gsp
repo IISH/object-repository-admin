@@ -6,7 +6,7 @@
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
 <head>
-    <title></title>
+    <title>A video display</title>
     <link rel="stylesheet" href="${resource(dir: 'video-js', file: 'video-js.min.css')}"/>
     <script type="text/javascript" src="${resource(dir: 'video-js', file: 'video.min.js')}"></script>
     <script>
@@ -17,9 +17,9 @@
 <body>
 
 <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="640" height="264"
-       poster="file/level2/${params.pid}"
+       poster="file/${params.poster}/${params.pid}"
        data-setup="{}">
-    <source src="file/level1/${params.pid}" type='${params.type}'/>
+    <source src="file/${params.source}/${params.pid}" type='${params.type}'/>
 </video>
 
 </body>
