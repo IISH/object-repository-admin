@@ -48,7 +48,9 @@ class FileController {
                 }
                 gridFSService.siteusage(file.metaData.na, document)
             }
-            log.info "Done"
+            log.info "Done writing file"
+            response.outputStream.flush()
+            null
         }
     }
 

@@ -33,7 +33,7 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
 grails.urlmapping.cache.maxsize = 1000
 
 // What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.patterns = ['/video-js/*', '/images/*', '/css/*', '/js/*', '/plugins/*']
 
 // The default codec used to encode data with ${}
 grails.views.default.codec = "none" // none, html, base64
@@ -126,7 +126,7 @@ grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(memberUID={0})'
 grails.plugins.springsecurity.ldap.useRememberMe = false
 
-resolveBaseUrl="http://localhost:${serverPort}/${appName}"
+resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
 
 environments {
     production {
