@@ -16,11 +16,13 @@
 
 <body>
 
-<video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="640" height="264"
-       poster="file/${params.poster}/${params.pid}"
+<video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="${params.width}" height="${params.height}"
+       poster="${params.poster}"
        data-setup="{}">
-    <source src="file/${params.source}/${params.pid}" type='${params.type}'/>
+    <source src="${params.source}" type='${params.type}'/>
 </video>
+
+<p><a href="${params.source}">${params.source}</a></p>
 
 </body>
 </html>

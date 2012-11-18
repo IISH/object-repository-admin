@@ -7,6 +7,8 @@ import com.mongodb.gridfs.GridFSDBFile
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 
+import javax.servlet.http.HttpServletResponse
+
 /**
  * GridFSService
  *
@@ -216,4 +218,46 @@ class GridFSService {
     private List query(String db, String query, int limit = 1, int skip = 0) {
         mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
     }
+
+    /**
+     * skip
+     *
+     * Derived from the GridFSDBFile class.
+     *
+     * Locates the chunks that over the specified range bytes=n-m
+     *
+     * ToDo: dynamically glue these methods into GridFSDBFile in Bootstrap
+     */
+    public int range(OutputStream writer, GridFSDBFile file, long from, long to) {
+
+        if (from > to) return HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
+
+        // find first chunk by index:
+        int fromChunk = Math.floor(from / file.chunkSize)
+        if (fromChunk < 0 || fromChunk > file.numChunks() - 1) return HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
+
+        // find the last chunk by index:
+        int toChunk = Math.floor(to / file.chunkSize)
+        if (toChunk < 0 || toChunk > file.numChunks() - 1) return HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
+
+        // Standardize to the range of chunkSize
+        from = from % file.chunkSize
+        to = to % file.chunkSize
+
+        long c = 0
+        int fromOffset, toOffset, length
+        // now get all chunks that cover this range:
+        for (int n = fromChunk; n <= toChunk; n++) {
+            fromOffset = (fromChunk == n) ? from : 0
+            toOffset = (toChunk == n) ? to : file.chunkSize - 1
+            length = toOffset - fromOffset + 1
+            c += length
+            final byte[] _data = file.getChunk(n)
+            if (log.isInfoEnabled()) println([chunk: n, fromChunk: fromChunk, toChunk: toChunk, from: from, to: to, fromOffset: fromOffset, toOffset: toOffset, _dataLength: _data.length, length: length, total: c, fileLength: file.length])
+            writer.write(_data, fromOffset, length)
+        }
+
+        -1
+    }
+
 }
