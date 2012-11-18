@@ -2,6 +2,8 @@ package org.objectrepository.file
 
 import org.objectrepository.util.OrUtil
 
+import javax.servlet.http.HttpServletResponse
+
 /**
  *     FileController
  *
@@ -17,41 +19,101 @@ class FileController {
     def gridFSService
 
     /**
-     * index
+     * files
      *
      * Usage: /controller/bucket/pid
      *
+     * Returns the file with the known contentType
+     * http 206 is supported, though not the lists of ranges (multipart)
+     *
+     * The client may set the contentType to other formats.
+     * In case of 'application/save' the response will suggest a filename.
+     *
      * Example
      * /file/level1/12345/abcdefg = {bucket:'level1',pid:'12345/abcdefg'}*
-     * Because the PID value can contain a forward slash, we made it greedy in the UrlMappings.
+     * Because the PID value can contain a forward slash, we made it's capture greedy in the UrlMappings.
      */
     def file = {
-        def file = getFile(params)
+        final def file = getFile(params)
         if (file) {
             response.contentType = (params.contentType) ?: file.contentType
-            response.contentLength = file.length
-            if (params.contentType == 'application/save') response.setHeader 'Content-disposition', '"attachment; filename="' + file.filename + '"'
-            log.info "Writing file to client"
+
             Date begin = new Date()
-            file.writeTo(response.outputStream) // Writes the file chunk-by-chunk
-            response.outputStream.flush()
-            int downloadTime = new Date().time - begin.time
-            if (System.getProperty("layout", "not") == 'disseminate') {
-                log.info "Increment statistics"
-                final String ip = request.getHeader('X-Forwarded-For') ?: request.getRemoteAddr()
-                def document = [pid: file.metaData.pid,
-                        bucket: params.bucket,
-                        ip: ip,
-                        downloadDate: begin,
-                        downloadTime: downloadTime]
-                request.getHeaderNames().each {
-                    document.put(it, request.getHeader(it))
+            long from = 0, to = 0
+            final String range = request.getHeader('Range')
+            if (range) {
+                log.info("range : " + range)
+                def m = range.substring('bytes='.length()) =~ /(\d*)-(\d*)/
+                if (m[0][1] == "") { // -[n]
+                    from = file.length - m[0][2] as long
+                    to = file.length - 1
+                } else if (m[0][2] == "") { // [n]-
+                    from = m[0][1] as long
+                    to = file.length - 1
                 }
-                gridFSService.siteusage(file.metaData.na, document)
+                else { //[n]-[m]
+                    from = m[0][1] as long
+                    to = m[0][2] as long
+                }
+
+                response.contentLength = 1 + to - from
+                response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
+
+                if (request.method.toUpperCase() == 'HEAD') {
+                    log.info "Returning HEAD"
+                    return null
+                }
+
+                if (range.contains(',')) {   // we do not support a multipart response
+                    response.status = HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
+                    return null
+                }
+
+                response.status = HttpServletResponse.SC_PARTIAL_CONTENT
+                int r = gridFSService.range(response.outputStream, file, from, to)
+                if (r != -1) response.status = r
+
+            } else {
+                final int contentLength = file.length as int
+                response.contentLength = contentLength
+                response.status = HttpServletResponse.SC_OK
+                if (params.contentType == 'application/save') response.setHeader 'Content-disposition', '"attachment; filename="' + file.filename + '"'
+
+                if (request.method.toUpperCase() == 'HEAD') {
+                    log.info "Returning HEAD"
+                    return null
+                }
+
+                log.info "Serving file"
+                file.writeTo(response.outputStream)
             }
-            log.info "Done writing file"
+
+            response.outputStream.flush()
+
+            Date end = new Date()
+
+            if (from == 0) {
+                int downloadTime = new Date().time - begin.time
+                if (System.getProperty("layout", "not") == 'disseminate') stats(file, begin, downloadTime)
+            }
+
+            log.info String.format("Done writing file in %s seconds", (end.time - begin.time) / 1000)
             null
         }
+    }
+
+    private void stats(file, Date begin, int downloadTime) {
+        log.info "Increment statistics"
+        final String ip = request.getHeader('X-Forwarded-For') ?: request.getRemoteAddr()
+        def document = [pid: file.metaData.pid,
+                bucket: params.bucket,
+                ip: ip,
+                downloadDate: begin,
+                downloadTime: downloadTime]
+        request.getHeaderNames().each {
+            document.put(it, request.getHeader(it))
+        }
+        gridFSService.siteusage(file.metaData.na, document)
     }
 
     def metadata = {
@@ -87,6 +149,15 @@ class FileController {
         [params: params]
     }
 
+/**
+ * getFile
+ *
+ * Retrieved the GridFSFile and cache it for the user.
+ * We cache in case of a http 206 protocol
+ *
+ * @param params
+ * @return
+ */
     protected def getFile(def params) {
 
         String pid = params.pid
@@ -109,8 +180,10 @@ class FileController {
         final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
         if (false && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
             render(view: "denied", status: 401, model: [access: access])
+            return null
         }
-        else
-            fileInstance
+
+        fileInstance
     }
+
 }
