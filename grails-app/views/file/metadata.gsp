@@ -9,7 +9,7 @@
 <body>
 
 <div id="show-files" class="content scaffold-show" role="main">
-    <g:render template="/layouts/orfile" model="${orfileInstanceList}"/>
+    <g:render template="/layouts/orfile" model="${orfileInstance}"/>
 </div>
 
 </body>

@@ -131,7 +131,6 @@ class GridFSService {
                     count, new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
-                    na="10848"
                     def orfileInstance = get(na, it.metadata.pid)
                     if (orfileInstance?.master)
                         orfile {
