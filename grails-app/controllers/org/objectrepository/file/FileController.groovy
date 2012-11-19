@@ -74,8 +74,7 @@ class FileController {
                 if (r != -1) response.status = r
 
             } else {
-                final int contentLength = file.length as int
-                response.contentLength = contentLength
+                response.contentLength = file.length as int
                 response.status = HttpServletResponse.SC_OK
                 if (params.contentType == 'application/save') response.setHeader 'Content-disposition', '"attachment; filename="' + file.filename + '"'
 
@@ -178,7 +177,7 @@ class FileController {
         }
 
         final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
-        if (false && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
+        if (!springSecurityService.hasRole('ROLE_ADMIN') && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
             render(view: "denied", status: 401, model: [access: access])
             return null
         }

@@ -35,29 +35,26 @@
         </thead>
         <tbody>
         <g:each in="${orfileInstanceList}" status="i" var="orfileInstance">
-            <g:set var="master" value="${orfileInstance[0]}"/>
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td><g:link action="show" id="${master.metadata.pid.bytes.encodeBase64().toString()}">
+                <td><g:link action="show" id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}">
                     <g:set var="hasPreview"
-                           value="${orfileInstance.find {
-                               it.metadata.bucket == 'level3' && it.contentType.startsWith('image')
-                           }}"/>
+                           value="${orfileInstance.level3?.contentType?.startsWith('image')}"/>
                     <g:if test="${hasPreview}">
-                        <img src="${grailsApplication.config.grails.serverURL + "/file/level3/" + master.metadata.pid}"
+                        <img src="${grailsApplication.config.grails.serverURL + "/file/level3/" + orfileInstance.master.metadata.pid}"
                              width="100px"/>
                     </g:if>
                     <g:else>
-                        <g:set var="file" value="${master.contentType.split('/')[0] + '.png'}"/>
+                        <g:set var="file" value="${orfileInstance.master.contentType.split('/')[0] + '.png'}"/>
                         <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
                     </g:else></g:link>
                 </td>
-                <td><a href="?label=${master.metadata.label + '&' + filter}">${master.metadata.label}</a></td>
-                <td>${master.metadata.access}</td>
-                <td>${master.metadata.pid}
-                    <g:if test="${master.metadata.lid}"><br/>${master.metadata.lid}</g:if>
+                <td><a href="?label=${orfileInstance.master.metadata.label + '&' + filter}">${orfileInstance.master.metadata.label}</a></td>
+                <td>${orfileInstance.master.metadata.access}</td>
+                <td>${orfileInstance.master.metadata.pid}
+                    <g:if test="${orfileInstance.master.metadata.lid}"><br/>${orfileInstance.master.metadata.lid}</g:if>
                 </td>
-                <td>${master.metadata.lastUploadDate}</td>
-                <td><g:link action="download" params="[pid:master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
+                <td>${orfileInstance.master.metadata.lastUploadDate}</td>
+                <td><g:link action="download" params="[pid:orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>

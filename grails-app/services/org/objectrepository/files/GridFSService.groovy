@@ -23,21 +23,18 @@ class GridFSService {
     def grailsApplication
 
     private static String collate = "function() {\n" +
-            "            var documents=[];\n" +
-            "            db.getCollection('master.files').find(%s).limit(%s).skip(%s).forEach(function(d){\n" +
-            "                var cache = [d];\n" +
-            "                ['level1.files', 'level2.files', 'level3.files'].forEach(function (c) {\n" +
-            "                    if ( d.metadata.pid ){\n" +
-            "                        var bucket = db.getCollection(c).findOne({'metadata.pid':d.metadata.pid});\n" +
-            "                        if (bucket) {\n" +
-            "                            cache.push(\n" +
-            "                                bucket\n" +
-            "                            )\n" +
-            "                        }\n" +
-            "                    }\n" +
-            "                });\n" +
-            "                documents.push(cache)})\n" +
-            "            return documents;" +
+            "var l = [];" +
+            "db.getCollection('master.files').find(%s).limit(%s).skip(%s).forEach(function(m){" +
+            "   if ( m.metadata.pid ){" +
+            "       var f={master:m};" +
+            "       ['level1', 'level2', 'level3'].forEach(function (d) {" +
+            "           var bucket = db.getCollection(d+'.files').findOne({'metadata.pid':m.metadata.pid});" +
+            "           if (bucket) f[d]=bucket;" +
+            "       });" +
+            "       l.push(f);" +
+            "   }" +
+            "});" +
+            "return l;" +
             "}"
 
     /**
@@ -53,13 +50,13 @@ class GridFSService {
         new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
     }
 
-    List findByPidAsOrfile(String pid) {
+    def findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
         get(na, pid)
     }
 
-    List get(String na, String pid) {
+    def get(String na, String pid) {
         query(OR + na, String.format("{'metadata.pid':'%s'}", pid))[0]
     }
 
@@ -71,7 +68,7 @@ class GridFSService {
      * @param na
      * @param params for sorting, paging and filtering
      */
-    List findAllByNa(def na, def params) {
+    def findAllByNa(def na, def params) {
         final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
         query(OR + na, q, params.max, params.offset)
     }
@@ -134,18 +131,18 @@ class GridFSService {
                     count, new Date().toGMTString())
             orfiles(orfileAttributes) {
                 cursor.each {
-                    def documents = get(na, it.metadata.pid)
-                    def master = documents[0]
-                    if (master)
+                    na="10848"
+                    def orfileInstance = get(na, it.metadata.pid)
+                    if (orfileInstance?.master)
                         orfile {
-                            pid master.metadata.pid
-                            resolverBaseUrl master.metadata.resolverBaseUrl
-                            pidurl master.metadata.resolverBaseUrl + master.metadata.pid
-                            if (master.metadata.lid) { lid master.metadata.lid }
-                            filename master.filename
-                            label master.metadata.label
-                            access master.metadata.access
-                            out << metadata(documents, master)
+                            pid orfileInstance.master.metadata.pid
+                            resolverBaseUrl orfileInstance.master.metadata.resolverBaseUrl
+                            pidurl orfileInstance.master.metadata.resolverBaseUrl + orfileInstance.master.metadata.pid
+                            if (orfileInstance.master.metadata.lid) { lid orfileInstance.master.metadata.lid }
+                            filename orfileInstance.master.filename
+                            label orfileInstance.master.metadata.label
+                            access orfileInstance.master.metadata.access
+                            out << metadata(orfileInstance)
                         }
                 }
             }
@@ -155,13 +152,13 @@ class GridFSService {
         writer.close()
     }
 
-    private metadata(def documents, def master) {
+    private metadata(def orfileInstance) {
         return {
-            documents.each { document ->
-                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + document.metadata.bucket + "/" + document.metadata.pid
-                "$document.metadata.bucket" {
-                    if (master.metadata.pidType) {
-                        pidurl document.metadata.resolverBaseUrl + document.metadata.pid + "?locatt=view:" + document.metadata.bucket
+            orfileInstance.each { key, value ->
+                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + key + "/" + value.metadata.pid
+                "$key" {
+                    if (orfileInstance.master.metadata.pidType) {
+                        pidurl value.metadata.resolverBaseUrl + value.metadata.pid + "?locatt=view:" + value.metadata.bucket
                     }
                     resolveUrl _resolveUrl
                     ['contentType',
@@ -173,10 +170,10 @@ class GridFSService {
                             'lastUploadDate',
                             'timesAccessed',
                             'timesUpdated'].each {
-                        if (document[it]) {
-                            "$it" document[it]
-                        } else if (document.metadata[it]) {
-                            "$it" document.metadata[it]
+                        if (value[it]) {
+                            "$it" value[it]
+                        } else if (value.metadata[it]) {
+                            "$it" value.metadata[it]
                         }
                     }
                 }
@@ -215,8 +212,9 @@ class GridFSService {
      *
      * @return
      */
-    private List query(String db, String query, int limit = 1, int skip = 0) {
-        mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
+    private def query(String db, String query, int limit = 1, int skip = 0) {
+        final command = mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true])
+        command.retval
     }
 
     /**

@@ -30,8 +30,8 @@ class OrfileController {
 
     def show() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstanceList) {
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
@@ -42,13 +42,13 @@ class OrfileController {
             forward(action: "list")
         }
 
-        [orfileInstanceList: orfileInstanceList]
+        [orfileInstance: orfileInstance]
     }
 
     def edit() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstanceList) {
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             forward(action: "list")
             return
@@ -60,13 +60,13 @@ class OrfileController {
         }
 
         def policyList = Policy.findAllByNa(na)
-        [orfileInstanceList: orfileInstanceList, policyList: policyList]
+        [orfileInstance: orfileInstance, policyList: policyList]
     }
 
     def update() {
         final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
-        def orfileInstanceList = gridFSService.get(na, new String(params.id.decodeBase64()))
-        if (!orfileInstanceList) {
+        def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
+        if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             redirect(action: "list")
             return
@@ -77,11 +77,10 @@ class OrfileController {
             forward(action: "list")
         }
 
-        def master = orfileInstanceList[0]
-        master.metadata.access = params.access
-        master.metadata.label = params.label
+        orfileInstance.master.metadata.access = params.access
+        orfileInstance.master.metadata.label = params.label
 
-        gridFSService.update(master)
+        gridFSService.update(orfileInstance.master)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), params.id])
         redirect(action: "show", id: params.id)

@@ -16,14 +16,14 @@
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance: orfileInstanceList[0]]"/>
+<g:render template="/layouts/header" model="[instance: orfileInstance]"/>
 
 <div id="show-files" class="content scaffold-show" role="main">
-    <g:render template="/layouts/orfile" model="${orfileInstanceList}"/>
+    <g:render template="/layouts/orfile" model="[orfileInstance:orfileInstance]"/>
     <g:form>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstanceList[0].metadata.pid.bytes.encodeBase64().toString()}"/>
-            <g:link class="edit" action="edit" id="${orfileInstanceList[0].metadata.pid.bytes.encodeBase64().toString()}"><g:message
+            <g:hiddenField name="id" value="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"/>
+            <g:link class="edit" action="edit" id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
                     code="default.button.edit.label"
                     default="Edit"/></g:link>
         </fieldset>
