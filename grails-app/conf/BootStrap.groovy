@@ -62,7 +62,7 @@ class BootStrap {
 
         // Add helpers methods:
         springSecurityService.metaClass.hasRole = { def role = 'ROLE_ADMIN' ->
-            role in principal.authorities*.authority
+            (principal.hasProperty('authorities') && role in principal.authorities*.authority)
         }
 
         /**
