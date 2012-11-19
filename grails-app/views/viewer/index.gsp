@@ -21,8 +21,8 @@
 
 <div style="margin-bottom: 25px">
     <video id="av" class="video-js vjs-default-skin" controls preload="none"
-           width="${file.level1.metadata.content.format.width}"
-           height="${file.level1.metadata.content.format.height}"
+           width="${file.level1.metadata.content.streams.width}"
+           height="${file.level1.metadata.content.streams.height}"
            poster="${params.poster}"
            data-setup="{}">
         <source src="${params.source}" type='${file.level1.contentType}'/>
@@ -36,7 +36,7 @@
     <form>
         <textarea readonly="true" style="width:800px;height: 80px;font-size: small" onclick="select()">
             <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
-                   width="${file.level1.metadata.content.format.width}" height="${file.level1.metadata.content.format.height}"
+                   width="${file.level1.metadata.content.streams.width}" height="${file.level1.metadata.content.streams.height}"
                    poster="${pid.poster}"
                    data-setup="{}">
                 <source src="${pid.source}" type='${file.level1.contentType}'/>

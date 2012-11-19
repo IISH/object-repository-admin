@@ -14,7 +14,6 @@ class ViewerController {
 
     def index() {
 
-        // What are we ?
         if (!params.pid) return http404()
 
         final file = gridFSService.findByPidAsOrfile(params.pid)
@@ -23,14 +22,29 @@ class ViewerController {
             if (!file.level1) return http404()
 
             // width and height
-            def format = file.level1.metadata.content?.format
-            if (!format)     // set some default
-                file.level1.metadata.content = [
-                        format: [
-                                height: 262,
-                                width: 640
-                        ]
-                ]
+            int width = 0, height = 0
+            def streams = file.level1.metadata.content?.streams
+            if (streams) {
+                def codec_video = streams.find {
+                    it.codec_type == 'video'
+                }
+                if (codec_video) {
+                    width = codec_video.width
+                    height = codec_video.height
+                }
+            }
+
+            if (width == 0 || width >= 600) {
+                width = 600
+                height = 450
+            }
+
+            file.level1.metadata.content = [
+                    streams: [
+                            width: width,
+                            height: height
+                    ]
+            ]
 
             params.poster = (params.poster) ?: grailsApplication.config.grails.serverURL + '/file/level2/' + params.pid
             params.source = (params.source) ?: grailsApplication.config.grails.serverURL + '/file/level1/' + params.pid
@@ -41,7 +55,7 @@ class ViewerController {
                 pid.poster = file.master.metadata.resolverBaseUrl + params.pid + '?locatt=level2'
             }
 
-            [file: file, pid:pid]
+            [file: file, pid: pid]
 
         } else {
             http404()
