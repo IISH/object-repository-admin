@@ -4,7 +4,7 @@
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js" xmlns="http://www.w3.org/1999/html"><!--<![endif]-->
 <head>
     <title>A video display</title>
     <meta name="layout" content="${System.getProperty("layout")}">
@@ -31,18 +31,25 @@
 </div>
 
 <div style="margin-bottom: 25px">
-    <p>Copy and past this code into your html5 webpage
-
     <form>
-        <textarea readonly="true" style="width:800px;height: 80px;font-size: small" onclick="select()">
-            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
-                   width="${file.level1.metadata.content.streams.width}" height="${file.level1.metadata.content.streams.height}"
-                   poster="${pid.poster}"
-                   data-setup="{}">
-                <source src="${pid.source}" type='${file.level1.contentType}'/>
-            </video>
-        </textarea>
+        <p>To place ${file.level1.contentType.split('/')[0]} in your webpage, place in the &lt;head&gt;<br/>
+            <textarea readonly="true" style="width:800px;height: 80px;font-size: small" onclick="select()">
+                <link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
+                <script src="http://vjs.zencdn.net/c/video.js"></script>
+            </textarea></p>
+
+        <p>and add this in your &lt;body&gt;:<br/>
+            <textarea readonly="true" style="width:800px;font-size: small" onclick="select()">
+                <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
+                       width="${file.level1.metadata.content.streams.width}"
+                       height="${file.level1.metadata.content.streams.height}"
+                       poster="${pid.poster}"
+                       data-setup="{}">
+                    <source src="${pid.source}" type='${file.level1.contentType}'/>
+                </video>
+            </textarea></p>
     </form>
+
 </div>
 
 <div style="margin-bottom: 25px">
