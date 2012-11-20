@@ -51,8 +51,8 @@ class ViewerController {
 
             def pid = [source: params.source, poster: params.poster]
             if (file.master.metadata.pidType && file.master.metadata.pidType == 'or') {
-                pid.source = file.master.metadata.resolverBaseUrl + params.pid + '?locatt=level1'
-                pid.poster = file.master.metadata.resolverBaseUrl + params.pid + '?locatt=level2'
+                pid.source = file.master.metadata.resolverBaseUrl + params.pid + '?locatt=view:level1'
+                pid.poster = file.master.metadata.resolverBaseUrl + params.pid + '?locatt=view:level2'
             }
 
             [file: file, pid: pid]

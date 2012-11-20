@@ -1,10 +1,19 @@
-The object-repository has a service to create lower level copies of the masters ( at the moment only images ). It
-attempts to create three levels:
+The object-repository has a service to create lower level copies of the masters.
+
+It attempts to create three levels for images:
 * level 1: high print quality
 * level 2: medium screen quality
 * level 3: small, thumbnail quality
 
-However, if you want you can add your own derivative material because it is of better quality or the type of derivative
+For audio:
+* level 1: high quality mp3
+
+For video:
+* level 1: high quality h264 AAC (mp4) movie
+* level 2: montage of 16 stills taken from the entire movie's range
+* level 3: small, thumbnail quality taken from the middle of the movie
+
+If you want you can add your own derivative material because it is of better quality or the type of derivative
 manufacturing is not supported.
 
 h3. Conventional offerings

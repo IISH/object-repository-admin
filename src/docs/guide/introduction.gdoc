@@ -2,7 +2,7 @@ The object repository is part of a service oriented framework. That is, the latt
 
 * ftp upload of files to a staging area (temporary storage)
 * ingesting those files into persistent storage
-* image derivative generation of three levels: level 1 ( high quality ); level 2 ( screen quality ) and level 3 ( thumbnail\preview )
+* image, audio and video derivative generation
 * accepts custom made derivatives of any content type
 * persistent identifier creation by calling a PID webservice (binding handles via a PID webservice.)
 * dissemination of the resources

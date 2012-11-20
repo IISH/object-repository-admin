@@ -7,6 +7,6 @@ by itself.
 This is the same for instructions that were automatically created using this setting.
 
 If you disable @autoIngestValidInstruction@, then a start needs a manual command. From the administration interface
-select @Ingest instruction@ to start.
+select @Process instruction@ to start.
 
-{Note}The manual option to Ingest instruction will not appear until the instruction is considered valid.{Note}
+{Note}The manual option to Process an instruction will not appear until the instruction is considered valid.{Note}

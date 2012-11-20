@@ -9,3 +9,5 @@ When file degradation is detected reparations should be performed using the repl
 
 h3. File identification and validation service
 A service that invokes Fido and DROID for file identification to assist determining and verifying a given content type.
+
+h4. OCR, data mining and entity recognition

@@ -1,3 +1,9 @@
-First release. The administration interface has links in the footer to:
+Current release
+* Derivative production of audio\video
+* Custom policies can change the default 'closed' access for masters to open and restricted
+* Deletion of masters and derivatives are removable via an instruction
+* Content and usage statistics are available on the main dashboard ( after login )
+
+Version 1. The administration interface has links in the footer to:
 * Build info showing the most recent changes
 * For reporting bugs and feature request please visit [Jira|https://jira.socialhistoryservices.org/browse/OR]
