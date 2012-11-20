@@ -367,8 +367,9 @@ abstract class WorkflowJob {
             stagingfile.workflow.each {
                 it.statusCode = (it.statusCode < 800) ? 100 : it.statusCode
             }
-            stagingfile.workflow.remove(stagingfile.workflow.find {it.name == 'EndOfTheRoad'})
-            stagingfile.workflow << new Task(name: 'EndOfTheRoad', info: "Default workflow")
+            stagingfile.workflow.find {it.name == 'EndOfTheRoad'}?.statusCode = 100
+
+            nextWorkflow(stagingfile)
             save(stagingfile) // we just go through the mill here.
         }
         changeWorkflow('InstructionIngest800', document)
