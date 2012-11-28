@@ -2,7 +2,7 @@ Current release
 * Derivative production of audio\video
 * Custom policies can change the default 'closed' access for masters to open and restricted
 * Deletion of masters and derivatives are removable via an instruction
-* Content and usage statistics are available on the main dashboard ( after login )
+* Content and usage statistics are available on the main dashboard
 
 Version 1. The administration interface has links in the footer to:
 * Build info showing the most recent changes
