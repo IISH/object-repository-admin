@@ -116,7 +116,7 @@ class OrfileController {
             instructionInstance = new Instruction()
 
         instructionInstance.na = na
-        instructionInstance.fileSet = fileSet
+        instructionInstance.fileSet = file.metaData.fileSet
         instructionInstance.autoIngestValidInstruction  = false
         instructionInstance.label = params.label
         instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
