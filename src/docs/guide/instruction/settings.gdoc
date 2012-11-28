@@ -76,7 +76,7 @@ The value indicates the nature of the file ( like "image/jpeg", "application/pdf
 For more on mimetypes see:
 * [http://en.wikipedia.org/wiki/MIME|http://en.wikipedia.org/wiki/MIME]
 * some good examples at [http://www.ltsw.se/knbase/internet/mime.htp|http://www.ltsw.se/knbase/internet/mime.htp]
-* The object-repository [has a list|https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt] of content types.
+* The object-repository has a list at [https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt|https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt] of content types.
 
 h3. Checksum
 @md5@ (stagingfile element)
