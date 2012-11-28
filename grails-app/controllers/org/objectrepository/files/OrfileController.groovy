@@ -105,10 +105,23 @@ class OrfileController {
             return
         }
 
-        Instruction instructionInstance = new Instruction(na: na, fileSet: file.metaData.fileSet,
-                autoIngestValidInstruction: false, label: params.label)
+        Instruction instructionInstance = Instruction.findByFileSet(file.metaData.fileSet)
+        if (instructionInstance) {
+            if (instructionInstance.task?.total != 0) {
+                flash.message = "There is already an instruction for this dataset: " + file.metaData.fileSet
+                redirect(action: "list")
+                return
+            }
+        } else
+            instructionInstance = new Instruction()
+
+        instructionInstance.na = na
+        instructionInstance.fileSet = fileSet
+        instructionInstance.autoIngestValidInstruction  = false
+        instructionInstance.label = params.label
         instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
         instructionInstance.task.taskKey()
+
         workflowActiveService.first(instructionInstance)
         if (instructionInstance.save(flush: true)) {
             try {
@@ -119,6 +132,7 @@ class OrfileController {
                 log.warn e.message
                 flash.message = e.message
                 redirect(action: "list")
+                return
             }
         }
         redirect(controller: 'instruction', action: 'show', id: instructionInstance.id)

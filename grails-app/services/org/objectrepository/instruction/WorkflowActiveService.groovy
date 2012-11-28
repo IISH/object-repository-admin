@@ -116,6 +116,23 @@ class WorkflowActiveService extends WorkflowJob {
     }
 
     /**
+     * InstructionRecreate600
+     *
+     * Verify that we have at least one declared file
+     *
+     * @param document
+     */
+    def InstructionRecreate600(def document) {
+        int total = Stagingfile.countByFileSet(document.fileSet)
+        if ( total == 0) {
+            retry(document)
+        } else {
+            changeWorkflow('InstructionUpload800', document)
+            document.task.total = total
+        }
+    }
+
+    /**
      * StagingfileIngestCustomLevel1
      * StagingfileIngestCustomLevel2
      * StagingfileIngestCustomLevel3
