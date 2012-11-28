@@ -100,7 +100,7 @@ class OrfileController {
 
         def file = gridFSService.findByField(na, 'master', 'metadata.label', params.label)
         if (!file?.metaData?.fileSet) {
-            flash.message = 'No such file'
+            flash.message = 'No such label: ' + params.label
             redirect(action: "list")
             return
         }
@@ -113,7 +113,6 @@ class OrfileController {
         if (instructionInstance.save(flush: true)) {
             try {
                 sendMessage("activemq:status", instructionInstance.task.identifier)
-                redirect(controller: 'instruction', action: 'show', id: instructionInstance.id)
             }
             catch (Exception e) {
                 // message queue may be down
@@ -122,6 +121,7 @@ class OrfileController {
                 redirect(action: "list")
             }
         }
+        redirect(controller: 'instruction', action: 'show', id: instructionInstance.id)
     }
 
     def download() {
