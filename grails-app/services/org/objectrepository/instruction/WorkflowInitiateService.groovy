@@ -159,8 +159,7 @@ class WorkflowInitiateService extends WorkflowJob {
  * UploadFiles
  *
  * We have an empty fileSet ?
- * The moment we see files, we can proceed offering services.
- * Yet if the folder disappears, we can remove our document.
+ * The moment we see files or an instruction, we can proceed offering services.
  *
  * @param document
  * @return
@@ -170,6 +169,17 @@ class WorkflowInitiateService extends WorkflowJob {
         if (taskValidationService.hasFSFiles(document)) {
             log.info id(document) + "Files seen in fileset"
             last(document)
+        }
+        else {
+            // An instruction without files.
+            def instruction = taskValidationService.hasFSInstruction(document)
+            if (instruction) {
+                OrUtil.putAll(plans, instruction)
+                mongo.getDB('sa').instruction.update([_id: document.id],
+                        [$set: instruction], false, false
+                )
+                changeWorkflow('InstructionUpload', document)
+            }
         }
     }
 
