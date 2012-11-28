@@ -71,7 +71,7 @@ class WorkflowInitiateService extends WorkflowJob {
      */
     private void uploadInstruction(String na) {
         Instruction.findAllByNa(na)?.each {
-            if (it.fileSet[0] != '.' && !taskValidationService.hasFileSet(it)) {
+            if (!taskValidationService.hasFileSet(it) && it.task?.statusCode > 799) {
                 it.delete() // We have become a lie... no fileset at all.
             } else if (it.task.name == 'UploadFiles') {
                 runMethod(it)

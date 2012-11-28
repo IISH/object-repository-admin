@@ -88,9 +88,24 @@ class OrfileController {
         redirect(action: "show", id: params.id)
     }
 
+    /**
+     * recreate
+     *
+     * An instruction will be re created based on the stored files.
+     *
+     * @return
+     */
     def recreate() {
         final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
-        Instruction instructionInstance = new Instruction(na: na, fileSet: '.')
+
+        def file = gridFSService.findByField(na, 'master', 'metadata.label', params.label)
+        if (!file?.metaData?.fileSet) {
+            flash.message = 'No such file'
+            redirect(action: "list")
+            return
+        }
+
+        Instruction instructionInstance = new Instruction(na: na, fileSet: file.metaData.fileSet, autoIngestValidInstruction: false)
         instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
         instructionInstance.task.taskKey()
         workflowActiveService.first(instructionInstance)

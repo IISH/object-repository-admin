@@ -50,6 +50,10 @@ class GridFSService {
         new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
     }
 
+    GridFSDBFile findByField(String na, String bucket, String key, String value) {
+        new GridFS(mongo.getDB(OR + na), bucket).findOne(new BasicDBObject(key, value))
+    }
+
     def findByPidAsOrfile(String pid) {
         if (!pid || pid.isEmpty()) return null
         String na = OrUtil.getNa(pid)
