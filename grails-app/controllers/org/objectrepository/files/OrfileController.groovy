@@ -105,7 +105,8 @@ class OrfileController {
             return
         }
 
-        Instruction instructionInstance = new Instruction(na: na, fileSet: file.metaData.fileSet, autoIngestValidInstruction: false)
+        Instruction instructionInstance = new Instruction(na: na, fileSet: file.metaData.fileSet,
+                autoIngestValidInstruction: false, label: params.label)
         instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
         instructionInstance.task.taskKey()
         workflowActiveService.first(instructionInstance)
