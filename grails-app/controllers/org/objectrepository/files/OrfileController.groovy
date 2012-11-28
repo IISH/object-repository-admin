@@ -1,13 +1,15 @@
 package org.objectrepository.files
 
 import grails.plugins.springsecurity.Secured
-
+import org.objectrepository.instruction.Instruction
 import org.objectrepository.security.Policy
+import org.objectrepository.util.OrUtil
 
 @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
 class OrfileController {
 
     def springSecurityService
+    def workflowActiveService
     def gridFSService
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
@@ -21,7 +23,7 @@ class OrfileController {
         params.order = !params.order || params.order == "asc" ? 1 : -1
         params.sort = params.sort ?: "_id"
         if (params.label && params.label == 'everything') params.label = null
-        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
         def orfileInstanceList = gridFSService.findAllByNa(na, params)
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(na, params),
@@ -29,7 +31,7 @@ class OrfileController {
     }
 
     def show() {
-        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
         def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
@@ -46,7 +48,7 @@ class OrfileController {
     }
 
     def edit() {
-        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
         def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
@@ -64,7 +66,7 @@ class OrfileController {
     }
 
     def update() {
-        final String na = ( springSecurityService.hasRole('ROLE_ADMIN') ) ? params.na : springSecurityService.principal.na
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
         def orfileInstance = gridFSService.get(na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
@@ -84,6 +86,26 @@ class OrfileController {
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), params.id])
         redirect(action: "show", id: params.id)
+    }
+
+    def recreate() {
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
+        Instruction instructionInstance = new Instruction(na: na, fileSet: '.')
+        instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
+        instructionInstance.task.taskKey()
+        workflowActiveService.first(instructionInstance)
+        if (instructionInstance.save(flush: true)) {
+            try {
+                sendMessage("activemq:status", instructionInstance.task.identifier)
+                redirect(controller: 'instruction', action: 'show', id: instructionInstance.id)
+            }
+            catch (Exception e) {
+                // message queue may be down
+                log.warn e.message
+                flash.message = e.message
+                redirect(action: "list")
+            }
+        }
     }
 
     def download() {

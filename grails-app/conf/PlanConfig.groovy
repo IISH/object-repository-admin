@@ -35,6 +35,19 @@ plans = [
                         100: [purpose: 'A user asked to download an instruction.']
                 ]
         ],
+        InstructionRecreate: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'A user asked to create an instruction from an existing set.'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'A request to produce a instruction is on the queue'],
+                        400: [purpose: 'The request is taken from the queue. Importing an instruction'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Validating if the task was successfull'],
+                        700: [purpose: 'There was an error.'],
+                        800: [purpose: 'Instruction read in.']
+                ]
+        ],
         InstructionUpload: [
                 service: [method: 'hasFSFiles'],
                 statusCodes: [
@@ -125,7 +138,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel1: [
-                methods: [executeAfter:'StagingfileIngestCustomLevel1',renameQueueWithContentType:null],
+                methods: [executeAfter: 'StagingfileIngestCustomLevel1', renameQueueWithContentType: null],
                 executeAfter: 'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -152,7 +165,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
-                methods: [executeAfter:'StagingfileIngestCustomLevel2',renameQueueWithContentType:null],
+                methods: [executeAfter: 'StagingfileIngestCustomLevel2', renameQueueWithContentType: null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],
@@ -179,7 +192,7 @@ plans = [
         ]
         ,
         StagingfileIngestLevel3: [
-                methods: [executeAfter:'StagingfileIngestCustomLevel3',renameQueueWithContentType:null],
+                methods: [executeAfter: 'StagingfileIngestCustomLevel3', renameQueueWithContentType: null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],

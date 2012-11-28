@@ -14,7 +14,7 @@
 
 <g:set var="filter" value="offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}"/>
 
-<p><g:link action="download" params="[label:params.label]">Download metadata</g:link> |
+<p><g:link action="download" params="[label:params.label]">Download metadata</g:link> | <p><g:link action="recreate" params="[label:params.label]">Recreate instruction</g:link> |
     Show: <g:select name="label" from="${labels}" value="${params.label}"
                     onchange="document.location='?label='+this.value + '&${filter}'"/></p>
 

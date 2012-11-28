@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Ftp accounts 1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/stagingarea.html"><strong>2</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/instruction.html"><strong>3</strong><span>Processing instruction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/pid.html"><strong>4</strong><span>Calling the PID webservice</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/user.html"><strong>5</strong><span>Ftp accounts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/profile.html"><strong>6</strong><span>Profile</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/policy.html"><strong>7</strong><span>Access policies</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/files.html"><strong>8</strong><span>Stored files</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/faq.html"><strong>9</strong><span>FAQs</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/pid.html">&lt;&lt; <strong>4</strong><span>Calling the PID webservice</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/profile.html"><strong>6</strong><span>Profile</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Ftp accounts - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.0</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#userlist"><strong>5.1</strong><span>Listing accounts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#usercreate"><strong>5.2</strong><span>Create</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#usershow"><strong>5.3</strong><span>Show</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#useredit"><strong>5.4</strong><span>Modify</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="user">5 Ftp accounts</h1>
+<h2>Managing accounts</h2>
+The account section will allow you manage two types of accounts:
+<ul class="star">
+<li>ftp accounts (also to be used for webservice keys)</li>
+<li>CP administrator accounts.</li>
+</ul><p class="paragraph"/>A function of both accounts is to supply webservice keys. This key gives access to all stored repository resources.
+
+
+<h2 id="userlist">5.1 Listing accounts</h2>
+To create an account, select "Accounts" from the main menu and press "New account".
+Then fill in the details.<p class="paragraph"/>Editing and removal of all accounts is possible. However you cannot delete your own account.
+
+
+<h2 id="usercreate">5.2 Create</h2>
+You need to fill in or edit the following fields:<p class="paragraph"/><strong class="bold">Role</strong>
+<ul class="star">
+<li>ROLE_CPADMIN is the account with which a user can manage the administration panel. Although it is possible to upload</li>
+</ul><p class="paragraph"/>files with this account, it is wiser to use a ROLE_CPUSER account as it will prevent confusion regarding the location of the processing instruction.
+<ul class="star">
+<li>ROLE_CPUSER is intended for FTP purposes. One cannot operate the administration panel with an CPUSER account.</li>
+</ul><p class="paragraph"/><code>Login name</code>: A user name containing letters and numbers<p class="paragraph"/><code>Password</code>: If the password is left blank, a random password will be created<p class="paragraph"/><code>E-mail</code>: The end-user's mail address.<p class="paragraph"/><code>Enabled</code>: If on, the account can be used to login.
+
+
+
+<h2 id="usershow">5.3 Show</h2>
+See <a href="../guide/single.html#usercreate" class="guide">"Creating a new account"</a> for the meaning of the fields.<p class="paragraph"/>This view will also show the webservice key. The key is intended to access a object repository resource that is
+normally closed for anonymous users. The key needs to be attached to the Resolve URL that points to a resource.
+Or be in the header file of a client that is responsible for downloading the files.<p class="paragraph"/>The webservice key has the same effect when a user uses a username and password to access the administration interface.<p class="paragraph"/>To modify the webservice key select "Change key"
+
+
+<h2 id="useredit">5.4 Modify</h2>
+See <a href="../guide/single.html#usercreate" class="guide">"Creating a new account"</a> for the meaning of the fields.<p class="paragraph"/>Any account can be modified here. One cannot delete oneself however.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/pid.html">&lt;&lt; <strong>4</strong><span>Calling the PID webservice</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/profile.html"><strong>6</strong><span>Profile</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

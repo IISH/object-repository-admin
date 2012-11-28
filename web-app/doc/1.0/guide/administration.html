@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Administration interface 1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/stagingarea.html"><strong>2</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/pid.html"><strong>4</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/administration.html"><strong>5</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/pid.html">&lt;&lt; <strong>4</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>5 Administration interface - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.0</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#user"><strong>5.1</strong><span>Ftp accounts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#profile"><strong>5.2</strong><span>Profile</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#policy"><strong>5.3</strong><span>Access policies</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#instructions"><strong>5.4</strong><span>Managing and monitoring instructions</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#orfiles"><strong>5.5</strong><span>Stored files</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="administration">5 Administration interface</h1>
+The administration interface is where a CP administrator can create ftp accounts and other CP administrator accounts.
+In addition:
+<ul class="star">
+<li>You can set your profile. That is, defaults for the processing instruction such as access, mimetype</li>
+<li>Define access policies</li>
+<li>Oversee the production of instructions, starting procedures and monitor the status</li>
+<li>Download technical metadata of stored material</li>
+</ul><p class="paragraph"/> Access to the administration interface ought to be given by the repository administrator by giving out a CP administrator account.
+
+
+
+<h2 id="user">5.1 Ftp accounts</h2>
+The account section will allow you manage three types of access:
+<ul class="star">
+<li>ftp accounts for uploading and managing files on the staging area</li>
+<li>CP administrator accounts to operate the administration interface.</li>
+<li>A function of both accounts is to supply webservice keys. This key gives access to all admin and stored repository resources.</li>
+</ul><p class="paragraph"/><h4>Create a user</h4>
+You need to fill in or edit the following fields:<p class="paragraph"/><code>Role</code>: <strong class="bold">ROLE_CPADMIN</strong> is the account with which a user can manage the administration panel. Although it is possible to
+upload files with this account, it is wiser to use a <strong class="bold">ROLE_CPUSER</strong> account as it will prevent confusion regarding the
+location of the processing instruction.<p class="paragraph"/><strong class="bold">ROLE_CPUSER</strong> is intended for FTP purposes. One cannot operate the administration panel with an CPUSER account.<p class="paragraph"/><code>Login name</code>: A user name containing letters and numbers
+<code>Password</code>: If the password is left blank, a random password will be created
+<code>E-mail</code>: The end-user's mail address.
+<code>Enabled</code>: If on, the account can be used to login.<p class="paragraph"/><h4>User display</h4>
+This view will also show the webservice key. The key is intended to access an object repository resource that is
+normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
+Or be in the header file of a client that is responsible for downloading the files.<p class="paragraph"/>The webservice key has the same effect when a user uses a username and password to access the administration interface.<p class="paragraph"/>To modify the webservice key select "Change key"<p class="paragraph"/><h4>editing and removing</h4>
+Any account can be modified, yet one cannot delete oneself however. Only a CP administrator can remove another CP
+administrator.
+
+
+
+<h2 id="profile">5.2 Profile</h2>
+The profile is where you set the default values that are taken over by any processing instruction. That is:  Settings in
+the profile substitute any absent values in the XML processing instruction. It makes sense therefore, to place all your
+broad access policies and most frequently used file content values.<p class="paragraph"/>The available options are described at the <a href="../guide/single.html#settings" class="guide">settings section</a>.
+
+
+<h2 id="policy">5.3 Access policies</h2>
+A policy determines what an  <em class="italic">anonymous user</em>   can and cannot do. Lets say that is a person with a webbrowser who is not
+logged on to the object repository. Access to each master file and its related derivatives are thus governed by a
+policy.<p class="paragraph"/><blockquote class="note">
+A master file is always closed.
+If you do not explicitly set a policy, the default policy will will be <code>closed</code>.
+</blockquote><p class="paragraph"/>There are three main policies available:
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">policy</strong></th><th><strong class="bold">access</strong></th></tr><tr class="table-odd"><td>closed</td><td>no files can be downloaded or viewed</td></tr><tr class="table-even"><td>restricted</td><td>level 1 derivatives are  <em class="italic">restricted</em> ; level 2 and 3 are viewable to the world</td></tr><tr class="table-odd"><td>open</td><td>All derivatives are viewable to the world</td></tr></table><p class="paragraph"/>The meaning of <strong class="bold">restricted</strong> means the anonymous user can only see the file with a webservice key. Even though
+at this moment this is not the case, this setting can be used to offer for example a "give me persmission to see this
+file" option. This will never be the case when the file is closed.<p class="paragraph"/><h3>Custom policies</h3>
+You cannot modify these default policies, but to add your own custom policy is easily done by selecting "New Policy".
+For each derivative you can then determine your own access level.
+
+
+
+<h2 id="instructions">5.4 Managing and monitoring instructions</h2>
+Each main folder in the staging area you see is represented here.<p class="paragraph"/>The moment when a XML instruction is offered; or when it is autocreated, the number of declared files will show up.
+In addition each file will have a validation status. The files can be viewed by selecting the link of the main folder.<p class="paragraph"/><h3>options</h3>
+<code>Autocreate</code>
+This will autocreate an instruction. Press it and depending on the number of files, the instruction will be put into
+the database.<p class="paragraph"/>@Download
+One you created or uploaded an instruction, it can be downloaded as an XML instruction document.<p class="paragraph"/><blockquote class="note">Unfortunatly, the download back to the staging area of an instruction is not possible because of server
+permissions. However, you can download instructions via the browser.</blockquote><p class="paragraph"/><code>Upload</code>
+You can upload a XML instruction here so it will be placed on the staging area. FTP is also a way of uploading an
+instruction.<p class="paragraph"/><code>Validate</code>
+Will perform a check on the instruction vis-a-vis the files in the staging area.<p class="paragraph"/><code>Ingest files</code>
+Kick starts the instruction<p class="paragraph"/><blockquote class="note">
+If you monitor the progress of for example an upload, creation or validation of an instruction it will eventually
+finish. However no <code>ingest instruction</code> option seems to appear. To make it appear, press the browser's refresh button.
+</blockquote><p class="paragraph"/><h3>Monitoring</h3>
+Each phase or step in the creation and running of an instruction can be monitored. The same for each individual files.
+During an ingest, you can see the accumulative result of all files by selecting the link of the main folder.<p class="paragraph"/><h4>Instruction status</h4>
+This is the particular status of an instruction<p class="paragraph"/><img border="0" class="center" src="../img/statusinstruction.gif"></img><p class="paragraph"/><h4>Files status accumulative</h4>
+All progress for the files<p class="paragraph"/><img border="0" class="center" src="../img/statusfiles.gif"></img><p class="paragraph"/><h4>Per file view</h4>
+<img border="0" class="center" src="../img/statusfile.gif"></img><p class="paragraph"/><h4>Success and failure</h4>
+When all services of a file have completed, the file reference will be removed from the staging area. In the end all
+the declared files will be gone.<p class="paragraph"/>Of course, things can go wrong. In that case the error is mentioned and nothing will happen until the issue is resolved.
+If you feel this is because of a bug or system application failure, please contact the service desk that operates the
+object repository.
+
+
+<h2 id="orfiles">5.5 Stored files</h2>
+The files section will show all persisted files.<p class="paragraph"/>Here you can manually after policy and labels.<p class="paragraph"/>In addition, download all technical metadata as XML per file of for all
+the files. The XML does not follow a schema and is subject to change.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/pid.html">&lt;&lt; <strong>4</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

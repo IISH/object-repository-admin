@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Staging area 1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/stagingarea.html"><strong>2</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/pid.html"><strong>4</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/administration.html"><strong>5</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Staging area - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.0</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ftp"><strong>2.1</strong><span>FTP</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#datasets"><strong>2.2</strong><span>Datasets</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#customderivatives"><strong>2.3</strong><span>Your own derivatives</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="stagingarea">2 Staging area</h1>
+The staging area is a work space where you can assemble your ingest package. Here you:
+<ul class="star">
+<li>use ftp to upload files to temporary storage and rearrange these</li>
+<li>optionally upload a XML processing instruction</li>
+<li>optionally upload derivative material</li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="ftp">2.1 FTP</h2>
+To connect to the staging area you need one or more ftp accounts which a CP administrator can via with the <a href="../guide/single.html#user" class="guide">Accounts section</a>.
+at the administrator interface.<p class="paragraph"/><a href="http://filezilla-project.org/download.php?type=client" target="blank">FileZilla</a> and <a href="http://winscp.net/eng/download.php" target="blank">WinSCP</a> are known to work well
+with the staging area. To make a connection:
+<ul class="star">
+<li>create an ftp-account</li>
+<li>set the host name of the staging area to the one mentioned in the ftp account confirmation e-mail</li>
+<li>set the ftp client to support an <strong class="bold"></strong>explicit FTP over TLS<strong class="bold"></strong> connection</li>
+<li>enable <strong class="bold"></strong>passive mode<strong class="bold"></strong>.</li>
+<li>The ftp port to use is the default 21.</li>
+</ul><p class="paragraph"/>As a rule (and avoid confusion) use the CP user account to upload files and XML processing instructions with. Not your
+CP administrator account.
+
+
+
+<h2 id="datasets">2.2 Datasets</h2>
+After a CP user (of course, ftp procedures can be automated also) logs in with a ftp-account, the first directory visible
+is the <strong class="bold"></strong>home directory<strong class="bold"></strong>. A FTP client will show this as a "/".<p class="paragraph"/>The user should at least upload one <strong class="bold"></strong>main folder<strong class="bold"></strong> containing files (your dataset) in the
+home directory. This example illustrates the upload of a main folder called "unittest" and it contains 5 files.<p class="paragraph"/><img border="0" class="center" src="../img/fileset.gif"></img><p class="paragraph"/><blockquote class="note">Any folder or file that starts with a dot, will be ignored by the ingest procedures.
+Also any digital file placed right in the home directory and not in a main folder will be ignored.</blockquote><p class="paragraph"/>See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum. This is
+ stored next to the file in the format <code>filename.md5</code>. The checksum it contains is compared the one you
+deliver in a <a href="../guide/single.html#instruction" class="guide">processing instruction</a> in order to assert integrity. It contains something like this:
+<div class="code"><pre>181c838e29cbb0602da4a160eece2217  1.1.tif</pre></div><p class="paragraph"/><blockquote class="note">
+You should not delete automatically created md5 files. If you do; the ingest of your files can take a long time.
+</blockquote>
+
+
+
+<h2 id="customderivatives">2.3 Your own derivatives</h2>
+The object-repository has a service to create lower level copies of the masters ( at the moment only images ). It
+attempts to create three levels:
+<ul class="star">
+<li>level 1: high print quality</li>
+<li>level 2: medium screen quality</li>
+<li>level 3: small, thumbnail quality</li>
+</ul><p class="paragraph"/>However, if you want you can add your own derivative material because it is of better quality or the type of derivative
+manufacturing is not supported.<p class="paragraph"/><h3>Conventional offerings</h3>
+The position and names of the derivatives must follow conventions:
+<ul class="star">
+<li>the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice they</li>
+</ul><p class="paragraph"/>start with a dot.
+<ul class="star">
+<li>the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file</li>
+</ul><p class="paragraph"/>extension. For example
+if the master is called <code>MyFile.tiff</code> or <code>BigVideo.mpg</code> then the custom derivative must be positioned and named like
+<code>/.level1/MyFile.jpg</code> or <code>/.level2/BigVideo.mpg</code>
+<ul class="star">
+<li>the derivative must be parallel to the master file.</li>
+<li>the extension of the derivative must be related to a known contenttype as <a href="https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt" target="blank">indicated in this list</a>. If you see that your derivative extension is not in this list, then make a feature request.</li>
+</ul><p class="paragraph"/>A few examples will clarify the points just made.<p class="paragraph"/><h4>Example 1</h4>
+A master is placed deep within some subfolders: <code>/main_folder/b/c/d/myLargeFile.tiff</code>
+And the derivative file is called <code>myLargeFile.png</code><p class="paragraph"/>Then a level1 derivative can be placed anywhere by <strong class="bold">inserting</strong> a <strong class="bold">.level1</strong> folder thus:
+<ul class="star">
+<li><code>/main_folder/b/c/d/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/>Or by <strong class="bold">substituting</strong> a folder so:
+<ul class="star">
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/><h4>Example 2</h4>
+A master is placed in the main folder <code>/mydataset/myVeryLargeMovie.mpg</code>
+Then we offer both level1, level2 and a level3 file like this:
+<ul class="star">
+<li><code>/mydataset/.level1/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level2/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level3/myVeryLargeMovie.mpg</code></li>
+</ul><p class="paragraph"/><blockquote class="note">The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it</blockquote>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
