@@ -134,8 +134,8 @@ class GridFSService {
             comment << String.format('Selection contains %s documents. Export extracted on %s',
                     count, new Date().toGMTString())
             orfiles(orfileAttributes) {
-                cursor.each {
-                    def orfileInstance = get(na, it.metadata.pid)
+                cursor.each { doc ->
+                    def orfileInstance = get(na, doc.metadata.pid)
                     if (orfileInstance?.master)
                         orfile {
                             pid orfileInstance.master.metadata.pid

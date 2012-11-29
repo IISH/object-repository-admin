@@ -4,6 +4,13 @@
     <meta name="layout" content="${System.getProperty("layout")}">
     <g:set var="entityName" value="${message(code: 'orfile.label', default: 'Files')}"/>
     <title><g:message code="default.list.label" args="[entityName]"/></title>
+    <style type="text/css">
+    .view li {
+        display: block;
+        float: left;
+        padding-right: 25px
+    }
+    </style>
 </head>
 
 <body>
@@ -12,11 +19,16 @@
 
 <g:render template="/layouts/header" model="[instance: orfileInstanceList]"/>
 
-<g:set var="filter" value="offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}"/>
+<g:set var="filter"
+       value="offset=${(params.offset) ?: ""}&max=${(params.max) ?: ""}&sort=${(params.sort) ?: ""}&order=${(params.order) ?: ""}"/>
 
-<p><g:link action="download" params="[label:params.label]">Download metadata</g:link> | <p><g:link action="recreate" params="[label:params.label]">Recreate instruction</g:link> |
-    Show: <g:select name="label" from="${labels}" value="${params.label}"
-                    onchange="document.location='?label='+this.value + '&${filter}'"/></p>
+<ul class="view">
+    <li>Show: <g:select name="label" from="${labels}" value="${params.label}"
+                        onchange="document.location='?label='+this.value + '&${filter}'"/></li>
+    <li><g:link action="download" params="[label: params.label]">Download metadata</g:link></li>
+    <li><g:link
+            action="recreate" params="[label: params.label]">Recreate instruction</g:link></li>
+</ul>
 
 <div id="list-orfile" class="content scaffold-list" role="main">
     <table>
@@ -48,20 +60,22 @@
                         <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
                     </g:else></g:link>
                 </td>
-                <td><a href="?label=${orfileInstance.master.metadata.label + '&' + filter}">${orfileInstance.master.metadata.label}</a></td>
+                <td><a href="?label=${orfileInstance.master.metadata.label + '&' + filter}">${orfileInstance.master.metadata.label}</a>
+                </td>
                 <td>${orfileInstance.master.metadata.access}</td>
                 <td>${orfileInstance.master.metadata.pid}
                     <g:if test="${orfileInstance.master.metadata.lid}"><br/>${orfileInstance.master.metadata.lid}</g:if>
                 </td>
                 <td>${orfileInstance.master.metadata.lastUploadDate}</td>
-                <td><g:link action="download" params="[pid:orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
+                <td><g:link action="download"
+                            params="[pid: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>
     </table>
 
     <div class="pagination">
-        <g:paginate total="${orfileInstanceListTotal}" params="[label:params.label]" />
+        <g:paginate total="${orfileInstanceListTotal}" params="[label: params.label]"/>
     </div>
 </div>
 </body>
