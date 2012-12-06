@@ -64,6 +64,15 @@
 </li>
 
 <li class="fieldcontain">
+    <span id="replaceExistingDerivatives-label" class="property-label"><g:message
+            code="profile.replaceExistingDerivatives.label" default="Replace existing derivatives"/></span>
+
+    <span class="property-value" aria-labelledby="replaceExistingDerivatives-label"><g:formatBoolean
+            boolean="${instance?.replaceExistingDerivatives}"/></span>
+
+</li>
+
+<li class="fieldcontain">
     <span id="resolverBaseUrl-label" class="property-label"><g:message code="profile.resolverBaseUrl.label"
                                                                        default="Resolver Base Url"/></span>
 

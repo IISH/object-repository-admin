@@ -20,6 +20,7 @@ class Stagingfile extends Tasking {
     String resolverBaseUrl
     String autoGeneratePIDs
     Boolean autoIngestValidInstruction
+    Boolean replaceExistingDerivatives
     String pidwebserviceEndpoint
     String pidwebserviceKey
     // End move
@@ -48,6 +49,7 @@ class Stagingfile extends Tasking {
         resolverBaseUrl(nullable: true)
         autoGeneratePIDs(nullable: true)
         autoIngestValidInstruction(nullable: true)
+        replaceExistingDerivatives(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
     }

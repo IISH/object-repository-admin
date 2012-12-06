@@ -53,6 +53,14 @@
     <g:checkBox name="deleteCompletedInstruction" value="${instance.deleteCompletedInstruction}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'replaceExistingDerivatives', 'error')} ">
+    <label for="replaceExistingDerivatives">
+        <g:message code="profile.replaceExistingDerivatives.label" default="Replace existing derivatives"/>
+
+    </label>
+    <g:checkBox name="replaceExistingDerivatives" value="${instance.replaceExistingDerivatives}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'resolverBaseUrl', 'error')} ">
     <label for="resolverBaseUrl">
         <g:message code="profile.resolverBaseUrl.label" default="Resolver Base Url"/>

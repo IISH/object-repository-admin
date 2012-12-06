@@ -30,6 +30,7 @@ class Instruction extends Tasking {
     String autoGeneratePIDs
     Boolean autoIngestValidInstruction
     Boolean deleteCompletedInstruction
+    Boolean replaceExistingDerivatives
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail
@@ -99,6 +100,7 @@ class Instruction extends Tasking {
         autoGeneratePIDs(nullable: true, inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
         autoIngestValidInstruction(nullable: true)
         deleteCompletedInstruction(nullable: true)
+        replaceExistingDerivatives(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
         plan(nullable: true)

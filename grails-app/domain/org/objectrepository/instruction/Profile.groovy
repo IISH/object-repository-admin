@@ -16,6 +16,7 @@ class Profile {
     String autoGeneratePIDs = "none"
     Boolean autoIngestValidInstruction = false
     Boolean deleteCompletedInstruction = false
+    Boolean replaceExistingDerivatives = false
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail

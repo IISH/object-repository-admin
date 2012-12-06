@@ -3,7 +3,6 @@ package org.objectrepository.util
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.objectrepository.instruction.Instruction
-import org.objectrepository.instruction.Task
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
 
@@ -88,7 +87,10 @@ class OrUtil {
         map << [id: document.id]
         def orAttributes = [xmlns: "http://objectrepository.org/instruction/1.0/"]
         orAttributes.putAll(map)
-
+        if (document instanceof Instruction) {
+            def plan = (document.plan) ?: document.parent.plan
+            orAttributes << [plan: plan.join(',')]
+        }
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
         xml.doubleQuotes = true
@@ -160,7 +162,7 @@ class OrUtil {
  * @param workflow
  * @return
  */
-    static List<Task> availablePlans(def workflow, String type = "Stagingfile") {
+    static List<String> availablePlans(def workflow, String type = "Stagingfile") {
         workflow.findResults {
             (it.key.startsWith(type) && ((it.value.visible == null) ? true : it.value.visible)) ? it.key : null
         }
@@ -221,7 +223,7 @@ class OrUtil {
     }
 
     static void setInstructionPlan(def instruction) {
-        if (emptyList(instruction.plan)) instruction.plan = instruction.parent.plan
+        if (emptyList(instruction.plan)) instruction.plan = instruction.parent?.plan
     }
 
     /**
