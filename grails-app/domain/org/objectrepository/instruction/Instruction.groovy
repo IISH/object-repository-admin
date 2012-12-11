@@ -31,6 +31,7 @@ class Instruction extends Tasking {
     Boolean autoIngestValidInstruction
     Boolean deleteCompletedInstruction
     Boolean replaceExistingDerivatives
+    Boolean keepLocationWhenRecreate
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail
@@ -101,6 +102,7 @@ class Instruction extends Tasking {
         autoIngestValidInstruction(nullable: true)
         deleteCompletedInstruction(nullable: true)
         replaceExistingDerivatives(nullable: true)
+        keepLocationWhenRecreate(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
         plan(nullable: true)

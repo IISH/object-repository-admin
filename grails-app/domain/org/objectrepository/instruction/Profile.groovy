@@ -17,6 +17,7 @@ class Profile {
     Boolean autoIngestValidInstruction = false
     Boolean deleteCompletedInstruction = false
     Boolean replaceExistingDerivatives = false
+    Boolean keepLocationWhenRecreate = true
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail

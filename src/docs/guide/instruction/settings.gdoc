@@ -63,10 +63,6 @@ There are three out-of-the-box policies available:
 
 In the administration interface a CP administrator can add new policies and thus apply custom view levels.
 
-{note}
-master files are always closed.
-{note}
-
 h3. Mimetype
 @contentType@ (profile, instruction and stagingfile elements)
 
@@ -162,3 +158,11 @@ If set to {code}autoIngestValidInstruction='true'{code} will start an instructio
 uploaded or automatically generated is valid.
 
 Typically this is useful for batch procedures that involve automated FTP uploads of files and processing instructions.
+
+h3. Replacing derivatives
+@replaceExistingDerivatives@ (profile, instruction and stagingfile element)
+Used in combination with a plan that creates derivatives.
+When set to false ( default ) your derivatives will be replaced by newly master converted ones.
+
+{note}Custom derivatives will always be ingested, regardless of this setting.{note}
+

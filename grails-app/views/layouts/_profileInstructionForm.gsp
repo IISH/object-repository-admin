@@ -61,6 +61,14 @@
     <g:checkBox name="replaceExistingDerivatives" value="${instance.replaceExistingDerivatives}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'keepLocationWhenRecreate', 'error')} ">
+    <label for="keepLocationWhenRecreate">
+        <g:message code="profile.keepLocationWhenRecreate.label"
+                   default="Restore location elements when recreating instruction"/>
+    </label>
+    <g:checkBox name="keepLocationWhenRecreate" value="${instance.keepLocationWhenRecreate}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'resolverBaseUrl', 'error')} ">
     <label for="resolverBaseUrl">
         <g:message code="profile.resolverBaseUrl.label" default="Resolver Base Url"/>

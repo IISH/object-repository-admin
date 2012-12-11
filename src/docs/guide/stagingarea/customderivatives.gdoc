@@ -52,3 +52,17 @@ Then we offer both level1, level2 and a level3 file like this:
 * @/mydataset/.level3/myVeryLargeMovie.mpg@
 
 {note}The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it{note}
+
+h4. Supplying derivatives some time after an ingest
+To add custom derivatives after the ingest is completed, you follow the same procedure:
+* upload your custom derivative files according to the location convention
+* in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and
+any other non-related derivative tasks. Then validate the instruction
+ * Start processing your files.
+
+ Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
+ reupload a new one which should contain the location elements from which the custom derivative
+ can be found.
+
+ {note}In case you reupload for the sake of ingesting custom derivatives, the location element
+ need not be the same as the original master files from a previous instruction.{note}

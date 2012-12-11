@@ -73,6 +73,14 @@
 </li>
 
 <li class="fieldcontain">
+    <span id="keepLocationWhenRecreate-label" class="property-label"><g:message
+            code="profile.keepLocationWhenRecreate.label" default="Restore location elements when recreating instruction"/></span>
+
+    <span class="property-value" aria-labelledby="keepLocationWhenRecreate-label"><g:formatBoolean
+            boolean="${instance?.keepLocationWhenRecreate}"/></span>
+</li>
+
+<li class="fieldcontain">
     <span id="resolverBaseUrl-label" class="property-label"><g:message code="profile.resolverBaseUrl.label"
                                                                        default="Resolver Base Url"/></span>
 

@@ -8,10 +8,14 @@ h3. options
 This will autocreate an instruction. Press it and depending on the number of files, the instruction will be put into
 the database.
 
+@Recreate@
+This option is available at the "Stored objects panel". It will reconstruct the instruction
+responsible for the last completed ingest.
+
 @Download
 One you created or uploaded an instruction, it can be downloaded as an XML instruction document.
 
-{note}Unfortunately, the download back to the staging area of an instruction is not possible because of server
+{note}Unfortunately, the download onto to the staging area of an instruction is not possible because of server
 permissions. However, you can download instructions via the browser.{note}
 
 @Upload@
