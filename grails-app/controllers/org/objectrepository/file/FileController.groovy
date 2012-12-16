@@ -76,7 +76,7 @@ class FileController {
             } else {
                 response.contentLength = file.length as int
                 response.status = HttpServletResponse.SC_OK
-                if (params.contentType == 'application/save') response.setHeader 'Content-disposition', '"attachment; filename="' + file.filename + '"'
+                if (params.contentType == 'application/save') response.setHeader 'Content-disposition', 'attachment; filename="' + file.filename + '"'
 
                 if (request.method.toUpperCase() == 'HEAD') {
                     log.info "Returning HEAD"

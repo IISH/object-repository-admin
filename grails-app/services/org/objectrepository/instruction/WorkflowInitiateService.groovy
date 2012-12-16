@@ -105,7 +105,6 @@ class WorkflowInitiateService extends WorkflowJob {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900
                 if (count == 0) {
-                    // ToDo: sent message notification
                     if (instructionInstance.deleteCompletedInstruction) {
                         delete(instructionInstance)
                         return
@@ -113,10 +112,17 @@ class WorkflowInitiateService extends WorkflowJob {
                 } else {
                     count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
                     instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
-                    log.info "Retry instruction: no"
-                    //retry(instructionInstance)
                 }
                 save(instructionInstance)
+
+                if (instructionInstance.notificationEMail) {
+                    sendMail {
+                        to instructionInstance.notificationEMail
+                        from grailsApplication.config.mail.from
+                        subject "Ingested " + instructionInstance.fileSet
+                        body instructionInstance.task.info
+                    }
+                }
             }
         }
     }
