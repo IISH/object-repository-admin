@@ -111,7 +111,7 @@ class InstructionController {
             if (params.transport == 'http') {
                 response.setCharacterEncoding("utf-8");
                 response.setContentType("text/xml")
-                response.addHeader("content-disposition", "attachment; filename=instruction.xml")
+                response.addHeader('Content-disposition', 'attachment; filename="instruction.xml"')
                 writer = response.outputStream
             } else {
                 final File file = new File(instructionInstance.fileSet, "instruction.xml")

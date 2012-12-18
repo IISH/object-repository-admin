@@ -117,7 +117,7 @@ class WorkflowInitiateService extends WorkflowJob {
 
                 if (instructionInstance.notificationEMail) {
                     sendMail {
-                        to instructionInstance.notificationEMail
+                        to instructionInstance.notificationEMail.split(";|,")
                         from grailsApplication.config.mail.from
                         subject "Ingested " + instructionInstance.fileSet
                         body instructionInstance.task.info
