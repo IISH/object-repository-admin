@@ -2,8 +2,6 @@ package org.objectrepository.instruction
 
 import org.objectrepository.util.OrUtil
 
-import java.util.regex.Pattern
-
 /**
  * TaskValidationService
  *
@@ -44,7 +42,7 @@ class TaskValidationService {
                         //noinspection GroovyAssignabilityCheck
                         if (!method || "$method"(delegate)) {
                             def name = (service.name) ?: v.key
-                            def controllerAction = Pattern.compile("([A-Z])").matcher(name).replaceAll(" \$1").trim().toLowerCase().split("\\s", 2)
+                            def controllerAction = OrUtil.splitCamelcase(name)
                             def controller = (service.controller) ?: controllerAction[0]
                             def action = (service.action) ?: controllerAction[1]
                             acc << [name: name, controller: controller, action: action]

@@ -1,6 +1,6 @@
 import org.apache.camel.builder.RouteBuilder
 
-class WorkflowRoute extends RouteBuilder {
+class StatusRoute extends RouteBuilder {
 
     @Override
     void configure() {

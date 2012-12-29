@@ -21,7 +21,7 @@ class WorkflowActiveService extends WorkflowJob {
      * Process the documents in the staging area.
      */
     void job() {
-        final Date expired = OrUtil.expirationDate(taskTTL) // Offset compared to the message queue
+        final Date expired = OrUtil.expirationDate(messageTTL) // Offset compared to the message queue
         mongo.getDB('sa').instruction.find(['workflow.end': [$lt: expired]]).each {
             def instruction = it as Instruction
             progress(instruction, expired)
@@ -36,7 +36,7 @@ class WorkflowActiveService extends WorkflowJob {
      * the status of the task if these are older than the check data.
      * @return
      */
-    private progress(Instruction instruction, Date check = new Date(new Date().time - taskTTL)) {
+    private progress(Instruction instruction, Date check = new Date(new Date().time - messageTTL)) {
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.ingesting) {
@@ -95,6 +95,23 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
+    /**
+     * dlq
+     *
+     * The DLQ will resend the message again and update the task date. No need to produce a new task.
+     *
+     * @param msg
+     */
+    public void dlq(String msg) {
+        final document = new XmlParser().parseText(msg)
+        final String queue = document.workflow.name.text()
+        final String collectionName = OrUtil.splitCamelcase(queue)[0].toLowerCase()
+        final String identifier = document.workflow.identifier.text()
+        final collection = mongo.getDB('sa').getCollection(collectionName)
+        def tmp = collection.findAndModify([workflow: [$elemMatch: [n: 0, name: queue, statusCode: 300, identifier: identifier]]], [$set:['workflow.$.end': new Date()]])
+        if ( tmp ) sendMessage(["activemq", queue].join(":") + "?timeToLive=" + timeToLive(), msg)
+    }
+
 /**
  * InstructionIngest600
  *
@@ -124,7 +141,7 @@ class WorkflowActiveService extends WorkflowJob {
      */
     def InstructionRecreate600(def document) {
         int total = Stagingfile.countByFileSet(document.fileSet)
-        if ( total == 0) {
+        if (total == 0) {
             retry(document)
         } else {
             changeWorkflow('InstructionUpload800', document)

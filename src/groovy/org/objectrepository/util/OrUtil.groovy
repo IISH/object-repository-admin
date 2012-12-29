@@ -8,6 +8,7 @@ import org.objectrepository.security.Policy
 
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
+import java.util.regex.Pattern
 
 /**
  * OrUtil
@@ -236,5 +237,9 @@ class OrUtil {
      */
     static Date expirationDate(long t) {
         new Date(new Date().time - t)
+    }
+
+    static String[] splitCamelcase(String name, int limit = 2) {
+        Pattern.compile("([A-Z])").matcher(name).replaceAll(" \$1").trim().toLowerCase().split("\\s", limit)
     }
 }

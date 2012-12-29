@@ -25,8 +25,7 @@ abstract class WorkflowJob {
     TaskValidationService taskValidationService
     def taskProperties
 
-    static long taskTTL =    4200000 // One hour and ten minutes and then the tasks will be recreated.
-    static long messageTTL = 3600000 // One hour and then the message is stale
+    static long messageTTL = 7200000 // Two hours and then the task is stale
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -392,7 +391,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task300(def document) {
-        if (document.task.end < OrUtil.expirationDate(taskTTL)) first(document)
+        if (document.task.end < OrUtil.expirationDate(messageTTL)) first(document)
     }
 
     /**
@@ -403,7 +402,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task400(def document) {
-        if (document.task.end < OrUtil.expirationDate(taskTTL)) next(document)
+        if (document.task.end < OrUtil.expirationDate(messageTTL)) next(document)
     }
 
     /**
@@ -484,7 +483,7 @@ abstract class WorkflowJob {
         if (save(document)) {
             try {
                 final String queue = (document.task.queue) ?: document.task.name
-                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + messageTTL, OrUtil.makeOrType(document))
+                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + timeToLive(), OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue " + queue
                 next(document)
             } catch (Exception e) {
@@ -492,6 +491,10 @@ abstract class WorkflowJob {
                 log.warn e.message
             }
         }
+    }
+
+    long timeToLive() {
+        messageTTL - 3600000
     }
 
     def currentTask(def document) {
