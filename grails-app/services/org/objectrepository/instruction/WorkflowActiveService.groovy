@@ -21,7 +21,7 @@ class WorkflowActiveService extends WorkflowJob {
      * Process the documents in the staging area.
      */
     void job() {
-        final Date expired = OrUtil.expirationDate(messageTTL * 2) // Offset compared to the message queue
+        final Date expired = OrUtil.expirationDate(messageTTL) // Offset compared to the message queue
         mongo.getDB('sa').instruction.find(['workflow.end': [$lt: expired]]).each {
             def instruction = it as Instruction
             progress(instruction, expired)
