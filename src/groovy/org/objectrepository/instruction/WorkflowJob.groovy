@@ -484,7 +484,7 @@ abstract class WorkflowJob {
         if (save(document)) {
             try {
                 final String queue = (document.task.queue) ?: document.task.name
-                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + Math.ceil(messageTTL), OrUtil.makeOrType(document))
+                sendMessage(["activemq", queue].join(":") + "?timeToLive=" + messageTTL, OrUtil.makeOrType(document))
                 log.info id(document) + "Send message to queue " + queue
                 next(document)
             } catch (Exception e) {
