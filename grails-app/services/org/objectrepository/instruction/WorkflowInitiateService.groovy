@@ -37,6 +37,10 @@ class WorkflowInitiateService extends WorkflowJob {
 
             log.info "Decommissions instructions that have done their job for " + na
             decommissionInstruction(na)
+
+            // toDo:  Removes unresponsive tasks ( statusCode 400 )
+            //log.info "Remove stale tasks for " + na
+            //removeStaleTask(na)
         }
     }
 

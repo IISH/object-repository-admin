@@ -25,7 +25,7 @@ abstract class WorkflowJob {
     TaskValidationService taskValidationService
     def taskProperties
 
-    static long messageTTL = 7200000 // Two hours and then the task is stale
+    static long messageTTL = 43200000 // Twelve hours and then the task is stale
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -493,6 +493,15 @@ abstract class WorkflowJob {
         }
     }
 
+    /**
+     * timeToLive
+     *
+     * Messages have a shorter expiration time than tasks.
+     * This way the message queue will remove the messages; whereby the dlq will pick it up and see if the
+     * task ought to be reset.
+     *
+     * @return
+     */
     long timeToLive() {
         messageTTL - 3600000
     }
