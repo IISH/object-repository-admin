@@ -548,6 +548,7 @@ abstract class WorkflowJob {
      */
     boolean save(def document) {
 
+        document.task?.end = new Date()
         final collection = mongo.getDB('sa').getCollection(document.class.getSimpleName().toLowerCase())
         int n = 0
         def workflow = document.workflow?.collect { task ->
@@ -556,9 +557,6 @@ abstract class WorkflowJob {
                 init.putAt(key, task."$key")
                 init
             }
-        }
-        if (document.task) {
-            document.task.end = workflow[0].end = new Date()
         }
         if (result(collection.update([_id: document.id], [$set: [workflow: workflow]]))) {
             if (document.task.statusCode == firstStatusCode(document.task.name)) {
