@@ -434,7 +434,7 @@ abstract class WorkflowJob {
     /**
      * Instruction800
      *
-     * When an instruction task is at the end of the job, we see if we should progress.
+     * When an instruction task is at the end of the job, we see if we should progress to Ingesting.
      *
      * @param document
      */
@@ -557,7 +557,9 @@ abstract class WorkflowJob {
                 init
             }
         }
-        document.task?.end = new Date()
+        if (document.task) {
+            document.task.end = workflow[0].end = new Date()
+        }
         if (result(collection.update([_id: document.id], [$set: [workflow: workflow]]))) {
             if (document.task.statusCode == firstStatusCode(document.task.name)) {
                 sendMessage('activemq:status', document.task.identifier)
