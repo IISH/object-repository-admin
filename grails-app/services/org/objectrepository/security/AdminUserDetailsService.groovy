@@ -1,7 +1,6 @@
 package org.objectrepository.security
 
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.socialhistoryservices.security.MockUser
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.GrantedAuthorityImpl
@@ -15,12 +14,10 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
      * we give a user with no granted roles this one which gets past that restriction but
      * doesn't grant anything.
      */
-    static final List NO_ROLES = [new GrantedAuthorityImpl(SpringSecurityUtils.NO_ROLE)]
-
     @Override
     UserDetails loadUserByUsername(String username, boolean loadRoles) {
 
-        log.info "Attempted user logon: $username"
+        log.info "Attempted user logon '$username' with loadRole from database being $loadRoles"
         User.withTransaction { status ->
             def user = User.findByUsername(username)
 
@@ -28,17 +25,17 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
                 throw new UsernameNotFoundException('User not found', username)
             }
 
-            def roles = NO_ROLES
+            if (!(user.na)) {
+                throw new UsernameNotFoundException('User has not got the proper authority', username)
+            }
+
+            def roles = [new GrantedAuthorityImpl("USER_NA_" + user.na)]
             if (loadRoles) {
-                def authorities = user.authorities?.collect {
-                    new GrantedAuthorityImpl(it.role.authority)
-                }
-                if (authorities) {
-                    roles = authorities
+                log.info user.authorities
+                user.authorities?.each {
+                    roles << new GrantedAuthorityImpl(it.role.authority)
                 }
             }
-            roles << new GrantedAuthorityImpl("USER_NA_" + user.na)
-
             log.info "User roles: $roles"
 
             return createUserDetails(user, roles)
