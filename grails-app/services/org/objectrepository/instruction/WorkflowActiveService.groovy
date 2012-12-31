@@ -21,10 +21,10 @@ class WorkflowActiveService extends WorkflowJob {
      * Process the documents in the staging area.
      */
     void job() {
-        final Date expired = OrUtil.expirationDate(messageTTL) // Offset compared to the message queue
+        final Date expired = OrUtil.expirationDate(instructionMessageTTL)
         mongo.getDB('sa').instruction.find(['workflow.end': [$lt: expired]]).each {
             def instruction = it as Instruction
-            progress(instruction, expired)
+            progress(instruction)
         }
     }
 
@@ -36,14 +36,14 @@ class WorkflowActiveService extends WorkflowJob {
      * the status of the task if these are older than the check data.
      * @return
      */
-    private progress(Instruction instruction, Date check = new Date(new Date().time - messageTTL)) {
+    private progress(Instruction instruction, Date expired = OrUtil.expirationDate(messageTTL)) {
 
         log.info id(instruction) + "Checking for task updates."
         if (instruction.ingesting) {
             mongo.getDB('sa').stagingfile.find(
                     $and: [
                             [fileSet: instruction.fileSet],
-                            [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 801], end: [$lt: check]]]]
+                            [workflow: [$elemMatch: [n: 0, statusCode: [$lt: 801], end: [$lt: expired]]]]
                     ]
             ).each {
                 it.parent = instruction

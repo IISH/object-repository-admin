@@ -26,6 +26,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static long messageTTL = 43200000 // Twelve hours and then the task is stale
+    static long instructionMessageTTL = 300000 // Five minutes and then the task is stale
 
     public WorkflowJob() {
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
@@ -391,7 +392,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task300(def document) {
-        if (document.task.end < OrUtil.expirationDate(messageTTL)) first(document)
+        if (document.task.end < OrUtil.expirationDate(instructionMessageTTL)) first(document)
     }
 
     /**
@@ -402,7 +403,7 @@ abstract class WorkflowJob {
      * @param document
      */
     void task400(def document) {
-        if (document.task.end < OrUtil.expirationDate(messageTTL)) next(document)
+        if (document.task.end < OrUtil.expirationDate(instructionMessageTTL)) next(document)
     }
 
     /**
