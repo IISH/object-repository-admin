@@ -25,13 +25,12 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
                 throw new UsernameNotFoundException('User not found', username)
             }
 
-            if (!(user.na)) {
+            if (!user.na) {
                 throw new UsernameNotFoundException('User has not got the proper authority', username)
             }
 
             def roles = [new GrantedAuthorityImpl("USER_NA_" + user.na)]
             if (loadRoles) {
-                log.info user.authorities
                 user.authorities?.each {
                     roles << new GrantedAuthorityImpl(it.role.authority)
                 }
