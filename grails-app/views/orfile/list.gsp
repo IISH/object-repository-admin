@@ -28,6 +28,7 @@
     <li><g:link action="download" params="[label: params.label]">Download metadata</g:link></li>
     <li><g:link
             action="recreate" params="[label: params.label]">Recreate instruction</g:link></li>
+    <li><form method="GET" action="findbypid"><input type="submit" value="Find pid"/><input id="pid" name="pid"/></form></li>
 </ul>
 
 <div id="list-orfile" class="content scaffold-list" role="main">

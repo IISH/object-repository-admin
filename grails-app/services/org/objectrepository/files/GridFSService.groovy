@@ -65,14 +65,24 @@ class GridFSService {
     }
 
     /**
-     * findAllByNa
+     * findAllByLabel
      *
      * Find all documents in the collection.
      *
      * @param na
      * @param params for sorting, paging and filtering
      */
-    def findAllByNa(def na, def params) {
+    def findAllByLabel(def na, def params) {
+        final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
+        query(OR + na, q, params.max, params.offset)
+    }
+
+    def findAllByPid(def na, def params) {
+        final q = (params?.label) ? String.format("{'metadata.pid': '%s'}", params.pid) : ""
+        query(OR + na, q, params.max, params.offset)
+    }
+
+    def findAllBySet(def na, def params) {
         final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
         query(OR + na, q, params.max, params.offset)
     }
@@ -198,7 +208,7 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval.plus(0, 'everything')
+        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval.plus(0, 'select label')
     }
 
     /**

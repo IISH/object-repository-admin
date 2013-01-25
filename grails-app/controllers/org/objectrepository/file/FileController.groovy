@@ -77,7 +77,7 @@ class FileController {
                 response.contentLength = file.length as int
                 response.status = HttpServletResponse.SC_OK
                 if (params.contentType == 'application/save') {
-                    def filename  = ( params.filename ) ?: file.filename
+                    def filename = (params.filename) ?: file.filename
                     response.setHeader 'Content-disposition', 'attachment; filename="' + filename + '"'
                 }
 
@@ -187,5 +187,4 @@ class FileController {
 
         fileInstance
     }
-
 }

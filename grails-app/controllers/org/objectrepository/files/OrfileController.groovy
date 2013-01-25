@@ -22,12 +22,23 @@ class OrfileController {
         params.offset = params.offset ? params.int('offset') : 0
         params.order = !params.order || params.order == "asc" ? 1 : -1
         params.sort = params.sort ?: "_id"
-        if (params.label && params.label == 'everything') params.label = null
         final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
-        def orfileInstanceList = gridFSService.findAllByNa(na, params)
+        if (params.label && params.label == 'select label') return [orfileInstanceListTotal: 0, labels: gridFSService.labels(na)]
+        def orfileInstanceList = gridFSService.findAllByLabel(na, params)
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(na, params),
                 labels: gridFSService.labels(na)]
+    }
+
+    def findbypid() {
+        def orfileInstanceList = []
+        final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
+        if (params.pid) {
+            def file = gridFSService.get(na, params.pid)
+            if (file) orfileInstanceList << file
+        }
+        render(view: 'list', model: [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size(),
+                labels: gridFSService.labels(na)])
     }
 
     def show() {
@@ -117,7 +128,7 @@ class OrfileController {
 
         instructionInstance.na = na
         instructionInstance.fileSet = file.metaData.fileSet
-        instructionInstance.autoIngestValidInstruction  = false
+        instructionInstance.autoIngestValidInstruction = false
         instructionInstance.label = params.label
         instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
         instructionInstance.task.taskKey()
