@@ -8,10 +8,14 @@ class MetsController {
     def downloadMetsService
 
     def index() {
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("text/xml")
-        downloadMetsService.writeMetsFile(params, response.outputStream)
-        response.writer.flush()
-        return null
+
+        def mets = downloadMetsService.writeMetsFile(params.na, params.label)
+        if (mets) {
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("text/xml")
+            mets.write(response.outputStream)
+            response.writer.flush()
+            return null
+        }
     }
 }
