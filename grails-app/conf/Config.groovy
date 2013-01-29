@@ -72,7 +72,7 @@ if (System.properties.containsKey("or.properties")) {
     println("FATAL: no or.properties file set in VM or Environment. \n \
         Add a -Dor.properties=/path/to/or.properties argument when starting this application. \n \
         Or set a OR=/path/to/or.properties as environment variable.")
-    System.exit(-1)
+      System.exit(-1)
 }
 
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket

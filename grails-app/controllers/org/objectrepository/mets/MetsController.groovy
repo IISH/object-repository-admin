@@ -5,11 +5,11 @@ package org.objectrepository.mets
  */
 class MetsController {
 
-    def downloadMetsService
+    def metsService
 
     def index() {
 
-        def mets = downloadMetsService.writeMetsFile(params.na, params.label)
+        def mets = metsService.writeMetsFile(params.na, params.label)
         if (mets) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")

@@ -16,7 +16,6 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
      */
     @Override
     UserDetails loadUserByUsername(String username, boolean loadRoles) {
-
         log.info "Attempted user logon '$username' with loadRole from database being $loadRoles"
         User.withTransaction { status ->
             def user = User.findByUsername(username)

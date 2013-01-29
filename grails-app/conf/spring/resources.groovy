@@ -1,11 +1,13 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
+
 import org.objectrepository.instruction.PlanManagerService
 import org.objectrepository.security.AdminUserDetailsService
 import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
+import org.objectrepository.ftp.FtpService
 
 beans = {
 
@@ -47,5 +49,9 @@ beans = {
             mongo = ref('mongoBean')
             database = "security"
         }
+    }
+
+    if (System.getProperty("ftp", "false") == "true") {
+        ftpService(FtpService, ref('metsService'))
     }
 }
