@@ -29,6 +29,7 @@ abstract class WorkflowJob {
     static long instructionMessageTTL = 300000 // Five minutes and then the task is stale
 
     public WorkflowJob() {
+
         taskProperties = new DefaultGrailsDomainClass(Task.class).persistentProperties.collect {
             it.name
         }

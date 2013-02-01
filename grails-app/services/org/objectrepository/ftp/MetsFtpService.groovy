@@ -1,18 +1,21 @@
 package org.objectrepository.ftp
 
+import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory
 import org.apache.ftpserver.usermanager.SaltedPasswordEncryptor
 import org.apache.ftpserver.usermanager.UserFactory
 import org.apache.ftpserver.usermanager.impl.WritePermission
+import org.objectrepository.mets.MetsService
 
-class FtpService {
+class MetsFtpService {
 
     static transactional = false
+    def metsService
+    private FtpServer server
 
-    public FtpService(def metsService) {
-
+    void start() {
         final def serverFactory = new FtpServerFactory();
 
         System.out.println("Adding Users Now");
@@ -32,11 +35,11 @@ class FtpService {
         def user = userFact.createUser();
         userManagement.save(user);
 
-        //final fileSystemFactory = MetsFileSystemFactory.newInstance()
-        //fileSystemFactory.metsService = metsService
-        //serverFactory.setFileSystem(fileSystemFactory);
+        final fileSystemFactory = MetsFileSystemFactory.newInstance()
+        fileSystemFactory.metsService = metsService as MetsService
+        serverFactory.setFileSystem(fileSystemFactory);
 
-        def server = serverFactory.createServer();
+        server = serverFactory.createServer();
         server.start();
     }
 }

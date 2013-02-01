@@ -16,6 +16,7 @@ class BootStrap {
     def grailsApplication
     def clientDetailsService
     def planManagerService
+    def metsFtpService
 
     def init = { servletContext ->
 
@@ -25,6 +26,9 @@ class BootStrap {
         bindAccessors()
         if (planManagerService) {
             planManagerService.start();
+        }
+        if (System.getProperty("ftp", "false") == "true") {
+            metsFtpService.start()
         }
     }
 

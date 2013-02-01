@@ -208,7 +208,7 @@ class GridFSService {
      * @return
      */
     def labels(String na) {
-        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval.plus(0, 'select label')
+        mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval
     }
 
     /**

@@ -9,13 +9,13 @@ class MetsController {
 
     def index() {
 
-        def mets = metsService.writeMetsFile(params.na, params.label)
+        def mets = metsService.writeMetsFile(params.na, params.label, Boolean.parseBoolean(params.cache))
         if (mets) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")
             mets.write(response.outputStream)
-            response.writer.flush()
-            return null
+            response.outputStream.flush()
         }
+
     }
 }
