@@ -22,14 +22,15 @@ class MetsFtpService {
         factory.port = (grailsApplication.config.ftp.port) ?: 2121
         serverFactory.addListener("default", factory.createListener())
 
-        String keystoreFile = grailsApplication.config.ftp.keystoreFile
+        def keystoreFile = grailsApplication.config.ftp?.keystoreFile
         if (keystoreFile) {
             String keystoreFilePassword = grailsApplication.config.ftp.keystoreFilePassword
             SslConfigurationFactory ssl = new SslConfigurationFactory()
-            ssl.setKeystoreFile(new File(keystoreFile))
-            ssl.setKeystorePassword(keystoreFilePassword)
-            factory.setSslConfiguration(ssl.createSslConfiguration())
-            factory.setImplicitSsl(true)
+            ssl.keystoreFile = new File(keystoreFile)
+            ssl.keyPassword = keystoreFilePassword
+            ssl.keystoreAlgorithm = "RSA"
+            factory.sslConfiguration  = ssl.createSslConfiguration()
+            factory.implicitSsl = true
         }
 
         final userManagerFactory = new MetsUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
