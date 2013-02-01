@@ -3,6 +3,7 @@ package org.objectrepository.ftp
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.listener.ListenerFactory
+import org.apache.ftpserver.ssl.SslConfigurationFactory
 
 class MetsFtpService {
 
@@ -18,14 +19,18 @@ class MetsFtpService {
         final def serverFactory = new FtpServerFactory()
 
         final ListenerFactory factory = new ListenerFactory()
-        factory.setPort(2121)
+        factory.port = (grailsApplication.config.ftp.port) ?: 2121
         serverFactory.addListener("default", factory.createListener())
 
-        /*SslConfigurationFactory ssl = new SslConfigurationFactory();
-        ssl.setKeystoreFile(new File(grailsApplication.config.ftp.keystoreFile));
-        ssl.setKeystorePassword(grailsApplication.config.ftp.keystoreFilePassword);
-        factory.setSslConfiguration(ssl.createSslConfiguration());
-        factory.setImplicitSsl(true);*/
+        String keystoreFile = grailsApplication.config.ftp.keystoreFile
+        if (keystoreFile) {
+            String keystoreFilePassword = grailsApplication.config.ftp.keystoreFilePassword
+            SslConfigurationFactory ssl = new SslConfigurationFactory()
+            ssl.setKeystoreFile(new File(keystoreFile))
+            ssl.setKeystorePassword(keystoreFilePassword)
+            factory.setSslConfiguration(ssl.createSslConfiguration())
+            factory.setImplicitSsl(true)
+        }
 
         final userManagerFactory = new MetsUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
