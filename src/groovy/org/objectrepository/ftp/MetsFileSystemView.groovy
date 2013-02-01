@@ -28,7 +28,6 @@ public class MetsFileSystemView implements FileSystemView {
     }
 
     public FtpFile getWorkingDirectory() throws FtpException {
-        println("getWorkingDirectory for currLabel="+currLabel)
         new MetsFtpFile(currLabel, user, metsDocuments[currLabel])
     }
 
@@ -43,7 +42,6 @@ public class MetsFileSystemView implements FileSystemView {
 
     public boolean changeWorkingDirectory(String s) throws FtpException {
 
-        println("s=" + s)
         if (s == "./") {  // PWD
             return true
         }
@@ -54,8 +52,6 @@ public class MetsFileSystemView implements FileSystemView {
         }
 
         String metsLabel = rootLabel(s)
-        println("normalized s=" + s)
-        println("metsLabel=" + metsLabel)
 
         if (!metsDocuments.containsKey(metsLabel)) {
             def d = metsService.writeMetsFile(user.homeDirectory, metsLabel.substring(1))
@@ -69,7 +65,6 @@ public class MetsFileSystemView implements FileSystemView {
 
     // As we were given a filename and not the identifier, we need to get it by browsing the fileSec
     public FtpFile getFile(String s) throws FtpException {
-        println("getFile(s)=" + s)
         if (s == "./") {
             s = currLabel
         }

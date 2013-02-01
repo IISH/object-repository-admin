@@ -110,8 +110,6 @@ class MetsService {
                 ['metadata.label': label],
                 ['metadata.fileSet': [$regex: '^' + location, $options: 'i']]]]
                 , ['metadata.pid': 1])
-        println(cursor.count())
-        println(label)
         if (cursor.count() == 0) return
 
         final def metsWrapper = new METSWrapper()
@@ -197,19 +195,15 @@ class MetsService {
                     } else {
                         ID = "g" + ++i
                         ids.put(ID, sb.toString())
-                        println("ID:" + ID + "; value " + sb.toString())
                         String parentValue = sb.substring(0, sb.lastIndexOf("/"))
-                        println("parentValue='" + parentValue + "'")
                         def parent = ids.find {
                             it.value == parentValue
                         }
-                        println("parent=" + parent.key)
                         def parentDiv = findDiv(divMainLogical, parent.key)
                         logical_div = parentDiv.newDiv()
                         logical_div.setID(ID)
                         logical_div.setLabel(sb.toString())
                         parentDiv.addDiv(logical_div)
-                        println("Total size parent logical_div: " + parentDiv.divs.size())
                     }
                 }
                 final div = addPhysicalDiv(divMainPhysical, ++count, _group_ID)

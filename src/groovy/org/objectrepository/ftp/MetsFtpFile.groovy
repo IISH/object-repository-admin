@@ -31,9 +31,7 @@ public class MetsFtpFile implements FtpFile {
     }
 
     public String getName() {
-        final name = currLabel.substring(currLabel.lastIndexOf("/") + 1)
-        println("name=" + name)
-        name
+        currLabel.substring(currLabel.lastIndexOf("/") + 1)
     }
 
     public boolean isHidden() {
@@ -121,7 +119,6 @@ public class MetsFtpFile implements FtpFile {
     public List<FtpFile> listFiles() {
         // now return all the files under the directory
         def virtualFiles = []
-        println("listFiles=" + currLabel)
         if (currLabel == "") {
             mets.getStructMapByType("logical").get(0).divs.each {
                 virtualFiles << new MetsFtpFile(it.label, user, mets)
