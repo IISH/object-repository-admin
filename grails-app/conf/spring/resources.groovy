@@ -48,10 +48,4 @@ beans = {
             database = "security"
         }
     }
-
-    /*if (System.getProperty("ftp", "false") == "true") {
-        ftpServer(MetsFtpService) {
-            metsService = ref('metsService')
-        }
-    }*/
 }

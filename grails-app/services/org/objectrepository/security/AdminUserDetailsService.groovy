@@ -46,7 +46,6 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
     }
 
     protected UserDetails createUserDetails(User user, def Collection<GrantedAuthority> authorities) {
-
         new MockUser(user.na, user.username, user.password, user.enabled, user.accountNonExpired, user.credentialsNonExpired, user.accountNonLocked, authorities, user.id)
     }
 }

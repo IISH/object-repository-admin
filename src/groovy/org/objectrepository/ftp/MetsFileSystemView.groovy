@@ -20,7 +20,7 @@ public class MetsFileSystemView implements FileSystemView {
         this.metsService = metsService
         this.user = user
         this.currLabel = ""
-        metsDocuments.put("", metsService.writeMetsFile("10848").METSObject)
+        metsDocuments.put("", metsService.writeMetsFile(user.homeDirectory).METSObject)
     }
 
     public FtpFile getHomeDirectory() throws FtpException {
@@ -58,7 +58,7 @@ public class MetsFileSystemView implements FileSystemView {
         println("metsLabel=" + metsLabel)
 
         if (!metsDocuments.containsKey(metsLabel)) {
-            def d = metsService.writeMetsFile("10848", metsLabel.substring(1))
+            def d = metsService.writeMetsFile(user.homeDirectory, metsLabel.substring(1))
             if (!d) return false
             metsDocuments.put(metsLabel, d.METSObject)
             if (!findDiv(d.METSObject.getStructMapByType("logical")[0].divs[0], s)) return false
