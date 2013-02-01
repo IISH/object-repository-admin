@@ -18,6 +18,9 @@ class OrfileController {
     }
 
     def list() {
+
+        if ( params.pid ) return findbypid()
+
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         params.offset = params.offset ? params.int('offset') : 0
         params.order = !params.order || params.order == "asc" ? 1 : -1
@@ -46,8 +49,7 @@ class OrfileController {
         }
         final labels = gridFSService.labels(na)
         labels.plus(0, 'select label')
-        render(view: 'list', model: [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size(),
-                labels: labels])
+        [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size(), labels: labels]
     }
 
     def show() {

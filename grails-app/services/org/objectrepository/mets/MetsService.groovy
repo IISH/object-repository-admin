@@ -146,7 +146,7 @@ class MetsService {
 
         // Folders always end with a /
         while (cursor.hasNext()) {
-            def doc = gridFSService.get(na, cursor.next().metadata.pid)
+            def doc = normalizeExtension(na, gridFSService.get(na, cursor.next().metadata.pid))
             _group_ID++
             doc.each { def d ->
                 final String folder = label + "/" + d.key + doc.master.metadata.fileSet // /a/b/c/d. No trailing slash
@@ -219,6 +219,36 @@ class MetsService {
         }
 
         metsWrapper
+    }
+
+    /**
+     *  normalizeExtension
+     *
+     *  The master filename is identical to the one ingested.
+     *  It has a absolute path of the filesystem where it was ingested on.
+     *
+     *  We will remove the first part of the root.
+     *  Because the filenames in the non master buckets are not human readable, we use the master to set this:
+     *  master filename plus extension based on mimetype
+     *
+     *  The real sollution would be to have correct filenames in all collections
+     *
+     * @param doc
+     */
+    def normalizeExtension(def na, def doc) {
+        final s = "/" + na + "/"
+        int i = doc.master.metadata.fileSet.indexOf(s)
+        if ( i == -1 ) return
+        def fileSet = doc.master.metadata.fileSet[i + s.length()-1..-1]
+        i = doc.master.filename.lastIndexOf(".")
+        if ( i == -1 ) return
+        def filename = doc.master.filename[0..i]
+        doc.each { def d ->
+            d.value.metadata.fileSet = fileSet
+            if ( d.key != "master" ) {
+                d.value.filename = filename + d.value.contentType.split("/")[1]
+            }
+        }
     }
 
     private def addPhysicalDiv(def div, int count, int _group_ID) {
