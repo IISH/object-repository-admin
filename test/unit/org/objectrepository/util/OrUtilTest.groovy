@@ -24,7 +24,7 @@ class OrUtilTest {
 
     void testFSInstruction() {
 
-        int success, failure
+        int success = 0, failure = 0
         new File(System.properties['user.dir'] + "/test/resources").eachFile(FileType.FILES) {
             if (OrUtil.hasFSInstruction(it)) {success++}
             else { failure++ }

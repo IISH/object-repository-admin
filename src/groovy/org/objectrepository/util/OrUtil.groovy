@@ -57,7 +57,7 @@ class OrUtil {
 
         final Map instruction = null
         while (xsr.hasNext()) {
-            final next = xsr.next()
+            final next = xsr?.next()
             if (next == XMLStreamReader.START_ELEMENT && !instruction && xsr.localName.contains("instruction")
                     && xsr.namespaceURI.equals(or_ns)) {
                 instruction = [:]
