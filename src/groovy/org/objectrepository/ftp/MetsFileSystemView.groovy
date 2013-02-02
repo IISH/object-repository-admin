@@ -73,7 +73,8 @@ public class MetsFileSystemView implements FileSystemView {
         }
         def metsLabel = rootLabel(s)
         def d = metsDocuments[metsLabel]
-        if (d) return new MetsFtpFile(s, user, d, true, 0, metsService.gridFSService)
+        println("metsLabel="+metsLabel)
+        if (d) return new MetsFtpFile(s, user, d, true, 0, 0, metsService.gridFSService)
         null
     }
 

@@ -4,8 +4,9 @@ import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.SslConfigurationFactory
+import org.springframework.beans.factory.DisposableBean
 
-class MetsFtpService {
+class FtpService implements DisposableBean {
 
     static transactional = false
     def metsService
@@ -19,19 +20,21 @@ class MetsFtpService {
         final def serverFactory = new FtpServerFactory()
 
         final ListenerFactory factory = new ListenerFactory()
-        factory.port = (grailsApplication.config.ftp.port) ?: 2121
-        serverFactory.addListener("default", factory.createListener())
+        factory.port = Integer.parseInt(grailsApplication.config.ftp.port ?: "21")
 
-        def keystoreFile = grailsApplication.config.ftp?.keystoreFile
+        def keystoreFile = grailsApplication.config.ftp.ssl.keystoreFile
         if (keystoreFile) {
-            String keystoreFilePassword = grailsApplication.config.ftp.keystoreFilePassword
+            String keystoreFilePassword = grailsApplication.config.ftp.ssl.keyPassword
+            assert keystoreFilePassword
             SslConfigurationFactory ssl = new SslConfigurationFactory()
             ssl.keystoreFile = new File(keystoreFile)
-            ssl.keyPassword = keystoreFilePassword
-            ssl.keystoreAlgorithm = "RSA"
-            factory.sslConfiguration  = ssl.createSslConfiguration()
-            factory.implicitSsl = true
+            ssl.keystorePassword = keystoreFilePassword
+            factory.sslConfiguration = ssl.createSslConfiguration()
+            assert grailsApplication.config.ftp.ssl.implicitSsl
+            factory.implicitSsl = grailsApplication.config.ftp.ssl.implicitSsl.toBoolean()
         }
+
+        serverFactory.addListener("default", factory.createListener())
 
         final userManagerFactory = new MetsUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
@@ -42,5 +45,9 @@ class MetsFtpService {
 
         server = serverFactory.createServer()
         server.start()
+    }
+
+    void destroy() {
+        server?.stop()
     }
 }

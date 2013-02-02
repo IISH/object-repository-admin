@@ -12,17 +12,19 @@ public class MetsFtpFile implements FtpFile {
     private User user
     private METS mets
     private long length
+    private long created
     private boolean isDirectory
     private def gridFSService
     private def bucket
     private def pid
 
-    public MetsFtpFile(String currLabel, User user, METS mets, boolean isDirectory = true, length = 0, def gridFSService = null) {
+    public MetsFtpFile(String currLabel, User user, METS mets, boolean isDirectory = true, long length = 0,  long created = 0, def gridFSService = null) {
         this.currLabel = currLabel
         this.user = user
         this.mets = mets
         this.isDirectory = isDirectory
         this.length = length
+        this.created = created
         this.gridFSService = gridFSService
     }
 
@@ -61,6 +63,7 @@ public class MetsFtpFile implements FtpFile {
                     bucket = currLabel.split("/")[2]
                     isDirectory = false
                     length = f.size
+                    created = f.created
                     return true
                 }
             }
@@ -93,7 +96,7 @@ public class MetsFtpFile implements FtpFile {
     }
 
     public long getLastModified() {
-        0
+        created
     }
 
     public boolean setLastModified(long l) {
@@ -118,6 +121,7 @@ public class MetsFtpFile implements FtpFile {
 
     public List<FtpFile> listFiles() {
         // now return all the files under the directory
+        def hack = null
         def virtualFiles = []
         if (currLabel == "") {
             mets.getStructMapByType("logical").get(0).divs.each {
@@ -129,14 +133,34 @@ public class MetsFtpFile implements FtpFile {
             div?.divs?.each {
                 virtualFiles << new MetsFtpFile(it.label, user, mets)
             }
-            div?.fptrs?.each {
-                def file = mets.fileSec.getFile(it.fileID)
-                file?.FLocats?.each {
-                    virtualFiles << new MetsFtpFile(it.title, user, mets, false, file.size)
+            div?.fptrs?.each { fptr ->
+                def file = mets.fileSec.getFile(fptr.fileID)
+                if (file) file.FLocats.each {
+                    virtualFiles << new MetsFtpFile(it.title, user, mets, false, file.size, getTime(file.created))
+                } else {      // Oddly, when we find a fileID; we cannot (always) locate the corresponding file ID in the fileSec
+                    if (hack) {
+                        file = hack[fptr.fileID]
+                        virtualFiles << new MetsFtpFile(file.FLocats[0].title, user, mets, false, file.size, getTime(file.created))
+                    } else {
+                        hack = [:]
+                        println("NO file found. Odd")
+                        mets.fileSec.fileGrps.each {
+                            it.files.each {
+                                hack.put(it.ID, it)
+                            }
+                        }
+                        file = hack[fptr.fileID]
+                        virtualFiles << new MetsFtpFile(file.FLocats[0].title, user, mets, false, file.size, getTime(file.created))
+                    }
                 }
             }
         }
+        hack?.clear()
         virtualFiles
+    }
+
+    long getTime(String s) {
+        ( s == null ) ? 0 : Date.parse("yyyy-MM-dd'T'mm:hh:ss'Z'", s).time
     }
 
     public OutputStream createOutputStream(long l) throws IOException {

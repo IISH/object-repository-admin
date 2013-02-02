@@ -148,7 +148,6 @@ class MetsService {
             _group_ID++
             doc.each { def d ->
                 final String folder = label + "/" + d.key + doc.master.metadata.fileSet // /a/b/c/d. No trailing slash
-                log.info "folder=" + folder
                 String _use = (uses[d.key]) ?: d.key
                 String type = d.value.contentType.split('/')[0]
                 String use = _use + " " + type
@@ -168,6 +167,7 @@ class MetsService {
                 file.setChecksum(d.value.md5)
                 file.setSize(d.value.length)
                 file.setMIMEType(d.value.contentType)
+                file.setCreated(d.value.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"))
                 def locat = file.newFLocat()
                 file.addFLocat(locat)
                 if (doc.master.metadata.pidType) {

@@ -1,7 +1,7 @@
 grails.project.groupId = "org.objectrepository" // change this to alter the default package name and Maven publishing destination
 grails.camel.camelContextId = "camelContext"
 grails.views.javascript.library = "jquery"
-['ldap', 'oauthProvider', 'plans', 'addUsers'].each {
+['ldap', 'oauthProvider', 'plans', 'addUsers', 'ftp'].each {
     delegate."$it" = Boolean.parseBoolean(System.properties.getProperty(it, 'false'))
 }
 
@@ -57,9 +57,6 @@ grails.web.disable.multipart = false
 
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
-
-// Get the server port and message queue port.
-def serverPort = System.properties['server.port']
 
 grails.config.locations = [ContentTypeConfig, PlanConfig]
 if (System.properties.containsKey("or.properties")) {
@@ -126,6 +123,7 @@ grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(memberUID={0})'
 grails.plugins.springsecurity.ldap.useRememberMe = false
 
+def serverPort = System.properties['server.port']
 resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
 
 environments {
