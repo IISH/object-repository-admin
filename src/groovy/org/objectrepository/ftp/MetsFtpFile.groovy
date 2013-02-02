@@ -63,7 +63,7 @@ public class MetsFtpFile implements FtpFile {
                     bucket = currLabel.split("/")[2]
                     isDirectory = false
                     length = f.size
-                    created = f.created
+                    created = getTime(f.created)
                     return true
                 }
             }

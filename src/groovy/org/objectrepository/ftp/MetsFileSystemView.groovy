@@ -46,7 +46,7 @@ public class MetsFileSystemView implements FileSystemView {
             return true
         }
         if (s == "..") {//CDUP
-            s = CDUP(s)
+            s = CDUP(currLabel)
         } else if (s[0] != '/') { // cd to directory in same folder
             s = currLabel + "/" + s
         }
