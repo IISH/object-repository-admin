@@ -5,7 +5,7 @@ import org.apache.ftpserver.usermanager.PasswordEncryptor
 /**
  * ContextPasswordEncryptor
  *
- * We use the same password encryptor as the Spring setting
+ * A wrapper for the password encryptor defined in Spring core security
  *
  */
 class ContextPasswordEncryptor implements PasswordEncryptor {

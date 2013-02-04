@@ -26,15 +26,9 @@ class OrfileController {
         params.order = !params.order || params.order == "asc" ? 1 : -1
         params.sort = params.sort ?: "_id"
         final String na = (springSecurityService.hasRole('ROLE_ADMIN')) ? params.na : springSecurityService.principal.na
-        final labels
-        if (params.label && params.label == 'select label') {
-            labels = gridFSService.labels(na)
-            labels.plus(0, 'select label')
-            return [orfileInstanceListTotal: 0, labels: labels]
-        }
+        final labels = gridFSService.labels(na).plus(0, 'select label')
+        if (params.label == null) return [orfileInstanceListTotal: 0, labels: labels]
         def orfileInstanceList = gridFSService.findAllByLabel(na, params)
-        labels = gridFSService.labels(na)
-        labels.plus(0, 'select label')
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: gridFSService
                 .countByNa(na, params),
                 labels: labels]
@@ -47,8 +41,7 @@ class OrfileController {
             def file = gridFSService.get(na, params.pid)
             if (file) orfileInstanceList << file
         }
-        final labels = gridFSService.labels(na)
-        labels.plus(0, 'select label')
+        final labels = gridFSService.labels(na).plus(0, 'select label')
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size(), labels: labels]
     }
 

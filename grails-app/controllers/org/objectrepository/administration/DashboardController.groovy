@@ -20,7 +20,7 @@ class DashboardController {
      * See if we need to create a user
      */
     def index = {
-        log.info "Check if adding an account is needed..."
+        log.info "Checking if adding an account is needed..."
         final String na = springSecurityService.principal.na
         if (na && ldapUserDetailsManager) {
             log.info "We are a ldap user "

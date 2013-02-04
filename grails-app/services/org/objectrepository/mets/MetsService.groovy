@@ -5,6 +5,13 @@ import au.edu.apsr.mtk.base.METSWrapper
 import com.mongodb.DBCursor
 import au.edu.apsr.mtk.ch.METSReader
 
+/**
+ * MetsService
+ *
+ * Offer a view to the stored files:
+ * - physical: the files are grouped by bucket
+ * - logical: a filesystem view based on the absolute filename
+ */
 class MetsService {
 
     static transactional = false
@@ -93,7 +100,7 @@ class MetsService {
      * Output the METS object to the writer.
      *
      * Strategy:
-     *  - collect the documents by label   or PID value
+     *  - collect the documents by label or PID value
      *  - the grouping will be according to foldername of the targeted query: label=all files in the fileSet; pid=all files sharing the same folder of the file
      *  - for each found level, produce a fileSec.
      *  - reconstruct a filesystem view based on the filename:

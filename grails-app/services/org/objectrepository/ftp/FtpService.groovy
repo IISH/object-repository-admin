@@ -19,7 +19,7 @@ class FtpService implements DisposableBean {
 
         final def serverFactory = new FtpServerFactory()
 
-        final ListenerFactory factory = new ListenerFactory()
+        final def factory = new ListenerFactory()
         factory.port = Integer.parseInt(grailsApplication.config.ftp.port ?: "21")
 
         def keystoreFile = grailsApplication.config.ftp.ssl.keystoreFile
