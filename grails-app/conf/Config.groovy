@@ -11,7 +11,7 @@ grails.plugins.springsecurity.oauthProvider.tokenServices.accessTokenValiditySec
 grails.plugins.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
 grails.plugins.springsecurity.controllerAnnotations.staticRules = ['/oauth/authorize.dispatch': ['ROLE_ADMIN', 'ROLE_CPADMIN']]
 
-updateList.interval = 5000 // setInterval in ms for the Javascript Ajax function
+updateList.interval = 60000 // setInterval in ms for the Javascript Ajax function
 
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
