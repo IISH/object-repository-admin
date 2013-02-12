@@ -141,6 +141,8 @@ class TaskValidationService {
      * @return
      */
     boolean hasFSFiles(def document) {
-        _hasFSFiles(new File(document.fileSet as String))
+        boolean hf =  _hasFSFiles(new File(document.fileSet as String))
+        log.info document.fileSet + " : hasFSFiles=" + hf
+        hf
     }
 }

@@ -78,6 +78,7 @@ class WorkflowInitiateService extends WorkflowJob {
             if (!taskValidationService.hasFileSet(it) && it.task?.statusCode > 799) {
                 it.delete() // We have become a lie... no fileset at all.
             } else if (it.task.name == 'UploadFiles') {
+                it.cacheTask = [name: it.task.name, statusCode: it.task.statusCode]
                 runMethod(it)
             }
         }
