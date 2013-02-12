@@ -120,14 +120,14 @@ class TaskValidationService {
      * @param dir
      * @return
      */
-    private boolean _hasFSFiles(File dir) {
+    private boolean hasFiles(File dir) {
 
         final files = dir.listFiles()
         for (File file : files) {
             if (file.name[0].equals(".")) continue
             if (file.name.equals("instruction.xml")) continue
             if (file.name.endsWith(".md5")) continue
-            if (file.isFile() || _hasFSFiles(file)) {
+            if (file.isFile() || hasFiles(file)) {
                 return true
             }
         }
@@ -141,7 +141,7 @@ class TaskValidationService {
      * @return
      */
     boolean hasFSFiles(def document) {
-        boolean hf =  _hasFSFiles(new File(document.fileSet as String))
+        boolean hf = hasFiles(new File(document.fileSet as String))
         log.info document.fileSet + " : hasFSFiles=" + hf
         hf
     }
