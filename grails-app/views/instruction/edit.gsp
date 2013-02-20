@@ -32,6 +32,12 @@
                 </label>
                 <g:textField name="label" value="${instructionInstance.label}"/>
             </div>
+            <div class="fieldcontain ${hasErrors(bean: instructionInstance, field: 'objid', 'error')} ">
+                <label for="objid">
+                    <g:message code="instruction.objid.label" />
+                </label>
+                <g:textField name="objid" value="${instructionInstance.objid}"/>
+            </div>
             <g:render template="/layouts/profileInstructionForm"
                                                                     model="[instance:instructionInstance]"/>
         </ol>

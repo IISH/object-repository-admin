@@ -39,6 +39,12 @@
             <span class="property-value" aria-labelledby="action-label"><g:fieldValue
                     bean="${instructionInstance}" field="label"/></span>
         </li>
+        <li class="fieldcontain">
+            <span id="objid-label" class="property-label"><g:message code="instruction.objid.label"
+                                                                     default="METS object identifier"/></span>
+            <span class="property-value" aria-labelledby="objid-label"><g:fieldValue
+                    bean="${instructionInstance}" field="objid"/></span>
+        </li>
         <g:render template="/layouts/profileInstructionShow" model="[instance: instructionInstance]"/>
     </ol>
 

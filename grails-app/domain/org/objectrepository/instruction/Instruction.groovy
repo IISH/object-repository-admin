@@ -35,6 +35,7 @@ class Instruction extends Tasking {
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail
+    String objid
     List<String> plan
     List<Task> workflow = []
 
@@ -105,6 +106,7 @@ class Instruction extends Tasking {
         keepLocationWhenRecreate(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
+        objid(nullable: true)
         plan(nullable: true)
     }
 

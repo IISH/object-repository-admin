@@ -23,6 +23,7 @@ class Stagingfile extends Tasking {
     Boolean replaceExistingDerivatives
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    Integer seq
     // End move
 
     List<Task> workflow = []
@@ -52,6 +53,7 @@ class Stagingfile extends Tasking {
         replaceExistingDerivatives(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
+        seq(nullable: true)
     }
 
     static embedded = ['workflow']
