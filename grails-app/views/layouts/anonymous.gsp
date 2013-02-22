@@ -23,9 +23,9 @@
 
 <body>
 
-<div id="hopeLogo">
-    <a href="<g:resource absolute="true"/>"><img src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="HOPE"
-                                                 border="0"/></a>
+<div id="hopeLogo"><a href="<g:resource absolute="true"/>"><h1>Shared Object Repository</h1></a>%{--<a style="float:right" href="<g:resource absolute="true"/>"><img
+        src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="HOPE"
+        border="0"/>--}%
 </div>
 
 <div class="nav">

@@ -24,6 +24,15 @@ body {
     width: 20%;
 }
 
+#hopeLogo a {
+    text-decoration: none;
+}
+#hopeLogo h1 {
+    padding: 5px;
+    font-size: 1.5em;
+    margin:0 0 0.3em 0;
+}
+
 #content {
     float: left;
     padding-top: 25px;
