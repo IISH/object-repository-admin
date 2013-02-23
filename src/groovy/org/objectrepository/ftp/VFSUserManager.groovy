@@ -10,7 +10,7 @@ import org.apache.ftpserver.ftplet.AuthenticationFailedException
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.AnonymousAuthentication
 
-class MetsFtpUserManager extends AbstractUserManager {
+class VFSUserManager extends AbstractUserManager {
 
     def adminUserDetailsService
     static int maxLogin = 0
@@ -19,7 +19,7 @@ class MetsFtpUserManager extends AbstractUserManager {
     static int uploadRate = 0
     static int maxIdleTimeSec = 300
 
-    MetsFtpUserManager(def adminUserDetailsService, def encryptor) {
+    VFSUserManager(def adminUserDetailsService, def encryptor) {
         super("admin", encryptor)
         this.adminUserDetailsService = adminUserDetailsService
     }
@@ -29,7 +29,7 @@ class MetsFtpUserManager extends AbstractUserManager {
         List<Authority> authorities = new ArrayList<Authority>();
         authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
         authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-        new MetsUser(name: details.username, password: details.password, homeDir: details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+        new VFSUser(name: details.username, password: details.password, homeDir: details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
     }
 
     String[] getAllUserNames() {

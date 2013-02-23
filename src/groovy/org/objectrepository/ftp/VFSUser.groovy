@@ -4,7 +4,7 @@ import org.apache.ftpserver.ftplet.User
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.ftplet.AuthorizationRequest
 
-class MetsUser implements User {
+class VFSUser implements User {
 
     private String name = null
     private String password = null
@@ -32,7 +32,7 @@ class MetsUser implements User {
     }
 
     public void setAuthorities(List<Authority> authorities) {
-        if (authorities ) {
+        if (authorities) {
             this.authorities = Collections.unmodifiableList(authorities);
         } else {
             this.authorities = null

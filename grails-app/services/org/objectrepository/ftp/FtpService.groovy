@@ -9,7 +9,7 @@ import org.springframework.beans.factory.DisposableBean
 class FtpService implements DisposableBean {
 
     static transactional = false
-    def metsService
+    def gridFSService
     def grailsApplication
     def userDetailsService
     def springSecurityService
@@ -36,11 +36,11 @@ class FtpService implements DisposableBean {
 
         serverFactory.addListener("default", factory.createListener())
 
-        final userManagerFactory = new MetsUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
+        final userManagerFactory = new FtpUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
 
-        final fileSystemFactory = MetsFileSystemFactory.newInstance()
-        fileSystemFactory.metsService = metsService
+        final fileSystemFactory = VFSFactory.newInstance()
+        fileSystemFactory.gridFSService = gridFSService
         serverFactory.setFileSystem(fileSystemFactory)
 
         server = serverFactory.createServer()
