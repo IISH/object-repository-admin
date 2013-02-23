@@ -26,7 +26,7 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public String getAbsolutePath() {
-        currentFolder
+        currentFolder.isEmpty() ? '/' : currentFolder
     }
 
     public String getName() {
@@ -118,15 +118,15 @@ public class VFSFtpFile implements FtpFile {
     public List<FtpFile> listFiles() {
         // now return all the files under the directory. The directory is a list of comma separated pathnames. We take the base path.
         def virtualFiles = []
-        if (currentFolder == "/") {
+        if (currentFolder.isEmpty()) {
             user.homeDirectory.split(',').each {
-                virtualFiles << new VFSFtpFile(it.split('/')[0], user, gridFSService)
+                virtualFiles << new VFSFtpFile(it.split('/')[1], user, gridFSService)
             }
         }
         else {
             def vfs = gridFSService.vfs(currentFolder)
             vfs?.d?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, true)
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService)
             }
             vfs?.f?.each {
                 virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l, it.t)

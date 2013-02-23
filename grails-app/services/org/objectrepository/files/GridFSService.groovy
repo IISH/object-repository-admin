@@ -274,13 +274,14 @@ class GridFSService {
     /**
      * vfs
      *
-     * Selects a node from the virtual file system
-     * The base path is always the na.
+     * The base name of the folder is always the database name.
      *
-     * @param currentFolder
+     * @param currentFolder The path. For example: /a/b/c/d
+     * @return
      */
     def vfs(String currentFolder) {
-        String na = currentFolder.split('/')[0]
-        mongo.getDB(OR + na).vfs.findOne({_id:currentFolder})
+        String na = currentFolder.split('/')[1]
+        final db = mongo.getDB(OR + na)
+        db.vfs.findOne([_id:currentFolder])
     }
 }

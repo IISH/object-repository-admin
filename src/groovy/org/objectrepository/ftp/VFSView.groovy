@@ -17,11 +17,11 @@ public class VFSView implements FileSystemView {
     public VFSView(GridFSService gridFSService, User user) {
         this.gridFSService = gridFSService
         this.user = user
-        this.currentFolder = "/"
+        this.currentFolder = ""
     }
 
     public FtpFile getHomeDirectory() throws FtpException {
-        new VFSFtpFile("/", user, gridFSService)
+        new VFSFtpFile("", user, gridFSService)
     }
 
     public FtpFile getWorkingDirectory() throws FtpException {
@@ -35,18 +35,16 @@ public class VFSView implements FileSystemView {
      */
 
     int i = 0
+
     public boolean changeWorkingDirectory(String s) throws FtpException {
 
-        if (s == "./") {  // PWD
-            return true
-        }
-        if (s == "..") {//CDUP
-            s = CDUP(currentFolder)
-        } else if (s[0] != '/') { // cd to subfolder in same folder
-            s = currentFolder + "/" + s
-        }
+        if (s == '/') return true
+        if (s == './') return true // PWD
+        if (s == '..') return changeWorkingDirectory(CDUP(currentFolder)) //CDUP
+        if (s[0] != '/') s = currentFolder + '/' + s // cd to subfolder in same folder
+
         if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            s.startsWith(it + '/')
+            (s + '/').startsWith(it + '/')
         }) {
             if (!gridFSService.vfs(s)) return false
             currentFolder = s
@@ -59,9 +57,9 @@ public class VFSView implements FileSystemView {
             s = currentFolder
         }
         else if (s[0] != '/') { // directory or file in same folder
-            s = currentFolder + "/" + s
+            s = currentFolder + '/' + s
         }
-        new VFSFtpFile(s, user, gridFSService) // can be file or folder
+        new VFSFtpFile(s, user, gridFSService)
     }
 
     public boolean isRandomAccessible() throws FtpException {
