@@ -34,6 +34,7 @@ public class VFSView implements FileSystemView {
     Sets the new working directory.
      */
 
+    int i = 0
     public boolean changeWorkingDirectory(String s) throws FtpException {
 
         if (s == "./") {  // PWD
@@ -44,8 +45,13 @@ public class VFSView implements FileSystemView {
         } else if (s[0] != '/') { // cd to subfolder in same folder
             s = currentFolder + "/" + s
         }
-        currentFolder = s
-        true
+        if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
+            s.startsWith(it + '/')
+        }) {
+            if (!gridFSService.vfs(s)) return false
+            currentFolder = s
+            true
+        } else false
     }
 
     public FtpFile getFile(String s) throws FtpException {
@@ -55,7 +61,7 @@ public class VFSView implements FileSystemView {
         else if (s[0] != '/') { // directory or file in same folder
             s = currentFolder + "/" + s
         }
-        new VFSFtpFile(s, user, gridFSService, true, 0, 0)
+        new VFSFtpFile(s, user, gridFSService) // can be file or folder
     }
 
     public boolean isRandomAccessible() throws FtpException {

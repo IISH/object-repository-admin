@@ -29,7 +29,7 @@ class VFSUserManager extends AbstractUserManager {
         List<Authority> authorities = new ArrayList<Authority>();
         authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
         authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-        new VFSUser(name: details.username, password: details.password, homeDir: details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+        new VFSUser(name: details.username, password: details.password, homeDir: '/'+details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
     }
 
     String[] getAllUserNames() {

@@ -16,7 +16,7 @@ public class VFSFtpFile implements FtpFile {
     private def bucket
     private def pid
 
-    public VFSFtpFile(String currentFolder, User user, def gridFSService, boolean isDirectory = true, long length = 0, long created = 0) {
+    public VFSFtpFile(String currentFolder, User user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
         this.currentFolder = currentFolder
         this.user = user
         this.gridFSService = gridFSService
@@ -50,15 +50,25 @@ public class VFSFtpFile implements FtpFile {
      * @return
      */
     public boolean doesExist() {
-        final parent = currentFolder[0..currentFolder.lastIndexOf("/") - 1]
-        def vfs = gridFSService.vfs(parent)
-        vfs?.f?.find {
-            parent + '/' + it.n == currentFolder
-        } != null
+        final parentFolder = currentFolder[0..currentFolder.lastIndexOf("/") - 1]
+        def file = gridFSService.vfs(parentFolder)?.f?.find {
+            parentFolder + '/' + it.n == currentFolder
+        }
+        if (file) {
+            isDirectory = false
+            length = file.l
+            created = file.t
+            pid = file.p
+            bucket = currentFolder.split('/')[2]
+            return true
+        }
+        false
     }
 
     public boolean isReadable() {
-        true
+        user.homeDirectory.split(',').find { // make sure we are allowed to see this
+            currentFolder.startsWith(it)
+        } != null
     }
 
     public boolean isWritable() {
@@ -119,7 +129,7 @@ public class VFSFtpFile implements FtpFile {
                 virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, true)
             }
             vfs?.f?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l as long , it.c as long )
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l, it.t)
             }
         }
         virtualFiles
