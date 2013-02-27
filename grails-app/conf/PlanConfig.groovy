@@ -201,7 +201,19 @@ plans = [
                         500: [purpose: 'The service node completed the task.'],
                         600: [purpose: 'Verifying if the task was successfull.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored,']
+                        800: [purpose: 'Derivate file is produced and stored']
+                ]
+        ],
+        StagingfileIngestPdf: [
+                statusCodes: [
+                        100: [purpose: 'The system received a request to produce a pdf'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for pdf creation'],
+                        400: [purpose: 'Creating pdf'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verifying if the task was successfull.'],
+                        700: [purpose: 'We could not see if a pdf was created'],
+                        800: [purpose: 'Derivate pdf is produced and stored']
                 ]
         ],
         EndOfTheRoad: [

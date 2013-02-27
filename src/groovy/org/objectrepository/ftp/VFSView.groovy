@@ -38,7 +38,10 @@ public class VFSView implements FileSystemView {
 
     public boolean changeWorkingDirectory(String s) throws FtpException {
 
-        if (s == '/') return true
+        if (s == "" || s == '/') {
+            currentFolder = ""
+            return true
+        }
         if (s == './') return true // PWD
         if (s == '..') return changeWorkingDirectory(CDUP(currentFolder)) //CDUP
         if (s[0] != '/') s = currentFolder + '/' + s // cd to subfolder in same folder
@@ -81,9 +84,9 @@ public class VFSView implements FileSystemView {
      * @param s
      * @return the parent
      */
-    private CDUP(String s) {
+    private String CDUP(String s) {
         def t = s.tokenize("/")
-        if (t.size() == 0) return "/"
+        if (t.size() < 2) return ""
         t.remove(t.size() - 1)
         "/" + t.join("/")
     }

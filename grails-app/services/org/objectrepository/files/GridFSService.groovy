@@ -101,9 +101,10 @@ class GridFSService {
      * @param file
      */
     void update(def document) {
-
-        mongo.getDB(OR + document.metadata.na).getCollection("master.files").update([_id: document._id],
-                [$set: ['metadata.access': document.metadata.access, 'metadata.label': document.metadata.label]], false, false)
+        ['master', 'level1', 'level2', 'level3'].each {
+            mongo.getDB(OR + document.metadata.na).getCollection(it + ".files").update(['metadata.pid': document.metadata.pid],
+                    [$set: ['metadata.access': document.metadata.access, 'metadata.label': document.metadata.label]], false, false)
+        }
     }
 
     void siteusage(String na, def document) {
@@ -282,6 +283,6 @@ class GridFSService {
     def vfs(String currentFolder) {
         String na = currentFolder.split('/')[1]
         final db = mongo.getDB(OR + na)
-        db.vfs.findOne([_id:currentFolder])
+        db.vfs.findOne([_id: currentFolder])
     }
 }
