@@ -23,6 +23,7 @@ class Stagingfile extends Tasking {
     Boolean replaceExistingDerivatives
     String pidwebserviceEndpoint
     String pidwebserviceKey
+    String objid
     Integer seq
     // End move
 
@@ -53,6 +54,7 @@ class Stagingfile extends Tasking {
         replaceExistingDerivatives(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true)
+        objid(nullable: true)
         seq(nullable: true)
     }
 

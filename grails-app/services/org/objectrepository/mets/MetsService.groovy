@@ -148,9 +148,6 @@ class MetsService {
         final ids = [:]
 
         label = "/" + label.replace("/", "_")
-        /*divMainLogical.setType("root")
-        divMainLogical.setID('g0')
-        divMainLogical.setLabel(label)*/
         ids << ['g0': label]
 
         // Folders always end with a /
@@ -158,7 +155,6 @@ class MetsService {
             def doc = gridFSService.get(na, cursor.next().metadata.pid)
             _group_ID++
             doc.each { def d ->
-                //final String folder = label + "/" + d.key + doc.master.metadata.fileSet // /a/b/c/d. No trailing slash
                 String _use = (uses[d.key]) ?: d.key
                 String type = d.value.contentType.split('/')[0]
                 String use = _use + " " + type
@@ -194,34 +190,8 @@ class MetsService {
                 locat.setType("simple")
                 locat.setTitle(d.value.filename)
 
-                //final StringBuilder sb = new StringBuilder()
-                //def logical_div
-/*
-                folder.substring(1).split("/").each() {
-                    sb.append("/" + it)
-                    def ID = ids.find {
-                        it.value == sb.toString()
-                    }
-                    if (ID) {
-                        logical_div = findDiv(divMainLogical, ID.key)
-                    } else {
-                        ID = "g" + ++i
-                        ids.put(ID, sb.toString())
-                        String parentValue = sb.substring(0, sb.lastIndexOf("/"))
-                        def parent = ids.find {
-                            it.value == parentValue
-                        }
-                        def parentDiv = findDiv(divMainLogical, parent.key)
-                        logical_div = parentDiv.newDiv()
-                        logical_div.setID(ID)
-                        logical_div.setLabel(sb.toString())
-                        parentDiv.addDiv(logical_div)
-                    }
-                }
-*/
                 final div = addPhysicalDiv(divMainPhysical, ++count, _group_ID)
                 addFptrToDiv(div, file_ID)
-                //addFptrToDiv(logical_div, file_ID)
             }
         }
 
