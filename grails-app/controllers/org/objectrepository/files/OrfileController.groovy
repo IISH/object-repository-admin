@@ -106,7 +106,7 @@ class OrfileController {
     /**
      * recreate
      *
-     * An instruction will be re created based on the stored files.
+     * An instruction will be re created based on the stored files's shared label value.
      *
      * @return
      */

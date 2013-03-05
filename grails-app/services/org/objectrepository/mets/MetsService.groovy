@@ -3,14 +3,12 @@ package org.objectrepository.mets
 import au.edu.apsr.mtk.base.Div
 import au.edu.apsr.mtk.base.METSWrapper
 import com.mongodb.DBCursor
-import au.edu.apsr.mtk.ch.METSReader
 
 /**
  * MetsService
  *
  * Offer a view to the stored files:
- * - physical: the files are grouped by bucket
- * - logical: a filesystem view based on the absolute filename
+ * - physical: the files are grouped by bucket and in order of sequence (if any)
  */
 class MetsService {
 
@@ -21,14 +19,24 @@ class MetsService {
     def grailsApplication
     def gridFSService
 
-    METSWrapper writeMetsFile(String na, String labelOrPID = null, boolean cache = true) {
+    /**
+     * writeMetsFile
+     *
+     * Returns an XML object in its wrapper
+     *
+     * @param na
+     * @param objidOrPidOrLabel
+     * @param cache
+     * @return
+     */
+    METSWrapper writeMetsFile(String na, String objidOrPidOrLabel = null, boolean cache = true) {
 
         METSWrapper wrapper
 
-        final filename = na + "_" + labelOrPID + ".xml"
-        final File file = new File(System.getProperty("java.io.tmpdir"), filename)
-        long expire = new Date().minus(1).time
-        if (cache && file.exists() && file.lastModified() > expire) {
+        //final filename = na + "_" + objidOrPidOrLabel + ".xml"
+        //final File file = new File(System.getProperty("java.io.tmpdir"), filename)
+        //long expire = new Date().minus(1).time
+        /*if (cache && file.exists() && file.lastModified() > expire) {
             log.info "Using cache " + file.absolutePath
             def mr = new METSReader()
             final stream = new FileInputStream(file)
@@ -39,19 +47,21 @@ class MetsService {
             final attribute = document.getDocumentElement().getAttributeNode("xmlns")
             document.getDocumentElement().removeAttributeNode(attribute)
             return new METSWrapper(document)
-        }
+        }*/
 
-        if (labelOrPID) {
-            final collection = mongo.getDB(OR + na).getCollection("master.files")
-            def doc = collection
-                    .findOne([$or: [['metadata.pid': na + "/" + labelOrPID], ['metadata.label': labelOrPID]]],
-                    ['metadata.fileSet': 1, 'metadata.label': 1])
-            wrapper = (doc) ? metsFile(na, doc?.metadata?.label, doc?.metadata?.fileSet) : null
+        if (objidOrPidOrLabel) {
+            def doc = mongo.getDB(OR + na).getCollection("master.files").findOne([$or: [
+                    ['metadata.objid': na + "/" + objidOrPidOrLabel],
+                    ['metadata.pid': na + "/" + objidOrPidOrLabel],
+                    ['metadata.label': objidOrPidOrLabel]
+            ]],
+                    ['metadata.objid': 1, 'metadata.label': 1])
+            wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet) : null
         } else wrapper = writeRootMetsFile(na, gridFSService.labels(na))
 
-        final fos = new FileOutputStream(file, false)
+        /*final fos = new FileOutputStream(file, false)
         wrapper.write(fos)
-        fos.close()
+        fos.close()*/
         wrapper
     }
 
@@ -100,23 +110,18 @@ class MetsService {
      * Output the METS object to the writer.
      *
      * Strategy:
-     *  - collect the documents by label or PID value
-     *  - the grouping will be according to foldername of the targeted query: label=all files in the fileSet; pid=all files sharing the same folder of the file
+     *  - collect the documents by first retrieving a document that has the requested objid, or label or PID value;
+     *  - then use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
-     *  - reconstruct a filesystem view based on the filename:
-     *  /
-     *  /label here/
-     *  /label here/bucket name/
-     *  /label here/bucket name/folder name(and subfolders)
-     *  /label here/bucket name/folder name(and subfolders)/filename
      */
-    private METSWrapper metsFile(String na, String label, String location) {// todo: look in location element: /a/b/c/d/e/filename.tif
+    private METSWrapper metsFile(String na, String objid, String label, String fileSet) {// todo: look in fileSet element: /a/b/c/d/e/filename.tif
 
-        final DBCursor cursor = mongo.getDB(OR + na).getCollection("master.files")
-                .find([$and: [
-                ['metadata.label': label],
-                ['metadata.fileSet': [$regex: '^' + location, $options: 'i']]]]
-                , ['metadata.pid': 1])
+        final DBCursor cursor = (objid) ?
+            mongo.getDB(OR + na).getCollection("master.files").find(['metadata.objid': objid], ['metadata.pid': 1]).sort(['metadata.seq': 1]) :
+            mongo.getDB(OR + na).getCollection("master.files").find([$and: [
+                    ['metadata.label': label],
+                    ['metadata.fileSet': fileSet]]]
+                    , ['metadata.pid': 1]).sort(['metadata.seq': 1])
         if (cursor.count() == 0) return
 
         final def metsWrapper = new METSWrapper()
@@ -130,12 +135,11 @@ class MetsService {
         final divMainPhysical = physicalMap.newDiv()
         physicalMap.addDiv(divMainPhysical)
 
-
-        final logicalMap = mets.newStructMap()
+        /*final logicalMap = mets.newStructMap()
         mets.addStructMap(logicalMap)
         logicalMap.setType("logical")
         final divMainLogical = logicalMap.newDiv()
-        logicalMap.addDiv(divMainLogical)
+        logicalMap.addDiv(divMainLogical)*/
 
         int count = 0
         int _file_ID = 0
@@ -144,17 +148,17 @@ class MetsService {
         final ids = [:]
 
         label = "/" + label.replace("/", "_")
-        divMainLogical.setType("root")
+        /*divMainLogical.setType("root")
         divMainLogical.setID('g0')
-        divMainLogical.setLabel(label)
+        divMainLogical.setLabel(label)*/
         ids << ['g0': label]
 
         // Folders always end with a /
         while (cursor.hasNext()) {
-            def doc = normalizeExtension(na, gridFSService.get(na, cursor.next().metadata.pid))
+            def doc = gridFSService.get(na, cursor.next().metadata.pid)
             _group_ID++
             doc.each { def d ->
-                final String folder = label + "/" + d.key + doc.master.metadata.fileSet // /a/b/c/d. No trailing slash
+                //final String folder = label + "/" + d.key + doc.master.metadata.fileSet // /a/b/c/d. No trailing slash
                 String _use = (uses[d.key]) ?: d.key
                 String type = d.value.contentType.split('/')[0]
                 String use = _use + " " + type
@@ -190,8 +194,9 @@ class MetsService {
                 locat.setType("simple")
                 locat.setTitle(d.value.filename)
 
-                final StringBuilder sb = new StringBuilder()
-                def logical_div
+                //final StringBuilder sb = new StringBuilder()
+                //def logical_div
+/*
                 folder.substring(1).split("/").each() {
                     sb.append("/" + it)
                     def ID = ids.find {
@@ -213,43 +218,14 @@ class MetsService {
                         parentDiv.addDiv(logical_div)
                     }
                 }
+*/
                 final div = addPhysicalDiv(divMainPhysical, ++count, _group_ID)
                 addFptrToDiv(div, file_ID)
-                addFptrToDiv(logical_div, file_ID)
+                //addFptrToDiv(logical_div, file_ID)
             }
         }
 
         metsWrapper
-    }
-
-    /**
-     *  normalizeExtension
-     *
-     *  The master filename is identical to the one ingested.
-     *  It has a absolute path of the filesystem where it was ingested on.
-     *
-     *  We will remove the first part of the root.
-     *  Because the filenames in the non master buckets are not human readable, we use the master to set this:
-     *  master filename plus extension based on mimetype
-     *
-     *  The real sollution would be to have correct filenames in all collections
-     *
-     * @param doc
-     */
-    def normalizeExtension(def na, def doc) {
-        final s = "/" + na + "/"
-        int i = doc.master.metadata.fileSet.indexOf(s)
-        if ( i == -1 ) return
-        def fileSet = doc.master.metadata.fileSet[i + s.length()-1..-1]
-        i = doc.master.filename.lastIndexOf(".")
-        if ( i == -1 ) return
-        def filename = doc.master.filename[0..i]
-        doc.each { def d ->
-            d.value.metadata.fileSet = fileSet
-            if ( d.key != "master" ) {
-                d.value.filename = filename + d.value.contentType.split("/")[1]
-            }
-        }
     }
 
     private def addPhysicalDiv(def div, int count, int _group_ID) {
