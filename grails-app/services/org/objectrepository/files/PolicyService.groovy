@@ -17,7 +17,8 @@ class PolicyService {
      * @param filesInstance
      * @return
      */
-    Policy getPolicy(def fileInstance) {
+    Policy getPolicy(def fileInstance, def cache) {
+        if ( cache == 'no' ) policies.clear()
         String na = fileInstance.metadata.na
         String access = fileInstance.metadata.access
         String key = na + "." + access
