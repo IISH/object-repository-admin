@@ -31,7 +31,7 @@
     <li><form method="GET"><input type="submit" value="Find pid"/><input id="pid" name="pid" size="50"/></form></li>
 </ul>
 
-<div id="list-orfile" class="content scaffold-list" role="main">
+<div id="list-orfile" class="content scaffold-list" role="main" style="clear:both">
     <table>
         <thead>
         <tr>
