@@ -179,7 +179,7 @@ class FileController {
             return null
         }
 
-        final String access = policyService.getPolicy(fileInstance).getAccessForBucket(params.bucket)
+        final String access = policyService.getPolicy(fileInstance, params.cache).getAccessForBucket(params.bucket)
         if (!springSecurityService.hasRole('ROLE_ADMIN') && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
             render(view: "denied", status: 401, model: [access: access])
             return null
