@@ -29,12 +29,12 @@ class VFSUserManager extends AbstractUserManager {
         List<Authority> authorities = new ArrayList<Authority>();
         authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
         authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-        new VFSUser(name: details.username, password: details.password, homeDir: '/'+details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+        new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
     }
 
     String[] getAllUserNames() {
         // Method not implemented
-        null
+        []
     }
 
     void delete(String s) {
@@ -62,12 +62,11 @@ class VFSUserManager extends AbstractUserManager {
             }
 
             User userCandidate = getUserByName(user)
-            if ( getPasswordEncryptor().matches(userCandidate?.password, getPasswordEncryptor().encrypt(password))) {
-                return userCandidate
+            if (getPasswordEncryptor().matches(userCandidate?.password, getPasswordEncryptor().encrypt(password))) {
+                userCandidate
             } else {
                 throw new AuthenticationFailedException("Authentication failed")
             }
-
         } else if (authentication instanceof AnonymousAuthentication) {
             if (doesExist("anonymous")) {
                 return getUserByName("anonymous")

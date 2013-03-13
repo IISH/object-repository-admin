@@ -5,6 +5,7 @@ import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.SslConfigurationFactory
 import org.springframework.beans.factory.DisposableBean
+import org.apache.ftpserver.DataConnectionConfigurationFactory
 
 class FtpService implements DisposableBean {
 
@@ -22,17 +23,21 @@ class FtpService implements DisposableBean {
         final def factory = new ListenerFactory()
         factory.port = Integer.parseInt(grailsApplication.config.ftp.port ?: "21")
 
-        def keystoreFile = grailsApplication.config.ftp.ssl.keystoreFile
-        if (keystoreFile) {
-            String keystoreFilePassword = grailsApplication.config.ftp.ssl.keyPassword
-            assert keystoreFilePassword
+        def keystoreFile = new File(grailsApplication.config.ftp.ssl.keystoreFile ?: "dummy")
+        if (keystoreFile.exists()) {
+            String keystoreFilePassword = grailsApplication.config.ftp.ssl.keyPassword ?: "changeit"
             SslConfigurationFactory ssl = new SslConfigurationFactory()
-            ssl.keystoreFile = new File(keystoreFile)
+            ssl.keystoreFile = keystoreFile
             ssl.keystorePassword = keystoreFilePassword
             factory.sslConfiguration = ssl.createSslConfiguration()
             assert grailsApplication.config.ftp.ssl.implicitSsl
             factory.implicitSsl = grailsApplication.config.ftp.ssl.implicitSsl.toBoolean()
         }
+
+        final DataConnectionConfigurationFactory dataConnConfigFac = new DataConnectionConfigurationFactory()
+        if (grailsApplication.config.ftp.passivePorts) dataConnConfigFac.setPassivePorts(grailsApplication.config.ftp.passivePorts)
+        if (grailsApplication.config.ftp.passiveExternalAddress) dataConnConfigFac.setPassiveExternalAddress(grailsApplication.config.ftp.passiveExternalAddress)
+        factory.setDataConnectionConfiguration(dataConnConfigFac.createDataConnectionConfiguration())
 
         serverFactory.addListener("default", factory.createListener())
 

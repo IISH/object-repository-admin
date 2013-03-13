@@ -285,4 +285,10 @@ class GridFSService {
         final db = mongo.getDB(OR + na)
         db.vfs.findOne([_id: currentFolder])
     }
+
+    def objid(String na) {
+        mongo.getDB(OR + na).find([$and: [['metadata.seq': 1], ['metadata.objid': [$exists: true]]]]).collect {
+            it.metadata.objid
+        }
+    }
 }
