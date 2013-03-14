@@ -1,4 +1,6 @@
 <g:set var="pidurl" value="${orfileInstance.master.metadata.resolverBaseUrl + orfileInstance.master.metadata.pid}"/>
+<g:if test="${orfileInstance.master.metadata.objid}"><g:set var="metsurl" value="${orfileInstance.master.metadata.resolverBaseUrl}${orfileInstance.master.metadata.objid}"/></g:if>
+
 <ol class="property-list files">
 
     <li class="fieldcontain">
@@ -32,6 +34,17 @@
             <a href="${pidurl}" target="_blank">${pidurl}</a>
         </span>
     </li>
+
+    <g:if test="${metsurl}">
+        <li class="fieldcontain">
+            <span id="objid-label" class="property-label"><g:message code="files.objid.label"
+                                                                     default="Mets url"/></span>
+            <span class="property-value" aria-labelledby="objid-label">
+                <a href="${metsurl}"
+                   target="_blank">${metsurl}</a>
+            </span>
+        </li>
+    </g:if>
 
     <li class="fieldcontain">
         <span id="files-label" class="property-label"><g:message code="files.label"

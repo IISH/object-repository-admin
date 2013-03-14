@@ -24,7 +24,7 @@ class GridFSService {
 
     private static String collate = "function() {\n" +
             "var l = [];" +
-            "db.getCollection('master.files').find(%s).limit(%s).skip(%s).forEach(function(m){" +
+            "db.getCollection('master.files').find(%s).limit(%s).skip(%s).sort({'metadata.seq':1}).forEach(function(m){" +
             "   if ( m.metadata.pid ){" +
             "       var f={master:m};" +
             "       ['level1', 'level2', 'level3'].forEach(function (d) {" +
