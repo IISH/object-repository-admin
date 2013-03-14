@@ -96,6 +96,8 @@ class OrfileController {
 
         orfileInstance.master.metadata.access = params.access
         orfileInstance.master.metadata.label = params.label
+        orfileInstance.master.metadata.objid = params.objid
+        orfileInstance.master.metadata.seq = params.seq
 
         gridFSService.update(orfileInstance.master)
 

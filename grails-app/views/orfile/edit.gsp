@@ -26,7 +26,8 @@
                 <span id="access-label" class="property-label"><g:message code="files.access.label"
                                                                           default="Access"/></span>
                 <span class="property-value" aria-labelledby="access-label">
-                    <g:select from="${policyList.access}" name="access" value="${orfileInstance.master.metadata.access}"/>
+                    <g:select from="${policyList.access}" name="access"
+                              value="${orfileInstance.master.metadata.access}"/>
             </li>
 
             <li class="fieldcontain">
@@ -35,16 +36,18 @@
                 <g:textField name="label" value="${orfileInstance.master.metadata.label}"/>
             </li>
 
-            <li class="fieldcontain">
-                <span id="objid-label" class="property-label"><g:message code="files.objid.label"
-                                                                         default="Mets OBJID"/>
-                <g:textField name="objid" value="${orfileInstance.master.metadata.objid}"/>
-            </li>
-            <li class="fieldcontain">
-                <span id="seq-label" class="property-label"><g:message code="files.seq.label"
-                                                                         default="Order"/>
-                <g:textField name="seq" value="${orfileInstance.master.metadata.seq}"/>
-            </li>
+            <g:if test="${orfileInstance.master.metadata.objid}">
+                <li class="fieldcontain">
+                    <span id="objid-label" class="property-label"><g:message code="files.objid.label"
+                                                                             default="Mets OBJID"/></span>
+                    <g:textField name="objid" value="${orfileInstance.master.metadata.objid}"/>
+                </li>
+                <li class="fieldcontain">
+                    <span id="seq-label" class="property-label"><g:message code="files.seq.label"
+                                                                           default="Order"/></span>
+                    <g:textField name="seq" value="${orfileInstance.master.metadata.seq as Integer}"/>
+                </li>
+            </g:if>
 
         </ol>
         <fieldset class="buttons">

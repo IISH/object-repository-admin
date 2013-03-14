@@ -69,7 +69,7 @@
                         </tr>
                         <tr>
                             <td><g:message code="file.seq" default="Order"/></td>
-                            <td>${value.metadata.seq}</td>
+                            <td>${value.metadata.seq as Integer}</td>
                         </tr>
                     </g:if>
 
