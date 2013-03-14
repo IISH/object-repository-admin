@@ -1,7 +1,7 @@
 grails.project.groupId = "org.objectrepository" // change this to alter the default package name and Maven publishing destination
 grails.camel.camelContextId = "camelContext"
 grails.views.javascript.library = "jquery"
-['ldap', 'oauthProvider', 'plans', 'addUsers', 'ftp'].each {
+['ldap', 'oauthProvider', 'plans', 'addUsers', 'ftp', 'screenLogin'].each {
     delegate."$it" = Boolean.parseBoolean(System.properties.getProperty(it, 'false'))
 }
 
@@ -69,7 +69,7 @@ if (System.properties.containsKey("or.properties")) {
     println("FATAL: no or.properties file set in VM or Environment. \n \
         Add a -Dor.properties=/path/to/or.properties argument when starting this application. \n \
         Or set a OR=/path/to/or.properties as environment variable.")
-      System.exit(-1)
+    System.exit(-1)
 }
 
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket
@@ -126,6 +126,7 @@ grails.plugins.springsecurity.ldap.useRememberMe = false
 def serverPort = System.properties['server.port']
 resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
 
+if (!screenLogin) grails.plugins.springsecurity.apf.filterProcessesUrl = "/" // This breakage is deliberate
 environments {
     production {
         grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/index"

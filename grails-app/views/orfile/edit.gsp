@@ -35,6 +35,17 @@
                 <g:textField name="label" value="${orfileInstance.master.metadata.label}"/>
             </li>
 
+            <li class="fieldcontain">
+                <span id="objid-label" class="property-label"><g:message code="files.objid.label"
+                                                                         default="Mets OBJID"/>
+                <g:textField name="objid" value="${orfileInstance.master.metadata.objid}"/>
+            </li>
+            <li class="fieldcontain">
+                <span id="seq-label" class="property-label"><g:message code="files.seq.label"
+                                                                         default="Order"/>
+                <g:textField name="seq" value="${orfileInstance.master.metadata.seq}"/>
+            </li>
+
         </ol>
         <fieldset class="buttons">
             <g:hiddenField name="id" value="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"/>

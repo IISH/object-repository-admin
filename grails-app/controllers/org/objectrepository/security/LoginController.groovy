@@ -33,7 +33,10 @@ class LoginController {
             redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
         }
         else {
-            redirect action: auth, params: params
+            if (System.getProperty("screenLogin", "false") == "true")
+                redirect action: auth, params: params
+            else
+                redirect action: full
         }
     }
 

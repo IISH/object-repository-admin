@@ -103,7 +103,10 @@ class GridFSService {
     void update(def document) {
         ['master', 'level1', 'level2', 'level3'].each {
             mongo.getDB(OR + document.metadata.na).getCollection(it + ".files").update(['metadata.pid': document.metadata.pid],
-                    [$set: ['metadata.access': document.metadata.access, 'metadata.label': document.metadata.label]], false, false)
+                    [$set: ['metadata.access': document.metadata.access,
+                            'metadata.label': document.metadata.label,
+                            'metadata.objid': document.metadata.objid,
+                            'metadata.seq': document.metadata.seq]], false, false)
         }
     }
 
@@ -287,7 +290,7 @@ class GridFSService {
     }
 
     def objid(String na) {
-        mongo.getDB(OR + na).find([$and: [['metadata.seq': 1], ['metadata.objid': [$exists: true]]]]).collect {
+        mongo.getDB(OR + na).'master.files'.find(['metadata.objid': [$exists: true], 'metadata.seq': 1]).collect {
             it.metadata.objid
         }
     }

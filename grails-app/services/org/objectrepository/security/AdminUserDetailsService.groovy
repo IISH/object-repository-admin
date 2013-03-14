@@ -1,7 +1,7 @@
 package org.objectrepository.security
 
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService
-import org.socialhistoryservices.security.MockUser
+import org.socialhistoryservices.security.OrUser
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.core.userdetails.UserDetails
@@ -46,6 +46,6 @@ class AdminUserDetailsService implements GrailsUserDetailsService {
     }
 
     protected UserDetails createUserDetails(User user, def Collection<GrantedAuthority> authorities) {
-        new MockUser(user.na, user.username, user.password, user.enabled, user.accountNonExpired, user.credentialsNonExpired, user.accountNonLocked, authorities, user.id)
+        new OrUser(user.na, user.username, user.password, user.enabled, user.accountNonExpired, user.credentialsNonExpired, user.accountNonLocked, authorities, user.id)
     }
 }

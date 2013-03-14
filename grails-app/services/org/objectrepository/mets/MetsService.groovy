@@ -14,7 +14,7 @@ class MetsService {
 
     static transactional = false
     static String OR = "or_"
-    static def uses = [master: 'archive', level1: 'hires reference', level2: 'reference', level3: 'thumbnail']
+    static def uses = ['master': 'archive', 'level1': 'hires reference', 'level2': 'reference', 'level3': 'thumbnail']
     def mongo
     def grailsApplication
     def gridFSService
@@ -57,7 +57,7 @@ class MetsService {
             ]],
                     ['metadata.objid': 1, 'metadata.label': 1])
             wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet) : null
-        } else wrapper = writeRootMetsFile(na, gridFSService.labels(na))
+        } else wrapper = writeRootMetsFile(na)
 
         /*final fos = new FileOutputStream(file, false)
         wrapper.write(fos)
@@ -66,10 +66,12 @@ class MetsService {
     }
 
     /*
-    The main mets fileSec just a list of labels \ virtual folders
+    The main mets fileSec just a list of objids \ virtual folders
      */
 
-    private writeRootMetsFile(def na, def labels) {
+    private writeRootMetsFile(def na) {
+
+        def objids = gridFSService.objid(na)
 
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
@@ -78,14 +80,14 @@ class MetsService {
         final fileGrp = fileSection.newFileGrp()
         fileSection.addFileGrp(fileGrp)
         fileGrp.setID("g0")
-        fileGrp.setUse("folder")
+        fileGrp.setUse("mets")
 
         final logicalMap = mets.newStructMap()
         mets.addStructMap(logicalMap)
         logicalMap.setType("logical")
 
         int _file_ID = 0
-        labels.each {
+        objids.each {
             String file_ID = "f" + ++_file_ID
             def file = fileGrp.newFile()
             fileGrp.addFile(file)
@@ -93,8 +95,7 @@ class MetsService {
 
             def locat = file.newFLocat()
             file.addFLocat(locat)
-            locat.setTitle(it)
-            locat.setHref(grailsApplication.config.grails.serverURL + "/mets/" + na + "/" + it)
+            locat.setHref("http://hdl.handle.net/$it")
 
             def div = logicalMap.newDiv()
             div.setLabel("/" + it)
@@ -116,14 +117,6 @@ class MetsService {
      */
     private METSWrapper metsFile(String na, String objid, String label, String fileSet) {// todo: look in fileSet element: /a/b/c/d/e/filename.tif
 
-        final DBCursor cursor = (objid) ?
-            mongo.getDB(OR + na).getCollection("master.files").find(['metadata.objid': objid], ['metadata.pid': 1]).sort(['metadata.seq': 1]) :
-            mongo.getDB(OR + na).getCollection("master.files").find([$and: [
-                    ['metadata.label': label],
-                    ['metadata.fileSet': fileSet]]]
-                    , ['metadata.pid': 1]).sort(['metadata.seq': 1])
-        if (cursor.count() == 0) return
-
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
         final fileSection = mets.newFileSec()
@@ -135,81 +128,71 @@ class MetsService {
         final divMainPhysical = physicalMap.newDiv()
         physicalMap.addDiv(divMainPhysical)
 
-        /*final logicalMap = mets.newStructMap()
-        mets.addStructMap(logicalMap)
-        logicalMap.setType("logical")
-        final divMainLogical = logicalMap.newDiv()
-        logicalMap.addDiv(divMainLogical)*/
-
-        int count = 0
         int _file_ID = 0
-        int _group_ID = 0
-        int i = 0
         final ids = [:]
-
         label = "/" + label.replace("/", "_")
         ids << ['g0': label]
 
-        // Folders always end with a /
-        while (cursor.hasNext()) {
-            def doc = gridFSService.get(na, cursor.next().metadata.pid)
-            _group_ID++
-            doc.each { def d ->
-                String _use = (uses[d.key]) ?: d.key
-                String type = d.value.contentType.split('/')[0]
-                String use = _use + " " + type
+        def map = [:]
+        ['master', 'level1', 'level2', 'level3'].each { bucket ->
+            final DBCursor cursor = (objid) ?
+                mongo.getDB(OR + na).getCollection(bucket + '.files').find(['metadata.objid': objid]).sort(['metadata.seq': 1]) :
+                mongo.getDB(OR + na).getCollection(bucket + '.files').find([$and: [
+                        ['metadata.label': label],
+                        ['metadata.fileSet': fileSet]]]).sort(['metadata.seq': 1])
+
+            // Folders always end with a /
+            while (cursor.hasNext()) {
+                def d = cursor.next()
+                String type = d.contentType.split('/')[0]
+                String use = uses[bucket] + " " + type
+
                 def fileGrps = fileSection.getFileGrpByUse(use)
                 def fileGrp = (fileGrps.size() == 0) ? null : fileGrps[0]
                 if (!fileGrp) {
                     fileGrp = fileSection.newFileGrp()
                     fileSection.addFileGrp(fileGrp)
-                    fileGrp.setID(d.key)
+                    fileGrp.setID(bucket)
                     fileGrp.setUse(use)
                 }
+
                 String file_ID = "f" + ++_file_ID;
                 def file = fileGrp.newFile()
                 fileGrp.addFile(file)
                 file.setID(file_ID)
                 file.setChecksumType("MD5")
-                file.setChecksum(d.value.md5)
-                file.setSize(d.value.length)
-                file.setMIMEType(d.value.contentType)
-                file.setCreated(d.value.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"))
+                file.setChecksum(d.md5)
+                file.setSize(d.length)
+                file.setMIMEType(d.contentType)
+                file.setCreated(d.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"))
                 def locat = file.newFLocat()
                 file.addFLocat(locat)
-                if (doc.master.metadata.pidType) {
+                if (d.metadata.pidType == 'or') {
                     locat.setLocType("HANDLE")
-                    locat.setHref(d.value.metadata.resolverBaseUrl + d.value.metadata.pid + "?locatt=view:" + d.key)
+                    locat.setHref(d.metadata.resolverBaseUrl + d.metadata.pid + "?locatt=view:" + bucket)
                 }
                 else {
-                    if (d.key == "master")
-                        locat.setHref(d.value.metadata.resolverBaseUrl + d.value.metadata.pid)
-                    else
-                        locat.setHref(grailsApplication.config.grails.serverURL + "/file/" + d.key + "/" + doc.master.metadata.pid)
+                    locat.setHref(d.metadata.resolverBaseUrl + d.metadata.pid)
                 }
                 locat.setType("simple")
-                locat.setTitle(d.value.filename)
+                locat.setTitle(d.filename)
 
-                final div = addPhysicalDiv(divMainPhysical, ++count, _group_ID)
-                addFptrToDiv(div, file_ID)
+                if (bucket == 'master') map[d.metadata.pid] = []
+                map[d.metadata.pid] << file_ID
+            }
+        }
+
+        map.eachWithIndex { val, i ->
+            def div = divMainPhysical.newDiv()
+            div.setID("g" + i)
+            div.setOrder(i as String)
+            divMainPhysical.addDiv(div)
+            val.value.each {
+                addFptrToDiv(div, it)
             }
         }
 
         metsWrapper
-    }
-
-    private def addPhysicalDiv(def div, int count, int _group_ID) {
-        String physical_group_ID = "g" + _group_ID
-        def physical_div = div.divs.find {
-            it.ID == physical_group_ID
-        }
-        if (!physical_div) {
-            physical_div = div.newDiv()
-            physical_div.setID(physical_group_ID)
-            physical_div.setOrder(count as String)
-            div.addDiv(physical_div)
-        }
-        physical_div
     }
 
     private void addFptrToDiv(Div div, String ID) {
