@@ -29,26 +29,9 @@ class MetsService {
      * @param cache
      * @return
      */
-    METSWrapper writeMetsFile(String na, String objidOrPidOrLabel = null, boolean cache = true) {
+    METSWrapper writeMetsFile(String na, String objidOrPidOrLabel = null, def buckets = ['master', 'level1', 'level2', 'level3']) {
 
         METSWrapper wrapper
-
-        //final filename = na + "_" + objidOrPidOrLabel + ".xml"
-        //final File file = new File(System.getProperty("java.io.tmpdir"), filename)
-        //long expire = new Date().minus(1).time
-        /*if (cache && file.exists() && file.lastModified() > expire) {
-            log.info "Using cache " + file.absolutePath
-            def mr = new METSReader()
-            final stream = new FileInputStream(file)
-            mr.mapToDOM(stream)
-            stream.close()
-            final document = mr.getMETSDocument()
-            // A bug in the METSReader introduces a second identical xmlns. We move the first
-            final attribute = document.getDocumentElement().getAttributeNode("xmlns")
-            document.getDocumentElement().removeAttributeNode(attribute)
-            return new METSWrapper(document)
-        }*/
-
         if (objidOrPidOrLabel) {
             def doc = mongo.getDB(OR + na).getCollection("master.files").findOne([$or: [
                     ['metadata.objid': na + "/" + objidOrPidOrLabel],
@@ -56,19 +39,17 @@ class MetsService {
                     ['metadata.label': objidOrPidOrLabel]
             ]],
                     ['metadata.objid': 1, 'metadata.label': 1])
-            wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet) : null
+            wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet, buckets) : null
         } else wrapper = writeRootMetsFile(na)
 
-        /*final fos = new FileOutputStream(file, false)
-        wrapper.write(fos)
-        fos.close()*/
         wrapper
     }
 
-    /*
-    The main mets fileSec just a list of objids \ virtual folders
+    /**
+     *      The main mets fileSec just a list of objids \ virtual folders
+     * @param na
+     * @return
      */
-
     private writeRootMetsFile(def na) {
 
         def objids = gridFSService.objid(na)
@@ -115,7 +96,7 @@ class MetsService {
      *  - then use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
-    private METSWrapper metsFile(String na, String objid, String label, String fileSet) {// todo: look in fileSet element: /a/b/c/d/e/filename.tif
+    private METSWrapper metsFile(String na, String objid, String label, String fileSet, def buckets) {
 
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
@@ -134,7 +115,7 @@ class MetsService {
         ids << ['g0': label]
 
         def map = [:]
-        ['master', 'level1', 'level2', 'level3'].each { bucket ->
+        buckets.each { bucket ->
             final DBCursor cursor = (objid) ?
                 mongo.getDB(OR + na).getCollection(bucket + '.files').find(['metadata.objid': objid]).sort(['metadata.seq': 1]) :
                 mongo.getDB(OR + na).getCollection(bucket + '.files').find([$and: [
@@ -178,17 +159,17 @@ class MetsService {
                 locat.setTitle(d.filename)
 
                 if (bucket == 'master') map[d.metadata.pid] = []
-                map[d.metadata.pid] << file_ID
+                map[d.metadata.pid] << [file_ID:file_ID, seq:d.metadata.seq as Integer]
             }
         }
 
         map.eachWithIndex { val, i ->
             def div = divMainPhysical.newDiv()
             div.setID("g" + i)
-            div.setOrder(i as String)
+            div.setOrder(val.value[0].seq as String)
             divMainPhysical.addDiv(div)
             val.value.each {
-                addFptrToDiv(div, it)
+                addFptrToDiv(div, it.file_ID)
             }
         }
 

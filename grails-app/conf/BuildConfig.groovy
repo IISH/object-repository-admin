@@ -29,9 +29,7 @@ grails.project.dependency.resolution = {
         // group, name, version
         compile "au.edu.apsr.mtk:metsapi:1.5"
         compile "org.apache.ftpserver:ftpserver-core:1.0.6"
-        /*compile("net.sf.webdav-servlet:webdav-servlet:2.0") {
-            excludes "slf4j-log4j12"
-        }*/
+        compile "com.lowagie:itext:4.2.0"
     }
 
     plugins {
