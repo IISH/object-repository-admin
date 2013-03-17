@@ -36,7 +36,6 @@ class PdfService {
 
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
         final float documentWidth = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
-        final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open();
         gridFSService.listPdf(na, objid, bucket).each {
@@ -51,7 +50,7 @@ class PdfService {
                     final float ratio
                     if (image2.getWidth() > image2.getHeight()) {
                         image2.setRotation(rotationToLandscape)// landscape... Assume clockwise rotation
-                        ratio = documentHeight  * 100 / image2.getWidth()
+                        ratio = documentWidth * 100 / image2.getHeight()
                     } else {
                         ratio = documentWidth * 100 / image2.getWidth()
                     }
