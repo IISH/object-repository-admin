@@ -23,17 +23,13 @@
 
 <body>
 
-<div id="hopeLogo"><a href="<g:resource absolute="true"/>"><h1>Shared Object Repository</h1></a>%{--<a style="float:right" href="<g:resource absolute="true"/>"><img
-        src="${resource(dir: 'images', file: 'hope_logo.png')}" alt="HOPE"
-        border="0"/>--}%
-</div>
+<div id="hopeLogo"><a href="<g:resource absolute="true"/>"><h1>Shared Object Repository</h1></a></div>
 
 <div class="nav">
     <span class="menuButton li"><a class="home" href="${createLink(uri: '/')}"><g:message
             code="default.home.label"/></a></span>
     <span class="menuButton li"><g:link controller="login" class="login"><g:message
             code="default.login.label"/></g:link></span>
-    %{--<span class="menuButton"><g:link url="https://jira.socialhistoryservices.org/secure/ForgotLoginDetails.jspa" class="lostpassword">${message(code: "lostpassword.lost")}</g:link></span>--}%
     <span class="menuButton"><g:link controller="lostpassword"
                                      class="lostpassword">${message(code: "lostpassword.lost")}</g:link></span>
 </div>

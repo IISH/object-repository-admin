@@ -294,4 +294,29 @@ class GridFSService {
             it.metadata.objid
         }
     }
+
+    def objid(String na, String objidOrPidOrLabel) {
+        mongo.getDB(OR + na).getCollection("master.files")
+                .findOne([$or: [
+                ['metadata.objid': na + "/" + objidOrPidOrLabel],
+                ['metadata.pid': na + "/" + objidOrPidOrLabel],
+                ['metadata.label': objidOrPidOrLabel]]],
+                ['metadata.objid': 1, 'metadata.label': 1])
+    }
+
+    def listPdf(String na, String objid, String bucket) {
+        new GridFS(mongo.getDB(OR + na), bucket)
+                .find(new BasicDBObject('metadata.objid', na + '/' + objid))
+                .sort { it.metaData.seq }
+    }
+
+    def listObjid(String na, String objid, String bucket) {
+        mongo.getDB(OR + na).getCollection(bucket + '.files').find(['metadata.objid': objid]).sort(['metadata.seq': 1])
+    }
+
+    def listObjid(String na, String label, String fileSet, String bucket){
+        mongo.getDB(OR + na).getCollection(bucket + '.files').find([$and: [
+                ['metadata.label': label],
+                ['metadata.fileSet': fileSet]]]).sort(['metadata.seq': 1])
+    }
 }

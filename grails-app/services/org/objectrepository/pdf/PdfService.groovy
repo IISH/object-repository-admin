@@ -7,12 +7,16 @@ import com.mongodb.DBCursor
 import com.lowagie.text.Image
 import org.apache.commons.io.IOUtils
 import com.lowagie.text.Paragraph
+import com.mongodb.BasicDBObject
+import org.objectrepository.util.Normalizers
+import com.mongodb.gridfs.GridFSFile
+import com.mongodb.gridfs.GridFSDBFile
+import com.mongodb.gridfs.GridFS
 
 class PdfService {
 
     def gridFSService
-    def mongo
-    static String OR = "or_"
+    def policyService
 
     /**
      * writePdfFile
@@ -25,18 +29,27 @@ class PdfService {
      */
     def list(def writer, String na, String objid, String bucket) {
 
-        final DBCursor cursor = mongo.getDB(OR + na).getCollection(bucket + '.files').find(['metadata.objid': objid], ['metadata.pid': 1]).sort(['metadata.seq': 1])
+        def list = gridFSService.listPdf(na, objid, bucket)
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
         final float width = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open();
-        while (cursor.hasNext()) {
-            final pid = cursor.next().metadata.pid
-            final file = gridFSService.findByPid(pid, bucket)
-            if (file.contentType.startsWith('image')) {
-                final image2 = Image.getInstance(IOUtils.toByteArray(file.inputStream))
-                image2.scalePercent(width * 100 / image2.getWidth())
-                document.add(image2)
+        list.each {
+            final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
+            final Boolean denied = policyService.denied(access, na)
+            if (denied) {
+                document.add(new Paragraph("Not allowed to render page. Access " + access))
+            }
+            else if (it.contentType.startsWith('image')) {
+                final image2
+                try {
+                    image2 = Image.getInstance(IOUtils.toByteArray(it.inputStream))
+                    float r = width * 100 / image2.getWidth()
+                    image2.scalePercent(r)
+                    document.add(image2)
+                } catch (Exception e) {
+                    document.add(new Paragraph(e.message))
+                }
             } else {
                 document.add(new Paragraph("Cannot render page."))
             }

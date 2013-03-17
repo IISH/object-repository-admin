@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse
  */
 class FileController {
 
-    def springSecurityService
     def policyService
     def gridFSService
 
@@ -180,7 +179,8 @@ class FileController {
         }
 
         final String access = policyService.getPolicy(fileInstance, params.cache).getAccessForBucket(params.bucket)
-        if (!springSecurityService.hasRole('ROLE_ADMIN') && access != "open" && !springSecurityService.hasValidNa(fileInstance.metadata.na)) {
+        final Boolean denied = policyService.denied(access, fileInstance.metadata.na)
+        if (denied) {
             render(view: "denied", status: 401, model: [access: access])
             return null
         }

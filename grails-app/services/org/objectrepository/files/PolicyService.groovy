@@ -8,6 +8,7 @@ class PolicyService {
     static transactional = false
 
     def grailsApplication
+    def springSecurityService
 
     private policies = [:]
 
@@ -18,7 +19,7 @@ class PolicyService {
      * @return
      */
     Policy getPolicy(def fileInstance, def cache = null) {
-        if ( cache == 'no' ) policies.clear()
+        if (cache == 'no') policies.clear()
         String na = fileInstance.metadata.na
         String access = fileInstance.metadata.access
         String key = na + "." + access
@@ -39,5 +40,9 @@ class PolicyService {
 
     void setPolicy(String key, Policy policy) {
         policies.put(key, policy)
+    }
+
+    boolean denied(def access, def na) {
+        !springSecurityService.hasRole('ROLE_ADMIN') && access != "open" && !springSecurityService.hasValidNa(na)
     }
 }

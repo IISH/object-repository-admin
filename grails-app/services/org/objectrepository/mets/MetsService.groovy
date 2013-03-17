@@ -13,9 +13,7 @@ import com.mongodb.DBCursor
 class MetsService {
 
     static transactional = false
-    static String OR = "or_"
     static def uses = ['master': 'archive', 'level1': 'hires reference', 'level2': 'reference', 'level3': 'thumbnail']
-    def mongo
     def grailsApplication
     def gridFSService
 
@@ -33,12 +31,7 @@ class MetsService {
 
         METSWrapper wrapper
         if (objidOrPidOrLabel) {
-            def doc = mongo.getDB(OR + na).getCollection("master.files").findOne([$or: [
-                    ['metadata.objid': na + "/" + objidOrPidOrLabel],
-                    ['metadata.pid': na + "/" + objidOrPidOrLabel],
-                    ['metadata.label': objidOrPidOrLabel]
-            ]],
-                    ['metadata.objid': 1, 'metadata.label': 1])
+            def doc = gridFSService.objid(na, objidOrPidOrLabel)
             wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet, buckets) : null
         } else wrapper = writeRootMetsFile(na)
 
@@ -117,10 +110,8 @@ class MetsService {
         def map = [:]
         buckets.each { bucket ->
             final DBCursor cursor = (objid) ?
-                mongo.getDB(OR + na).getCollection(bucket + '.files').find(['metadata.objid': objid]).sort(['metadata.seq': 1]) :
-                mongo.getDB(OR + na).getCollection(bucket + '.files').find([$and: [
-                        ['metadata.label': label],
-                        ['metadata.fileSet': fileSet]]]).sort(['metadata.seq': 1])
+                gridFSService.listObjid(na, objid, bucket) :
+                gridFSService.listObjid(na, label, fileSet, bucket)
 
             // Folders always end with a /
             while (cursor.hasNext()) {
