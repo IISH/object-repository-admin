@@ -18,10 +18,15 @@ class PdfService {
     def gridFSService
     def policyService
 
+    final static float rotationToLandscape = Math.PI * 2 * 0.75
+
     /**
      * writePdfFile
      *
      * Collect all pid values in the required order from the specified bucket
+     * Offer a standard A4 document
+     * If the width of the image is smaller than the height, we scale to fit the width
+     * If the width of the image is larger than the height, we use a landscape view; rotate 270 degrees and scale to fit the height
      *
      * @param na
      * @param pid
@@ -29,23 +34,28 @@ class PdfService {
      */
     def list(def writer, String na, String objid, String bucket) {
 
-        def list = gridFSService.listPdf(na, objid, bucket)
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
-        final float width = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
+        final float documentWidth = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
+        final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open();
-        list.each {
+        gridFSService.listPdf(na, objid, bucket).each {
             final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
             final Boolean denied = policyService.denied(access, na)
             if (denied) {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             }
             else if (it.contentType.startsWith('image')) {
-                final image2
                 try {
-                    image2 = Image.getInstance(IOUtils.toByteArray(it.inputStream))
-                    float r = width * 100 / image2.getWidth()
-                    image2.scalePercent(r)
+                    final image2 = Image.getInstance(IOUtils.toByteArray(it.inputStream))
+                    final float ratio
+                    if (image2.getWidth() > image2.getHeight()) {
+                        image2.setRotation(rotationToLandscape)// landscape... Assume clockwise rotation
+                        ratio = documentHeight  * 100 / image2.getWidth()
+                    } else {
+                        ratio = documentWidth * 100 / image2.getWidth()
+                    }
+                    image2.scalePercent(ratio)
                     document.add(image2)
                 } catch (Exception e) {
                     document.add(new Paragraph(e.message))
