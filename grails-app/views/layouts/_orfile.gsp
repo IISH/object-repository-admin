@@ -1,6 +1,7 @@
 <g:set var="pidurl" value="${orfileInstance.master.metadata.resolverBaseUrl + orfileInstance.master.metadata.pid}"/>
 <g:if test="${orfileInstance.master.metadata.objid}"><g:set var="metsurl" value="${orfileInstance.master.metadata.resolverBaseUrl}${orfileInstance.master.metadata.objid}"/></g:if>
 
+
 <ol class="property-list files">
 
     <li class="fieldcontain">
