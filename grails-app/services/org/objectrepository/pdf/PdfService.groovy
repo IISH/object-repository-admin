@@ -19,6 +19,7 @@ class PdfService {
     def policyService
 
     final static float rotationToLandscape = Math.PI * 2 * 0.75
+    private static float documentRatio = 210f / 297f  // A4
 
     /**
      * writePdfFile
@@ -36,8 +37,9 @@ class PdfService {
 
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
         final float documentWidth = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
+        final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
-        document.open();
+        document.open()
         gridFSService.listPdf(na, objid, bucket).each {
             final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
             final Boolean denied = policyService.denied(access, na)
@@ -45,25 +47,32 @@ class PdfService {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             }
             else if (it.contentType.startsWith('image')) {
+                def image = null
                 try {
-                    final image2 = Image.getInstance(IOUtils.toByteArray(it.inputStream))
-                    final float ratio
-                    if (image2.getWidth() > image2.getHeight()) {
-                        image2.setRotation(rotationToLandscape)// landscape... Assume clockwise rotation
-                        ratio = documentWidth * 100 / image2.getHeight()
-                    } else {
-                        ratio = documentWidth * 100 / image2.getWidth()
-                    }
-                    image2.scalePercent(ratio)
-                    document.add(image2)
+                    image = Image.getInstance(IOUtils.toByteArray(it.inputStream))
                 } catch (Exception e) {
                     document.add(new Paragraph(e.message))
+                }
+                if (image) {
+                    float imageWidth = image.getWidth()
+                    float imageHeight = image.getHeight()
+                    if (imageWidth > imageHeight) { // A4 to square
+                        imageHeight = imageWidth;
+                        imageWidth = image.getHeight()
+                        image.setRotation(rotationToLandscape) // landscape... Assume clockwise rotation
+                    }
+                    // Fit the image onto the A4 page
+                    float imageRatio = imageWidth / imageHeight
+                    float scale = (imageRatio > documentRatio) ? documentWidth * 100 / imageWidth : documentHeight * 100 / imageHeight
+                    image.scalePercent(scale)
+                    document.add(image)
                 }
             } else {
                 document.add(new Paragraph("Cannot render page."))
             }
             document.newPage()
         }
+
         document.close()
         pdfWriter.close()
     }
