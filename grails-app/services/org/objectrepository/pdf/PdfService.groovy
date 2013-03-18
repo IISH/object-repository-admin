@@ -33,14 +33,14 @@ class PdfService {
      * @param pid
      * @param use
      */
-    def list(def writer, String na, String objid, String bucket) {
+    def list(def writer, String na, String bucket, String objid) {
 
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
         final float documentWidth = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
         final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open()
-        gridFSService.listPdf(na, objid, bucket).each {
+        gridFSService.listFilesByObjid(na, bucket, objid).each {
             final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
             final Boolean denied = policyService.denied(access, na)
             if (denied) {

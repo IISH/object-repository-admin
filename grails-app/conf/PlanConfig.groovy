@@ -204,18 +204,19 @@ plans = [
                         800: [purpose: 'Derivate file is produced and stored']
                 ]
         ],
-        StagingfileIngestPdf: [
+        /*StagingfileIngestObjid: [
+                visible: false,
                 statusCodes: [
-                        100: [purpose: 'The system received a request to produce a pdf'],
+                        100: [purpose: 'The system received a request to bind a objid'],
                         200: [purpose: 'Sending request to the queue'],
-                        300: [purpose: 'The object\'s location has been sent to the queue for pdf creation'],
-                        400: [purpose: 'Creating pdf'],
+                        300: [purpose: 'The object\'s location has been sent to the queue for objid binding'],
+                        400: [purpose: 'Binding objid'],
                         500: [purpose: 'The service node completed the task.'],
                         600: [purpose: 'Verifying if the task was successfull.'],
-                        700: [purpose: 'We could not see if a pdf was created'],
-                        800: [purpose: 'Derivate pdf is produced and stored']
+                        700: [purpose: 'We could not see if a objid was bound'],
+                        800: [purpose: 'objid is bound']
                 ]
-        ],
+        ],*/
         EndOfTheRoad: [
                 statusCodes: [
                         100: [purpose: 'End of the factory line. The file can now be removed'],

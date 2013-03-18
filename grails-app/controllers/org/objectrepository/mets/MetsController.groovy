@@ -9,7 +9,7 @@ class MetsController {
 
     def index() {
 
-        def mets = metsService.writeMetsFile(params.na, params.label)
+        def mets = metsService.writeMetsFile(params.na, params.objid)
         if (mets) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")

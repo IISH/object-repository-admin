@@ -2,7 +2,6 @@ package org.objectrepository.mets
 
 import au.edu.apsr.mtk.base.Div
 import au.edu.apsr.mtk.base.METSWrapper
-import com.mongodb.DBCursor
 
 /**
  * MetsService
@@ -27,15 +26,12 @@ class MetsService {
      * @param cache
      * @return
      */
-    METSWrapper writeMetsFile(String na, String objidOrPidOrLabel = null, def buckets = ['master', 'level1', 'level2', 'level3']) {
+    METSWrapper writeMetsFile(String na, String objid, def buckets = ['master', 'level1', 'level2', 'level3']) {
 
-        METSWrapper wrapper
-        if (objidOrPidOrLabel) {
-            def doc = gridFSService.objid(na, objidOrPidOrLabel)
-            wrapper = (doc) ? metsFile(na, doc?.metadata?.objid, doc?.metadata?.label, doc?.metadata?.fileSet, buckets) : null
-        } else wrapper = writeRootMetsFile(na)
-
-        wrapper
+        if (objid)
+            metsFile(na, buckets, objid)
+        else
+            writeRootMetsFile(na)
     }
 
     /**
@@ -89,7 +85,7 @@ class MetsService {
      *  - then use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
-    private METSWrapper metsFile(String na, String objid, String label, String fileSet, def buckets) {
+    private METSWrapper metsFile(String na, def buckets, String objid) {
 
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
@@ -103,19 +99,10 @@ class MetsService {
         physicalMap.addDiv(divMainPhysical)
 
         int _file_ID = 0
-        final ids = [:]
-        label = "/" + label.replace("/", "_")
-        ids << ['g0': label]
-
         def map = [:]
         buckets.each { bucket ->
-            final DBCursor cursor = (objid) ?
-                gridFSService.listObjid(na, objid, bucket) :
-                gridFSService.listObjid(na, label, fileSet, bucket)
+            gridFSService.listFilesByObjid(na, bucket, objid).each { d ->
 
-            // Folders always end with a /
-            while (cursor.hasNext()) {
-                def d = cursor.next()
                 String type = d.contentType.split('/')[0]
                 String use = uses[bucket] + " " + type
 
@@ -150,7 +137,7 @@ class MetsService {
                 locat.setTitle(d.filename)
 
                 if (bucket == 'master') map[d.metadata.pid] = []
-                map[d.metadata.pid] << [file_ID:file_ID, seq:d.metadata.seq as Integer]
+                map[d.metadata.pid] << [file_ID: file_ID, seq: d.metadata.seq as Integer]
             }
         }
 
