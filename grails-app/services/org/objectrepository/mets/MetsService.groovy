@@ -147,6 +147,8 @@ class MetsService {
             def div = divMainPhysical.newDiv()
             div.setID("g" + i)
             div.setOrder(val.value[0].seq as String)
+            div.setType("page")
+            div.setLabel("Page " + (i + 1))
             divMainPhysical.addDiv(div)
             val.value.each {
                 addFptrToDiv(div, it.file_ID)

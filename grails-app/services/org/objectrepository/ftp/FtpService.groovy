@@ -43,7 +43,6 @@ class FtpService implements DisposableBean {
 
         final userManagerFactory = new FtpUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
-
         final fileSystemFactory = VFSFactory.newInstance()
         fileSystemFactory.gridFSService = gridFSService
         serverFactory.setFileSystem(fileSystemFactory)

@@ -12,6 +12,8 @@ import org.objectrepository.util.Normalizers
 import com.mongodb.gridfs.GridFSFile
 import com.mongodb.gridfs.GridFSDBFile
 import com.mongodb.gridfs.GridFS
+import com.lowagie.text.Anchor
+import com.lowagie.text.Annotation
 
 class PdfService {
 
@@ -65,11 +67,16 @@ class PdfService {
                     float imageRatio = imageWidth / imageHeight
                     float scale = (imageRatio > documentRatio) ? documentWidth * 100 / imageWidth : documentHeight * 100 / imageHeight
                     image.scalePercent(scale)
+                    image.setAnnotation(
+                            new Annotation(0, 0, 0, 0,
+                                    (it.metaData.pidType == "or") ? it.metaData.resolverBaseUrl + it.metaData.pid + "?locatt=view:" + bucket : it.metaData.resolverBaseUrl + it.metaData.pid))
                     document.add(image)
+                    println(it.metaData)
                 }
             } else {
                 document.add(new Paragraph("Cannot render page."))
             }
+
             document.newPage()
         }
 
