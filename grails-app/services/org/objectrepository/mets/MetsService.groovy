@@ -31,7 +31,7 @@ class MetsService {
         if (objid)
             metsFile(na, buckets, objid)
         else
-            writeRootMetsFile(na)
+            writeRootMetsFile(na, objid)
     }
 
     /**
@@ -39,12 +39,13 @@ class MetsService {
      * @param na
      * @return
      */
-    private writeRootMetsFile(def na) {
+    private writeRootMetsFile(def na, def objid) {
 
         def objids = gridFSService.objid(na)
 
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
+        mets.setObjID(na + '/' + objid)
         final fileSection = mets.newFileSec()
         mets.setFileSec(fileSection)
         final fileGrp = fileSection.newFileGrp()
@@ -89,6 +90,7 @@ class MetsService {
 
         final def metsWrapper = new METSWrapper()
         final mets = metsWrapper.getMETSObject()
+        mets.setObjID(na + '/' + objid)
         final fileSection = mets.newFileSec()
         mets.setFileSec(fileSection)
 

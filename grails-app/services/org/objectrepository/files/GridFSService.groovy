@@ -295,9 +295,9 @@ class GridFSService {
         }
     }
 
-    def listFilesByObjid(String na, String bucket, String objid) {
+    def listFilesByObjid(String na, String bucket, String id) {
         new GridFS(mongo.getDB(OR + na), bucket)
-                .find(new BasicDBObject('metadata.objid', na + '/' + objid))
+                .find(new BasicDBObject('metadata.objid', na + '/' + id))
                 .sort { it.metaData.seq }
     }
 
