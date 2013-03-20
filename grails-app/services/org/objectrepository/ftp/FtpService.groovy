@@ -6,13 +6,16 @@ import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.SslConfigurationFactory
 import org.springframework.beans.factory.DisposableBean
 import org.apache.ftpserver.DataConnectionConfigurationFactory
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UserCache
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 
 class FtpService implements DisposableBean {
 
     static transactional = false
     def gridFSService
     def grailsApplication
-    def userDetailsService
     def springSecurityService
     private FtpServer server
 
@@ -40,13 +43,14 @@ class FtpService implements DisposableBean {
         factory.setDataConnectionConfiguration(dataConnConfigFac.createDataConnectionConfiguration())
 
         serverFactory.addListener("default", factory.createListener())
-
-        final userManagerFactory = new FtpUserManagerFactory(userDetailsService, new ContextPasswordEncryptor(springSecurityService))
+        def providers = grailsApplication.config.grails.plugins.springsecurity.providerNames.collect {
+            grailsApplication.getMainContext().getBean(it as String)
+        }
+        final userManagerFactory = new FtpUserManagerFactory(providers, new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
         final fileSystemFactory = VFSFactory.newInstance()
         fileSystemFactory.gridFSService = gridFSService
         serverFactory.setFileSystem(fileSystemFactory)
-
         server = serverFactory.createServer()
         server.start()
     }

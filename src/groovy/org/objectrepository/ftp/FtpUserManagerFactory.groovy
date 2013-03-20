@@ -5,15 +5,15 @@ import org.apache.ftpserver.usermanager.UserManagerFactory
 
 class FtpUserManagerFactory implements UserManagerFactory {
 
-    private def adminUserDetailsService
+    private def providers
     private def encryptor
 
-    FtpUserManagerFactory(def adminUserDetailsService, def encryptor) {
-        this.adminUserDetailsService = adminUserDetailsService
+    FtpUserManagerFactory(def providers, def encryptor) {
+        this.providers = providers
         this.encryptor = encryptor
     }
 
     UserManager createUserManager() {
-        new VFSUserManager(adminUserDetailsService, encryptor)
+        new VFSUserManager(providers, encryptor)
     }
 }

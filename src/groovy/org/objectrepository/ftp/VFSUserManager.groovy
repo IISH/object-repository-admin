@@ -9,32 +9,39 @@ import org.apache.ftpserver.usermanager.impl.TransferRatePermission
 import org.apache.ftpserver.ftplet.AuthenticationFailedException
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.AnonymousAuthentication
+import org.springframework.security.authentication.AnonymousAuthenticationProvider
 
 class VFSUserManager extends AbstractUserManager {
 
-    def adminUserDetailsService
+    def providers
     static int maxLogin = 0
     static int maxLoginPerIP = 0
     static int downloadRate = 0
     static int uploadRate = 0
     static int maxIdleTimeSec = 300
 
-    VFSUserManager(def adminUserDetailsService, def encryptor) {
+    VFSUserManager(def providers, def encryptor) {
         super("admin", encryptor)
-        this.adminUserDetailsService = adminUserDetailsService
+        this.providers = providers
     }
 
     User getUserByName(String username) {
-        def details = adminUserDetailsService.loadUserByUsername(username)
-        List<Authority> authorities = new ArrayList<Authority>();
-        authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
-        authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-        new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+        for (def provider : providers) {
+            if (!(provider instanceof AnonymousAuthenticationProvider)) {
+                def details = provider.userDetailsService.loadUserByUsername(username)
+                if (details) {
+                    List<Authority> authorities = new ArrayList<Authority>();
+                    authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
+                    authorities.add(new TransferRatePermission(downloadRate, uploadRate));
+                    return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+                }
+            }
+        }
+        null
     }
 
     String[] getAllUserNames() {
-        // Method not implemented
-        []
+        [] // Method not implemented
     }
 
     void delete(String s) {
@@ -46,7 +53,7 @@ class VFSUserManager extends AbstractUserManager {
     }
 
     boolean doesExist(String s) {
-        adminUserDetailsService.loadUserByUsername(s)
+        getUserByName(s) != null
     }
 
     public User authenticate(Authentication authentication) throws AuthenticationFailedException {
