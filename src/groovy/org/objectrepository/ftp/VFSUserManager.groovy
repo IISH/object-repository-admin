@@ -9,7 +9,6 @@ import org.apache.ftpserver.usermanager.impl.TransferRatePermission
 import org.apache.ftpserver.ftplet.AuthenticationFailedException
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.AnonymousAuthentication
-import org.springframework.security.authentication.AnonymousAuthenticationProvider
 
 class VFSUserManager extends AbstractUserManager {
 
@@ -67,7 +66,9 @@ class VFSUserManager extends AbstractUserManager {
             }
 
             User userCandidate = getUserByName(user)
-            if (getPasswordEncryptor().matches(userCandidate?.password, getPasswordEncryptor().encrypt(password))) {
+            print("userCandidate=")
+            println(userCandidate)
+            if (password.matches(userCandidate?.password) || getPasswordEncryptor().matches(userCandidate?.password, getPasswordEncryptor().encrypt(password))) {
                 userCandidate
             } else {
                 throw new AuthenticationFailedException("Authentication failed")
