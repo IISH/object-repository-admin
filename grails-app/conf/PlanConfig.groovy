@@ -113,6 +113,7 @@ plans = [
                 ],
         ],
         StagingfileBindPIDs: [
+                methods: [executeAfter: 'StagingfileBindObjId'],
                 statusCodes: [
                         100: [purpose: 'The system received a request to create or bind PIDs'],
                         200: [purpose: 'Sending request to the queue'],
@@ -122,6 +123,19 @@ plans = [
                         600: [purpose: 'Verify the existamce of PIDs'],
                         700: [purpose: 'We could not verify the bindings of the PID'],
                         800: [purpose: 'PID are bound to the resolve URLs']
+                ]
+        ],
+        StagingfileBindObjId: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'The system received a request to create or bind an objid'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'The command to bind objid PID has been sent to the queue'],
+                        400: [purpose: 'Binding objid with the repositories disseminiation API ( website )'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Verify the existamce of obiid PIDs'],
+                        700: [purpose: 'We could not verify the bindings of the objid PID'],
+                        800: [purpose: 'obiid is bound to the resolve URLs']
                 ]
         ],
         StagingfileIngestCustomLevel1: [
@@ -139,7 +153,6 @@ plans = [
         ],
         StagingfileIngestLevel1: [
                 methods: [executeAfter: 'StagingfileIngestCustomLevel1', renameQueueWithContentType: null],
-                executeAfter: 'StagingfileIngestCustomLevel1',
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
                         200: [purpose: 'Sending request to the queue'],

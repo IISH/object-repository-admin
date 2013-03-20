@@ -108,8 +108,27 @@ class WorkflowActiveService extends WorkflowJob {
         final String collectionName = OrUtil.splitCamelcase(queue)[0].toLowerCase()
         final String identifier = document.workflow.identifier.text()
         final collection = mongo.getDB('sa').getCollection(collectionName)
-        def tmp = collection.findAndModify([workflow: [$elemMatch: [n: 0, name: queue, statusCode: 300, identifier: identifier]]], [$set:['workflow.$.end': new Date()]])
-        if ( tmp ) sendMessage(["activemq", queue].join(":") + "?timeToLive=" + timeToLive(), msg)
+        def tmp = collection.findAndModify([workflow: [$elemMatch: [n: 0, name: queue, statusCode: 300, identifier: identifier]]], [$set: ['workflow.$.end': new Date()]])
+        if (tmp) sendMessage(["activemq", queue].join(":") + "?timeToLive=" + timeToLive(), msg)
+    }
+
+    /**
+     * StagingfileBindObjIds100
+     *
+     * Only one document with an objid needs to address this queue
+     * Here we assume the seq = 1 is enough to proceed. Of course it is possible an instruction may not have a
+     * seq=1 or multiple identical values.
+     *
+     * @param document
+     * @return
+     */
+    def StagingfileBindObjId100(Stagingfile document) {
+
+        if (document.objid && document.seq == 1) {
+            next(document)
+        } else {
+            last(document)
+        }
     }
 
 /**
