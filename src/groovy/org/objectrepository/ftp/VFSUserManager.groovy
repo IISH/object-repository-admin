@@ -27,14 +27,12 @@ class VFSUserManager extends AbstractUserManager {
 
     User getUserByName(String username) {
         for (def provider : providers) {
-            if (!(provider instanceof AnonymousAuthenticationProvider)) {
-                def details = provider.userDetailsService.loadUserByUsername(username)
-                if (details) {
-                    List<Authority> authorities = new ArrayList<Authority>();
-                    authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
-                    authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-                    return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
-                }
+            def details = provider?.loadUserByUsername(username)
+            if (details) {
+                List<Authority> authorities = new ArrayList<Authority>();
+                authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
+                authorities.add(new TransferRatePermission(downloadRate, uploadRate));
+                return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
             }
         }
         null

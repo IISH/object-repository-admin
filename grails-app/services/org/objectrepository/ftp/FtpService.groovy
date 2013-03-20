@@ -16,6 +16,8 @@ class FtpService implements DisposableBean {
     static transactional = false
     def gridFSService
     def grailsApplication
+    def userDetailsService
+    def ldapUserDetailsManager
     def springSecurityService
     private FtpServer server
 
@@ -43,10 +45,7 @@ class FtpService implements DisposableBean {
         factory.setDataConnectionConfiguration(dataConnConfigFac.createDataConnectionConfiguration())
 
         serverFactory.addListener("default", factory.createListener())
-        def providers = grailsApplication.config.grails.plugins.springsecurity.providerNames.collect {
-            grailsApplication.getMainContext().getBean(it as String)
-        }
-        final userManagerFactory = new FtpUserManagerFactory(providers, new ContextPasswordEncryptor(springSecurityService))
+        final userManagerFactory = new FtpUserManagerFactory([ldapUserDetailsManager,userDetailsService], new ContextPasswordEncryptor(springSecurityService))
         serverFactory.setUserManager(userManagerFactory.createUserManager())
         final fileSystemFactory = VFSFactory.newInstance()
         fileSystemFactory.gridFSService = gridFSService
