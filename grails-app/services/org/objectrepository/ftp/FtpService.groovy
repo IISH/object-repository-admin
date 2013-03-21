@@ -10,15 +10,17 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UserCache
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.GrantedAuthority
 
 class FtpService implements DisposableBean {
 
     static transactional = false
     def gridFSService
     def grailsApplication
-    def userDetailsService
-    def ldapUserDetailsManager
-    def springSecurityService
+    def authenticationManager
     private FtpServer server
 
     void start() {
@@ -45,7 +47,7 @@ class FtpService implements DisposableBean {
         factory.setDataConnectionConfiguration(dataConnConfigFac.createDataConnectionConfiguration())
 
         serverFactory.addListener("default", factory.createListener())
-        final userManagerFactory = new FtpUserManagerFactory([ldapUserDetailsManager,userDetailsService], new ContextPasswordEncryptor(springSecurityService))
+        final userManagerFactory = new FtpUserManagerFactory(authenticationManager)
         serverFactory.setUserManager(userManagerFactory.createUserManager())
         final fileSystemFactory = VFSFactory.newInstance()
         fileSystemFactory.gridFSService = gridFSService

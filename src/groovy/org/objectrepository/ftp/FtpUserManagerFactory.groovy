@@ -2,18 +2,17 @@ package org.objectrepository.ftp
 
 import org.apache.ftpserver.ftplet.UserManager
 import org.apache.ftpserver.usermanager.UserManagerFactory
+import org.springframework.security.authentication.AuthenticationManager
 
 class FtpUserManagerFactory implements UserManagerFactory {
 
-    private def providers
-    private def encryptor
+    private def authenticationManager
 
-    FtpUserManagerFactory(def providers, def encryptor) {
-        this.providers = providers
-        this.encryptor = encryptor
+    FtpUserManagerFactory(def authenticationManager) {
+        this.authenticationManager = authenticationManager
     }
 
     UserManager createUserManager() {
-        new VFSUserManager(providers, encryptor)
+        new VFSUserManager(authenticationManager)
     }
 }

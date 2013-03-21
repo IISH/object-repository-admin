@@ -1,40 +1,32 @@
 package org.objectrepository.ftp
 
 import org.apache.ftpserver.ftplet.Authentication
+import org.apache.ftpserver.ftplet.AuthenticationFailedException
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.ftplet.User
+import org.apache.ftpserver.usermanager.AnonymousAuthentication
+import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.impl.AbstractUserManager
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission
-import org.apache.ftpserver.ftplet.AuthenticationFailedException
-import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
-import org.apache.ftpserver.usermanager.AnonymousAuthentication
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 class VFSUserManager extends AbstractUserManager {
 
-    def providers
+    def authenticationManager
     static int maxLogin = 0
     static int maxLoginPerIP = 0
     static int downloadRate = 0
     static int uploadRate = 0
     static int maxIdleTimeSec = 300
 
-    VFSUserManager(def providers, def encryptor) {
-        super("admin", encryptor)
-        this.providers = providers
+    VFSUserManager(def authenticationManager) {
+        super("admin", null)
+        this.authenticationManager = authenticationManager
     }
 
     User getUserByName(String username) {
-        for (def provider : providers) {
-            def details = provider?.loadUserByUsername(username)
-            if (details) {
-                List<Authority> authorities = new ArrayList<Authority>();
-                authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
-                authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-                return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
-            }
-        }
-        null
+        null // Method not implemented
     }
 
     String[] getAllUserNames() {
@@ -50,29 +42,36 @@ class VFSUserManager extends AbstractUserManager {
     }
 
     boolean doesExist(String s) {
-        getUserByName(s) != null
+        true // Method not implemented
     }
 
+    /**
+     * authenticate
+     *
+     * Authenticated the used with a passwordDecoder.
+     * The encodes is set at instantiation of the FtpService
+     *
+     * @param authentication
+     * @return
+     * @throws AuthenticationFailedException
+     */
     public User authenticate(Authentication authentication) throws AuthenticationFailedException {
 
         if (authentication instanceof UsernamePasswordAuthentication) {
             UsernamePasswordAuthentication upauth = (UsernamePasswordAuthentication) authentication
 
-            String user = upauth.getUsername()
-            String password = upauth.getPassword()
-
-            if (user == null || password == null) {
+            if (!(upauth.getPassword() && upauth.getUsername()))
                 throw new AuthenticationFailedException("Authentication failed")
-            }
 
-            User userCandidate = getUserByName(user)
-            print("userCandidate=")
-            println(userCandidate)
-            if (password.matches(userCandidate?.password) || getPasswordEncryptor().matches(userCandidate?.password, getPasswordEncryptor().encrypt(password))) {
-                userCandidate
-            } else {
+            def details = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(upauth.getUsername(), upauth.getPassword()))?.principal
+            if (details) {
+                List<Authority> authorities = new ArrayList<Authority>();
+                authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
+                authorities.add(new TransferRatePermission(downloadRate, uploadRate));
+                return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+            } else
                 throw new AuthenticationFailedException("Authentication failed")
-            }
+
         } else if (authentication instanceof AnonymousAuthentication) {
             if (doesExist("anonymous")) {
                 return getUserByName("anonymous")
