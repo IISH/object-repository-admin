@@ -15,7 +15,7 @@ class DownloadTestCase {
     protected void setUp() {
         setUpInstructions()
         setUpStagingfiles()
-        def principal = [username: "cp1000", na: "12345", authorities: [authority: 'ROLE_CPUSER']]
+        def principal = [username: "cp1000", na: "12345", authorities: [authority: 'ROLE_OR_FTP_USER_12345']]
         mockMap = [  // Some mocklike mapping
                 isLoggedIn: {-> true },
                 principal: principal,

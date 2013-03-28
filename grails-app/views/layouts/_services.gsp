@@ -1,6 +1,6 @@
 <g:each in="${instance.services}" var="service">
     <g:if test="${service.visible != false}">
-        <li><g:link class="create" controller="${service.controller}"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="create" controller="${service.controller}"
                     action="${service.action}"
                     id="${instance.id}">
             <g:message code="${service.name}" default="${service.name}"/>

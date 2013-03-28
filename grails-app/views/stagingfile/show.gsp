@@ -13,10 +13,10 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="show" controller="instruction" action="show"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="show" controller="instruction" action="show"
                     id="${stagingfileInstance.parent.id}"><g:message code="instruction.files"
                                                                      default="Show instruction"/></g:link></li>
-        <li><g:link class="list" action="list" params="[orid:stagingfileInstance.parent.id]"><g:message
+        <li><g:link mapping="namingAuthority" class="list" action="list" params="[na:params.na,orid:stagingfileInstance.parent.id]"><g:message
                 code="default.files.label" default="Show files"/></g:link></li>
     </ul>
 </div>

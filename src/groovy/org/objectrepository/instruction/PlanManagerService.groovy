@@ -1,12 +1,14 @@
 package org.objectrepository.instruction
 
+import org.springframework.beans.factory.DisposableBean
+
 /**
  * WorkflowRunner
  *
  * Daemon that perpetually runs the assigned services
  *
  */
-class PlanManagerService extends Thread implements Runnable {
+class PlanManagerService extends Thread implements Runnable, DisposableBean {
 
     private def services = []
     private boolean active = true
@@ -22,11 +24,6 @@ class PlanManagerService extends Thread implements Runnable {
         }
     }
 
-    public void cleanup() {
-        active = false
-        services.clear()
-    }
-
     void run() {
         int count = services.size()
         active = count != 0
@@ -35,7 +32,7 @@ class PlanManagerService extends Thread implements Runnable {
                 if (active) {
                     log.info "Running job: " + services.get(i).class.name
                     try {
-                    services.get(i).job()
+                        services.get(i).job()
                     } catch (Exception e) {
                         println(e.message)
                     }
@@ -43,5 +40,14 @@ class PlanManagerService extends Thread implements Runnable {
             }
             sleep(timeout)
         }
+    }
+
+    /**
+     * This method is from Thread.destroy (deprecated) but invoked via DisposableBean.destroy
+     */
+    @SuppressWarnings("deprecation")
+    public void destroy() {
+        active = false
+        services.clear()
     }
 }

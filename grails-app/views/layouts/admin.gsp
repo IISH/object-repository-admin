@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ApplicationHolder" %>
+<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
@@ -25,7 +25,7 @@
         jQuery(document).ready(function () {
             window.setInterval(function () {
 
-                // FailSafe, in case we accidentally perpetually nestle
+                // FailSafe, in case we accidentally perpetually nestle divs
                 var failSafe = 0;
                 jQuery('form[id^=listremote]').each(function () {
                     if (++failSafe == 1) {
@@ -61,17 +61,18 @@
         <li><g:link class="home" controller="logout"><g:message
                 code="logout.label"/></g:link></li>
         <li><a class="home">Logged in as: <strong><sec:username/></strong></a></li>
+        <roles:list/>
     </ul>
 </div>
 
 <div id="navHome">
     <ul>
-        <li class="dashboard"><g:link controller="dashboard">Dashboard</g:link></li>
-        <li class="users"><g:link controller="user">Accounts</g:link></li>
-        <li class="profile"><g:link controller="profile">Profile</g:link></li>
-        <li class="policy"><g:link controller="policy">Policies</g:link></li>
-        <li class="instruction"><g:link controller="instruction">Instructions</g:link></li>
-        <li class="convert"><g:link controller="orfile">Stored objects</g:link></li>
+        <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="dashboard">Dashboard</g:link></li>
+        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">Accounts</g:link></li>
+        <li class="profile"><g:link mapping="namingAuthority" params="[na:params.na]" controller="profile">Profile</g:link></li>
+        <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">Policies</g:link></li>
+        <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">Instructions</g:link></li>
+        <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">Stored objects</g:link></li>
     </ul>
 </div>
 

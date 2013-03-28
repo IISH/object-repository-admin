@@ -9,7 +9,7 @@
 
 <body>
 <div class="nav">
-    <g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link>
+    <g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link>
 </div>
 
 <g:render template="/layouts/header" model="[instance:instructionInstance,args:instructionInstance.fileSetAlias]"/>
@@ -33,7 +33,7 @@
         <p>This file will be removed when you upload a file. If you want to use this staged instruction and not upload a new one,
         then delete the current instruction that is in the database at this moment. Deleting an instruction will not remove your files.</p>
 
-        <p>Yes, <g:link action="delete"
+        <p>Yes, <g:link mapping="namingAuthority" params="[na:params.na]" action="delete"
                         id="${instructionInstance.id}">delete the current instruction from the database</g:link> and replace it with this processing instruction.</p>
     </g:if>
 

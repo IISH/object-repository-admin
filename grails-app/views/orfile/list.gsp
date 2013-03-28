@@ -25,9 +25,9 @@
 <ul class="view">
     <li>Show: <g:select name="label" from="${labels}" value="${params.label}"
                         onchange="document.location='?label='+this.value + '&${filter}'"/></li>
-    <li><g:link action="download" params="[label: params.label]">Download metadata</g:link></li>
-    <li><g:link
-            action="recreate" params="[label: params.label]">Recreate instruction</g:link></li>
+    <li><g:link mapping="namingAuthority" params="[na:params.na,label:params.label]" action="download">Download metadata</g:link></li>
+    <li><g:link mapping="namingAuthority"
+            action="recreate" params="[na:params.na, label: params.label]">Recreate instruction</g:link></li>
     <li><form method="GET"><input type="submit" value="Find pid"/><input id="pid" name="pid" size="50"/></form></li>
 </ul>
 
@@ -49,7 +49,8 @@
         <tbody>
         <g:each in="${orfileInstanceList}" status="i" var="orfileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td><g:link action="show" id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}">
+                <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
+                            id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}">
                     <g:set var="hasPreview"
                            value="${orfileInstance.level3?.contentType?.startsWith('image')}"/>
                     <g:if test="${hasPreview}">
@@ -68,15 +69,15 @@
                     <g:if test="${orfileInstance.master.metadata.lid}"><br/>${orfileInstance.master.metadata.lid}</g:if>
                 </td>
                 <td>${orfileInstance.master.metadata.lastUploadDate}</td>
-                <td><g:link action="download"
-                            params="[pid: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
+                <td><g:link mapping="namingAuthority" action="download"
+                            params="[na: params.na, pid: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>
     </table>
 
     <div class="pagination">
-        <g:paginate total="${orfileInstanceListTotal}" params="[label: params.label]"/>
+        <g:paginate mapping="namingAuthority" total="${orfileInstanceListTotal}" params="[na:params.na,label:params.label]"/>
     </div>
 </div>
 </body>

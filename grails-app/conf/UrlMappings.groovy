@@ -8,12 +8,12 @@ class UrlMappings {
         "/mets/$na/$objid?"(controller: 'mets', action: 'index')
         "/pdf/$na/$objid/$bucket?"(controller: 'pdf', action: 'index')
 
-        "/"(controller: "dashboard")
-        "500"(view: '/error')
         "/login/$action?"(controller: "login")
         "/logout/$action?"(controller: "logout")
+        "/"(controller: "login")
 
-        "/$controller/$action?/$id?" {
-        }
+        name namingAuthority: "/$na/$controller/$action?/$id?"()
+
+        "500"(view: '/error')
     }
 }

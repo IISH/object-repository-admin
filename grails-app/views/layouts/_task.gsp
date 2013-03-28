@@ -15,7 +15,7 @@
             <g:if test="${instance.task.statusCode == 900}">
                             <p style="text-align: center">Tasks completed</p>
                         </g:if><g:elseif test="${instance.ingesting}"><p style="text-align: center">
-                <g:link controller="stagingfile" params="[orid: instance.id]">Monitor file progress</g:link></p>
+                <g:link mapping="namingAuthority" controller="stagingfile" params="[na:params.na,orid: instance.id]">Monitor file progress</g:link></p>
             </g:elseif>
 
 

@@ -11,8 +11,8 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
-        <li><g:link class="show" action="show"><g:message code="default.show.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="show" action="show"><g:message code="default.show.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
@@ -24,7 +24,7 @@
                 action="download" params="[transport:'ftp']"
                 id="${instructionInstance.id}">Place the instruction on the staging area where you can use ftp to download it.</g:link><p>After selecting this option you will be taken directly back to the Instructions list.</p>
         </li>
-        <li class="fieldcontain">Browser<br/><g:link action="download" params="[transport:'http']"
+        <li class="fieldcontain">Browser<br/><g:link mapping="namingAuthority" params="[na:params.na]" action="download" params="[transport:'http']"
                                                      id="${instructionInstance.id}">Download the instruction with your browser</g:link>
         </li>
     </ol>

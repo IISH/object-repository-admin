@@ -17,7 +17,7 @@
         <tbody>
         <g:each in="${stagingfileInstanceList}" status="i" var="stagingfileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td><g:link action="show"
+                <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${stagingfileInstance.id}">${fieldValue(bean: stagingfileInstance, field: "location")}</g:link></td>
                 <g:render template="/layouts/task" model="[instance:stagingfileInstance]"/>
             </tr>

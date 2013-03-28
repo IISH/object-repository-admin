@@ -1,10 +1,10 @@
-package org.objectrepository.files
+package org.objectrepository.orfiles
 
 import com.mongodb.BasicDBObject
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
-import groovy.xml.StreamingMarkupBuilder
+
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -45,9 +45,8 @@ class GridFSService {
      * @param pid
      * @return
      */
-    GridFSDBFile findByPid(String pid, String bucket) {
-        if (!pid || pid.isEmpty()) return null
-        new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
+    GridFSDBFile findByPid(String pid, String bucket = 'master') {
+        if (pid) new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     GridFSDBFile findByField(String na, String bucket, String key, String value) {
@@ -73,16 +72,6 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     def findAllByLabel(def na, def params) {
-        final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
-        query(OR + na, q, params.max, params.offset)
-    }
-
-    def findAllByPid(def na, def params) {
-        final q = (params?.label) ? String.format("{'metadata.pid': '%s'}", params.pid) : ""
-        query(OR + na, q, params.max, params.offset)
-    }
-
-    def findAllBySet(def na, def params) {
         final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
         query(OR + na, q, params.max, params.offset)
     }
@@ -114,135 +103,50 @@ class GridFSService {
         mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
-    /**
-     * writeOrfiles
-     *
-     * Partial data dump of all technical metadata.
-     *
-     * @param id Identifier of the document. If null all metadata is downloaded.
-     * @param na
-     * @param writer
-     */
-    void writeOrfiles(def params, String na, def writer) {
-
-        def orfileAttributes = [xmlns: "http://objectrepository.org/orfiles/1.0/"]
-
-        def builder = new StreamingMarkupBuilder()
-        builder.setEncoding("utf-8")
-        builder.setUseDoubleQuotes(true)
-
-        final collection = mongo.getDB(OR + na).getCollection("master.files")
-
-        def cursor
-        int count = 0
-        if (params.pid) {
-            cursor = [[metadata: [pid: params.pid]]] // should be the same map as returned by a cursor
-            count = 0
-        } else {
-            cursor = (params.label?.length() == 0) ? collection.find([:], ['metadata.pid': 1]) : collection.find(['metadata.label': params.label], ['metadata.pid': 1])
-            count = cursor.count()
-        }
-
-        writer << builder.bind {
-            mkp.xmlDeclaration()
-            comment << String.format('Selection contains %s documents. Export extracted on %s',
-                    count, new Date().toGMTString())
-            orfiles(orfileAttributes) {
-                cursor.each { doc ->
-                    def orfileInstance = get(na, doc.metadata.pid)
-                    if (orfileInstance?.master)
-                        orfile {
-                            pid orfileInstance.master.metadata.pid
-                            resolverBaseUrl orfileInstance.master.metadata.resolverBaseUrl
-                            pidurl orfileInstance.master.metadata.resolverBaseUrl + orfileInstance.master.metadata.pid
-                            if (orfileInstance.master.metadata.lid) { lid orfileInstance.master.metadata.lid }
-                            filename orfileInstance.master.filename
-                            label orfileInstance.master.metadata.label
-                            access orfileInstance.master.metadata.access
-                            out << metadata(orfileInstance)
-                        }
-                }
-            }
-        }
-
-        writer.flush()
-        writer.close()
-    }
-
-    private metadata(def orfileInstance) {
-        return {
-            orfileInstance.each { key, value ->
-                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + key + "/" + value.metadata.pid
-                "$key" {
-                    if (orfileInstance.master.metadata.pidType) {
-                        pidurl value.metadata.resolverBaseUrl + value.metadata.pid + "?locatt=view:" + value.metadata.bucket
-                    }
-                    resolveUrl _resolveUrl
-                    ['contentType',
-                            'length',
-                            'content',
-                            'md5',
-                            'uploadDate',
-                            'firstUploadDate',
-                            'lastUploadDate',
-                            'timesAccessed',
-                            'timesUpdated'].each {
-                        if (value[it]) {
-                            "$it" value[it]
-                        } else if (value.metadata[it]) {
-                            "$it" value.metadata[it]
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-
-    /**
-     * labels
-     *
-     * Presents all collection labels.
-     *
-     * note on the nolock setting:
-     * There are some circumstances where the eval() implements a strictly-read only operation that need not
-     * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
-     *
-     * @param na
-     * @return
-     */
+/**
+ * labels
+ *
+ * Presents all collection labels.
+ *
+ * note on the nolock setting:
+ * There are some circumstances where the eval() implements a strictly-read only operation that need not
+ * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
+ *
+ * @param na
+ * @return
+ */
     def labels(String na) {
         mongo.getDB(OR + na).command([$eval: 'function(){var documents=[];db.label.find().sort({_id: 1}).forEach(function(d){documents.push(d._id)});return documents;}', nolock: true]).retval
     }
 
-    /**
-     * Returns all technical metadata concerning the PID value.
-     *
-     * @param db
-     * @param query
-     * @param limit
-     * @param skip
-     *
-     * note on the nolock setting:
-     * There are some circumstances where the eval() implements a strictly-read only operation that need not
-     * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
-     *
-     * @return
-     */
+/**
+ * Returns all technical metadata concerning the PID orfileInstance.
+ *
+ * @param db
+ * @param query
+ * @param limit
+ * @param skip
+ *
+ * note on the nolock setting:
+ * There are some circumstances where the eval() implements a strictly-read only operation that need not
+ * block other operations when disabling the write lock may be useful. Use this functionality with extreme caution.
+ *
+ * @return
+ */
     private def query(String db, String query, int limit = 1, int skip = 0) {
         final command = mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true])
         command.retval
     }
 
-    /**
-     * skip
-     *
-     * Derived from the GridFSDBFile class.
-     *
-     * Locates the chunks that over the specified range bytes=n-m
-     *
-     * ToDo: dynamically glue these methods into GridFSDBFile in Bootstrap
-     */
+/**
+ * skip
+ *
+ * Derived from the GridFSDBFile class.
+ *
+ * Locates the chunks that over the specified range bytes=n-m
+ *
+ * ToDo: dynamically glue these methods into GridFSDBFile in Bootstrap
+ */
     public int range(OutputStream writer, GridFSDBFile file, long from, long to) {
 
         if (from > to) return HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
@@ -275,14 +179,14 @@ class GridFSService {
         -1
     }
 
-    /**
-     * vfs
-     *
-     * The base name of the folder is always the database name.
-     *
-     * @param currentFolder The path. For example: /a/b/c/d
-     * @return
-     */
+/**
+ * vfs
+ *
+ * The base name of the folder is always the database name.
+ *
+ * @param currentFolder The path. For example: /a/b/c/d
+ * @return
+ */
     def vfs(String currentFolder) {
         String na = currentFolder.split('/')[1]
         final db = mongo.getDB(OR + na)
@@ -298,6 +202,12 @@ class GridFSService {
     def listFilesByObjid(String na, String bucket, String id) {
         new GridFS(mongo.getDB(OR + na), bucket)
                 .find(new BasicDBObject('metadata.objid', na + '/' + id))
+                .sort { it.metaData.seq }
+    }
+
+    def listFilesByLabel(String na, String bucket = 'master', String label) {
+        new GridFS(mongo.getDB(OR + na), bucket)
+                .find(new BasicDBObject('metadata.label', label))
                 .sort { it.metaData.seq }
     }
 

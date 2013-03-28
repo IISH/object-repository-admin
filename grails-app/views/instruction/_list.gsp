@@ -16,12 +16,12 @@
         <g:each in="${instructionInstanceList}" status="i" var="instructionInstance">
             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" id="ud${instructionInstance.id}">
                 <td>
-                    <g:link action="show"
+                    <g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${instructionInstance.id}">${fieldValue(bean: instructionInstance, field: "fileSetAlias")}</g:link>
                     <br/>
                     <g:if test="${instructionInstance.declaredFiles != 0}">
-                        <g:link controller="stagingfile"
-                                params="[orid: instructionInstance.id]">${fieldValue(bean: instructionInstance, field: "declaredFiles")} declared files.</g:link></g:if>
+                        <g:link mapping="namingAuthority" controller="stagingfile"
+                                params="[orid: instructionInstance.id,na:params.na]">${fieldValue(bean: instructionInstance, field: "declaredFiles")} declared files.</g:link></g:if>
                 </td>
                 <td>${fieldValue(bean: instructionInstance, field: "label")}</td>
                 <g:render template="/layouts/task" model="[instance: instructionInstance]"/>

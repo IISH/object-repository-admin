@@ -1,11 +1,11 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
 import org.objectrepository.instruction.PlanManagerService
-import org.objectrepository.security.AdminUserDetailsService
 import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
-import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
+import org.objectrepository.ftp.FtpService
+import org.objectrepository.ldap.CustomLdapUserDetailsManager
 
 beans = {
 
@@ -21,7 +21,16 @@ beans = {
         }
     }
 
-    userDetailsService(AdminUserDetailsService)
+    if (Boolean.parseBoolean(System.properties.getProperty("ftp"))) {
+        println("Loading ftp service")
+        ftpService(FtpService) {
+            gridFSService = ref('gridFSService')
+            grailsApplication = application
+            authenticationManager = ref('authenticationManager')
+        }
+    }
+
+//    userDetailsService(AdminUserDetailsService)
 
     def conf = SpringSecurityUtils.securityConfig
     if (conf.ldap.active) {
@@ -31,7 +40,7 @@ beans = {
         usernameMapper(DefaultLdapUsernameToDnMapper,
                 conf.ldap.search.base,
                 conf.ldap.rememberMe.usernameMapper.usernameAttribute)
-        ldapUserDetailsManager(LdapUserDetailsManager, ref('contextSource')) {
+        ldapUserDetailsManager(CustomLdapUserDetailsManager, ref('contextSource')) {
             userDetailsMapper = ref('ldapUserDetailsMapper')
             usernameMapper = ref('usernameMapper')
             passwordAttributeName = conf.ldap.mapper.passwordAttributeName
@@ -39,6 +48,8 @@ beans = {
             groupRoleAttributeName = conf.ldap.authorities.groupRoleAttribute
             groupMemberAttributeName = conf.ldap.rememberMe.detailsManager.groupMemberAttributeName
         }
+
+
     }
 
     if (conf.oauthProvider.active) {

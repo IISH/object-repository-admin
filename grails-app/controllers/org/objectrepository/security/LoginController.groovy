@@ -30,14 +30,14 @@ class LoginController {
      */
     def index = {
         if (springSecurityService.isLoggedIn()) {
-            redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
-        }
-        else {
-            if (System.getProperty("screenLogin", "false") == "true")
-                redirect action: auth, params: params
+            final na = springSecurityService.na
+            if (na)
+                redirect uri: createLink(base: '/' + na, controller: 'dashboard')
             else
-                redirect action: full
+                forward(controller: 'logout')
         }
+        else
+            redirect action: auth, params: params
     }
 
     /**
@@ -48,14 +48,17 @@ class LoginController {
         def config = SpringSecurityUtils.securityConfig
 
         if (springSecurityService.isLoggedIn()) {
-            redirect uri: config.successHandler.defaultTargetUrl
-            return
+            final na = springSecurityService.na
+            if (na)
+                redirect uri: createLink(base: '/' + na, controller: 'dashboard')
+            else
+                forward(controller: 'logout')
+        } else {
+            String view = 'auth'
+            String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
+            render view: view, model: [postUrl: postUrl,
+                    rememberMeParameter: config.rememberMe.parameter]
         }
-
-        String view = 'auth'
-        String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
-        render view: view, model: [postUrl: postUrl,
-                rememberMeParameter: config.rememberMe.parameter]
     }
 
     /**

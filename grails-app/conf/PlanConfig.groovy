@@ -4,6 +4,8 @@ autoGeneratePIDs = [
 
 action = ['upsert', 'add', 'update', 'delete']
 
+pdfLevel = ['master','level1','level2','level3']
+
 /**
  * Place methods for determining if the service should be offered in the service.method key
  */

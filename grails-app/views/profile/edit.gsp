@@ -13,11 +13,7 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <sec:ifAllGranted roles="ROLE_ADMIN"><li><g:link class="list" action="list"><g:message code="default.list.label"
-                                                                                               args="[entityName]"/></g:link></li>
-            <li><g:link class="create" action="create"><g:message code="default.new.label"
-                                                                  args="[entityName]"/></g:link></li></sec:ifAllGranted>
-        <li><g:link class="show" action="show" id="${profileInstance.id}"><g:message code="default.show.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="show" action="show" id="${profileInstance.id}"><g:message code="default.show.label"
                                                                                      args="[entityName]"/></g:link></li>
     </ul>
 </div>
@@ -25,20 +21,14 @@
 <g:render template="/layouts/header" model="[instance:profileInstance]"/>
 
 <div id="edit-profile" class="content scaffold-edit" role="main">
-    <g:form method="post">
-        <g:hiddenField name="id" value="${profileInstance.id}"/>
-        <g:hiddenField name="version" value="${profileInstance?.version}"/>
+    <g:form mapping="namingAuthority" params="[na:params.na, id:profileInstance.id, version:profileInstance?.version]" method="post">
         <fieldset class="form">
             <ol class="property-list profile"><g:render template="/layouts/profileInstructionForm"
                                                         model="[instance:profileInstance]"/></ol>
         </fieldset>
         <fieldset class="buttons">
-            <g:actionSubmit class="save" action="update"
+            <g:actionSubmit  class="save" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-            <sec:ifAllGranted roles="ROLE_ADMIN"><g:actionSubmit class="delete" action="delete"
-                                                                 value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                                                 formnovalidate=""
-                                                                 onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></sec:ifAllGranted>
         </fieldset>
     </g:form>
 </div>

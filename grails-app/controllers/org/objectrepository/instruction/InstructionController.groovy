@@ -4,8 +4,10 @@ import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
 import grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class InstructionController {
+import org.objectrepository.security.NamingAuthorityInterceptor
+
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class InstructionController extends NamingAuthorityInterceptor {
 
     def grailsApplication
     def springSecurityService
@@ -27,10 +29,8 @@ class InstructionController {
         params.max = Math.min(params.max ? params.int('max') : 5, 10)
         if (!params.sort) params.sort = 'label';
 
-        def instructionInstanceList = (springSecurityService.hasRole('ROLE_ADMIN')) ?
-            Instruction.list(params) :
-            Instruction.findAllByNa(springSecurityService.principal.na, params)
-        int count = (springSecurityService.hasRole('ROLE_ADMIN')) ? Instruction.count() : Instruction.countByNa(springSecurityService.principal.na)
+        def instructionInstanceList = Instruction.findAllByNa(params.na, params)
+        int count = Instruction.countByNa(params.na)
 
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
@@ -41,23 +41,20 @@ class InstructionController {
     }
 
     def show = {
-        params.view = "show"
-        redirect(action: "showremote", params: params)
+        params.view = 'show'
+        forward(action: "showremote", params: params)
     }
 
     def showremote = {
         def instructionInstance = instructionAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            redirect(action: "list")
+            //redirect uri: createLink( base: '/' + params.na, action: "list")
+            forward(action:'list')
         }
         else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
-            if (params.view) {
-                render(view: params.view, model: [instructionInstance: instructionInstance])
-            } else {
-                render(view: "_showremote", model: [instructionInstance: instructionInstance])
-            }
+            render(view: params.view ?: '_showremote', model: [instructionInstance: instructionInstance])
         }
     }
 
@@ -94,10 +91,12 @@ class InstructionController {
         if (instruction && !instruction.empty) {
             instruction.transferTo(file)
             instructionInstance.delete(flush: true)
-            redirect(controller: "instruction", action: "list")
+            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
+            forward(action:'list')
         } else if (params.instruction) {
             instructionInstance.delete(flush: true)
-            redirect(controller: "instruction", action: "list")
+           // redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
+            forward(action:'list')
         }
         [instructionInstance: instructionInstance, fileExists: file.exists()]
     }
@@ -118,7 +117,8 @@ class InstructionController {
                 writer = file.newWriter('UTF-8')
             }
             downloadService.write(writer, instructionInstance)
-            redirect(controller: "instruction", action: "list")
+            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
+            forward(action:'list')
         }
         [instructionInstance: instructionInstance]
     }
@@ -128,11 +128,8 @@ class InstructionController {
         def instructionInstance = Instruction.get(params.id)
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id]) }"
-            redirect(action: "list")
-        }
-        if (!springSecurityService.hasValidNa(instructionInstance.na)) {
-            response 401
-            forward(action: "list")
+            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
+            forward(action:'list')
         }
         else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
@@ -143,11 +140,6 @@ class InstructionController {
 
     def update = {
         def instructionInstance = Instruction.get(params.id)
-        if (!springSecurityService.hasValidNa(instructionInstance.na)) {
-            response 401
-            forward(action: "list")
-        }
-
         if (instructionInstance) {
             if (params.version) {
                 def version = params.version.toLong()
@@ -182,7 +174,8 @@ class InstructionController {
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
-                redirect(action: "show", id: instructionInstance.id)
+                //redirect uri: createLink( base: '/' + params.na, action: "show", id: instructionInstance.id)
+                forward(action:'show', id: instructionInstance.id)
             }
             else {
                 render(view: "edit", model: [instructionInstance: instructionInstance])
@@ -190,30 +183,30 @@ class InstructionController {
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            redirect(action: "list")
+            //redirect uri: createLink( base: '/' + params.na, action: "list")
+            forward(action:'list')
         }
     }
 
     def delete = {
         def instructionInstance = Instruction.get(params.id)
         if (instructionInstance) {
-            if (!springSecurityService.hasValidNa(instructionInstance.na)) {// Is the user authorised to use this service ?
-                response 401
-                forward(action: "show")
-            }
             try {
                 instructionInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-                redirect(action: "list")
+               // redirect uri: createLink( base: '/' + params.na, action: "list")
+                forward(action:'list')
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-                redirect(action: "show", id: params.id)
+              //  redirect uri: createLink( base: '/' + params.na, id:params.id, controller: 'show')
+                forward(action:'show', id:params.id)
             }
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            redirect(action: "list")
+            //redirect uri: createLink( base: params.na, action: "list")
+            forward(action:'list')
         }
     }
 
@@ -233,7 +226,8 @@ class InstructionController {
                     log.warn e.message
                 }
             }
-            redirect(controller: 'instruction', action: 'list')
+            //redirect uri: createLink( base: '/' + params.na, action: "show", id:params.id)
+            forward(action:'show', id:params.id)
         }
     }
 
@@ -255,12 +249,10 @@ class InstructionController {
         def instructionInstance = Instruction.get(params.id)// Is this item available ?
         if (!instructionInstance) {
             render status: 404
-        } else if (!springSecurityService.hasValidNa(instructionInstance.na)) {// Is the user authorised to use this service ?
-            instructionInstance.status = 403
-            render status: instructionInstance.status
         } else {
             instructionInstance.status = 200
         }
         instructionInstance
     }
+
 }

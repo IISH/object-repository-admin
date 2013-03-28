@@ -9,10 +9,17 @@ import org.objectrepository.security.User
 import org.objectrepository.security.UserRole
 import org.objectrepository.util.OrUtil
 import org.springframework.security.oauth2.provider.BaseClientDetails
+import org.springframework.ldap.core.DistinguishedName
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.ldap.core.DirContextAdapter
+import org.springframework.ldap.core.ContextMapper
+import org.springframework.ldap.NamingException
+import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
 
 class BootStrap {
 
     def springSecurityService
+    def LdapUserDetailsManager ldapUserDetailsManager
     def grailsApplication
     def clientDetailsService
     def planManagerService
@@ -24,12 +31,8 @@ class BootStrap {
         users()
         oauth2()
         bindAccessors()
-        if (planManagerService) {
-            planManagerService.start();
-        }
-        if (System.getProperty("ftp", "false") == "true") {
-            ftpService.start()
-        }
+        planManagerService?.start();
+        ftpService?.start()
     }
 
     /**
@@ -48,16 +51,16 @@ class BootStrap {
                 final String adminUsername = System.getProperty("adminUsername")
                 final String adminPassword = System.getProperty("adminPassword")
                 if (adminPassword && adminUsername) {
-                    addUser("0", adminUsername, "ROLE_ADMIN", springSecurityService.encodePassword(adminPassword))
+                    addUser("0", adminUsername, springSecurityService.encodePassword(adminPassword))
                 }
                 break
             case Environment.DEVELOPMENT:
-                addUser("0", "admin", "ROLE_ADMIN")
-                addUser("12345", "12345", "ROLE_CPADMIN")
-                addUser("20000", "20000", "ROLE_CPADMIN")
+                addUser("0", "admin")
+                addUser("12345", "12345")
+                addUser("20000", "20000")
                 break
             case Environment.TEST:
-                addUser("12345", "12345", "ROLE_CPADMIN")
+                addUser("12345", "12345")
                 break
         }
     }
@@ -65,17 +68,15 @@ class BootStrap {
     private void bindSpringSecurityService() {
 
         // Add helpers methods:
-        springSecurityService.metaClass.hasRole = { def role = 'ROLE_ADMIN' ->
-            (principal.hasProperty('authorities') && role in principal.authorities*.authority)
+        springSecurityService.metaClass.hasNa = { def na ->
+            def role = "ROLE_OR_USER_" + na
+            na && (role in authentication.authorities*.authority)
         }
 
-        /**
-         *  hasValidNa
-         *
-         *  Check to see if the principal is allowed to see this file by na or administrative authority
-         */
-        springSecurityService.metaClass.hasValidNa = { def na ->
-            (principal.hasProperty('authorities') && (na == principal.na || hasRole('ROLE_ADMIN')))
+        springSecurityService.metaClass.getNa = {
+            authentication.authorities*.role.find {
+                it.startsWith('ROLE_OR_USER_')
+            }?.split('_').last()
         }
     }
 
@@ -121,13 +122,14 @@ class BootStrap {
         }
     }
 
-    private void addUser(String na, String username, String authority, String password = null) {
+    private void addUser(String na, String username, String password = null) {
 
+        def authority = "ROLE_OR_USER_" + na
         log.info "Add user for na " + na + " username " + username + " authority " + authority
         def role = (Role.findByAuthority(authority)) ?: new Role(authority: authority).save(failOnError: true)
         if (!password) password = springSecurityService.encodePassword(username)
         def user = User.findByUsername(username) ?: new User(username: username, password: password,
-                na: na, o: 'socialhistoryservices', mail: username + '@socialhistoryservices.org').save(failOnError: true)
+                mail: username + '@socialhistoryservices.org').save(failOnError: true)
         if (!user.authorities.find {
             it.id == role.id
         }
@@ -135,9 +137,5 @@ class BootStrap {
 
         OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
         if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
-    }
-
-    def destroy = {
-        planManager?.cleanup()
     }
 }

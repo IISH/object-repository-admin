@@ -13,22 +13,24 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="show" controller="instruction" action="show"
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="show" controller="instruction"
+                    action="show"
                     id="${stagingfileInstance.parent.id}"><g:message code="instruction.files"
-                                                                          default="Show instruction"/></g:link></li>
-        <li><g:link class="list" action="list" id="${stagingfileInstance.parent.id}"><g:message
-                code="default.files.label" default="Show files"/></g:link></li>
-        <li><g:link class="show" action="show" id="${stagingfileInstance.id}"><g:message
-                code="default.files.label" default="Show staging file"/></g:link></li>
+                                                                     default="Show instruction"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="list" action="list"
+                    id="${stagingfileInstance.parent.id}"><g:message
+                    code="default.files.label" default="Show files"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="show" action="show"
+                    id="${stagingfileInstance.id}"><g:message
+                    code="default.files.label" default="Show staging file"/></g:link></li>
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance:stagingfileInstance]"/>
+<g:render template="/layouts/header" model="[instance: stagingfileInstance]"/>
 
 <div id="edit-Stagingfile" class="content scaffold-edit" role="main">
-    <g:form method="post">
-        <g:hiddenField name="id" value="${stagingfileInstance?.id}"/>
-        <g:hiddenField name="version" value="${stagingfileInstance?.version}"/>
+    <g:form mapping="namingAuthority"
+            params="[na: params.na, id: stagingfileInstance?.id, version: stagingfileInstance?.version]" method="post">
         <fieldset class="form">
             <g:render template="form"/>
         </fieldset>

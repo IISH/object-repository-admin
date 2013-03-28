@@ -13,6 +13,8 @@ class DownloadService {
             'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length', 'plan']
 
     def messageSource
+    def gridFSService
+    def grailsApplication
 
     /**
      * write
@@ -75,5 +77,83 @@ class DownloadService {
                 }
             }
         }
+    }
+
+    /**
+     * writeOrfiles
+     *
+     * Partial data dump of all technical metadata.
+     *
+     * @param id Identifier of the document. If null all metadata is downloaded.
+     * @param na
+     * @param writer
+     */
+    void writeOrfiles(def params, def writer) {
+
+        def orfileAttributes = [xmlns: "http://objectrepository.org/orfiles/1.0/"]
+
+        def builder = new StreamingMarkupBuilder()
+        builder.setEncoding("utf-8")
+        builder.setUseDoubleQuotes(true)
+
+        def list = (params.label) ? gridFSService.listFilesByLabel(params.na, params.label) : [gridFSService.findByPid(params.pid)]
+        writer << builder.bind {
+            mkp.xmlDeclaration()
+            comment << String.format('Selection contains %s documents. Export extracted on %s',
+                    list.size(), new Date().toGMTString())
+            orfiles(orfileAttributes) {
+                list.each { orfileInstance ->
+                    orfile {
+                        pid orfileInstance.metadata.pid
+                        resolverBaseUrl orfileInstance.metadata.resolverBaseUrl
+                        pidurl orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.pid
+                        if (orfileInstance.metadata.lid) { lid orfileInstance.metadata.lid }
+                        if (orfileInstance.metadata.objid) {
+                            objid orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.objid
+                            seq orfileInstance.metadata.seq
+                        }
+                        filename orfileInstance.filename
+                        label orfileInstance.metadata.label
+                        access orfileInstance.metadata.acc
+                        out << metadata(orfileInstance, "master")
+                        ['level1', 'level2', 'level3'].each {  bucket ->
+                            out << metadata(gridFSService.findByPid(orfileInstance.metadata.pid, bucket), bucket)
+                        }
+                    }
+                }
+            }
+            writer.flush()
+        }
+    }
+
+    private metadata(def orfileInstance, def bucket) {
+        if (orfileInstance)
+            return {
+                final String _resolveUrl = grailsApplication.config.grails.serverURL + "/file/" + bucket + "/" + orfileInstance.metadata.pid
+                "$bucket" {
+                    if (orfileInstance.metadata.pidType == "or") {
+                        pidurl orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.pid + "?locatt=view:" + bucket
+                    } else {
+                        pidurl orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.pid
+                    }
+                    resolveUrl _resolveUrl
+                    ['contentType',
+                            'length',
+                            'content',
+                            'md5',
+                            'uploadDate',
+                            'firstUploadDate',
+                            'lastUploadDate',
+                            'timesAccessed',
+                            'timesUpdated'].each {
+                        if (orfileInstance[it]) {
+                            "$it" orfileInstance[it]
+                        } else if (orfileInstance.metadata[it]) {
+                            "$it" orfileInstance.metadata[it]
+                        }
+                    }
+                }
+
+            }
     }
 }

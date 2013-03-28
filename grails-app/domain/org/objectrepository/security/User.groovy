@@ -2,9 +2,6 @@ package org.objectrepository.security
 
 class User {
 
-    Long uidNumber = 2000
-    String na // group id. This is the na and inetOrgPerson.ou
-    String o // organizational unit. Descriptive title of organization
     String mail
     String confirmpassword
     String verification
@@ -15,13 +12,12 @@ class User {
     // Spring minimal User fields
     String password
     boolean enabled = true
-    boolean accountNonExpired = true
-    boolean accountNonLocked = true
-    boolean credentialsNonExpired = true
+    boolean accountExpired
+    boolean accountLocked
+    boolean passwordExpired
 
-    Set<org.objectrepository.security.Role> getAuthorities() {
-
-        UserRole.findAllByUser(this) as Set
+    Set<Role> getAuthorities() {
+        UserRole.findAllByUser(this).collect { it.role } as Set
     }
 
     /**

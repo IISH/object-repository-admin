@@ -1,4 +1,4 @@
-package org.objectrepository.files
+package org.objectrepository.orfiles
 
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
@@ -43,6 +43,6 @@ class PolicyService {
     }
 
     boolean denied(def access, def na) {
-        !springSecurityService.hasRole('ROLE_ADMIN') && access != "open" && !springSecurityService.hasValidNa(na)
+        access != "open" && !springSecurityService.hasNa(na)
     }
 }

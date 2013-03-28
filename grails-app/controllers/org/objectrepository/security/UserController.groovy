@@ -2,12 +2,14 @@ package org.objectrepository.security
 
 import grails.plugins.springsecurity.Secured
 import org.apache.commons.lang.RandomStringUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+
 import org.objectrepository.ai.ldap.LdapUser
 import org.objectrepository.ai.ldap.LdapUser.Essence
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.ClientToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.GrantedAuthorityImpl
 
 /**
  * UserController
@@ -20,8 +22,8 @@ import org.springframework.security.oauth2.provider.ClientToken
  *
  * @author Lucien van Wouw <lwo@iisg.nl>
  */
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class UserController {
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class UserController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def ldapUserDetailsManager
@@ -33,31 +35,28 @@ class UserController {
     final static loginshell = "/bin/false"
 
     def index = {
-
         forward(action: "list", params: params)
     }
 
     def list = {
 
-        def currentUser = User.findByUsername(springSecurityService.principal.username)
-        if (springSecurityService.hasRole('ROLE_CPUSER')) {
-            redirect(action: "show", id: currentUser.id)
-        } else {
-            params.max = Math.min(params.max ? params.int('max') : 10, 100)
-            def userList = springSecurityService.hasRole('ROLE_ADMIN') ? User.list(params) : User.findAllByNa(currentUser.na, params)  // Only show users belonging to the group of current cpadmin
-            [currentUsername: currentUser.username, userInstanceList: userList, userInstanceTotal: userList.size()]
+        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        def userInstanceList = []
+        ldapUserDetailsManager.findLdapGroupUsers('OR_FTP_' + params.na).each {
+            String username = it.split(',')[0].split('=')[1]
+            if (springSecurityService.principal.username != username)
+                userInstanceList << ldapUserDetailsManager.loadUserByUsername(username)
         }
+        [userInstanceList: userInstanceList, userInstanceTotal: userInstanceList.size()]
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
     def create = {
         def userInstance = new User()
         userInstance.enabled = true
-        userInstance.na = springSecurityService.principal.na
+        userInstance.na = params.na
         return [userInstance: userInstance]
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
     def save = {
 
         // Set password when it was left empty
@@ -67,10 +66,6 @@ class UserController {
             params.confirmpassword = newPassword
         }
         params.username = params.username.toLowerCase()
-
-        if (springSecurityService.hasRole('ROLE_CPADMIN')) { // Make sure we do not set someone else's na here...
-            params.na = springSecurityService.principal.na
-        }
 
         def userInstance = User.findByUsername(params.username)
         if (userInstance) { // We are not a save.... but an update
@@ -104,21 +99,18 @@ class UserController {
         addRole(userInstance, params)
 
         // CPADMINs have an identical uid as the na
-        long uidNumber = (params.role == 'ROLE_CPADMIN') ? userInstance.na as Long : User.list(max: 1, sort: 'uidNumber', order: 'desc').get(0).uidNumber + 1
+        long uidNumber = userInstance.na as Long
         userInstance.uidNumber = uidNumber
 
         if (userInstance.save()) {
 
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
 
-            // add user role to new user. Only an ADMIN can set roles
-            def userRoles = (params.role && springSecurityService.hasRole('ROLE_ADMIN')) ? [params.role] : ['ROLE_CPUSER']
-            userRoles.each() { String authority ->
-                def userRole = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
-                UserRole.create userInstance, userRole
-            }
+            def authority = "ROLE_OR_FTP_USER_" + params.na
+            def userRole = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
+            UserRole.create userInstance, userRole
 
-            params.ldap = (params.ldap) ?: springSecurityService.hasRole('ROLE_CPADMIN')
+            params.ldap = (params.ldap) ?: true
             if (params.ldap && ldapUserDetailsManager) {
 
                 // Do not add if the user exists
@@ -171,73 +163,43 @@ class UserController {
     }
 
     def show = {
-        def userInstance = User.get(params.id)
+        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             redirect(action: "list")
             return
         }
 
-        def currentUser = User.findByUsername(springSecurityService.principal.username)
-        if (springSecurityService.hasRole('ROLE_CPUSER') && userInstance.username != springSecurityService.principal.username) {
-            redirect(action: "show", id: currentUser.id)
-            return
+        def token = tokenStore.selectKeys(params.id)
+        if (!token) {
+            def client = clientDetailsService.clientDetailsStore.get("clientId")
+            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
+                    new UsernamePasswordAuthenticationToken(
+                            params.id,
+                            UUID.randomUUID().toString(),
+                            [
+                                    new GrantedAuthorityImpl('ROLE_OR_USER'),
+                                    new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
+                    ))
+            token = tokenServices.createAccessToken(authentication)
         }
-
-        if (!springSecurityService.hasValidNa(userInstance.na)) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "list")
-            return
-        }
-
-        OAuth2AccessToken token = null
-        if (springSecurityService.hasRole('ROLE_CPADMIN')) {
-            token = tokenStore.selectKeys(userInstance.username)
-            if (!token) {
-                def client = clientDetailsService.clientDetailsStore.get("clientId")
-                ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                        client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-                final OAuth2Authentication authentication = new OAuth2Authentication(clientToken, springSecurityService.authentication)
-                token = tokenServices.createAccessToken(authentication)
-            }
-
-        }
-        [userInstance: userInstance, currentUsername: springSecurityService.principal.username, token: token]
+        [userInstance: userInstance, token: token]
     }
 
     def edit = {
-        def userInstance = User.get(params.id)
+        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             redirect(action: "list")
-            return
-        }
-
-        def currentUser = User.findByUsername(springSecurityService.principal.username)
-        if (springSecurityService.hasRole('ROLE_CPUSER') && userInstance.id != currentUser.id) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "show", id: currentUser.id)
-            return
-        }
-
-        if (!springSecurityService.hasValidNa(userInstance.na)) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "list")
-            return
-        }
-
-        return [userInstance: userInstance, currentUsername: springSecurityService.principal.username]
+        } else
+            [userInstance: userInstance]
     }
 
-    @Secured(['ROLE_CPADMIN'])
     def updatekey = {
 
-        def userInstance = User.get(params.id)
-        if (!springSecurityService.hasValidNa(userInstance.na)) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "list")
-            return
-        }
+        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
         if (token) {
             tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
@@ -245,72 +207,42 @@ class UserController {
             def client = clientDetailsService.clientDetailsStore.get("clientId")
             ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
                     client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken, springSecurityService.authentication)
+            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
+                    new UsernamePasswordAuthenticationToken(
+                            params.id,
+                            UUID.randomUUID().toString(),
+                            [
+                                    new GrantedAuthorityImpl('ROLE_OR_USER'),
+                                    new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
+                    ))
             tokenServices.createAccessToken(authentication)
         }
-        redirect(action: "show", id: params.id)
+        forward(action: "show", id: params.id)
     }
 
     def update = {
-        def userInstance = User.get(params.id)
-
-        if (springSecurityService.hasRole('ROLE_CPUSER') && userInstance.username != springSecurityService.principal.username) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "index")
-        }
-
-        if (!springSecurityService.hasValidNa(userInstance.na)) {   // Cannot add \ update a record from a user with another na
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "list")
-        }
+        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
 
         if (params.confirmpassword && params.confirmpassword != params.password) {
             flash.message = "Passwords do not match"
             render(view: "edit", model: [userInstance: userInstance])
-            return;
         }
-
-        if (userInstance) {
+        else if (userInstance) {
             boolean passwordAltered = (params.confirmpassword != "" && params.password != userInstance.password)
-            userInstance.properties = params
-            if (passwordAltered) {
-                userInstance.password = springSecurityService.encodePassword(userInstance.password)
-                userInstance.newpassword = null
-                userInstance.verification = null
-            }
-
-            if (params.role) addRole(userInstance, params)
-
-            if (!userInstance.hasErrors() && userInstance.save(flush: true)) {
-                def encpass = (ldapUserDetailsManager) ? ldapUserDetailsManager.loadUserByUsername(userInstance.username).password : springSecurityService.principal.password
-                userInstance.enabled = params.enabled
-                def passwd = (passwordAltered) ? params.password : encpass
-                userInstance.password = toggleEnable(passwd, userInstance.enabled)
-                if (ldapUserDetailsManager) updateUser(userInstance)
-                userInstance.password = "*"
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
-                redirect(action: "show", id: userInstance.id)
-            }
-            else {
-                render(view: "edit", model: [userInstance: userInstance])
-            }
+            def passwd = (passwordAltered) ? springSecurityService.encodePassword(params.password) : userInstance.password
+            params.password = toggleEnable(passwd, params.enabled)
+            params.uid = userInstance.uid
+            updateUser(params)
+            flash.message = "${message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
+            forward(action: "show", id: userInstance.id)
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            forward(action: "list")
         }
     }
 
-    private def addRole(User userInstance, GrailsParameterMap params) {
-        if (params.role == 'ROLE_ADMIN' && springSecurityService.hasRole('ROLE_CPADMIN')) {
-            // Sneak injection... just do not act here.
-            params.role = 'ROLE_CPUSER'
-        }
-        UserRole.removeAll(userInstance)
-        UserRole.create userInstance, Role.findByAuthority(params.role)
-    }
-
-    protected toggleEnable(String password, boolean enable) {
+    protected def toggleEnable(String password, boolean enable) {
         char trailer = password[0]
         if (enable && trailer == '!') {
             return password.substring(1)
@@ -320,36 +252,29 @@ class UserController {
         password
     }
 
-    /**
-     * updateUser
-     *
-     * Update the user in LDAP.
-     * We can easily say the home directory belongs to a CPADMIN as that account uidNumber is identical to the na
-     *
-     * @param userInstance
-     */
-    protected void updateUser(org.objectrepository.security.User userInstance) {
-        def currentUser = User.findByUsername(springSecurityService.principal.username)
+/**
+ * updateUser
+ *
+ * Update the user in LDAP.
+ *
+ * @param userInstance
+ */
+    protected void updateUser(def params) {
         Essence person = new Essence();
-        person.password = userInstance.password
-        long na = userInstance.na as Long
-        def homeDirectory = (userInstance.uidNumber == na) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
-        person.homeDirectory = homeDirectory
-        person.gidNumber = currentUser.na as Long
-        person.ou = currentUser.na
-        person.o = currentUser.o
-        person.username = userInstance.username
-        person.uidNumber = userInstance.uidNumber
+        person.password = params.password
+        person.homeDirectory = grailsApplication.config.sa.path + "/" + params.na + "/" + params.uid
+        person.gidNumber = params.na
+        person.username = params.id
+        person.uidNumber = params.uid
         person.loginshell = loginshell
-        person.mail = userInstance.mail
-        person.enabled = userInstance.enabled
-        person.sn = userInstance.username
-        person.cn = [userInstance.username]
-        person.dn = ldapUserDetailsManager.usernameMapper.buildDn(userInstance.username)
+        person.mail = params.mail
+        person.enabled = params.enabled
+        person.sn = params.id
+        person.cn = [params.id]
+        person.dn = ldapUserDetailsManager.usernameMapper.buildDn(params.id)
         ldapUserDetailsManager.updateUser(person.createUserDetails())
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
     def delete = {
         def userInstance = User.get(params.id)
         if (!userInstance) {
@@ -359,12 +284,6 @@ class UserController {
 
         if (userInstance.username == springSecurityService.principal.username) {
             render(message(code: "delete.self"))
-            return
-        }
-
-        if (!springSecurityService.hasValidNa(userInstance.na)) {
-            flash.message = "${message(code: 'user.default.unauthorized')}"
-            redirect(action: "list")
             return
         }
 

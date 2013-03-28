@@ -10,6 +10,7 @@ import org.apache.ftpserver.usermanager.impl.AbstractUserManager
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.userdetails.UserDetails
 
 class VFSUserManager extends AbstractUserManager {
 
@@ -63,25 +64,25 @@ class VFSUserManager extends AbstractUserManager {
             if (!(upauth.getPassword() && upauth.getUsername()))
                 throw new AuthenticationFailedException("Authentication failed")
 
-            def details = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(upauth.getUsername(), upauth.getPassword()))?.principal
-            if (details) {
+            def principal = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(upauth.getUsername(), upauth.getPassword()))?.principal
+            if (principal) {
                 List<Authority> authorities = new ArrayList<Authority>();
                 authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
                 authorities.add(new TransferRatePermission(downloadRate, uploadRate));
-                return new VFSUser(name: details.username, password: details.password, homeDir: '/' + details.na, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+
+                def homeDir = principal.authorities*.authority.findAll {
+                    it.startsWith('ROLE_OR_USER_')
+                }.collect {
+                    '/' + it.split('_').last()
+                }.join(',')
+
+                return new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
             } else
                 throw new AuthenticationFailedException("Authentication failed")
 
-        } else if (authentication instanceof AnonymousAuthentication) {
-            if (doesExist("anonymous")) {
-                return getUserByName("anonymous")
-            } else {
-                throw new AuthenticationFailedException("Authentication failed")
-            }
-        } else {
+        } else
             throw new IllegalArgumentException(
                     "Authentication not supported by this user manager")
-        }
     }
 
     String getAdminName() {

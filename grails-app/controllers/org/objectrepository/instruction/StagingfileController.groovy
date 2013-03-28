@@ -2,9 +2,10 @@ package org.objectrepository.instruction
 
 import org.objectrepository.security.Policy
 import grails.plugins.springsecurity.Secured
+import org.objectrepository.security.NamingAuthorityInterceptor
 
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class StagingfileController {
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class StagingfileController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -24,11 +25,6 @@ class StagingfileController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'Stagingfile.label', default: 'Instruction'), params.orId])}"
             redirect(controller: "instruction", action: "list")
             return
-        }
-
-        if (!springSecurityService.hasValidNa(instructionInstance.na)) {
-            render status: 403
-            return;
         }
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
@@ -85,11 +81,6 @@ class StagingfileController {
             forward(action: "list")
             return
         }
-        if (!springSecurityService.hasValidNa(stagingfileInstance.parent.na)) { // Make sure we do not see anothers na here...
-            response 403
-            forward(action: "list")
-        }
-
         if (params.view) {
             render(view: params.view, model: [stagingfileInstance: stagingfileInstance])
         } else {
@@ -104,21 +95,12 @@ class StagingfileController {
             forward(action: "list")
             return
         }
-        if (!springSecurityService.hasValidNa(stagingfileInstance.parent.na)) { // Make sure we do not see anothers na here...
-            response 403
-            forward(action: "list")
-        }
         def policyInstanceList = Policy.findAllByNa(stagingfileInstance.parent.na)
         [stagingfileInstance: stagingfileInstance, policyList: policyInstanceList.access]
     }
 
     def update = {
         def stagingfileInstance = Stagingfile.get(params.id)
-        if (!springSecurityService.hasValidNa(stagingfileInstance.na)) {
-            response 401
-            forward(action: "list")
-        }
-
         if (stagingfileInstance) {
             if (params.version) {
                 def version = params.version.toLong()

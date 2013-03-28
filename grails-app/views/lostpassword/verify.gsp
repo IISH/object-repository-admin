@@ -11,7 +11,7 @@
     </p>
     <br/>
     <p>
-        <g:link class="LoginController" controller="login"><g:message code="verification.signin"/></g:link>
+       <g:link class="LoginController" controller="login"><g:message code="verification.signin"/></g:link>
     </p>
 </div>
 </body>

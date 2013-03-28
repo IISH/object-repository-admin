@@ -9,7 +9,7 @@ grails.plugins.springsecurity.ldap.active = ldap
 grails.plugins.springsecurity.oauthProvider.active = oauthProvider
 grails.plugins.springsecurity.oauthProvider.tokenServices.accessTokenValiditySeconds = 31536000
 grails.plugins.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
-grails.plugins.springsecurity.controllerAnnotations.staticRules = ['/oauth/authorize.dispatch': ['ROLE_ADMIN', 'ROLE_CPADMIN']]
+grails.plugins.springsecurity.controllerAnnotations.staticRules = ['/oauth/authorize.dispatch': ['ROLE_OR_USER']]
 
 updateList.interval = 60000 // setInterval in ms for the Javascript Ajax function
 
@@ -69,7 +69,7 @@ if (System.properties.containsKey("or.properties")) {
     println("FATAL: no or.properties file set in VM or Environment. \n \
         Add a -Dor.properties=/path/to/or.properties argument when starting this application. \n \
         Or set a OR=/path/to/or.properties as environment variable.")
-    System.exit(-1)
+    //System.exit(-1)
 }
 
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket
@@ -107,6 +107,8 @@ def dn = ",dc=socialhistoryservices,dc=org"
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.objectrepository.security.User'
 grails.plugins.springsecurity.authority.className = 'org.objectrepository.security.Role'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.objectrepository.security.UserRole'
+
 grails.plugins.springsecurity.password.algorithm = 'sha-256'
 grails.plugins.springsecurity.rememberMe.persistent = false
 grails.plugins.springsecurity.rememberMe.useSecureCookie = false
@@ -115,12 +117,11 @@ grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups' + d
 grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'ou=users' + dn
 grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn' // must be set, e.g. 'cn'
 grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups' + dn
-grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupMemberAttributeName = 'memberUID'
 grails.plugins.springsecurity.ldap.context.managerDn = 'cn=admin' + dn
 grails.plugins.springsecurity.ldap.mapper.userDetailsClass = 'LdapUser'
-grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = false
-grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(memberUID={0})'
+grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
+grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = false
+grails.plugins.springsecurity.ldap.groupAttribute = 'cn'
 grails.plugins.springsecurity.ldap.useRememberMe = false
 
 def serverPort = System.properties['server.port']
@@ -129,13 +130,13 @@ resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
 if (!screenLogin) grails.plugins.springsecurity.apf.filterProcessesUrl = "/" // This breakage is deliberate
 environments {
     production {
-        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/index"
+        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/login"
         grails.logging.jul.usebridge = true
         if (ldap) grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'daoAuthenticationProvider', 'anonymousAuthenticationProvider']
     }
     development {
         grails.serverURL = "http://localhost:${serverPort}/${appName}"
-        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/${appName}/index"
+        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/${appName}/login"
         grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'anonymousAuthenticationProvider']
         if (ldap) grails.plugins.springsecurity.providerNames << 'ldapAuthProvider'
         grails.logging.jul.usebridge = false

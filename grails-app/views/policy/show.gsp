@@ -14,7 +14,7 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label"
                                                           args="[entityName]"/></g:link></li>
     </ul>
 </div>
@@ -39,10 +39,9 @@
 
     </ol>
 
-    <g:form>
+    <g:form mapping="namingAuthority" params="[na:params.na, id:policyInstance.id]">
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${policyInstance?.id}"/>
-            <g:link class="edit" action="edit" id="${policyInstance?.id}"><g:message code="default.button.edit.label"
+            <g:link mapping="namingAuthority" params="[na:params.na]" class="edit" action="edit" id="${policyInstance?.id}"><g:message code="default.button.edit.label"
                                                                                       default="Edit"/></g:link>
             <g:actionSubmit class="delete" action="delete"
                             value="${message(code: 'default.button.delete.label', default: 'Delete')}"

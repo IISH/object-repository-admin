@@ -1,11 +1,4 @@
-<%@ page import="org.objectrepository.util.OrUtil" %><sec:ifAllGranted roles="ROLE_ADMIN"><div
-        class="fieldcontain ${hasErrors(bean: instance, field: 'na', 'error')} ">
-    <label for="na">
-        <g:message code="profile.na.label" default="Na"/>
-
-    </label>
-    <g:textField name="na" value="${instance.na}"/>
-</div></sec:ifAllGranted>
+<%@ page import="org.objectrepository.util.OrUtil" %>
 
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'action', 'error')} ">
     <label for="action1">
@@ -61,12 +54,12 @@
     <g:checkBox name="replaceExistingDerivatives" value="${instance.replaceExistingDerivatives}"/>
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: instance, field: 'keepLocationWhenRecreate', 'error')} ">
-    <label for="keepLocationWhenRecreate">
-        <g:message code="profile.keepLocationWhenRecreate.label"
-                   default="Restore location elements when recreating instruction"/>
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'pdfLevel', 'error')} ">
+    <label for="pdfLevel">
+        <g:message code="profile.pdfLevel.label" />
     </label>
-    <g:checkBox name="keepLocationWhenRecreate" value="${instance.keepLocationWhenRecreate}"/>
+    <g:select name="pdfLevel" from="${grailsApplication.config.pdfLevel}"
+              value="${instance.pdfLevel}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'resolverBaseUrl', 'error')} ">

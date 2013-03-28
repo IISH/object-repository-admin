@@ -12,14 +12,15 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message
+                code="default.list.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
 <g:render template="/layouts/header" model="[instance: master]"/>
 
 <div id="edit-files" class="content scaffold-edit" role="main">
-    <g:form method="post">
+    <g:form mapping="namingAuthority" params="[na:params.na, id:orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]" method="post">
         <ol class="property-list files">
 
             <li class="fieldcontain">
@@ -51,12 +52,8 @@
 
         </ol>
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"/>
             <g:actionSubmit class="update" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-            %{--<g:actionSubmit class="delete" action="delete"
-                            value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                            onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>--}%
         </fieldset>
     </g:form>
 </div>

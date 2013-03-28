@@ -24,7 +24,7 @@
 <g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params:params]" />
 
 <div class="pagination">
-    <g:paginate action="list" total="${instructionInstanceTotal}"/>
+    <g:paginate mapping="namingAuthority" params="[na:params.na]" action="list" total="${instructionInstanceTotal}"  />
 </div>
 </body>
 </html>

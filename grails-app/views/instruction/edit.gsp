@@ -12,8 +12,8 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
-        <li><g:link class="show" action="show" id="${instructionInstance.id}"><g:message code="default.show.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="show" action="show" id="${instructionInstance.id}"><g:message code="default.show.label"
                                                                                          args="[entityName]"/></g:link></li>
     </ul>
 </div>
@@ -21,10 +21,7 @@
 <g:render template="/layouts/header" model="[instance:instructionInstance, flash:flash]"/>
 
 <div id="edit-instruction" class="content scaffold-edit" role="main">
-    <g:form method="post" action="edit">
-        <g:hiddenField name="id" value="${instructionInstance.id}"/>
-        <g:hiddenField name="version" value="${instructionInstance?.version}"/>
-
+    <g:form mapping="namingAuthority" params="[na:params.na, id:instructionInstance.id, version:instructionInstance?.version]" method="post" action="edit">
         <ol class="property-list profile">
             <div class="fieldcontain ${hasErrors(bean: instructionInstance, field: 'label', 'error')} ">
                 <label for="label">

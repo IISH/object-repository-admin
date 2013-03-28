@@ -6,7 +6,7 @@ import org.apache.ftpserver.ftplet.FtpException
 import org.apache.ftpserver.ftplet.FtpFile
 import org.apache.ftpserver.ftplet.User
 
-import org.objectrepository.files.GridFSService
+import org.objectrepository.orfiles.GridFSService
 
 public class VFSView implements FileSystemView {
 

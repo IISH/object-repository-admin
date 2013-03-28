@@ -9,4 +9,4 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:render template="list" model="[orid:instructionInstance.id,stagingfileInstanceList:stagingfileInstanceList]"/>
+<g:render template="list" model="[na:params.na,orid:instructionInstance.id,stagingfileInstanceList:stagingfileInstanceList]"/>

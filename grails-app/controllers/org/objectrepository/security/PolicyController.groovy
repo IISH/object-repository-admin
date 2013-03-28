@@ -3,41 +3,39 @@ package org.objectrepository.security
 import grails.plugins.springsecurity.Secured
 import org.springframework.dao.DataIntegrityViolationException
 
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class PolicyController {
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class PolicyController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def policyService
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index() {
+    def index = {
         forward(action: "list", params: params)
     }
 
-    def list() {
+    def list = {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        def policies = (springSecurityService.hasRole('ROLE_ADMIN')) ? Policy.list(params) : Policy.findAllByNa(springSecurityService.principal.na, params)
+        def policies = Policy.findAllByNa(params.na, params)
         if (!policies) {
-            // No policy yet for this organization. This required an administrator setting a NA.
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            return;
-        }
-        [policyInstanceList: policies, policyInstanceTotal: policies.size()]
+        } else
+            [policyInstanceList: policies, policyInstanceTotal: policies.size()]
     }
 
-    def create() {
+    def create = {
         def buckets = grailsApplication.config.accessMatrix['closed'].collect {
             new Bucket(it)
         }
-        Policy policy = new Policy(access: 'add a custom value here', na: springSecurityService.principal.na, buckets: buckets)
+        Policy policy = new Policy(access: 'add a custom value here', na: params.na, buckets: buckets)
         [policyInstance: policy, accessStatus: grailsApplication.config.accessStatus]
 
     }
 
-    def save() {
+    def save = {
         def policyInstance = new Policy(params)
-        policyInstance.na = springSecurityService.principal.na
-        policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect { it ->
+        policyInstance.na = params.na
+        policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect {
             new Bucket(bucket: it.bucket, access: params[it.bucket])
         }
         if (!policyInstance.save(flush: true)) {
@@ -48,21 +46,17 @@ class PolicyController {
         forward(action: "show", id: policyInstance.id)
     }
 
-    def show() {
+    def show = {
         def policyInstance = Policy.get(params.id)
         if (!policyInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
             forward(action: "list")
             return
         }
-        if (!springSecurityService.hasValidNa( policyInstance.na )) { // Make sure we do not see anothers na here...
-            response 403
-            forward(action: "list")
-        }
         [policyInstance: policyInstance]
     }
 
-    def edit() {
+    def edit = {
         def policyInstance = Policy.get(params.id)
         if (!policyInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
@@ -71,26 +65,17 @@ class PolicyController {
         else if (accessMatrixIsLocked(policyInstance.access)) {
             forward(action: "show", params: params)
         }
-        else if (!springSecurityService.hasValidNa(policyInstance.na)) {
-            response 403
-            forward(action: "list")
-        }
         [policyInstance: policyInstance, accessStatus: grailsApplication.config.accessStatus]
     }
 
-    def update() {
+    def update = {
         def policyInstance = Policy.get(params.id)
         if (!policyInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
             forward(action: "list")
             return
         }
-        if (!springSecurityService.hasValidNa(policyInstance.na)) {
-            response 403
-            forward(action: "list")
-        }
-
-        policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect { it ->
+        policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect {
             new Bucket(bucket: it.bucket, access: params[it.bucket])
         }
 
@@ -99,28 +84,21 @@ class PolicyController {
             return
         }
 
-        policyService.setPolicy(springSecurityService.principal.na, policyInstance)
+        policyService.setPolicy(params.na, policyInstance)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
         forward(action: "show", id: policyInstance.id)
     }
 
-    def delete() {
+    def delete = {
         def policyInstance = Policy.get(params.id)
         if (!policyInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
             forward(action: "list")
-            return
         }
-
+        else
         if (accessMatrixIsLocked(policyInstance.access)) {
-            forward(action: "show", params: params)
-            return
-        }
-
-        if (!springSecurityService.hasValidNa(policyInstance.na)) {
-            response 403
-            forward(action: "list")
+            forward(action: "show", id: params.id)
         }
         else
             try {

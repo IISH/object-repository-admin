@@ -3,7 +3,7 @@ package org.objectrepository.ftp;
 
 import org.apache.ftpserver.ftplet.FtpFile
 import org.apache.ftpserver.ftplet.User
-import org.objectrepository.files.GridFSService
+import org.objectrepository.orfiles.GridFSService
 
 public class VFSFtpFile implements FtpFile {
 

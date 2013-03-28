@@ -16,15 +16,15 @@
                             <div class="ui-progress-bar ui-container transition">
                                 <div class="ui-progress" style="width: ${total}%; ">
                                     %{--<span class="ui-label">success: ${task.success}; failure: ${task.failure}; total: ${task.processed} / ${task.total}</span>--}%
-                                    <span class="ui-label">success: <g:link controller="stagingfile"
+                                    <span class="ui-label">success: <g:link mapping="namingAuthority" controller="stagingfile"
                                                                             action="list"
-                                                                            params="[orid: instructionInstance.id, 'filter_status':'success','filter_name':task.name]">${task.success}</g:link>; failure: <g:link
+                                                                            params="[na:params.na,orid: instructionInstance.id, 'filter_status':'success','filter_name':task.name]">${task.success}</g:link>; failure:<g:link
                                             controller="stagingfile"
                                             action="list"
-                                            params="[orid: instructionInstance.id, 'filter_status':'failure','filter_name':task.name]">${task.failure}</g:link>; total: <g:link
+                                            params="[na:params.na, orid: instructionInstance.id, 'filter_status':'failure','filter_name':task.name]">${task.failure}</g:link>; total:<g:link
                                             controller="stagingfile"
                                             action="list"
-                                            params="[orid: instructionInstance.id]">${task.processed} / ${task.total}</g:link></span>
+                                            params="[na:params.na, orid: instructionInstance.id]">${task.processed} / ${task.total}</g:link></span>
                                 </div>
                             </div>
 

@@ -24,8 +24,7 @@ class UserRole implements Serializable {
     }
 
     static UserRole get(long userId, long roleId) {
-        find 'from UserRole where user.id=:userId and role.id=:roleId',
-                [userId: userId, roleId: roleId]
+        UserRole.get(userId, roleId)
     }
 
     static UserRole create(User user, Role role, boolean flush = false) {
@@ -52,7 +51,6 @@ class UserRole implements Serializable {
     static mapping = {
         database 'security'
         composite: ['role', 'user']
-        //id composite: ['role', 'user'], name:"id"
     }
     static mapWith = "mongo"
 }

@@ -13,14 +13,14 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
 <g:render template="/layouts/header" model="[instance:policyInstance]"/>
 
 <div id="create-introduction" class="content scaffold-create" role="main">
-    <g:form action="save">
+    <g:form mapping="namingAuthority" params="[na:params.na]" action="save">
         <fieldset class="form">
             <g:render template="form"/>
         </fieldset>

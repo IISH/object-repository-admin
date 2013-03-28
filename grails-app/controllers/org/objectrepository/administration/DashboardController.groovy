@@ -8,8 +8,10 @@ import org.objectrepository.security.Role
 import org.objectrepository.instruction.Profile
 import org.objectrepository.util.OrUtil
 
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class DashboardController {
+import org.objectrepository.security.NamingAuthorityInterceptor
+
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class DashboardController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def ldapUserDetailsManager
@@ -21,34 +23,14 @@ class DashboardController {
      */
     def index = {
         log.info "Checking if adding an account is needed..."
-        final String na = springSecurityService.principal.na
-        if (na && ldapUserDetailsManager) {
+        if (params.na && ldapUserDetailsManager) {
             log.info "We are a ldap user "
-            def currentUser = User.findByUsername(springSecurityService.principal.username)
-            if (!currentUser) {
-                log.info "No user in db"
-                currentUser = new User(na: na,
-                        username: springSecurityService.principal.username,
-                        uidNumber: springSecurityService.principal.uidNumber,
-                        password: RandomStringUtils.random(6, true, false),
-                        o: "not available",
-                        mail: springSecurityService.principal.mail
-                )
-                if (currentUser.save(flush: true)) {
-                    def role = (Role.findByAuthority("ROLE_CPADMIN")) ?: new Role(authority: "ROLE_CPADMIN").save(failOnError: true)
-                    UserRole.create currentUser, role
-                } else {
-                    flash.message = "Could not add user."
-                    return
-                }
-                springSecurityService.reauthenticate(springSecurityService.principal.username)
-            }
             log.info "Policies and Profile"
-            OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
-            if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
+            OrUtil.availablePolicies(params.na, grailsApplication.config.accessMatrix)
+            if (!Profile.findByNa(params.na)) new Profile(na: params.na).save(failOnError: true)
         }
 
         final interval = (params.interval) ?: 'year'
-        [storage: statisticsService.getStorage(na, interval), siteusage: statisticsService.getSiteusage(na, interval), tasks: null]
+        [storage: statisticsService.getStorage(params.na, interval), siteusage: statisticsService.getSiteusage(params.na, interval), tasks: null]
     }
 }

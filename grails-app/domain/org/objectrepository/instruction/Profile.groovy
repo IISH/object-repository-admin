@@ -17,7 +17,7 @@ class Profile {
     Boolean autoIngestValidInstruction = false
     Boolean deleteCompletedInstruction = false
     Boolean replaceExistingDerivatives = false
-    Boolean keepLocationWhenRecreate = true
+    String pdfLevel = "level2"
     String pidwebserviceEndpoint
     String pidwebserviceKey
     String notificationEMail
@@ -37,6 +37,7 @@ class Profile {
         resolverBaseUrl(blank: false)
         action(inList: ['upsert', 'add', 'update', 'delete'])
         autoGeneratePIDs(inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
+        pdfLevel(inList:['master','level1','level2','level3'])
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
     }

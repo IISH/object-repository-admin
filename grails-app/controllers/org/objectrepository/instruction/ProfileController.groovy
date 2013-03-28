@@ -5,8 +5,10 @@ import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
 import org.springframework.dao.DataIntegrityViolationException
 
-@Secured(['ROLE_ADMIN', 'ROLE_CPADMIN'])
-class ProfileController {
+import org.objectrepository.security.NamingAuthorityInterceptor
+
+@Secured(['IS_AUTHENTICATED_FULLY'])
+class ProfileController extends NamingAuthorityInterceptor{
 
     def springSecurityService
 
@@ -19,29 +21,8 @@ class ProfileController {
     def list() {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        def profiles = (springSecurityService.hasRole('ROLE_ADMIN')) ? Profile.list(params) : Profile.findAllByNa(springSecurityService.principal.na, params)
-        if (springSecurityService.hasRole('ROLE_CPADMIN')) {
+        def profiles = Profile.findAllByNa(params.na, params)
             forward(action: 'show', id: profiles[0].id)
-        }
-        [profileInstanceList: profiles, profileInstanceTotal: profiles.size()]
-    }
-
-    def create() {
-        [profileInstance: new Profile(params)]
-    }
-
-    def save() {
-        def profileInstance = new Profile(params)
-        profileInstance.action = params.action1 // needed to avoid confusion with the controller 'action'
-        if (!profileInstance.save(flush: true)) {
-            render(view: "create", model: [profileInstance: profileInstance])
-            return
-        }
-
-        OrUtil.availablePolicies(profileInstance.na, grailsApplication.config.accessMatrix)
-
-        flash.message = message(code: 'default.created.message', args: [message(code: 'profile.label', default: 'Profile'), profileInstance.id])
-        redirect(action: "show", id: profileInstance.id)
     }
 
     def show() {
@@ -62,11 +43,6 @@ class ProfileController {
             return
         }
 
-        if (!springSecurityService.hasValidNa(profileInstance.na)) {
-            redirect(action: 'list')
-            return
-        }
-
         def policyInstanceList = Policy.findAllByNa(profileInstance.na)
         [profileInstance: profileInstance, policyList: policyInstanceList.access]
     }
@@ -76,11 +52,6 @@ class ProfileController {
         if (!profileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'profile.label', default: 'Profile'), params.id])
             redirect(action: "list")
-            return
-        }
-
-        if (!springSecurityService.hasValidNa(profileInstance.na)) {
-            redirect(action: 'list')
             return
         }
 

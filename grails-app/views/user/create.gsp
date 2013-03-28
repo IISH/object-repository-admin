@@ -12,35 +12,16 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label"
                                                           args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
 <g:render template="/layouts/header" model="[instance:userInstance]"/>
 
-<g:form action="save" onsubmit="return validate(this);">
-    <sec:ifAnyGranted roles="ROLE_CPADMIN"><g:hiddenField name="na" value="dummy"/></sec:ifAnyGranted>
-
+<g:form mapping="namingAuthority" params="[na:params.na]" action="save" onsubmit="return validate(this);">
     <table>
         <tbody>
-
-        <sec:ifAnyGranted roles="ROLE_ADMIN"><tr class="prop">
-            <td valign="top" class="name">
-                <label for="role"><g:message code="user.role.label" default="Role"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'username', 'errors')}">
-                <g:select name="role" from="['ROLE_ADMIN','ROLE_CPADMIN','ROLE_CPUSER']" value="ROLE_CPADMIN"/>
-            </td>
-        </tr></sec:ifAnyGranted>
-        <sec:ifAnyGranted roles="ROLE_CPADMIN"><tr class="prop">
-            <td valign="top" class="name">
-                <label for="role"><g:message code="user.role.label" default="Role"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'username', 'errors')}">
-                <g:select name="role" from="['ROLE_CPADMIN','ROLE_CPUSER']" value="ROLE_CPUSER"/>
-            </td>
-        </tr></sec:ifAnyGranted>
 
         <tr class="prop">
             <td valign="top" class="name">
@@ -87,42 +68,6 @@
             </td>
         </tr>
 
-        <sec:ifAnyGranted roles="ROLE_ADMIN">
-            <tr class="prop">
-                <td valign="top" class="name">
-                    <label for="na"><g:message code="user.na.label"/></label>
-                </td>
-                <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'na', 'errors')}">
-                    <g:textField name="na"/>
-                </td>
-            </tr>
-            <tr class="prop">
-                <td valign="top" class="name">
-                    <label for="o"><g:message code="user.o.label"/></label>
-                </td>
-                <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'o', 'errors')}">
-                    <g:textField name="o"/>
-                </td>
-            </tr>
-            <tr class="prop">
-                <td valign="top" class="name">
-                    <label for="skippassword"><g:message code="user.skippassword.label"
-                                                         default="Do not set password"/></label>
-                </td>
-                <td valign="top">
-                    <g:checkBox name="skippassword" value="false"/>
-                </td>
-            </tr>
-            <tr class="prop">
-                <td valign="top" class="name">
-                    <label for="ldap"><g:message code="user.ldap.label"
-                                                         default="Add to ldap"/></label>
-                </td>
-                <td valign="top">
-                    <g:checkBox name="ldap" value="false"/>
-                </td>
-            </tr>
-        </sec:ifAnyGranted>
         <tr class="prop">
             <td valign="top" class="name">
                 <label for="sendmail"><g:message code="user.sendmail.label" default="Send Notification Email"/></label>

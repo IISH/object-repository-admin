@@ -13,7 +13,7 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="create" action="create"><g:message code="default.new.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="create" action="create"><g:message code="default.new.label"
                                                               args="[entityName]"/></g:link></li>
     </ul>
 </div>
@@ -39,7 +39,7 @@
         <g:each in="${profileInstanceList}" status="i" var="profileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
-                <td><g:link action="show"
+                <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${profileInstance.id}">${fieldValue(bean: profileInstance, field: "na")}</g:link></td>
             </tr>
         </g:each>
@@ -47,7 +47,7 @@
     </table>
 
     <div class="pagination">
-        <g:paginate total="${profileInstanceTotal}"/>
+        <g:paginate mapping="namingAuthority" params="[na:params.na]" total="${profileInstanceTotal}"/>
     </div>
 </div>
 </body>

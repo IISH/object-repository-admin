@@ -13,7 +13,7 @@
 
 <body>
 
-<g:form>
+<g:form mapping="namingAuthority" params="[na:params.na]">
     <label for="interval">Select interval:</label>
     <g:select name="interval" value="${params.interval}" from="['year', 'month', 'week', 'day']"
               onchange="this.form.submit();"/>

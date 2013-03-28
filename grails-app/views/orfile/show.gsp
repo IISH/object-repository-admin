@@ -12,18 +12,20 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="list" action="list"><g:message
+                code="default.list.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
 <g:render template="/layouts/header" model="[instance: orfileInstance]"/>
 
 <div id="show-files" class="content scaffold-show" role="main">
-    <g:render template="/layouts/orfile" model="[orfileInstance:orfileInstance]"/>
-    <g:form>
+    <g:render template="/layouts/orfile" model="[orfileInstance: orfileInstance]"/>
+    <g:form mapping="namingAuthority"
+            params="[na: params.na, id: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">
         <fieldset class="buttons">
-            <g:hiddenField name="id" value="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"/>
-            <g:link class="edit" action="edit" id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
+            <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="edit"
+                    id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
                     code="default.button.edit.label"
                     default="Edit"/></g:link>
         </fieldset>

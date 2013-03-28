@@ -1,14 +1,4 @@
 <%@ page import="org.objectrepository.util.OrUtil" %>
-<sec:ifAllGranted roles="ROLE_ADMIN">
-    <g:if test="${instance?.na}">
-        <li class="fieldcontain">
-            <span id="na-label" class="property-label"><g:message code="profile.na.label" default="Na"/></span>
-
-            <span class="property-value" aria-labelledby="na-label"><g:fieldValue bean="${instance}"
-                                                                                  field="na"/></span>
-        </li>
-    </g:if>
-</sec:ifAllGranted>
 
 <li class="fieldcontain">
     <span id="action-label" class="property-label"><g:message
@@ -73,11 +63,12 @@
 </li>
 
 <li class="fieldcontain">
-    <span id="keepLocationWhenRecreate-label" class="property-label"><g:message
-            code="profile.keepLocationWhenRecreate.label" default="Restore location elements when recreating instruction"/></span>
+    <span id="pdfLevel-label" class="property-label"><g:message
+            code="profile.pdfLevel.label" default="Derivative level for PDF rendering"/></span>
 
-    <span class="property-value" aria-labelledby="keepLocationWhenRecreate-label"><g:formatBoolean
-            boolean="${instance?.keepLocationWhenRecreate}"/></span>
+    <span class="property-value" aria-labelledby="pdfLevel-label"><g:fieldValue
+            bean="${instance}" field="pdfLevel"/></span>
+
 </li>
 
 <li class="fieldcontain">

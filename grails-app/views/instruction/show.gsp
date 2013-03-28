@@ -11,10 +11,10 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="list" action="list"><g:message code="default.list.label"
+        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label"
                                                           args="[entityName]"/></g:link></li>
-        <li><g:link class="list" controller="stagingfile"
-                    params="[orid: instructionInstance.id]"><g:message code="default.files.label"
+        <li><g:link mapping="namingAuthority" class="list" controller="stagingfile"
+                    params="[na:params.na,orid: instructionInstance.id]"><g:message code="default.files.label"
                                                                        default="Show files"/></g:link></li>
         <g:render template="/layouts/services" model="[instance: instructionInstance]"/>
     </ul>
@@ -49,8 +49,7 @@
     </ol>
 
     <div class="buttons">
-        <g:form>
-            <g:hiddenField name="id" value="${instructionInstance?.id}"/>
+        <g:form mapping="namingAuthority" params="[na:params.na, id:instructionInstance?.id]">
             <g:if test="${!instructionInstance.ingesting && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
                 <g:if test="${(instructionInstance.task.statusCode == 0 || instructionInstance.task.statusCode > 699)}">
                     <span class="button"><g:actionSubmit class="edit" action="edit"
