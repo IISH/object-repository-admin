@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta name="layout" content="authenticated"/>
+    <meta name="layout" content="anonymous"/>
     <g:set var="entityName" value="${message(code: 'user.label', default: 'User')}"/>
     <title><g:message code="default.list.label" args="[entityName]"/></title>
 </head>

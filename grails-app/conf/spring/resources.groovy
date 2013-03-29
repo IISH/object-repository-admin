@@ -47,9 +47,9 @@ beans = {
             groupSearchBase = conf.ldap.authorities.groupSearchBase
             groupRoleAttributeName = conf.ldap.authorities.groupRoleAttribute
             groupMemberAttributeName = conf.ldap.rememberMe.detailsManager.groupMemberAttributeName
+            grailsApplication = application
+            springSecurityService = ref('springSecurityService')
         }
-
-
     }
 
     if (conf.oauthProvider.active) {

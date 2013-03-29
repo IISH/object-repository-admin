@@ -10,6 +10,7 @@ class UrlMappings {
 
         "/login/$action?"(controller: "login")
         "/logout/$action?"(controller: "logout")
+        "/lostpassword/$action?"(controller: "lostpassword")
         "/"(controller: "login")
 
         name namingAuthority: "/$na/$controller/$action?/$id?"()

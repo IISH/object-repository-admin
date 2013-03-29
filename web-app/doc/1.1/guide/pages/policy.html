@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5.3 Access policies 1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/stagingarea.html"><strong>2</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/pid.html"><strong>4</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/administration.html"><strong>5</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/pid.html">&lt;&lt; <strong>4</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>5.3 Access policies - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="policy">5.3 Access policies</h2>
+A policy determines what an  <em class="italic">anonymous user</em>   can and cannot do. Lets say that is a person with a webbrowser who is not
+logged on to the object repository. Access to each master file and its related derivatives are thus governed by a
+policy.<p class="paragraph"/>There are three main policies available:
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">policy</strong></th><th><strong class="bold">access</strong></th></tr><tr class="table-odd"><td>closed</td><td>no files can be downloaded or viewed</td></tr><tr class="table-even"><td>restricted</td><td>level 1 derivatives are  <em class="italic">restricted</em> ; level 2 and 3 are viewable to the world</td></tr><tr class="table-odd"><td>open</td><td>All derivatives are viewable to the world</td></tr></table><p class="paragraph"/>The meaning of <strong class="bold">restricted</strong> means the anonymous user can only see the file with a webservice key. Even though
+at this moment this is not the case, this setting can be used to offer for example a "give me persmission to see this
+file" option. This will never be the case when the file is closed.<p class="paragraph"/><h3>Custom policies</h3>
+You cannot modify these default policies, but to add your own custom policy is easily done by selecting "New Policy".
+For each master and derivative you can  determine it's access level.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/pid.html">&lt;&lt; <strong>4</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

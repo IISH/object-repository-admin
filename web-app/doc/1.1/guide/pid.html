@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4 PIDs and the repository's resolve urls 1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/stagingarea.html"><strong>2</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/instruction.html"><strong>3</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/pid.html"><strong>4</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/administration.html"><strong>5</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/instruction.html">&lt;&lt; <strong>3</strong><span>Prepare the ingest</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/administration.html"><strong>5</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 PIDs and the repository's resolve urls - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.1</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#resolveurls"><strong>4.1</strong><span>Resolve URLs</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#pids"><strong>4.2</strong><span>PIDs created via the PID webservice</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="pid">4 PIDs and the repository's resolve urls</h1>
+PIDs can be created and bound via an object-repository service that calls the PID webservice.
+In other cases you can operate your own PID and resolver technology and point to resources that are exposed by the
+repository.
+
+
+<h2 id="resolveurls">4.1 Resolve URLs</h2>
+For each master and derivative there is a resolve url. The PID of the file is part of that url. The convention here
+is that the resolve URL = <code>http;//domain-of-the-repository/file/level]/pid</code><p class="paragraph"/>For example, if this was your PID: <code>12345/1.1</code><p class="paragraph"/>And you created a level1, level2 and level3 derivative, then there are five resolve URLs in total to link to:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">view</strong></th><th><strong class="bold">Resolve Url</strong></th></tr><tr class="table-odd"><td>metadata</td><td>http://disseminate.objectrepository.org/metadata/12345/1.1</td></tr><tr class="table-even"><td>master</td><td>http://disseminate.objectrepository.org/file/master/12345/1.1</td></tr><tr class="table-odd"><td>level 1</td><td>http://disseminate.objectrepository.org/file/level1/12345/1.1</td></tr><tr class="table-even"><td>level 2</td><td>http://disseminate.objectrepository.org/file/level2/12345/1.1</td></tr><tr class="table-odd"><td>level 3</td><td>http://disseminate.objectrepository.org/file/level3/12345/1.1</td></tr></table><p class="paragraph"/><blockquote class="note">If you create and bind your own PIDs, you know in advance ( before you ingest ) what the resolve URLs are.</blockquote>
+
+
+
+<h2 id="pids">4.2 PIDs created via the PID webservice</h2>
+When the StagingfileBindPIDs option was used, a call to the PID webservice will be made to bind the object-repository's
+resolve URLs to this PID.<p class="paragraph"/>It will do so by convention:<p class="paragraph"/><code>http://hdl.handle.net/pid?locatt=view:level or master</code><p class="paragraph"/>This means there will be several persistent URLs. For example, if this was your PID: <code>12345/1.1</code> then the persistent
+URLs will be:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">view</strong></th><th><strong class="bold">persistent URL</strong></th><th><strong class="bold">Resolve Url</strong></th></tr><tr class="table-odd"><td>metadata</td><td>http://hdl.handle.net/12345/1.1</td><td>http://disseminate.objectrepository.org/metadata/12345/1.1</td></tr><tr class="table-even"><td>master</td><td>http://hdl.handle.net/12345/1.1?locatt=view:master</td><td>http://disseminate.objectrepository.org/file/master/12345/1.1</td></tr><tr class="table-odd"><td>level 1 derivative</td><td>http://hdl.handle.net/12345/1.1?locatt=view:level1</td><td>http://disseminate.objectrepository.org/file/level1/12345/1.1</td></tr><tr class="table-even"><td>level 2 derivative</td><td>http://hdl.handle.net/12345/1.1?locatt=view:level2</td><td>http://disseminate.objectrepository.org/file/level2/12345/1.1</td></tr><tr class="table-odd"><td>level 3 derivative</td><td>http://hdl.handle.net/12345/1.1?locatt=view:level3</td><td>http://disseminate.objectrepository.org/file/level2/12345/1.1</td></tr></table>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/instruction.html">&lt;&lt; <strong>3</strong><span>Prepare the ingest</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/administration.html"><strong>5</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

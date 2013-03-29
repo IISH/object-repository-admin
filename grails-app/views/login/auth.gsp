@@ -46,9 +46,12 @@
 
         </div>
 
+        <br/>
         <p>Not an account holder?<br/><a
                 href="https://jira.socialhistoryservices.org/secure/Signup!default.jspa">Signup here to become a member</a>
-        </p></div>
+        </p><br/><p>Lost your password for your administration account ?<br/>
+        <a href="https://jira.socialhistoryservices.org/secure/ForgotLoginDetails.jspa">Set a new one at our Jira servicedesk.</a>
+    </p></div>
 </g:if>
 
 </body>

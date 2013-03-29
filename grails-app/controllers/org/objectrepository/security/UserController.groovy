@@ -2,23 +2,16 @@ package org.objectrepository.security
 
 import grails.plugins.springsecurity.Secured
 import org.apache.commons.lang.RandomStringUtils
-
-import org.objectrepository.ai.ldap.LdapUser
-import org.objectrepository.ai.ldap.LdapUser.Essence
-import org.springframework.security.oauth2.common.OAuth2AccessToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
-import org.springframework.security.oauth2.provider.ClientToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.GrantedAuthorityImpl
+import org.springframework.security.oauth2.common.OAuth2AccessToken
+import org.springframework.security.oauth2.provider.ClientToken
+import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 /**
  * UserController
  *
- * We will use LDAP for authentication only. No synchronizations. Hence authorization without an existing local
- * user account will be impossible and treated as anonymous. The latter is determined by a local ROLE_USER.
- *
- * However, when persisting users in the local database; an update into LDAP will take place to ensure the Gid\home directory settings
- * that is used as a ftp account elsewhere.
+ * We will use LDAP for creating ftp accounts. Not user accounts.
  *
  * @author Lucien van Wouw <lwo@iisg.nl>
  */
@@ -32,7 +25,6 @@ class UserController extends NamingAuthorityInterceptor {
     def clientDetailsService
 
     static allowedMethods = [save: "POST", update: "POST", changekey: "POST"]
-    final static loginshell = "/bin/false"
 
     def index = {
         forward(action: "list", params: params)
@@ -41,20 +33,12 @@ class UserController extends NamingAuthorityInterceptor {
     def list = {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        def userInstanceList = []
-        ldapUserDetailsManager.findLdapGroupUsers('OR_FTP_' + params.na).each {
-            String username = it.split(',')[0].split('=')[1]
-            if (springSecurityService.principal.username != username)
-                userInstanceList << ldapUserDetailsManager.loadUserByUsername(username)
-        }
+        def userInstanceList = ldapUserDetailsManager.listLdapUsers(params.na)
         [userInstanceList: userInstanceList, userInstanceTotal: userInstanceList.size()]
     }
 
     def create = {
-        def userInstance = new User()
-        userInstance.enabled = true
-        userInstance.na = params.na
-        return [userInstance: userInstance]
+        [userInstance: [enabled: true]]
     }
 
     def save = {
@@ -67,9 +51,10 @@ class UserController extends NamingAuthorityInterceptor {
         }
         params.username = params.username.toLowerCase()
 
-        def userInstance = User.findByUsername(params.username)
-        if (userInstance) { // We are not a save.... but an update
-            redirect(action: "update", id: userInstance.id)
+        params.id = params.username
+        if (ldapUserDetailsManager.userExists(params.id)) {
+            flash.message = "User already has an account in LDAP. Choose a different name."
+            render(view: "create", model: [userInstance: params])
             return
         }
 
@@ -77,96 +62,33 @@ class UserController extends NamingAuthorityInterceptor {
         if (!params.skippassword) {
             if (params.password != params.confirmpassword) {
                 flash.message = "Passwords do not match"
-                render(view: "create", model: [userInstance: userInstance])
+                render(view: "create", model: [userInstance: params])
                 return
             }
         }
 
-        if (params.ldap && ldapUserDetailsManager?.userExists(params.username)) {
-            flash.message = "User already has an account in LDAP. Choose a different name."
-            render(view: "create", model: [userInstance: userInstance])
-            return
-        }
-
-        userInstance = new User(params)
-        def passw = userInstance.password
-        userInstance.password = springSecurityService.encodePassword(passw)
-        userInstance.na = params.na
-
-        final def currentUser = User.findByUsername(springSecurityService.principal.username)
-        userInstance.o = currentUser.o
-
-        addRole(userInstance, params)
-
-        // CPADMINs have an identical uid as the na
-        long uidNumber = userInstance.na as Long
-        userInstance.uidNumber = uidNumber
-
-        if (userInstance.save()) {
-
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
-
-            def authority = "ROLE_OR_FTP_USER_" + params.na
-            def userRole = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
-            UserRole.create userInstance, userRole
-
-            params.ldap = (params.ldap) ?: true
-            if (params.ldap && ldapUserDetailsManager) {
-
-                // Do not add if the user exists
-                if (ldapUserDetailsManager.userExists(userInstance.username)) {
-                    log.warn "Not adding user to LDAP as the account already is there. Ought not to have been called."
-                } else {
-
-                    final LdapUser.Essence person = new LdapUser.Essence();
-                    def homeDirectory = (userRoles.contains('ROLE_CPADMIN')) ? grailsApplication.config.sa.path + "/" + userInstance.na : grailsApplication.config.sa.path + "/" + userInstance.na + "/" + userInstance.uidNumber
-                    person.homeDirectory = homeDirectory
-                    person.uidNumber = uidNumber
-                    person.gidNumber = userInstance.na as Long
-                    person.ou = userInstance.na as String
-                    person.o = userInstance.o
-                    person.username = userInstance.username
-                    person.loginshell = loginshell
-                    person.mail = userInstance.mail
-                    person.username = userInstance.username
-                    final boolean enabled = params.enabled ?: false
-                    person.enabled = enabled
-                    person.password = toggleEnable(passw, userInstance.enabled)
-                    if (params.skippassword) userInstance.password = null
-                    person.sn = userInstance.username
-                    person.cn = [userInstance.username]
-                    person.dn = ldapUserDetailsManager.usernameMapper.buildDn(userInstance.username)
-                    ldapUserDetailsManager.createUser(person.createUserDetails())
-                }
+        ldapUserDetailsManager.updateUser(params, true)
+        if (params.sendmail) {
+            sendMail {
+                to params.mail
+                from grailsApplication.config.mail.from
+                subject message(code: "mail.user.created.subject")
+                body message(code: "mail.user.created.body", args: [springSecurityService.principal.username,
+                        grailsApplication.config.grails.serverURL,
+                        grailsApplication.config.mail.sftpServer,
+                        params.id,
+                        params.password])
             }
-
-            // send mail to new user
-            def serverURL = grailsApplication.config.grails.serverURL
-            final String mailFrom = grailsApplication.config.mail.from
-            final String sftpServer = grailsApplication.config.mail.sftpServer
-
-            if (params.sendmail) {
-                sendMail {
-                    to userInstance.mail
-                    from mailFrom
-                    subject message(code: "mail.user.created.subject")
-                    body message(code: "mail.user.created.body", args: [currentUser.username, serverURL, sftpServer, userInstance.username, passw])
-                }
-            }
-
-            redirect(action: "show", id: userInstance.id)
-        }
-        else {
-            render(view: "create", model: [userInstance: userInstance])
         }
 
+        forward(action: "show", id: params.id)
     }
 
     def show = {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            forward(action: "list")
             return
         }
 
@@ -176,13 +98,7 @@ class UserController extends NamingAuthorityInterceptor {
             ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
                     client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
             final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    new UsernamePasswordAuthenticationToken(
-                            params.id,
-                            UUID.randomUUID().toString(),
-                            [
-                                    new GrantedAuthorityImpl('ROLE_OR_USER'),
-                                    new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
-                    ))
+                    authentication(params))
             token = tokenServices.createAccessToken(authentication)
         }
         [userInstance: userInstance, token: token]
@@ -192,7 +108,7 @@ class UserController extends NamingAuthorityInterceptor {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            forward(action: "list")
         } else
             [userInstance: userInstance]
     }
@@ -208,13 +124,7 @@ class UserController extends NamingAuthorityInterceptor {
             ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
                     client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
             final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    new UsernamePasswordAuthenticationToken(
-                            params.id,
-                            UUID.randomUUID().toString(),
-                            [
-                                    new GrantedAuthorityImpl('ROLE_OR_USER'),
-                                    new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
-                    ))
+                    authentication(params))
             tokenServices.createAccessToken(authentication)
         }
         forward(action: "show", id: params.id)
@@ -229,10 +139,9 @@ class UserController extends NamingAuthorityInterceptor {
         }
         else if (userInstance) {
             boolean passwordAltered = (params.confirmpassword != "" && params.password != userInstance.password)
-            def passwd = (passwordAltered) ? springSecurityService.encodePassword(params.password) : userInstance.password
-            params.password = toggleEnable(passwd, params.enabled)
-            params.uid = userInstance.uid
-            updateUser(params)
+            params.password = (passwordAltered) ? params.password : null
+            params.uidNumber = userInstance.uidNumber
+            ldapUserDetailsManager.updateUser(params, false)
             flash.message = "${message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             forward(action: "show", id: userInstance.id)
         }
@@ -242,68 +151,47 @@ class UserController extends NamingAuthorityInterceptor {
         }
     }
 
-    protected def toggleEnable(String password, boolean enable) {
-        char trailer = password[0]
-        if (enable && trailer == '!') {
-            return password.substring(1)
-        } else if (!enable && trailer != '!') {
-            return "!" + password
-        }
-        password
-    }
-
-/**
- * updateUser
- *
- * Update the user in LDAP.
- *
- * @param userInstance
- */
-    protected void updateUser(def params) {
-        Essence person = new Essence();
-        person.password = params.password
-        person.homeDirectory = grailsApplication.config.sa.path + "/" + params.na + "/" + params.uid
-        person.gidNumber = params.na
-        person.username = params.id
-        person.uidNumber = params.uid
-        person.loginshell = loginshell
-        person.mail = params.mail
-        person.enabled = params.enabled
-        person.sn = params.id
-        person.cn = [params.id]
-        person.dn = ldapUserDetailsManager.usernameMapper.buildDn(params.id)
-        ldapUserDetailsManager.updateUser(person.createUserDetails())
-    }
-
     def delete = {
-        def userInstance = User.get(params.id)
+        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            forward(action: "list")
         }
-
-        if (userInstance.username == springSecurityService.principal.username) {
+        else
+        if (userInstance.id == springSecurityService.principal.username) {
             render(message(code: "delete.self"))
-            return
         }
-
-        try {
-            // manually remove User, TODO: wait for release of MongoDB 1.0.0.RC3 for cascading deletes
-            UserRole.removeAll(userInstance)
-            userInstance.delete()
-
-            if (ldapUserDetailsManager) {
-                // We should not remove users from LDAP. Only remove their bash to prevent ftp logins elsewhere?
-                ldapUserDetailsManager.deleteUser(userInstance.username)
+        else
+            try {
+                ldapUserDetailsManager.deleteUser(params.id)
+                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
+                forward(action: "list")
             }
+            catch (org.springframework.dao.DataIntegrityViolationException e) {
+                log.warn e.message
+                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
+                forward(action: "show", id: params.id)
+            }
+    }
 
-            flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
-            redirect(action: "list")
-        }
-        catch (org.springframework.dao.DataIntegrityViolationException e) {
-            log.warn e.message
-            flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
-            redirect(action: "show", id: params.id)
-        }
+    /**
+     * authentication
+     *
+     * Create an UsernamePasswordAuthenticationToken for the oauth authentication provider.
+     * See config grails.plugins.springsecurity.controllerAnnotations.staticRules:
+     * ROLE_OR_USER will allow access to the oauth controller
+     * ROLE_OR_USER_[na] will allow access to the resource
+     *
+     * @param na
+     * @return
+     */
+    private UsernamePasswordAuthenticationToken authentication(def params) {
+        new UsernamePasswordAuthenticationToken(
+                params.id,
+                UUID.randomUUID().toString(),
+                [
+                        new GrantedAuthorityImpl('ROLE_OR_USER'),
+                        new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
+        )
     }
 }

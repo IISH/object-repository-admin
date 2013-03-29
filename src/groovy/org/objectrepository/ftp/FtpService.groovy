@@ -1,19 +1,11 @@
 package org.objectrepository.ftp
 
+import org.apache.ftpserver.DataConnectionConfigurationFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.SslConfigurationFactory
 import org.springframework.beans.factory.DisposableBean
-import org.apache.ftpserver.DataConnectionConfigurationFactory
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UserCache
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider
-import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.GrantedAuthority
 
 class FtpService implements DisposableBean {
 

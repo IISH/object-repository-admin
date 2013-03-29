@@ -16,6 +16,7 @@ class FileController {
 
     def policyService
     def gridFSService
+    def downloadService
 
     /**
      * files
@@ -119,31 +120,27 @@ class FileController {
 
     def metadata = {
 
-        String pid = params.pid
-        if (!pid) {
+        if (params.pid) {
+            params.na = OrUtil.getNa(params.pid)
+            switch (params.accept) {
+                case 'application/xml':
+                case 'text/xml':
+                case 'xml':
+                    response.setCharacterEncoding("utf-8");
+                    response.setContentType("text/xml")
+                    downloadService.writeOrfiles(params, response.outputStream)
+                    break;
+                case 'text/javascript':
+                case 'text/json':
+                default:
+                    def orfileInstance = gridFSService.findByPidAsOrfile(params.pid)
+                    if (orfileInstance)
+                        [orfileInstance: orfileInstance, params: params]
+                    else
+                        render(view: '404', statuscode: 404)
+            }
+        } else
             redirect(action: "about")
-            return null
-        }
-
-        def accept = params.accept
-        switch (accept) {
-            case 'application/xml':
-            case 'text/xml':
-                response.setCharacterEncoding("utf-8");
-                response.setContentType("text/xml")
-                gridFSService.writeOrfiles(params, OrUtil.getNa(params.pid), response.outputStream)
-                break;
-            case 'text/javascript':
-            case 'text/json':
-            default:
-                def orfileInstance = gridFSService.findByPidAsOrfile(pid)
-                if (orfileInstance) {
-                    [orfileInstance: orfileInstance]
-                }
-                else {
-                    render(view: '404', statuscode: 404)
-                }
-        }
     }
 
     def deleted = {

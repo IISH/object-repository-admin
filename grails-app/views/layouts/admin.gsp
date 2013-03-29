@@ -68,7 +68,7 @@
 <div id="navHome">
     <ul>
         <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="dashboard">Dashboard</g:link></li>
-        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">Accounts</g:link></li>
+        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">Ftp accounts</g:link></li>
         <li class="profile"><g:link mapping="namingAuthority" params="[na:params.na]" controller="profile">Profile</g:link></li>
         <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">Policies</g:link></li>
         <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">Instructions</g:link></li>

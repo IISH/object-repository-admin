@@ -134,8 +134,5 @@ class BootStrap {
             it.id == role.id
         }
         ) UserRole.create user, role
-
-        OrUtil.availablePolicies(na, grailsApplication.config.accessMatrix)
-        if (!Profile.findByNa(na)) new Profile(na: na).save(failOnError: true)
     }
 }
