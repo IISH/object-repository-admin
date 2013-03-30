@@ -51,7 +51,6 @@ class OrfileController extends NamingAuthorityInterceptor {
         def orfileInstance = gridFSService.get(params.na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action: 'list')
         } else
             [orfileInstance: orfileInstance]
@@ -71,7 +70,6 @@ class OrfileController extends NamingAuthorityInterceptor {
         def orfileInstance = gridFSService.get(params.na, new String(params.id.decodeBase64()))
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action: 'list')
         } else {
             orfileInstance.master.metadata.access = params.access
@@ -82,7 +80,6 @@ class OrfileController extends NamingAuthorityInterceptor {
             gridFSService.update(orfileInstance.master)
 
             flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), params.id])
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "show", id:params.id)
             forward(action: 'show', id: params.id)
         }
     }
@@ -99,7 +96,6 @@ class OrfileController extends NamingAuthorityInterceptor {
         def file = gridFSService.findByField(params.na, 'master', 'metadata.label', params.label)
         if (!file?.metaData?.fileSet) {
             flash.message = 'No such label: ' + params.label
-            // redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action: 'list')
             return
         }
@@ -134,7 +130,6 @@ class OrfileController extends NamingAuthorityInterceptor {
                 return
             }
         }
-        //redirect uri: createLink( base: '/' + params.na, controller: "instruction", action: "show", id: instructionInstance.id)
         forward(action: 'show', id: instructionInstance.id)
     }
 

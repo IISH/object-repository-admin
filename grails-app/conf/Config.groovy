@@ -128,17 +128,18 @@ def serverPort = System.properties['server.port']
 resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
 
 if (!screenLogin) grails.plugins.springsecurity.apf.filterProcessesUrl = "/" // This breakage is deliberate
+
+grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'anonymousAuthenticationProvider']
+if (ldap) grails.plugins.springsecurity.providerNames.add(0, 'ldapAuthProvider')
+
 environments {
     production {
         grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/login"
         grails.logging.jul.usebridge = true
-        if (ldap) grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'daoAuthenticationProvider', 'anonymousAuthenticationProvider']
     }
     development {
         grails.serverURL = "http://localhost:${serverPort}/${appName}"
         grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/${appName}/login"
-        grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'anonymousAuthenticationProvider']
-        if (ldap) grails.plugins.springsecurity.providerNames << 'ldapAuthProvider'
         grails.logging.jul.usebridge = false
         grails.gorm.failOnError = true
     }

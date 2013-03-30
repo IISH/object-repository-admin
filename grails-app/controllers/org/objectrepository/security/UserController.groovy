@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.provider.ClientToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
+import org.objectrepository.ai.ldap.LdapUser
 
 /**
  * UserController
@@ -44,11 +45,13 @@ class UserController extends NamingAuthorityInterceptor {
     def save = {
 
         // Set password when it was left empty
+        final def newPassword
         if (params.password == "" && params.confirmpassword == "") {
-            final String newPassword = RandomStringUtils.random(6, true, false)
+            newPassword = RandomStringUtils.random(6, true, false)
             params.password = newPassword
             params.confirmpassword = newPassword
-        }
+        } else
+            newPassword = params.password
         params.username = params.username.toLowerCase()
 
         params.id = params.username
@@ -67,6 +70,7 @@ class UserController extends NamingAuthorityInterceptor {
             }
         }
 
+        params.password = ldapUserDetailsManager.encodePassword(params.password)
         ldapUserDetailsManager.updateUser(params, true)
         if (params.sendmail) {
             sendMail {
@@ -77,7 +81,7 @@ class UserController extends NamingAuthorityInterceptor {
                         grailsApplication.config.grails.serverURL,
                         grailsApplication.config.mail.sftpServer,
                         params.id,
-                        params.password])
+                        newPassword])
             }
         }
 
@@ -132,22 +136,24 @@ class UserController extends NamingAuthorityInterceptor {
 
     def update = {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
-
-        if (params.confirmpassword && params.confirmpassword != params.password) {
+        if (!userInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
+            forward(action: "list")
+        } else if ( !ldapUserDetailsManager.manages(userInstance, params.na) ) {
+            flash.message = "Cannot set this ftp account; as it does not belong to your naming authority."
+            render(view: "edit", model: [userInstance: userInstance])
+        }
+        else if (params.confirmpassword && params.confirmpassword != params.password) {
             flash.message = "Passwords do not match"
             render(view: "edit", model: [userInstance: userInstance])
         }
-        else if (userInstance) {
+        else {
             boolean passwordAltered = (params.confirmpassword != "" && params.password != userInstance.password)
-            params.password = (passwordAltered) ? params.password : null
+            params.password = (passwordAltered) ? ldapUserDetailsManager.encodePassword(params.password) : userInstance.password
             params.uidNumber = userInstance.uidNumber
             ldapUserDetailsManager.updateUser(params, false)
             flash.message = "${message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             forward(action: "show", id: userInstance.id)
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            forward(action: "list")
         }
     }
 

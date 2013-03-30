@@ -37,7 +37,7 @@
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></td>
                 <td>${fieldValue(bean: userInstance, field: "mail")}</td>
-                <td><g:formatBoolean boolean="${userInstance.enabled}"/></td>
+                <td><g:formatBoolean boolean="${userInstance.password[0]!='!'}"/></td>
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${userInstance.id}">${message(code: 'default.button.show.label')}</g:link></td>
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="edit"

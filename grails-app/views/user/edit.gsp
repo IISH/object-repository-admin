@@ -65,19 +65,14 @@
             </td>
         </tr>
 
-        <g:if test="${userInstance.username == currentUsername }">
-            <g:hiddenField name="enabled" value="true"/>
-        </g:if>
-        <g:else>
             <tr class="prop">
                 <td valign="top" class="name">
                     <label for="enabled"><g:message code="user.enabled.label" default="Enabled"/></label>
                 </td>
                 <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'enabled', 'errors')}">
-                    <g:checkBox name="enabled" value="${userInstance?.enabled}"/>
+                    <g:checkBox name="enabled" value="${userInstance.password[0]!='!'}"/>
                 </td>
             </tr>
-        </g:else>
         </tbody>
     </table>
 

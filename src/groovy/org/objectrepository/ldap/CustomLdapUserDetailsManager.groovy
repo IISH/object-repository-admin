@@ -79,7 +79,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      */
     void updateUser(def params, boolean _createUser) {
 
-        if (params.password) params.password = toggleEnable(encodePassword(params.password), (params.enabled) ?: false)
+        params.password = toggleEnable(encodePassword(params.password), (params.enabled) ?: false)
         params.uidNumber = (params.uidNumber) ?: listLdapUsers(params.na).inject(springSecurityService.principal.uidNumber) { acc, val ->
             if (val.uidNumber > acc)
                 acc + 1
@@ -111,6 +111,12 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
 
     def encodePassword(def password, def salt = UUID.randomUUID().encodeAsMD5Bytes()) {
         encoder.encodePassword(password, salt)
+    }
+
+    def manages(def userInstance, def na) {
+        userInstance.authorities.find {
+            it.authority == 'ROLE_' + FTP_ROLE + na
+        }
     }
 
     /**

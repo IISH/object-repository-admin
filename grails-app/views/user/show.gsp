@@ -49,7 +49,7 @@
 
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.enabled.label" default="Enabled"/></td>
-        <td valign="top" class="value"><g:formatBoolean boolean="${userInstance?.enabled}"/></td>
+        <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.password[0]!='!'}"/></td>
     </tr>
 
     <g:if test="${token}">

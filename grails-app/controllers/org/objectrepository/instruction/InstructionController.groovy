@@ -49,7 +49,6 @@ class InstructionController extends NamingAuthorityInterceptor {
         def instructionInstance = instructionAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            //redirect uri: createLink( base: '/' + params.na, action: "list")
             forward(action:'list')
         }
         else if (instructionInstance.status == 200) {
@@ -91,11 +90,9 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (instruction && !instruction.empty) {
             instruction.transferTo(file)
             instructionInstance.delete(flush: true)
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action:'list')
         } else if (params.instruction) {
             instructionInstance.delete(flush: true)
-           // redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action:'list')
         }
         [instructionInstance: instructionInstance, fileExists: file.exists()]
@@ -117,7 +114,6 @@ class InstructionController extends NamingAuthorityInterceptor {
                 writer = file.newWriter('UTF-8')
             }
             downloadService.write(writer, instructionInstance)
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action:'list')
         }
         [instructionInstance: instructionInstance]
@@ -128,7 +124,6 @@ class InstructionController extends NamingAuthorityInterceptor {
         def instructionInstance = Instruction.get(params.id)
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id]) }"
-            //redirect uri: createLink( base: '/' + params.na, controller: controllerName, action: "list")
             forward(action:'list')
         }
         else if (instructionInstance.status == 200) {
@@ -174,7 +169,6 @@ class InstructionController extends NamingAuthorityInterceptor {
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
-                //redirect uri: createLink( base: '/' + params.na, action: "show", id: instructionInstance.id)
                 forward(action:'show', id: instructionInstance.id)
             }
             else {
@@ -183,7 +177,6 @@ class InstructionController extends NamingAuthorityInterceptor {
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            //redirect uri: createLink( base: '/' + params.na, action: "list")
             forward(action:'list')
         }
     }
@@ -194,18 +187,15 @@ class InstructionController extends NamingAuthorityInterceptor {
             try {
                 instructionInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-               // redirect uri: createLink( base: '/' + params.na, action: "list")
                 forward(action:'list')
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-              //  redirect uri: createLink( base: '/' + params.na, id:params.id, controller: 'show')
                 forward(action:'show', id:params.id)
             }
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            //redirect uri: createLink( base: params.na, action: "list")
             forward(action:'list')
         }
     }
@@ -222,11 +212,9 @@ class InstructionController extends NamingAuthorityInterceptor {
                     sendMessage("activemq:status", instructionInstance.task.identifier)
                 }
                 catch (Exception e) {
-                    // message queue may be down
                     log.warn e.message
                 }
             }
-            //redirect uri: createLink( base: '/' + params.na, action: "show", id:params.id)
             forward(action:'show', id:params.id)
         }
     }
