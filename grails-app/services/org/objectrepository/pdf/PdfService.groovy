@@ -1,19 +1,9 @@
 package org.objectrepository.pdf
 
-import com.lowagie.text.Document
-import com.lowagie.text.PageSize
+import com.lowagie.text.pdf.PdfReader
 import com.lowagie.text.pdf.PdfWriter
-import com.mongodb.DBCursor
-import com.lowagie.text.Image
 import org.apache.commons.io.IOUtils
-import com.lowagie.text.Paragraph
-import com.mongodb.BasicDBObject
-import org.objectrepository.util.Normalizers
-import com.mongodb.gridfs.GridFSFile
-import com.mongodb.gridfs.GridFSDBFile
-import com.mongodb.gridfs.GridFS
-import com.lowagie.text.Anchor
-import com.lowagie.text.Annotation
+import com.lowagie.text.*
 
 class PdfService {
 
@@ -72,7 +62,23 @@ class PdfService {
                                     (it.metaData.pidType == "or") ? it.metaData.resolverBaseUrl + it.metaData.pid + "?locatt=view:" + bucket : it.metaData.resolverBaseUrl + it.metaData.pid))
                     document.add(image)
                 }
-            } else {
+            } else if (it.contentType == 'application/pdf') {
+                def reader = null
+                try {
+                    reader = new PdfReader(it.inputStream)
+                } catch (Exception e) {
+                    document.add(new Paragraph(e.message))
+                }
+                if (reader) {
+                    for (int i = 0; i < reader.numberOfPages;) {
+                        def page = writer.getImportedPage(reader, ++i)
+                        document.add(page)
+                        document.newPage()
+                    }
+                    reader.close()
+                }
+            }
+            else {
                 document.add(new Paragraph("Cannot render page."))
             }
 
