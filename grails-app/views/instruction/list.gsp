@@ -21,7 +21,10 @@
     <g:render template="list" model="[instructionInstanceList, instructionInstanceTotal]"/>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params:params]" />
+<g:formRemote action="[mapping:'namingAuthority', action:'listremote', params: params]"
+              name="listremote"
+              update="updateList"
+              url="[mapping:'namingAuthority', action:'listremote', params: params]" />
 
 <div class="pagination">
     <g:paginate mapping="namingAuthority" params="[na:params.na]" action="list" total="${instructionInstanceTotal}"  />

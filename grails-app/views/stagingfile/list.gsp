@@ -32,10 +32,13 @@
     <g:render template="list" model="[orid: instructionInstance.id, stagingfileInstanceList: stagingfileInstanceList]"/>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action: 'listremote', params: params]"/>
+<g:formRemote action="[mapping:'namingAuthority', action:'listremote', params: params]"
+              name="listremote"
+              update="updateList"
+              url="[mapping:'namingAuthority', action:'listremote', params: params]" />
 
 <div class="pagination">
-    <g:paginate total="${stagingfileInstanceTotal}" params="[na:params.na,orid: instructionInstance.id]"/>
+    <g:paginate mapping="namingAuthority" params="[na:params.na,orid: instructionInstance.id]" total="${stagingfileInstanceTotal}"/>
 </div>
 
 </body>

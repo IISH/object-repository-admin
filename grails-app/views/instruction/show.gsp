@@ -68,7 +68,10 @@
     </div>
 </div>
 
-<g:formRemote name="listremote" update="updateList" url="[action: 'showremote', params: [id: instructionInstance.id]]"/>
+<g:formRemote action="[mapping:'namingAuthority', action:'showremote', params: [na:params.na,id: instructionInstance.id]]"
+              name="listremote"
+              update="updateList"
+              url="[mapping:'namingAuthority', action:'showremote', params: [na:params.na,id: instructionInstance.id]]"/>
 
 </body>
 </html>

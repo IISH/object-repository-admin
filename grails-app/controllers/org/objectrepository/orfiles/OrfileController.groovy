@@ -130,7 +130,7 @@ class OrfileController extends NamingAuthorityInterceptor {
                 return
             }
         }
-        forward(action: 'show', id: instructionInstance.id)
+        forward(controller: 'instruction', action: 'show', id: instructionInstance.id)
     }
 
     def download() {
