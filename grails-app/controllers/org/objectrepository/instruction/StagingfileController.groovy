@@ -23,7 +23,7 @@ class StagingfileController extends NamingAuthorityInterceptor {
         def instructionInstance = Instruction.get(params.orid) // This is the Instruction id
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'Stagingfile.label', default: 'Instruction'), params.orId])}"
-            redirect(controller: "instruction", action: "list")
+            forward(controller: "instruction", action: "list")
             return
         }
 
@@ -71,7 +71,7 @@ class StagingfileController extends NamingAuthorityInterceptor {
 
     def show = {
         params.view = "show"
-        redirect(action: "showremote", params: params)
+        forward(action: "showremote", params: params)
     }
 
     def showremote = {
@@ -114,7 +114,7 @@ class StagingfileController extends NamingAuthorityInterceptor {
             stagingfileInstance.properties = params
             if (!stagingfileInstance.hasErrors() && stagingfileInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'stagingfile', default: 'Stagingfile'), stagingfileInstance.id])}"
-                redirect(action: "show", id: stagingfileInstance.id)
+                forward(action: "show", id: stagingfileInstance.id)
             }
             else {
                 render(view: "edit", model: [stagingfileInstance: stagingfileInstance])
@@ -122,7 +122,7 @@ class StagingfileController extends NamingAuthorityInterceptor {
         }
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'stagingfile.label', default: 'Stagingfile'), params.id])}"
-            redirect(action: "list")
+            forward(action: "list")
         }
     }
 }
