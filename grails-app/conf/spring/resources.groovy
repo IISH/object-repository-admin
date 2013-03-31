@@ -6,6 +6,7 @@ import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
 import org.objectrepository.ftp.FtpService
 import org.objectrepository.ldap.CustomLdapUserDetailsManager
+import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
 
 beans = {
 
@@ -30,7 +31,7 @@ beans = {
         }
     }
 
-//    userDetailsService(AdminUserDetailsService)
+    passwordEncoder(LdapShaPasswordEncoder)
 
     def conf = SpringSecurityUtils.securityConfig
     if (conf.ldap.active) {

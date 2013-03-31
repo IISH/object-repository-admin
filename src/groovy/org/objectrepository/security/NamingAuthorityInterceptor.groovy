@@ -11,7 +11,7 @@ class NamingAuthorityInterceptor {
         if (springSecurityService.isLoggedIn() && (springSecurityService.hasNa(params.na) || springSecurityService.hasNa("0"))) {
             true
         } else {
-            redirect(controller: 'login')
+            redirect(controller: 'login', action:'c403')
             false
         }
     }

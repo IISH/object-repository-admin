@@ -137,4 +137,8 @@ class LoginController {
     def ajaxDenied = {
         render([error: 'access denied'] as JSON)
     }
+
+    def c403 = {
+        response.status = 403
+    }
 }

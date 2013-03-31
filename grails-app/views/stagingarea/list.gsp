@@ -1,4 +1,3 @@
-<%@ page import="org.objectrepository.security.User" %>
 <g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
 <!doctype html>
 <html>

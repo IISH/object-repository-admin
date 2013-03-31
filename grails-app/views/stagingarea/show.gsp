@@ -1,4 +1,4 @@
-<%@ page import="org.springframework.security.oauth2.common.OAuth2AccessToken; org.objectrepository.security.User" %>
+<%@ page import="org.springframework.security.oauth2.common.OAuth2AccessToken;" %>
 <g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
 <!doctype html>
 <html>

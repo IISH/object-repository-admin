@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.provider.ClientToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.objectrepository.ai.ldap.LdapUser
+import org.objectrepository.ldap.CustomLdapUserDetailsManager
 
 /**
  * UserController
@@ -17,7 +18,7 @@ import org.objectrepository.ai.ldap.LdapUser
  * @author Lucien van Wouw <lwo@iisg.nl>
  */
 @Secured(['IS_AUTHENTICATED_FULLY'])
-class UserController extends NamingAuthorityInterceptor {
+class StagingareaController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def ldapUserDetailsManager
@@ -39,7 +40,7 @@ class UserController extends NamingAuthorityInterceptor {
     }
 
     def create = {
-        [userInstance: [enabled: true]]
+        [userInstance: []]
     }
 
     def save = {
@@ -69,8 +70,7 @@ class UserController extends NamingAuthorityInterceptor {
                 return
             }
         }
-
-        params.password = ldapUserDetailsManager.encodePassword(params.password)
+        params.password = springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes())
         ldapUserDetailsManager.updateUser(params, true)
         if (params.sendmail) {
             sendMail {
@@ -139,7 +139,7 @@ class UserController extends NamingAuthorityInterceptor {
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             forward(action: "list")
-        } else if ( !ldapUserDetailsManager.manages(userInstance, params.na) ) {
+        } else if (!ldapUserDetailsManager.manages(userInstance, params.na)) {
             flash.message = "Cannot set this ftp account; as it does not belong to your naming authority."
             render(view: "edit", model: [userInstance: userInstance])
         }
@@ -149,7 +149,9 @@ class UserController extends NamingAuthorityInterceptor {
         }
         else {
             boolean passwordAltered = (params.confirmpassword != "" && params.password != userInstance.password)
-            params.password = (passwordAltered) ? ldapUserDetailsManager.encodePassword(params.password) : userInstance.password
+            params.password = (passwordAltered) ?
+                springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes()) :
+                userInstance.password
             params.uidNumber = userInstance.uidNumber
             ldapUserDetailsManager.updateUser(params, false)
             flash.message = "${message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), params.id])}"

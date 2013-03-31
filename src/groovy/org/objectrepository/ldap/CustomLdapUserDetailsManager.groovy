@@ -1,21 +1,21 @@
-package org.objectrepository.ldap;
+package org.objectrepository.ldap
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.LdapUser
-import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.ldap.LdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
-
-import javax.naming.NameNotFoundException
-
-import org.springframework.ldap.core.*
+import org.springframework.ldap.core.ContextSource
+import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.core.DistinguishedName
+import org.springframework.ldap.core.ContextMapper
+import org.springframework.ldap.core.DirContextAdapter
+import org.springframework.ldap.NameNotFoundException
 
 public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
 
     def _template
     def _usernameMapper
-    def encoder
     def grailsApplication
     def springSecurityService
     final static loginshell = "/bin/sh"
@@ -24,7 +24,6 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
     public CustomLdapUserDetailsManager(ContextSource contextSource) {
         super(contextSource);
         _template = new LdapTemplate(contextSource)
-        encoder = new LdapShaPasswordEncoder()
     }
 
     public void setUsernameMapper(LdapUsernameToDnMapper usernameMapper) {
@@ -35,17 +34,18 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
     def listLdapGroupUsers(String groupID) {
         DistinguishedName dn = new DistinguishedName(SpringSecurityUtils.securityConfig.ldap.authorities.groupSearchBase)
         dn.add(SpringSecurityUtils.securityConfig.ldap.groupAttribute, groupID)
+
         try {
             _template.lookup(dn,
                     new ContextMapper() {
                         public Object mapFromContext(Object ctx) {
                             DirContextAdapter adapter = (DirContextAdapter) ctx;
-                            return adapter.getStringAttributes("uniqueMember");
+                            adapter.getStringAttributes("uniqueMember");
                         }
-                    });
-        } catch (NameNotFoundException e) {
-            log.error(e)
-            log.error("Ask the objectrepository administrator to set the ldap group role " + dn.toUrl())
+                    })
+        } catch (javax.naming.NameNotFoundException e) {
+            log.warn(e)
+            log.warn("Ask the objectrepository administrator to set the ldap group role " + dn.toUrl())
         }
     }
 
@@ -79,7 +79,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      */
     void updateUser(def params, boolean _createUser) {
 
-        params.password = toggleEnable(encodePassword(params.password), (params.enabled) ?: false)
+        params.password = toggleEnable(params.password, (params.enabled) ?: false)
         params.uidNumber = (params.uidNumber) ?: listLdapUsers(params.na).inject(springSecurityService.principal.uidNumber) { acc, val ->
             if (val.uidNumber > acc)
                 acc + 1
@@ -107,10 +107,6 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
             createUser(person.createUserDetails())
         else
             updateUser(person.createUserDetails())
-    }
-
-    def encodePassword(def password, def salt = UUID.randomUUID().encodeAsMD5Bytes()) {
-        encoder.encodePassword(password, salt)
     }
 
     def manages(def userInstance, def na) {

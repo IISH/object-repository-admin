@@ -116,20 +116,27 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public List<FtpFile> listFiles() {
-        // now return all the files under the directory. The directory is a list of comma separated pathnames. We take the base path.
         def virtualFiles = []
-        if (currentFolder.isEmpty()) {
-            user.homeDirectory.split(',').each {
+        final nas = user.homeDirectory.split(',')
+        if (currentFolder.isEmpty()) {   // show default view
+            nas.each {
                 virtualFiles << new VFSFtpFile(it.split('/')[1], user, gridFSService)
             }
         }
         else {
-            def vfs = gridFSService.vfs(currentFolder)
-            vfs?.d?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService)
-            }
-            vfs?.f?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l, it.t)
+            nas.each {
+                if (it.startsWith(currentFolder) ) {// show all files and folders below currentFolder
+                def vfs = gridFSService.vfs(currentFolder)
+                vfs?.d?.each {
+                    virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService)
+                }
+                vfs?.f?.each {
+                    virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l, it.t)
+                }
+            } else {
+                    def d = it[currentFolder.length()..it.indexOf('/', currentFolder.length()+1)]
+                    virtualFiles << new VFSFtpFile(d, user, gridFSService)
+                }
             }
         }
         virtualFiles

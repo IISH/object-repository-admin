@@ -109,7 +109,6 @@ grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.objectreposi
 grails.plugins.springsecurity.authority.className = 'org.objectrepository.security.Role'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.objectrepository.security.UserRole'
 
-grails.plugins.springsecurity.password.algorithm = 'sha-256'
 grails.plugins.springsecurity.rememberMe.persistent = false
 grails.plugins.springsecurity.rememberMe.useSecureCookie = false
 grails.plugins.springsecurity.ldap.search.base = 'ou=users' + dn
@@ -117,7 +116,6 @@ grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups' + d
 grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'ou=users' + dn
 grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn' // must be set, e.g. 'cn'
 grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups' + dn
-grails.plugins.springsecurity.ldap.context.managerDn = 'cn=admin' + dn
 grails.plugins.springsecurity.ldap.mapper.userDetailsClass = 'LdapUser'
 grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
 grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = false
