@@ -141,7 +141,8 @@ class BootStrap {
         na.each {
             def authority = "ROLE_OR_USER_" + it
             log.info "Add authority " + authority
-            UserRole.create user, new Role(authority: authority).save(failOnError: true)
+            def role = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
+            UserRole.create user, role
         }
     }
 }
