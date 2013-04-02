@@ -27,7 +27,7 @@
                                                         model="[instance:profileInstance]"/></ol>
         </fieldset>
         <fieldset class="buttons">
-            <g:actionSubmit  class="save" action="update"
+            <g:actionSubmit class="save" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
         </fieldset>
     </g:form>

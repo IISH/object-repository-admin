@@ -2,13 +2,12 @@ package org.objectrepository.ftp;
 
 
 import org.apache.ftpserver.ftplet.FtpFile
-import org.apache.ftpserver.ftplet.User
 import org.objectrepository.orfiles.GridFSService
 
 public class VFSFtpFile implements FtpFile {
 
     private String currentFolder
-    private User user
+    private def user
     private long length
     private long created
     private boolean isDirectory
@@ -16,7 +15,7 @@ public class VFSFtpFile implements FtpFile {
     private def bucket
     private def pid
 
-    public VFSFtpFile(String currentFolder, User user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
+    public VFSFtpFile(String currentFolder, def user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
         this.currentFolder = currentFolder
         this.user = user
         this.gridFSService = gridFSService
@@ -67,7 +66,7 @@ public class VFSFtpFile implements FtpFile {
 
     public boolean isReadable() {
         user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            currentFolder.startsWith(it)
+            currentFolder.startsWith(it.split(':')[0])
         } != null
     }
 
@@ -116,30 +115,47 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public List<FtpFile> listFiles() {
+        // now return all the files under the directory. The directory is a list of comma separated pathnames. We take the base path.
         def virtualFiles = []
-        final nas = user.homeDirectory.split(',')
-        if (currentFolder.isEmpty()) {   // show default view
-            nas.each {
-                virtualFiles << new VFSFtpFile(it.split('/')[1], user, gridFSService)
+        if (currentFolder.isEmpty()) {
+            user.homeDirectory.split(',').each {
+                virtualFiles << new VFSFtpFile(it.split('/')[1].split(':')[0], user, gridFSService)
             }
         }
         else {
-            nas.each {
-                if (it.startsWith(currentFolder) ) {// show all files and folders below currentFolder
-                def vfs = gridFSService.vfs(currentFolder)
-                vfs?.d?.each {
-                    virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService)
-                }
-                vfs?.f?.each {
-                    virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n, user, gridFSService, false, it.l, it.t)
-                }
-            } else {
-                    def d = it[currentFolder.length()..it.indexOf('/', currentFolder.length()+1)]
-                    virtualFiles << new VFSFtpFile(d, user, gridFSService)
-                }
+            def vfs = gridFSService.vfs(currentFolder)
+            sort(vfs?.d)?.each {
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService)
+            }
+            sort(vfs?.f)?.each {
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService, false, it.l, it.t)
             }
         }
         virtualFiles
+    }
+
+    /**
+     * sort
+     *
+     * Enable a clean sort by appending spaces in front of the names
+     *
+     * @param list
+     * @return
+     */
+    private def sort(def list) {
+
+        if ( ! list ) return
+
+        int max = list.max {
+            it.n.length()
+        }.n.length()
+        list.each {
+            int l = max - it.n.length()
+            if (l > 0) it.n = " ".multiply(l) + it.n
+        }
+        list.sort {
+            it.n
+        }
     }
 
     public OutputStream createOutputStream(long l) throws IOException {

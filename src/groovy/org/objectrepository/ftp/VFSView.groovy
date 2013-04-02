@@ -11,10 +11,10 @@ import org.objectrepository.orfiles.GridFSService
 public class VFSView implements FileSystemView {
 
     final GridFSService gridFSService
-    final User user
+    final def user
     String currentFolder
 
-    public VFSView(GridFSService gridFSService, User user) {
+    public VFSView(GridFSService gridFSService, def user) {
         this.gridFSService = gridFSService
         this.user = user
         this.currentFolder = ""
@@ -47,7 +47,7 @@ public class VFSView implements FileSystemView {
         if (s[0] != '/') s = currentFolder + '/' + s // cd to subfolder in same folder
 
         if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            (s + '/').startsWith(it + '/') || (it + '/').startsWith(s + '/')
+            (s + '/').startsWith(it.split(':')[0] + '/')
         }) {
             if (!gridFSService.vfs(s)) return false
             currentFolder = s

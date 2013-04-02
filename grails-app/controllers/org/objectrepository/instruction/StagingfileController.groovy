@@ -4,7 +4,7 @@ import org.objectrepository.security.Policy
 import grails.plugins.springsecurity.Secured
 import org.objectrepository.security.NamingAuthorityInterceptor
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class StagingfileController extends NamingAuthorityInterceptor {
 
     def springSecurityService

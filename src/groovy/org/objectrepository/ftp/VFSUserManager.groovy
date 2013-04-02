@@ -4,13 +4,11 @@ import org.apache.ftpserver.ftplet.Authentication
 import org.apache.ftpserver.ftplet.AuthenticationFailedException
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.ftplet.User
-import org.apache.ftpserver.usermanager.AnonymousAuthentication
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.impl.AbstractUserManager
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.userdetails.UserDetails
 
 class VFSUserManager extends AbstractUserManager {
 

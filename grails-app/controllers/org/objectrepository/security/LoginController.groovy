@@ -18,7 +18,6 @@ class LoginController {
      * Dependency injection for the authenticationTrustResolver.
      */
     def authenticationTrustResolver
-    def ldapUserDetailsManager
 
     /**
      * Dependency injection for the springSecurityService.
@@ -75,13 +74,13 @@ class LoginController {
     def denied = {
         if (springSecurityService.isLoggedIn() &&
                 authenticationTrustResolver.isRememberMe(SCH.context?.authentication)) {
-            // have cookie but the page is guarded with IS_AUTHENTICATED_FULLY
+            // have cookie but the page is guarded with OR_USER
             redirect action: full, params: params
         }
     }
 
     /**
-     * Login page for users with a remember-me cookie but accessing a IS_AUTHENTICATED_FULLY page.
+     * Login page for users with a remember-me cookie but accessing a OR_USER page.
      */
     def full = {
         def config = SpringSecurityUtils.securityConfig

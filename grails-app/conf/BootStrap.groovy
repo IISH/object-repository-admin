@@ -15,6 +15,7 @@ import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.ContextMapper
 import org.springframework.ldap.NamingException
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
+import com.mongodb.BasicDBObject
 
 class BootStrap {
 
@@ -55,12 +56,18 @@ class BootStrap {
                 }
                 break
             case Environment.DEVELOPMENT:
-                addUser("0", "admin")
-                addUser("12345", "12345")
-                addUser("20000", "20000")
+                def all = new BasicDBObject()
+                ['userRole', 'user', 'role', 'userRole.next_id', 'user.next_id', 'role.next_id'].each {
+                    User.collection.DB.getCollection(it).remove(all)
+                }
+
+                def defaultRole = new Role(authority: 'ROLE_OR_USER').save(failOnError: true)
+                addUser(defaultRole, ["0"], "admin")
+                addUser(defaultRole, ["12345", "10622"], "12345")
+                addUser(defaultRole, ["20000"], "20000")
                 break
             case Environment.TEST:
-                addUser("12345", "12345")
+                addUser(new Role(authority: 'ROLE_OR_USER').save(failOnError: true), "12345", "12345")
                 break
         }
     }
@@ -74,9 +81,10 @@ class BootStrap {
         }
 
         springSecurityService.metaClass.getNa = {
-            authentication.authorities*.role.find {
+            def authorities = authentication.authorities*.role.findAll {
                 it.startsWith('ROLE_OR_USER_')
-            }?.split('_').last()
+            }.sort {it}
+            if (authorities) authorities[0].split('_').last()
         }
     }
 
@@ -122,17 +130,17 @@ class BootStrap {
         }
     }
 
-    private void addUser(String na, String username, String password = null) {
+    private void addUser(def defaultRole, def na, String username, String password = null) {
 
-        def authority = "ROLE_OR_USER_" + na
-        log.info "Add user for na " + na + " username " + username + " authority " + authority
-        def role = (Role.findByAuthority(authority)) ?: new Role(authority: authority).save(failOnError: true)
+        log.info "Add user username " + username
         if (!password) password = springSecurityService.encodePassword(username)
         def user = User.findByUsername(username) ?: new User(username: username, password: password,
                 mail: username + '@socialhistoryservices.org').save(failOnError: true)
-        if (!user.authorities.find {
-            it.id == role.id
+        UserRole.create user, defaultRole
+        na.each {
+            def authority = "ROLE_OR_USER_" + it
+            log.info "Add authority " + authority
+            UserRole.create user, new Role(authority: authority).save(failOnError: true)
         }
-        ) UserRole.create user, role
     }
 }

@@ -1,16 +1,11 @@
 package org.objectrepository.administration
 
 import grails.plugins.springsecurity.Secured
-import org.objectrepository.security.User
-import org.apache.commons.lang.RandomStringUtils
-import org.objectrepository.security.UserRole
-import org.objectrepository.security.Role
 import org.objectrepository.instruction.Profile
+import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.util.OrUtil
 
-import org.objectrepository.security.NamingAuthorityInterceptor
-
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class DashboardController extends NamingAuthorityInterceptor {
 
     def springSecurityService

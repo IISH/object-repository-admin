@@ -12,18 +12,18 @@
 <div class="nav" role="navigation">
     <ul>
         <li><g:link mapping="namingAuthority" params="[na:params.na]" class="create" action="create"><g:message code="default.new.label"
-                                                              args="[entityName]"/></g:link></li>
+                                                                                                                args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
 <g:render template="/layouts/header" model="[instance: userInstance]"/>
 
-<div id="list-user" class="content scaffold-list" role="main">
+<div id="list-ftp" class="content scaffold-list" role="main">
     <table>
         <thead>
         <tr>
             <g:sortableColumn property="username"
-                              title="${message(code: 'user.username.label', default: 'Username')}"/>
+                              title="${message(code: 'user.username.label', default: 'username')}"/>
             <g:sortableColumn property="mail" title="${message(code: 'user.email.label', default: 'Email')}"/>
             <g:sortableColumn property="enabled"
                               title="${message(code: 'user.enabled.label', default: 'Account Enabled')}"/>

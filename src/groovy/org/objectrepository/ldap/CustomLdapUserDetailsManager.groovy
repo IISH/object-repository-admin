@@ -19,7 +19,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
     def grailsApplication
     def springSecurityService
     final static loginshell = "/bin/sh"
-    final static FTP_ROLE = "OR_FTP_"
+    final static FTP_ROLE = "OR_SA_"
 
     public CustomLdapUserDetailsManager(ContextSource contextSource) {
         super(contextSource);

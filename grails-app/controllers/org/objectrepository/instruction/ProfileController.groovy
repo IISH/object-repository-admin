@@ -7,7 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import org.objectrepository.security.NamingAuthorityInterceptor
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class ProfileController extends NamingAuthorityInterceptor{
 
     def springSecurityService

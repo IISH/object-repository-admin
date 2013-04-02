@@ -18,7 +18,10 @@ class AuthoritiesTagLib {
             out << '<ul>'
             roles.each {
                 def na = it.split('_').last()
-                out << '<li>'
+                if (params.na == na)
+                    out << '<li style="background:#cccccc">'
+                else
+                    out << '<li>'
                 out << g.link([mapping: 'namingAuthority', params: [na: na]], na)
                 out << '</li>'
             }

@@ -6,7 +6,7 @@ import grails.plugins.springsecurity.Secured
 
 import org.objectrepository.security.NamingAuthorityInterceptor
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class InstructionController extends NamingAuthorityInterceptor {
 
     def grailsApplication

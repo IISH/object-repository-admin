@@ -17,7 +17,7 @@ import org.objectrepository.ldap.CustomLdapUserDetailsManager
  *
  * @author Lucien van Wouw <lwo@iisg.nl>
  */
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class StagingareaController extends NamingAuthorityInterceptor {
 
     def springSecurityService

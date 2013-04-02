@@ -8,7 +8,7 @@ import org.objectrepository.util.OrUtil
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.instruction.Stagingfile
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['ROLE_OR_USER'])
 class OrfileController extends NamingAuthorityInterceptor {
 
     def springSecurityService

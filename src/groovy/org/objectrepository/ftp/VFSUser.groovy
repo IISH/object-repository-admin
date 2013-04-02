@@ -100,9 +100,9 @@ class VFSUser implements User {
         }
 
         if (someoneCouldAuthorize) {
-            return request
+            request
         } else {
-            return null
+            null
         }
     }
 
