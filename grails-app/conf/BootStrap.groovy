@@ -47,12 +47,14 @@ class BootStrap {
      */
     private void users() {
 
+        final defaultRole = Role.findByAuthority('ROLE_OR_USER') ?: new Role(authority: 'ROLE_OR_USER').save(failOnError: true)
         switch (Environment.current) {
             case Environment.PRODUCTION:
                 final String adminUsername = System.getProperty("adminUsername")
                 final String adminPassword = System.getProperty("adminPassword")
                 if (adminPassword && adminUsername) {
-                    addUser("0", adminUsername, springSecurityService.encodePassword(adminPassword))
+                    addUser(defaultRole, ["0"], adminUsername,
+                            springSecurityService.encodePassword(adminPassword, UUID.randomUUID().encodeAsMD5Bytes()))
                 }
                 break
             case Environment.DEVELOPMENT:
@@ -61,7 +63,6 @@ class BootStrap {
                     User.collection.DB.getCollection(it).remove(all)
                 }
 
-                def defaultRole = new Role(authority: 'ROLE_OR_USER').save(failOnError: true)
                 addUser(defaultRole, ["0"], "admin")
                 addUser(defaultRole, ["12345", "10622"], "12345")
                 addUser(defaultRole, ["20000"], "20000")
