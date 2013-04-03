@@ -1,0 +1,19 @@
+Just like the stagingarea where you upload files using ftp;
+you can download ingested files using ftp as well.
+
+[FileZilla|http://filezilla-project.org/download.php?type=client] and [WinSCP|http://winscp.net/eng/download.php] are
+ftp clients you can use. Or any other for that matter, provided you use these settings:
+
+* connect to ftp.objectrepository.org
+* set the ftp client to support an **explicit FTP over TLS** connection
+* enable **passive mode**.
+* your account is the same account with which you administer your object repository.
+
+The ftp home directory will represent files in the same way as the masters were ingested. There is a folder for
+ each of the stored master and it's derivatives there:
+{code}/master
+/level1
+/level2
+/level3{code}
+
+The directory tree is similar to the way files are offered to the staging area at ingest time.

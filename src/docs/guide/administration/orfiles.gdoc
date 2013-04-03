@@ -1,5 +1,5 @@
-The files section will show all persisted files. Using a popup, you can filter by instruction label. Each file can
- be edited to change the policy and labeling.
+The files section will show all persisted files. Using the dropdown list, you can filter by instruction label.
+Each file can be edited to change the policy and labeling.
 
 !orfiles.gif!
 
@@ -8,3 +8,6 @@ and is subject to change.
 
 @Recreate instruction@
 If you select a label from from the dropdown list; then you can use that selection to recreate an instruction.
+
+@Find by pid@
+Use the PID of a file to display it in the list. Or use the objid of the compound object to find all grouped files.

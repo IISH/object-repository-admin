@@ -3,20 +3,20 @@ Each main folder in the staging area you see is represented here.
 The moment when a XML instruction is offered; or when it is autocreated, the number of declared files will show up.
 In addition each file will have a validation status. The files can be viewed by selecting the link of the main folder.
 
-h3. options
+h3. Commands
 @Autocreate@
 This will autocreate an instruction. Press it and depending on the number of files, the instruction will be put into
 the database.
 
 @Recreate@
-This option is available at the "Stored objects panel". It will reconstruct the instruction
-responsible for the last completed ingest.
+This option is available at the "Stored objects panel". It will reconstruct an earlier used instruction.
+This command will not work, if there are still files staged with an existing instruction.
 
-@Download
+@Download@
 One you created or uploaded an instruction, it can be downloaded as an XML instruction document.
 
 {note}Unfortunately, the download onto to the staging area of an instruction is not possible because of server
-permissions. However, you can download instructions via the browser.{note}
+permissions. Choose the "download instructions via the browser" option in stead.{note}
 
 @Upload@
 You can upload a XML instruction here so it will be placed on the staging area. FTP is also a way of uploading an
@@ -38,7 +38,7 @@ Each phase or step in the creation and running of an instruction can be monitore
 During an ingest, you can see the accumulative result of all files by selecting the link of the main folder.
 
 h4. Instruction status
-This is the particular status of an instruction
+This is the particular status of an instruction.
 
 !statusinstruction.gif!
 
@@ -50,10 +50,13 @@ All progress for the files
 h4. Per file view
 !statusfile.gif!
 
-h4. Success and failure
+h4. Success and retries
 When all services of a file have completed, the file reference will be removed from the staging area. In the end all
 the declared files will be gone.
 
 Of course, things can go wrong. In that case the error is mentioned and nothing will happen until the issue is resolved.
 If you feel this is because of a bug or system application failure, please contact the service desk that operates the
 object repository.
+
+You can rerun instructions with different options. For example, because you want to change a label, access status,
+produce derivatives, etc.

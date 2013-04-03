@@ -10,7 +10,7 @@ interface when viewing your instructions.
 h3. Plan the services
 @plan@ (profile and instruction)
 
-Determines what services are to be used( in no particular order ). Seperated by a comma.
+Determines what services are to be used ( in no particular order ). Seperated by a comma.
 
 To tell you want a master ingest or update:
 {code}plan='StagingfileIngestMaster'{code}
@@ -25,13 +25,14 @@ To produce derivatives:
 * @plan='StagingfileIngestLevel2'
 * @plan='StagingfileIngestLevel3'
 
-If left empty, the default is to use all the services. This is equivalent to:
+If left empty, the default is to use all the services. This is equivalent to adding the following in an XML instruction:
 {code}plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'{code}
 
 h3. Additions and updates
 @action@ (profile, instruction and stagingfile elements)
 
-This controls how the ingest and dissemination procedures handles the file.
+This controls how the ingest and dissemination procedures handles the file. The default 'upsert' is the most simple
+to use as it covers most use cases.
 
     {code}action='upsert' ( default ){code}
     Adds the file with the given pid. If a file with the pid already exists, it will be updated with the new file.
@@ -62,6 +63,19 @@ There are three out-of-the-box policies available:
     {code}access='closed' (default){code}
 
 In the administration interface a CP administrator can add new policies and thus apply custom view levels.
+
+h3. The compound object identifier and ordering of files
+@objid@ (instruction, stagingfile; empty by default)
+
+Groups all the files declared the instruction; stating they all belong to the same compound.
+The syntax of this file is the same as any PID element.
+
+@seq@ (stagingfile; 1 by default)
+Typically when using the objid; you would express the order for each stagingfile with the @seq@ element. If you
+do not specify the order; the alphabetical ordering of your staged files will determine that sequence value.
+
+@pdfLevel@ ( profile, instruction; 'level2' by default )
+Determines which derivative level shall be used to render a PDF with. This level must consist of images.
 
 h3. Mimetype
 @contentType@ (profile, instruction and stagingfile elements)
@@ -131,7 +145,7 @@ These two settings combined are required to bind the PIDs to the object-reposito
 h3. Automated PID creation
 @autoGeneratePIDs@ (profile and instruction element)
 
-Will tricker by the administration interface @autoCreate instruction@ and @upload instruction@ commands.
+Is trickered by the administration interface @autoCreate instruction@ and @upload instruction@ commands.
 
     {code}autoGeneratePIDs='none' (default){code}
     Wont do anything for an absent pid element
@@ -165,4 +179,9 @@ Used in combination with a plan that creates derivatives.
 When set to false ( default ) your derivatives will be replaced by newly master converted ones.
 
 {note}Custom derivatives will always be ingested, regardless of this setting.{note}
+
+h3. E-mail notifications
+@notificationEMail@
+This value is a comma delimited list of e-mail addresses. When an instruction is completed, it will sent a message
+ to those e-mails
 

@@ -1,5 +1,3 @@
-{note}This section is to be extended with the milestones that are not any planning{note}
-
 h3. Integrity assurance service
 The object-repository needs a further integrity validation of stored master material. This involves random checksum
 calculations on files.

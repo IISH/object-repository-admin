@@ -8,6 +8,8 @@ stagingarea:
   ftp: FTP
   datasets: Datasets
   customderivatives: Your own derivatives
+readonlyftp:
+  title: Download files using ftp
 instruction:
   title: Prepare the ingest
   settings: Instruction settings
@@ -17,6 +19,11 @@ pid:
   title: PIDs and the repository's resolve urls
   resolveurls: Resolve URLs
   pids: PIDs created via the PID webservice
+compound:
+  title: compound objects
+  objid: Object identifiers and file order
+  mets: Mets
+  pdf: Pdf
 administration:
   title: Administration interface
   user:

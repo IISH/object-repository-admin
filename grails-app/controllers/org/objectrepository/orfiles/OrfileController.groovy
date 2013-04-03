@@ -41,7 +41,13 @@ class OrfileController extends NamingAuthorityInterceptor {
         def orfileInstanceList = []
         if (params.pid) {
             def file = gridFSService.get(params.na, params.pid)
-            if (file) orfileInstanceList << file
+            if (file)
+                orfileInstanceList << file
+            else {
+                gridFSService.listFilesByObjid(params.na, 'master', params.pid.split('/')[1]).each {
+                    orfileInstanceList << [master:it,level3:it]
+                }
+            }
         }
         final labels = gridFSService.labels(params.na).plus(0, 'select label')
         [orfileInstanceList: orfileInstanceList, orfileInstanceListTotal: orfileInstanceList.size(), labels: labels]

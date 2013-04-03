@@ -1,21 +1,16 @@
-The account section will allow you manage three types of access:
-* ftp accounts for uploading and managing files on the staging area
-* CP administrator accounts to operate the administration interface.
-* A function of both accounts is to supply webservice keys. This key gives access to all admin and stored repository resources.
+The account section will allow you manage ftp accounts for uploading and managing files on the staging area.
+An additional function of such accounts is to to supply webservice keys.
+This key gives access to all admin and stored repository resources.
 
 h4. Create a user
 You need to fill in or edit the following fields:
+* @Login name@: A user name containing letters and numbers
+* @Password@: If the password is left blank, a random password will be created
+* @E-mail@: The end-user's mail address.
+* @Enabled@: If on, the account can be used to login.
 
-@Role@: *ROLE_CPADMIN* is the account with which a user can manage the administration panel. Although it is possible to
-upload files with this account, it is wiser to use a *ROLE_CPUSER* account as it will prevent confusion regarding the
-location of the processing instruction.
-
-*ROLE_CPUSER* is intended for FTP purposes. One cannot operate the administration panel with an CPUSER account.
-
-@Login name@: A user name containing letters and numbers
-@Password@: If the password is left blank, a random password will be created
-@E-mail@: The end-user's mail address.
-@Enabled@: If on, the account can be used to login.
+Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details
+to login.
 
 h4. User display
 This view will also show the webservice key. The key is intended to access an object repository resource that is
@@ -27,5 +22,5 @@ The webservice key has the same effect when a user uses a username and password 
 To modify the webservice key select "Change key"
 
 h4. editing and removing
-Any account can be modified, yet one cannot delete oneself however. Only a CP administrator can remove another CP
-administrator.
+Any account can be modified and deleted. If you delete an ftp account; the user's uploaded files and home
+directory still remain on the staging area. You need to move or delete these yourself with your administration account.

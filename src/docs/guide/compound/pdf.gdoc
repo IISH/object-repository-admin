@@ -1,0 +1,13 @@
+Another way compound objects are expressed is via PDF.
+This is possible when at least one of the derivative layers is made from images.
+
+The dissemination URL of a pdf document is:
+http://disseminate.objectrepository.org/pdf/12345/my-object-id
+which defaults to the rendering of a pdf with a level 2 derivative
+
+You can specify the level yourself by adding it to the url so:
+http://disseminate.objectrepository.org/pdf/12345/my-object-id/[derivative level]
+
+{note}If the level has a restrictive access, the pdf will not render{note}
+
+The PID of the compound object will resolve to the the @pdfLevel@ element set in instruction. See [pids|guide:pid/pids].

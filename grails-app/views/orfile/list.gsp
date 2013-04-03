@@ -36,8 +36,6 @@
         <thead>
         <tr>
             <th>Type</th>
-            <g:sortableColumn property="metadata.label"
-                              title="${message(code: 'orfile.label.label', default: 'Label')}"/>
             <g:sortableColumn property="metadata.access"
                               title="${message(code: 'orfile.access.label', default: 'Access')}"/>
             <g:sortableColumn property="metadata.pid" title="${message(code: 'orfile.pid.label', default: 'Pid')}"/>
@@ -62,11 +60,10 @@
                         <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
                     </g:else></g:link>
                 </td>
-                <td><a href="?label=${orfileInstance.master.metadata.label + '&' + filter}">${orfileInstance.master.metadata.label}</a>
-                </td>
                 <td>${orfileInstance.master.metadata.access}</td>
                 <td>${orfileInstance.master.metadata.pid}
-                    <g:if test="${orfileInstance.master.metadata.lid}"><br/>${orfileInstance.master.metadata.lid}</g:if>
+                    <g:if test="${orfileInstance.master.metadata.lid}"><br/>Local identifier ${orfileInstance.master.metadata.lid}</g:if>
+                    <g:if test="${orfileInstance.master.metadata.objid}"><br/>Belongs to <g:link mapping="namingAuthority" params="[na:params.na, pid:orfileInstance.master.metadata.objid]">${orfileInstance.master.metadata.objid}</g:link></g:if>
                 </td>
                 <td>${orfileInstance.master.metadata.lastUploadDate}</td>
                 <td><g:link mapping="namingAuthority" action="download"
@@ -77,7 +74,7 @@
     </table>
 
     <div class="pagination">
-        <g:paginate mapping="namingAuthority" total="${orfileInstanceListTotal}" params="[na:params.na,label:params.label]"/>
+        <g:paginate mapping="namingAuthority" total="${orfileInstanceListTotal}" params="[na:params.na,label:params.label, pid:params.pid]"/>
     </div>
 </div>
 </body>

@@ -1,0 +1,47 @@
+h3. Expressing objid and order of files
+The compound object has a persistent identifier. In the instruction this is set with the element *objid*
+This is a PID just like the PIDs you supply to identify your files with.
+
+In addition each individual file in the instruction may be given an order using the element *seq*.
+
+As an example, take the situation where you offer a three page letter. You place it onto the staging area:
+    {code}home-directory: /
+        /folderA
+        /folderA/page_0001.tiff
+        /folderA/page_0002.tiff
+        /folderA/page_0003.tiff{code}
+
+Object ID and order is expressed this way in an instruction:
+{code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <instruction xmlns="http://objectrepository.org/instruction/1.0/" objid="12345/my-object-id">
+        <stagingfile>
+            <pid>12345/my-identifier-a</pid>
+            <seq>1</seq>
+            <location>/folderA/page_00001.tiff</location>
+            <md5>cf3ee1101d19328145e94da1cade45bd</md5>
+        </stagingfile>
+        <stagingfile>
+            <pid>12345/my-identifier-b</pid>
+            <seq>2</seq>
+            <location>/folderA/page_00002.tiff</location>
+            <md5>f57eb0e65d11a5a73eab9d5dddf1e528</md5>
+        </stagingfile>
+        <stagingfile>
+            <pid>12345/another-identifier-c</pid>
+            <seq>3</seq>
+            <location>/folderA/page_00003.tiff</location>
+            <md5>c741cd201fafb15c5ec874ae16738671</md5>
+        </stagingfile>
+    </instruction>{code}
+
+If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
+can be set after the autocreate procedure is completed.
+
+h3. The PID of the objid and it's resolve URLs
+When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
+the PID webservice. This pid will refer to:
+* a METS document
+* a PDF
+* and to the derivative levels of the very first file.
+
+See the [chapter on the pids|guide:pid/pids] what the resolve URLs will become.

@@ -1,0 +1,9 @@
+Compound objects are abstractions of ordered files. The way you persist a compound object is by expressing it with the processing instruction.
+Here you determine:
+ * the pid value to refer to a group of files
+ * the physical file order ;
+
+ This information is used to:
+ * download METS documents
+ * download PDFs
+ at the dissemination api or website.

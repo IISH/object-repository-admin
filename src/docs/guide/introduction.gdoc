@@ -4,12 +4,8 @@ The object repository is part of a service oriented framework. That is, the latt
 * ingesting those files into persistent storage
 * image, audio and video derivative generation
 * accepts custom made derivatives of any content type
-* persistent identifier creation by calling a PID webservice (binding handles via a PID webservice.)
-* dissemination of the resources
+* persistent identifier creation by calling a PID webservice (binding file and compound object locations and their handles via a [PID webservice|]https://pid.socialhistoryservices.org/.)
+* dissemination of the resources via HTTP and FTP
+* exports compound objects by via METS and PDF
 * an administration interface plus account system to manage the above services and access policies
-
-With the exception of the ftp upload and administration interface which are more like components, the
- remaining services are optional in their use.
-
-New services will be added. Those are part of the [application's development|https://github.com/IISH/object-repository-admin/blob/master/README.md].
 

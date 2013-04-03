@@ -1,46 +1,21 @@
 h3. Detailed milestones (until June 2013)
 
 {table}
-*date* | *milestone*
-June 2012 | Maintain code on GitHub
-July 2012 | Documentation of object repository design
-July - November 2012 (August Vacation period) | Derivative production for video
-July - November 2012 (August Vacation period) | Derivative production for audio
-July 2012 | oauth2 administrative Interface
-July 2012 | Captcha to administrative Interface
-July 2012 | Add IPv6 compatibility to Infrastructure and software
-July 2012 | Maintain and support helpdesk
-July 2012 | Documenting the Object repository infrastructure
-September 2012 | Content and usage statistics
-November 2012 | Secure Key-based delivery of content ( e.g. for webshop and other external clients )
-September 2012 |  ‘delete-files’ and/or ‘delete-collections’
-December 2012 | Documentation on how to setup the object repository
-January 2013 | Add METSmaker(1)
-February 2013 | METS to pdf converter(1)
+*date* | *milestone* | *status*
+June 2012 | Maintain code on GitHub | released
+July 2012 | Documentation of object repository design | released
+July - November 2012 (August Vacation period) | Derivative production for video | released
+July - November 2012 (August Vacation period) | Derivative production for audio | released
+July 2012 | oauth2 administrative Interface | released
+July 2012 | Captcha to administrative Interface | delayed
+July 2012 | Add IPv6 compatibility to Infrastructure and software | released
+July 2012 | Maintain and support helpdesk | released
+July 2012 | Documenting the Object repository infrastructure  | released
+September 2012 | Content and usage statistics | released
+November 2012 | Secure Key-based delivery of content ( e.g. for webshop and other external clients ) | released
+September 2012 |  ‘delete-files’ and/or ‘delete-collections’ | released
+December 2012 | Documentation on how to setup the object repository  | pending
+January 2013 | Add METSmaker  | moved to other project
+February 2013 | METS to pdf converter | released
+April 2013 | guest ftp accounts  | pending
 {table}
-
-h3. Mets production service(1)
-As having structural metadata has a range of advantages, a service to create XML Mets documents ( profile 3 and 5;
-logical map ) is introduced that used simple means to make it: CSV documents.
-
-Logical relations are often expressed in the flat CSV documents - or similar - that a digital scanning factory delivers
-to a content provider ( when it mass produces high quality imagery ). This  will be the source for Mets document
-production.
-
-The Mets will have:
-- PID in the @OBJID attribute
-- PIDs references in the file sections
-
-{note}Mets can already be ingested by a content provider.{note}
-
-A alternative method that will be introduced is the allowance for an order number and OBJID in the XML processing
-instruction itself per staged file. This is the alternative "light" way to express a logical relationship between data
-and will create a Mets document automatically at post-ingest time.
-
-Once ingested, the Mets will be used:
-* by the derivative service to produce a multipage PDF
-* to extend it's given access policy ( open, restricted and closed ) to all master and derivative material
-* Display the logical relationships of the files at the dissemination API
-
-{note}External services such as Mets viewers can be used to access the Mets document and it's file references to
-produce a presentation.{note}

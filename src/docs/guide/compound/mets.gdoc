@@ -1,0 +1,114 @@
+The object repository can disseminate the the compound object in a standardized way by exporting a profile level 3 METS document.
+Mets is a [metadata standard of the Library of Congres|http://www.loc.gov/standards/mets/].
+
+The dissemination URL of a mets document is:
+http://disseminate.objectrepository.org/mets/12345/my-object-id
+
+The XML it produces would be similar to:
+{code}<?xml version="1.0" encoding="UTF-8"?>
+      <mets xmlns="http://www.loc.gov/METS/" OBJID="10622/ARCH00483.511">
+          <fileSec>
+              <fileGrp ID="master" USE="archive image">
+                  <file CHECKSUM="7ce13c6f87930f456a315ae2b8f4f599" CHECKSUMTYPE="MD5" CREATED="2013-03-24T20:09:14Z" ID="f1"
+                        MIMETYPE="image/tiff" SIZE="112909902">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-a?locatt=view:master"
+                              xlink:title="page_00001.tif" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="db4baeeaa72f9d70248dc86243ec67a6" CHECKSUMTYPE="MD5" CREATED="2013-03-24T16:10:37Z" ID="f2"
+                        MIMETYPE="image/tiff" SIZE="34832744">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-b?locatt=view:master"
+                              xlink:title="page_00002.tif" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="b94a379b69a22a06733c099fae756d5b" CHECKSUMTYPE="MD5" CREATED="2013-03-24T27:10:25Z" ID="f3"
+                        MIMETYPE="image/tiff" SIZE="34609288">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/another-identifier-c?locatt=view:master"
+                              xlink:title="page_00003.tif" xlink:type="simple"/>
+                  </file>
+              </fileGrp>
+              <fileGrp ID="level1" USE="hires reference image">
+                  <file CHECKSUM="372fc2b527e841c87ae1981203853ecb" CHECKSUMTYPE="MD5" CREATED="2013-03-27T12:01:34Z" ID="f40"
+                        MIMETYPE="image/jpeg" SIZE="281588">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-a?locatt=view:level1"
+                              xlink:title="page_00001.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="5b6375afa835b2737ddc785de94c78df" CHECKSUMTYPE="MD5" CREATED="2013-03-27T12:01:35Z" ID="f41"
+                        MIMETYPE="image/jpeg" SIZE="524663">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-b?locatt=view:level1"
+                              xlink:title="page_00002.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="a575e7376590a77451fa2c5d0cc6b388" CHECKSUMTYPE="MD5" CREATED="2013-03-27T12:01:36Z" ID="f42"
+                        MIMETYPE="image/jpeg" SIZE="544376">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/another-identifier-c?locatt=view:level1"
+                              xlink:title="page_00003.jpeg" xlink:type="simple"/>
+                  </file>
+              </fileGrp>
+              <fileGrp ID="level2" USE="reference image">
+                  <file CHECKSUM="1131b5eaabd7eb8266295dfa6e9deb15" CHECKSUMTYPE="MD5" CREATED="2013-03-27T49:03:54Z" ID="f79"
+                        MIMETYPE="image/jpeg" SIZE="40477">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-a?locatt=view:level2"
+                              xlink:title="page_00001.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="29b93e7a719c6235f63822cbd31cf310" CHECKSUMTYPE="MD5" CREATED="2013-03-27T49:03:56Z" ID="f80"
+                        MIMETYPE="image/jpeg" SIZE="74001">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-b?locatt=view:level2"
+                              xlink:title="page_00002.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="e237e2a6cbac9e12b92b870e7845f211" CHECKSUMTYPE="MD5" CREATED="2013-03-27T49:03:57Z" ID="f81"
+                        MIMETYPE="image/jpeg" SIZE="82348">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/another-identifier-c?locatt=view:level2"
+                              xlink:title="page_00003.jpeg" xlink:type="simple"/>
+                  </file>
+              </fileGrp>
+              <fileGrp ID="level3" USE="thumbnail image">
+                  <file CHECKSUM="51935fb67bbb50b2d2908401ba95119e" CHECKSUMTYPE="MD5" CREATED="2013-03-27T49:03:57Z"
+                        ID="f118" MIMETYPE="image/jpeg" SIZE="2644">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-a?locatt=view:level3"
+                              xlink:title="page_00001.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="0f012b9052011cfa9791783895931505" CHECKSUMTYPE="MD5" CREATED="2013-03-27T49:03:58Z"
+                        ID="f119" MIMETYPE="image/jpeg" SIZE="3864">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/my-identifier-b?locatt=view:level3"
+                              xlink:title="page_00002.jpeg" xlink:type="simple"/>
+                  </file>
+                  <file CHECKSUM="844a307af425882c241d8f8256fc1698" CHECKSUMTYPE="MD5" CREATED="2013-03-27T50:03:00Z"
+                        ID="f120" MIMETYPE="image/jpeg" SIZE="4676">
+                      <FLocat LOCTYPE="HANDLE" xmlns:xlink="http://www.w3.org/1999/xlink"
+                              xlink:href="http://hdl.handle.net/12345/another-identifier-c?locatt=view:level3"
+                              xlink:title="page_00003.jpeg" xlink:type="simple"/>
+                  </file>
+              </fileGrp>
+          </fileSec>
+          <structMap TYPE="physical">
+              <div>
+                  <div ID="g0" LABEL="Page 1" ORDER="1" TYPE="page">
+                      <fptr FILEID="f1"/>
+                      <fptr FILEID="f40"/>
+                      <fptr FILEID="f79"/>
+                      <fptr FILEID="f118"/>
+                  </div>
+                  <div ID="g1" LABEL="Page 2" ORDER="2" TYPE="page">
+                      <fptr FILEID="f2"/>
+                      <fptr FILEID="f41"/>
+                      <fptr FILEID="f80"/>
+                      <fptr FILEID="f119"/>
+                  </div>
+                  <div ID="g2" LABEL="Page 3" ORDER="3" TYPE="page">
+                      <fptr FILEID="f3"/>
+                      <fptr FILEID="f42"/>
+                      <fptr FILEID="f81"/>
+                      <fptr FILEID="f120"/>
+                  </div>
+              </div>
+          </structMap>
+      </mets>{code}
