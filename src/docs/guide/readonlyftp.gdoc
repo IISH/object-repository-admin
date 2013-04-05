@@ -5,7 +5,7 @@ you can download ingested files using ftp as well.
 ftp clients you can use. Or any other for that matter, provided you use these settings:
 
 * connect to ftp.objectrepository.org
-* set the ftp client to support an **explicit FTP over TLS** connection
+* set the ftp client to support an **implicit FTP over TLS** connection
 * enable **passive mode**.
 * your account is the same account with which you administer your object repository.
 

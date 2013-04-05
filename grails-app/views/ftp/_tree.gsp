@@ -15,14 +15,14 @@
             onLazyRead:function (node) {
                 node.appendAjax({
                     url:"${createLink(mapping: 'namingAuthority', params: [na:params.na], action:'workingDirectory', id:params.id)}",
-                    data:{key:node.data.key },
-                    success:function () {
-                        var dict = $("#tree").dynatree("getTree").toDict();
-                        $.ajax({
-                            url:"${createLink(mapping: 'namingAuthority', params: [na:params.na], action:'updateDirectory', id:params.id)}",
-                            type:"post",
-                            data:dict })
-                    }
+                    data:{key:node.data.key }
+                });
+            },
+            onSelect:function (select, node) {
+                $.ajax({
+                    type:"POST",
+                    url:"${createLink(mapping: 'namingAuthority', params: [na:params.na], action:'updateDirectory', id:params.id)}",
+                    data:{select:select, key:'/' + node.data.key}
                 });
             }
         });

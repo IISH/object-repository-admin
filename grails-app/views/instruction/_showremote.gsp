@@ -19,9 +19,11 @@
                                     <span class="ui-label">success: <g:link mapping="namingAuthority" controller="stagingfile"
                                                                             action="list"
                                                                             params="[na:params.na,orid: instructionInstance.id, 'filter_status':'success','filter_name':task.name]">${task.success}</g:link>; failure:<g:link
-                                            controller="stagingfile"
+                                        mapping="namingAuthority"
+                                        controller="stagingfile"
                                             action="list"
                                             params="[na:params.na, orid: instructionInstance.id, 'filter_status':'failure','filter_name':task.name]">${task.failure}</g:link>; total:<g:link
+                                        mapping="namingAuthority"
                                             controller="stagingfile"
                                             action="list"
                                             params="[na:params.na, orid: instructionInstance.id]">${task.processed} / ${task.total}</g:link></span>

@@ -22,11 +22,11 @@
           model="[instance: stagingfileInstanceList, args: instructionInstance.fileSetAlias]"/>
 
 <p>Filter on:<g:link
-        action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'waiting']">waiting</g:link>.<g:link
-        action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'running']">running</g:link>.<g:link
-        action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'failure']">failure</g:link>.<g:link
-        action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'complete']">complete</g:link>.<g:link
-        action="list" params="[na:params.na,orid: instructionInstance.id]">Show all</g:link></p>
+        mapping="namingAuthority" action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'waiting']">waiting</g:link>.<g:link
+        mapping="namingAuthority" action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'running']">running</g:link>.<g:link
+        mapping="namingAuthority" action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'failure']">failure</g:link>.<g:link
+        mapping="namingAuthority" action="list" params="[na:params.na,orid: instructionInstance.id, 'filter_status': 'complete']">complete</g:link>.<g:link
+        mapping="namingAuthority" action="list" params="[na:params.na,orid: instructionInstance.id]">Show all</g:link></p>
 
 <div class="body" id="updateList">
     <g:render template="list" model="[orid: instructionInstance.id, stagingfileInstanceList: stagingfileInstanceList]"/>
