@@ -47,25 +47,19 @@ class BootStrap {
      */
     private void users() {
 
-        final defaultRole = Role.findByAuthority('ROLE_OR_USER') ?: new Role(authority: 'ROLE_OR_USER').save(failOnError: true)
         switch (Environment.current) {
             case Environment.PRODUCTION:
                 final String adminUsername = System.getProperty("adminUsername")
                 final String adminPassword = System.getProperty("adminPassword")
                 if (adminPassword && adminUsername) {
-                    addUser(defaultRole, ["0"], adminUsername,
+                    addUser(["0"], adminUsername,
                             springSecurityService.encodePassword(adminPassword, UUID.randomUUID().encodeAsMD5Bytes()))
                 }
                 break
             case Environment.DEVELOPMENT:
-                def all = new BasicDBObject()
-                ['userRole', 'user', 'role', 'userRole.next_id', 'user.next_id', 'role.next_id'].each {
-                    User.collection.DB.getCollection(it).remove(all)
-                }
-
-                addUser(defaultRole, ["0"], "admin")
-                addUser(defaultRole, ["12345", "10622"], "12345")
-                addUser(defaultRole, ["20000"], "20000")
+                addUser(["0"], "admin")
+                addUser(["12345", "10622"], "12345")
+                addUser(["20000"], "20000")
                 break
             case Environment.TEST:
                 addUser(new Role(authority: 'ROLE_OR_USER').save(failOnError: true), "12345", "12345")
@@ -84,7 +78,7 @@ class BootStrap {
         springSecurityService.metaClass.getNa = {
             def authorities = authentication.authorities*.role.findAll {
                 it.startsWith('ROLE_OR_USER_')
-            }.sort {it}
+            }.sort { it }
             if (authorities) authorities[0].split('_').last()
         }
     }
@@ -131,12 +125,16 @@ class BootStrap {
         }
     }
 
-    private void addUser(def defaultRole, def na, String username, String password = null) {
+    private void addUser(def na, String username, String password = null) {
+
+        User.findByUsername(username)?.delete(flush: true)
 
         log.info "Add user username " + username
         if (!password) password = springSecurityService.encodePassword(username)
-        def user = User.findByUsername(username) ?: new User(username: username, password: password,
+        def user = new User(username: username, password: password,
                 mail: username + '@socialhistoryservices.org').save(failOnError: true)
+
+        final defaultRole = Role.findByAuthority('ROLE_OR_USER') ?: new Role(authority: 'ROLE_OR_USER').save(failOnError: true)
         UserRole.create user, defaultRole
         na.each {
             def authority = "ROLE_OR_USER_" + it

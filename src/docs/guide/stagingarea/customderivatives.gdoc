@@ -1,6 +1,6 @@
 The object-repository has a service to create lower level copies of the masters.
 
-It attempts to create three levels for images:
+It attempts to create three levels for images and first page pdf documents:
 * level 1: high print quality
 * level 2: medium screen quality
 * level 3: small, thumbnail quality

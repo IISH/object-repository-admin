@@ -84,7 +84,7 @@
 
 <g:formRemote name="listremote"
               update="updateList"
-              url="[mapping:'namingAuthority', action:'showremote', params: [na:params.na,id: instructionInstance.id]]"/>
+              url="[mapping:'namingAuthority', action:'showremote', params: [na:params.na,id: stagingfileInstance.parent.id]]"/>
 
 </body>
 </html>

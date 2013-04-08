@@ -37,6 +37,7 @@ class FileController {
         final def file = getFile(params)
         if (file) {
             response.contentType = (params.contentType) ?: file.contentType
+            response.setHeader('Last-Modified', String.format('%ta, %<td %<tb %<tY %<tT GMT', file.uploadDate))
 
             Date begin = new Date()
             long from = 0, to = 0
