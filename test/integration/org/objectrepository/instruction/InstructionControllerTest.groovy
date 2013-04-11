@@ -1,12 +1,11 @@
-package org.objectrepository.instruction;
+package org.objectrepository.instruction
 
-
-import org.objectrepository.util.OrUtil
 import grails.converters.XML
-import groovy.util.slurpersupport.NodeChild
-import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import groovy.util.slurpersupport.NodeChild
+import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
+import org.objectrepository.util.OrUtil
 
 /**
  * Integration test suite for the InstructionController.

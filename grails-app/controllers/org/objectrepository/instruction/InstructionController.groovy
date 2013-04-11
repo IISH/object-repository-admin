@@ -1,10 +1,9 @@
 package org.objectrepository.instruction
 
+import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
-import grails.plugins.springsecurity.Secured
-
-import org.objectrepository.security.NamingAuthorityInterceptor
+import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
 class InstructionController extends NamingAuthorityInterceptor {

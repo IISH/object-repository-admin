@@ -1,5 +1,6 @@
 package org.objectrepository.instruction
 
+import com.gmongo.GMongo
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
@@ -7,7 +8,6 @@ import org.bson.types.ObjectId
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.objectrepository.orfiles.GridFSService
 import org.objectrepository.util.OrUtil
-import com.gmongo.GMongo
 
 @TestMixin(GrailsUnitTestMixin)
 class WorkflowActiveServiceTest {

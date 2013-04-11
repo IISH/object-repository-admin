@@ -1,7 +1,7 @@
 package org.objectrepository.security
 
-import grails.plugins.springsecurity.Secured
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
 class PolicyController extends NamingAuthorityInterceptor {

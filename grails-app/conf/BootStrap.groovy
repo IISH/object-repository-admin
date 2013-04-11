@@ -9,22 +9,16 @@ import org.objectrepository.security.User
 import org.objectrepository.security.UserRole
 import org.objectrepository.util.OrUtil
 import org.springframework.security.oauth2.provider.BaseClientDetails
-import org.springframework.ldap.core.DistinguishedName
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.ldap.core.DirContextAdapter
-import org.springframework.ldap.core.ContextMapper
-import org.springframework.ldap.NamingException
-import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
-import com.mongodb.BasicDBObject
 
 class BootStrap {
 
     def springSecurityService
-    def LdapUserDetailsManager ldapUserDetailsManager
+    def ldapUserDetailsManager
     def grailsApplication
     def clientDetailsService
     def planManagerService
     def ftpService
+    def activemq
 
     def init = { servletContext ->
 

@@ -10,7 +10,8 @@ grails.project.dependency.resolution = {
         excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    checksums false // Whether to verify checksums on resolve
+    checksums true // Whether to verify checksums on resolve
+    legacyResolve false
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -30,11 +31,21 @@ grails.project.dependency.resolution = {
         compile "au.edu.apsr.mtk:metsapi:1.5"
         compile "org.apache.ftpserver:ftpserver-core:1.0.6"
         compile "com.lowagie:itext:4.2.0"
+
+        compile "org.apache.activemq:activemq-camel:5.8.0"
+        compile "org.apache.activemq:activemq-pool:5.8.0"
     }
 
     plugins {
-        runtime ":jquery:1.7.2"
+        runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
         build ":tomcat:$grailsVersion"
+        compile ":webxml:1.4.1"
+        compile ":spring-security-core:1.2.7.3"
+        compile ":spring-security-ldap:1.0.6"
+        compile ":spring-security-oauth2-provider:1.0.0.M5.1"
+        compile ":mongodb:1.1.0.GA"
+        compile ":mail:1.0.1"
+        compile ":routing:1.2.2"
     }
 }

@@ -1,14 +1,12 @@
 package org.objectrepository.security
 
-import grails.plugins.springsecurity.Secured
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.provider.ClientToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
-import org.objectrepository.ai.ldap.LdapUser
-import org.objectrepository.ldap.CustomLdapUserDetailsManager
 
 /**
  * UserController

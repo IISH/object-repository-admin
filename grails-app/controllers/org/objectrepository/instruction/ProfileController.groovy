@@ -1,11 +1,9 @@
 package org.objectrepository.instruction
 
 import grails.plugins.springsecurity.Secured
-import org.objectrepository.security.Policy
-import org.objectrepository.util.OrUtil
-import org.springframework.dao.DataIntegrityViolationException
-
 import org.objectrepository.security.NamingAuthorityInterceptor
+import org.objectrepository.security.Policy
+import org.springframework.dao.DataIntegrityViolationException
 
 @Secured(['ROLE_OR_USER'])
 class ProfileController extends NamingAuthorityInterceptor{

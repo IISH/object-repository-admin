@@ -1,8 +1,8 @@
 package org.objectrepository.ftp
 
-import org.apache.ftpserver.ftplet.User
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.ftplet.AuthorizationRequest
+import org.apache.ftpserver.ftplet.User
 
 class VFSUser implements User {
 

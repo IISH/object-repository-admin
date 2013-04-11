@@ -2,7 +2,6 @@ package org.objectrepository.ftp
 
 import org.apache.ftpserver.ftplet.UserManager
 import org.apache.ftpserver.usermanager.UserManagerFactory
-import org.springframework.security.authentication.AuthenticationManager
 
 class FtpUserManagerFactory implements UserManagerFactory {
 

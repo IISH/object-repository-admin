@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCollection
 import com.mongodb.WriteResult
 import grails.converters.XML
-import org.apache.camel.CamelExecutionException
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.objectrepository.util.OrUtil
 
@@ -585,7 +584,7 @@ abstract class WorkflowJob {
     void exception(def document, Exception e) {
 
         println("Failure when processing document: " + e.message)
-        if (e instanceof CamelExecutionException) return // The message queue is offline
+        //if (e instanceof CamelExecutionException) return // The message queue is offline
         println(document as XML)
         e.stackTrace?.each {
             println(it)

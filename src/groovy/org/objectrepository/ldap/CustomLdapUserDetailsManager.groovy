@@ -2,15 +2,11 @@ package org.objectrepository.ldap
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.LdapUser
+import org.springframework.ldap.NameNotFoundException
+import org.springframework.ldap.core.*
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.ldap.LdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
-import org.springframework.ldap.core.ContextSource
-import org.springframework.ldap.core.LdapTemplate
-import org.springframework.ldap.core.DistinguishedName
-import org.springframework.ldap.core.ContextMapper
-import org.springframework.ldap.core.DirContextAdapter
-import org.springframework.ldap.NameNotFoundException
 
 public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
 

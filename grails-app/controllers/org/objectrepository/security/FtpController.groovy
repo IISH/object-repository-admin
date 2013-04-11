@@ -1,10 +1,10 @@
 package org.objectrepository.security
 
 import grails.converters.JSON
-import grails.plugins.springsecurity.Secured
 import org.apache.commons.lang.RandomStringUtils
 import org.objectrepository.ftp.VFSView
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
 class FtpController extends NamingAuthorityInterceptor {

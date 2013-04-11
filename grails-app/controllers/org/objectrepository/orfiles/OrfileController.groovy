@@ -1,12 +1,11 @@
 package org.objectrepository.orfiles
 
-import grails.plugins.springsecurity.Secured
 import org.objectrepository.instruction.Instruction
+import org.objectrepository.instruction.Stagingfile
+import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
-
-import org.objectrepository.security.NamingAuthorityInterceptor
-import org.objectrepository.instruction.Stagingfile
+import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
 class OrfileController extends NamingAuthorityInterceptor {

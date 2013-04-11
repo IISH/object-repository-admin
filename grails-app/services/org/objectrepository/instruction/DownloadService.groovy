@@ -1,8 +1,8 @@
 package org.objectrepository.instruction
 
 import com.mongodb.DBCursor
-import org.objectrepository.util.OrUtil
 import groovy.xml.StreamingMarkupBuilder
+import org.objectrepository.util.OrUtil
 import org.springframework.context.i18n.LocaleContextHolder
 
 class DownloadService {

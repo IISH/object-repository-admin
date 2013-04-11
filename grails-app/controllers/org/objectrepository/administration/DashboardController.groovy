@@ -1,9 +1,9 @@
 package org.objectrepository.administration
 
-import grails.plugins.springsecurity.Secured
 import org.objectrepository.instruction.Profile
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.util.OrUtil
+import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
 class DashboardController extends NamingAuthorityInterceptor {

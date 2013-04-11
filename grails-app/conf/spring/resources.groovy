@@ -1,12 +1,13 @@
+import org.apache.activemq.camel.component.ActiveMQComponent
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
+import org.objectrepository.ftp.FtpService
 import org.objectrepository.instruction.PlanManagerService
+import org.objectrepository.ldap.CustomLdapUserDetailsManager
 import org.socialhistoryservices.security.MongoTokenStore
+import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
-import org.objectrepository.ftp.FtpService
-import org.objectrepository.ldap.CustomLdapUserDetailsManager
-import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
 
 beans = {
 
@@ -19,6 +20,11 @@ beans = {
         println("Loading plans")
         planManagerService(PlanManagerService, application) {
             timeout = 10000
+        }
+
+        println("Loading activemq broker endpoint")
+        activemq(ActiveMQComponent){
+            brokerURL = application.config.brokerURL
         }
     }
 

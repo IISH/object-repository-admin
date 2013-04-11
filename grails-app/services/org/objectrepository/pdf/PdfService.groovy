@@ -1,9 +1,9 @@
 package org.objectrepository.pdf
 
+import com.lowagie.text.*
 import com.lowagie.text.pdf.PdfReader
 import com.lowagie.text.pdf.PdfWriter
 import org.apache.commons.io.IOUtils
-import com.lowagie.text.*
 
 class PdfService {
 
