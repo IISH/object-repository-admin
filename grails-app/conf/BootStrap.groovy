@@ -75,6 +75,12 @@ class BootStrap {
             }.sort { it }
             if (authorities) authorities[0].split('_').last()
         }
+
+        springSecurityService.metaClass.hasAuthority = { def na, def authority ->
+            def role = "ROLE_" + authority + "_"  + na
+            (role in authentication.authorities*.authority)
+        }
+
     }
 
     private void oauth2() {
@@ -135,6 +141,9 @@ class BootStrap {
             log.info "Add authority " + authority
             def role = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
             UserRole.create user, role
+
+            OrUtil.availablePolicies(it, grailsApplication.config.accessMatrix)
+            if (!Profile.findByNa(it)) new Profile(na: it).save(failOnError: true)
         }
     }
 }

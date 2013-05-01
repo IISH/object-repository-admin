@@ -25,7 +25,7 @@ plans = [
                         300: [purpose: 'A request to produce an instruction is on the queue'],
                         400: [purpose: 'The request is taken from the queue. The instruction is being created'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Validating if the task was successfull'],
+                        600: [purpose: 'Validating if the task was successful'],
                         700: [purpose: 'There was an error.'],
                         710: [purpose: 'This service was started, but there are no files on the staging area.'],
                         800: [purpose: 'Instruction ready']
@@ -45,7 +45,7 @@ plans = [
                         300: [purpose: 'A request to produce a instruction is on the queue'],
                         400: [purpose: 'The request is taken from the queue. Importing an instruction'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Validating if the task was successfull'],
+                        600: [purpose: 'Validating if the task was successful'],
                         700: [purpose: 'There was an error.'],
                         800: [purpose: 'Instruction read in.']
                 ]
@@ -58,7 +58,7 @@ plans = [
                         300: [purpose: 'A request to read in this instruction is on the queue'],
                         400: [purpose: 'The request is taken from the queue. Importing an instruction'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Validating if the task was successfull'],
+                        600: [purpose: 'Validating if the task was successful'],
                         700: [purpose: 'There was an error.'],
                         800: [purpose: 'Instruction read in.']
                 ]
@@ -71,7 +71,7 @@ plans = [
                         300: [purpose: 'The instruction has been sent to the queue for processing'],
                         400: [purpose: 'The request is taken from the queue. Validating an instruction'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Check if the task was successfull'],
+                        600: [purpose: 'Check if the task was successful'],
                         700: [purpose: 'An error occured when validating the files'],
                         800: [purpose: 'The overal instruction has been validated. All is well.']
                 ]
@@ -106,10 +106,10 @@ plans = [
                 statusCodes: [
                         100: [purpose: 'The system received a request to ingest this master'],
                         200: [purpose: 'Sending request to the queue'],
-                        300: [purpose: 'The master\'s location has been sent to the queue for ingestation'],
+                        300: [purpose: 'The master\'s location has been sent to the queue for ingestion'],
                         400: [purpose: 'Ingesting master file'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if the master was inserted into the database'],
                         800: [purpose: 'Master file is inserted']
                 ],
@@ -120,9 +120,9 @@ plans = [
                         100: [purpose: 'The system received a request to create or bind PIDs'],
                         200: [purpose: 'Sending request to the queue'],
                         300: [purpose: 'The command to bind PIDs has been sent to the queue'],
-                        400: [purpose: 'Binding PIDs with the repositories disseminiation API ( website )'],
+                        400: [purpose: 'Binding PIDs with the repositories dissemination API ( website )'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verify the existamce of PIDs'],
+                        600: [purpose: 'Verify the existence of PIDs'],
                         700: [purpose: 'We could not verify the bindings of the PID'],
                         800: [purpose: 'PID are bound to the resolve URLs']
                 ]
@@ -133,9 +133,9 @@ plans = [
                         100: [purpose: 'The system received a request to create or bind an objid'],
                         200: [purpose: 'Sending request to the queue'],
                         300: [purpose: 'The command to bind objid PID has been sent to the queue'],
-                        400: [purpose: 'Binding objid with the repositories disseminiation API ( website )'],
+                        400: [purpose: 'Binding objid with the repositories dissemination API ( website )'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verify the existamce of obiid PIDs'],
+                        600: [purpose: 'Verify the existence of obiid PIDs'],
                         700: [purpose: 'We could not verify the bindings of the objid PID'],
                         800: [purpose: 'obiid is bound to the resolve URLs']
                 ]
@@ -148,9 +148,9 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ],
         ],
         StagingfileIngestLevel1: [
@@ -161,9 +161,9 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ],
         ],
         StagingfileIngestCustomLevel2: [
@@ -174,9 +174,9 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ],
         ],
         StagingfileIngestLevel2: [
@@ -187,9 +187,9 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ],
         ],
         StagingfileIngestCustomLevel3: [
@@ -200,9 +200,9 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ],
         ]
         ,
@@ -214,24 +214,11 @@ plans = [
                         300: [purpose: 'The object\'s location has been sent to the queue for derivative creation'],
                         400: [purpose: 'Creating derivative'],
                         500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
+                        600: [purpose: 'Verifying if the task was successful.'],
                         700: [purpose: 'We could not see if a derivative was created'],
-                        800: [purpose: 'Derivate file is produced and stored']
+                        800: [purpose: 'Derivative file is produced and stored']
                 ]
         ],
-        /*StagingfileIngestObjid: [
-                visible: false,
-                statusCodes: [
-                        100: [purpose: 'The system received a request to bind a objid'],
-                        200: [purpose: 'Sending request to the queue'],
-                        300: [purpose: 'The object\'s location has been sent to the queue for objid binding'],
-                        400: [purpose: 'Binding objid'],
-                        500: [purpose: 'The service node completed the task.'],
-                        600: [purpose: 'Verifying if the task was successfull.'],
-                        700: [purpose: 'We could not see if a objid was bound'],
-                        800: [purpose: 'objid is bound']
-                ]
-        ],*/
         EndOfTheRoad: [
                 statusCodes: [
                         100: [purpose: 'End of the factory line. The file can now be removed'],

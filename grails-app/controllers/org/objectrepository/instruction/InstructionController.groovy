@@ -34,8 +34,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
             params.remove('view')
-        }
-        else
+        } else
             [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count]
     }
 
@@ -48,9 +47,8 @@ class InstructionController extends NamingAuthorityInterceptor {
         def instructionInstance = instructionAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            forward(action:'list')
-        }
-        else if (instructionInstance.status == 200) {
+            forward(action: 'list')
+        } else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
             render(view: params.view ?: '_showremote', model: [instructionInstance: instructionInstance])
         }
@@ -89,10 +87,10 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (instruction && !instruction.empty) {
             instruction.transferTo(file)
             instructionInstance.delete(flush: true)
-            forward(action:'list')
+            forward(action: 'list')
         } else if (params.instruction) {
             instructionInstance.delete(flush: true)
-            forward(action:'list')
+            forward(action: 'list')
         }
         [instructionInstance: instructionInstance, fileExists: file.exists()]
     }
@@ -113,7 +111,7 @@ class InstructionController extends NamingAuthorityInterceptor {
                 writer = file.newWriter('UTF-8')
             }
             downloadService.write(writer, instructionInstance)
-            forward(action:'list')
+            forward(action: 'list')
         }
         [instructionInstance: instructionInstance]
     }
@@ -123,9 +121,8 @@ class InstructionController extends NamingAuthorityInterceptor {
         def instructionInstance = Instruction.get(params.id)
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id]) }"
-            forward(action:'list')
-        }
-        else if (instructionInstance.status == 200) {
+            forward(action: 'list')
+        } else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
             def policyInstanceList = Policy.findAllByNa(instructionInstance.na)
             [instructionInstance: instructionInstance, policyList: policyInstanceList.access]
@@ -168,15 +165,13 @@ class InstructionController extends NamingAuthorityInterceptor {
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
-                forward(action:'show', id: instructionInstance.id)
-            }
-            else {
+                forward(action: 'show', id: instructionInstance.id)
+            } else {
                 render(view: "edit", model: [instructionInstance: instructionInstance])
             }
-        }
-        else {
+        } else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            forward(action:'list')
+            forward(action: 'list')
         }
     }
 
@@ -186,16 +181,15 @@ class InstructionController extends NamingAuthorityInterceptor {
             try {
                 instructionInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-                forward(action:'list')
+                forward(action: 'list')
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-                forward(action:'show', id:params.id)
+                forward(action: 'show', id: params.id)
             }
-        }
-        else {
+        } else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            forward(action:'list')
+            forward(action: 'list')
         }
     }
 
@@ -203,6 +197,15 @@ class InstructionController extends NamingAuthorityInterceptor {
 
         def instructionInstance = serviceAvailable()
         if (instructionInstance) {
+
+            if (instructionInstance.action == "delete") {
+                if (!springSecurityService.hasAuthority(params.na, "USER_OR_ALLOW_DELETE")) {
+                    flash.message = "${message(code: 'default.not.allowed.deleted.message', default: 'This account is not allowed to manage instructions with the action set to delete')}"
+                    forward(action: 'show', id: params.id)
+                    return
+                }
+            }
+
             instructionInstance.task.name = OrUtil.camelCase([controllerName, actionName])
             instructionInstance.task.taskKey()
             workflowActiveService.first(instructionInstance)
@@ -214,7 +217,7 @@ class InstructionController extends NamingAuthorityInterceptor {
                     log.warn e.message
                 }
             }
-            forward(action:'show', id:params.id)
+            forward(action: 'show', id: params.id)
         }
     }
 
