@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>7 Compound objects 1.2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="architecture.html"><strong>2</strong><span>Architecture</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="stagingarea.html"><strong>3</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="readonlyftp.html"><strong>4</strong><span>Download files using ftp</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="instruction.html"><strong>5</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="pid.html"><strong>6</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/compound.html"><strong>7</strong><span>Compound objects</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="administration.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="pid.html">&lt;&lt; <strong>6</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="administration.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>7 Compound objects - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.2</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#objid"><strong>7.1</strong><span>Object identifiers and file order</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#mets"><strong>7.2</strong><span>Mets</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#pdf"><strong>7.3</strong><span>Pdf</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="compound">7 Compound objects</h1>
+Compound objects are abstractions of ordered files. The way you express a compound object is through the processing instruction.
+Here you determine:
+<ul class="star">
+<li>the pid value to refer to a group of files</li>
+<li>the physical file order ;</li>
+</ul><p class="paragraph"/> This information is used to offer the download of:
+<ul class="star">
+<li>METS documents</li>
+<li>PDFs</li>
+</ul><p class="paragraph"/> at the dissemination api or website.
+
+
+<h2 id="objid">7.1 Object identifiers and file order</h2>
+<h3>Expressing objid and order of files</h3>
+The compound object has a persistent identifier. In the instruction this is set with the element <strong class="bold">objid</strong>
+This is a PID just like the PIDs you supply to identify your files with.<p class="paragraph"/>In addition each individual file in the instruction may be given an order using the element <strong class="bold">seq</strong>.<p class="paragraph"/>As an example, take the situation where you offer a three page letter. You place it onto the staging area:
+    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/page_0001.tiff
+        /folderA/page_0002.tiff
+        /folderA/page_0003.tiff</pre></div><p class="paragraph"/>Object ID and order is expressed this way in an instruction:
+<div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"UTF&#45;8"</span> standalone=<span class="java&#45;quote">"yes"</span>?&#62;
+    &#60;instruction xmlns=<span class="java&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> objid=<span class="java&#45;quote">"12345/my&#45;object&#45;id"</span>&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/my&#45;identifier&#45;a&#60;/pid&#62;
+            &#60;seq&#62;1&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00001.tiff&#60;/location&#62;
+            &#60;md5&#62;cf3ee1101d19328145e94da1cade45bd&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/my&#45;identifier&#45;b&#60;/pid&#62;
+            &#60;seq&#62;2&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00002.tiff&#60;/location&#62;
+            &#60;md5&#62;f57eb0e65d11a5a73eab9d5dddf1e528&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/another&#45;identifier&#45;c&#60;/pid&#62;
+            &#60;seq&#62;3&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00003.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+    &#60;/instruction&#62;</pre></div><p class="paragraph"/>If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
+can be set after the autocreate procedure is completed.<p class="paragraph"/><h3>The PID of the objid and it's resolve URLs</h3>
+When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
+the PID webservice. This pid will refer to:
+<ul class="star">
+<li>a METS document</li>
+<li>a PDF</li>
+<li>and to the derivative levels of the very first file.</li>
+</ul><p class="paragraph"/>See the <a href="single.html#pids" class="guide">chapter on the pids</a> what the resolve URLs will become.
+
+
+<h2 id="mets">7.2 Mets</h2>
+The object repository can disseminate the the compound object in a standardized way by exporting a profile level 3 METS document.
+Mets is a <a href="http://www.loc.gov/standards/mets/" target="blank">metadata standard of the Library of Congres</a>.<p class="paragraph"/>The dissemination URL of a mets document is:
+http://disseminate.objectrepository.org/mets/12345/my-object-id<p class="paragraph"/>The XML it produces would be similar to:
+<div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"UTF&#45;8"</span>?&#62;
+      &#60;mets xmlns=<span class="java&#45;quote">"http://www.loc.gov/METS/"</span> OBJID=<span class="java&#45;quote">"10622/ARCH00483.511"</span>&#62;
+          &#60;fileSec&#62;
+              &#60;fileGrp ID=<span class="java&#45;quote">"master"</span> USE=<span class="java&#45;quote">"archive image"</span>&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"7ce13c6f87930f456a315ae2b8f4f599"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;24T20:09:14Z"</span> ID=<span class="java&#45;quote">"f1"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/tiff"</span> SIZE=<span class="java&#45;quote">"112909902"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:master"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00001.tif"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"db4baeeaa72f9d70248dc86243ec67a6"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;24T16:10:37Z"</span> ID=<span class="java&#45;quote">"f2"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/tiff"</span> SIZE=<span class="java&#45;quote">"34832744"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:master"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00002.tif"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"b94a379b69a22a06733c099fae756d5b"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;24T27:10:25Z"</span> ID=<span class="java&#45;quote">"f3"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/tiff"</span> SIZE=<span class="java&#45;quote">"34609288"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:master"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00003.tif"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+              &#60;/fileGrp&#62;
+              &#60;fileGrp ID=<span class="java&#45;quote">"level1"</span> USE=<span class="java&#45;quote">"hires reference image"</span>&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"372fc2b527e841c87ae1981203853ecb"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T12:01:34Z"</span> ID=<span class="java&#45;quote">"f40"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"281588"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level1"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"5b6375afa835b2737ddc785de94c78df"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T12:01:35Z"</span> ID=<span class="java&#45;quote">"f41"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"524663"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level1"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"a575e7376590a77451fa2c5d0cc6b388"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T12:01:36Z"</span> ID=<span class="java&#45;quote">"f42"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"544376"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level1"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+              &#60;/fileGrp&#62;
+              &#60;fileGrp ID=<span class="java&#45;quote">"level2"</span> USE=<span class="java&#45;quote">"reference image"</span>&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"1131b5eaabd7eb8266295dfa6e9deb15"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T49:03:54Z"</span> ID=<span class="java&#45;quote">"f79"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"40477"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level2"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"29b93e7a719c6235f63822cbd31cf310"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T49:03:56Z"</span> ID=<span class="java&#45;quote">"f80"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"74001"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level2"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"e237e2a6cbac9e12b92b870e7845f211"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T49:03:57Z"</span> ID=<span class="java&#45;quote">"f81"</span>
+                        MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"82348"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level2"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+              &#60;/fileGrp&#62;
+              &#60;fileGrp ID=<span class="java&#45;quote">"level3"</span> USE=<span class="java&#45;quote">"thumbnail image"</span>&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"51935fb67bbb50b2d2908401ba95119e"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T49:03:57Z"</span>
+                        ID=<span class="java&#45;quote">"f118"</span> MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"2644"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level3"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"0f012b9052011cfa9791783895931505"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T49:03:58Z"</span>
+                        ID=<span class="java&#45;quote">"f119"</span> MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"3864"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level3"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+                  &#60;file CHECKSUM=<span class="java&#45;quote">"844a307af425882c241d8f8256fc1698"</span> CHECKSUMTYPE=<span class="java&#45;quote">"MD5"</span> CREATED=<span class="java&#45;quote">"2013&#45;03&#45;27T50:03:00Z"</span>
+                        ID=<span class="java&#45;quote">"f120"</span> MIMETYPE=<span class="java&#45;quote">"image/jpeg"</span> SIZE=<span class="java&#45;quote">"4676"</span>&#62;
+                      &#60;FLocat LOCTYPE=<span class="java&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="java&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="java&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level3"</span>
+                              xlink:title=<span class="java&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="java&#45;quote">"simple"</span>/&#62;
+                  &#60;/file&#62;
+              &#60;/fileGrp&#62;
+          &#60;/fileSec&#62;
+          &#60;structMap TYPE=<span class="java&#45;quote">"physical"</span>&#62;
+              &#60;div&#62;
+                  &#60;div ID=<span class="java&#45;quote">"g0"</span> LABEL=<span class="java&#45;quote">"Page 1"</span> ORDER=<span class="java&#45;quote">"1"</span> TYPE=<span class="java&#45;quote">"page"</span>&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f1"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f40"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f79"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f118"</span>/&#62;
+                  &#60;/div&#62;
+                  &#60;div ID=<span class="java&#45;quote">"g1"</span> LABEL=<span class="java&#45;quote">"Page 2"</span> ORDER=<span class="java&#45;quote">"2"</span> TYPE=<span class="java&#45;quote">"page"</span>&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f2"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f41"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f80"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f119"</span>/&#62;
+                  &#60;/div&#62;
+                  &#60;div ID=<span class="java&#45;quote">"g2"</span> LABEL=<span class="java&#45;quote">"Page 3"</span> ORDER=<span class="java&#45;quote">"3"</span> TYPE=<span class="java&#45;quote">"page"</span>&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f3"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f42"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f81"</span>/&#62;
+                      &#60;fptr FILEID=<span class="java&#45;quote">"f120"</span>/&#62;
+                  &#60;/div&#62;
+              &#60;/div&#62;
+          &#60;/structMap&#62;
+      &#60;/mets&#62;</pre></div>
+
+
+<h2 id="pdf">7.3 Pdf</h2>
+Another way compound objects are expressed is via PDF.
+This is possible when at least one of the derivative layers is made from images.<p class="paragraph"/>The dissemination URL of a pdf document is:
+http://disseminate.objectrepository.org/pdf/12345/my-object-id
+which defaults to the rendering of a pdf with a level 2 derivative<p class="paragraph"/>You can specify the level yourself by adding it to the url so:
+http://disseminate.objectrepository.org/pdf/12345/my-object-id/derivative level<p class="paragraph"/><blockquote class="note">If the level has a restrictive access, the pdf will not render</blockquote><p class="paragraph"/>The PID of the compound object will resolve to the the <code>pdfLevel</code> element set in instruction. See <a href="single.html#pids" class="guide">pids</a>.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="pid.html">&lt;&lt; <strong>6</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="administration.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>8.1 Ftp accounts 1.2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../architecture.html"><strong>2</strong><span>Architecture</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../stagingarea.html"><strong>3</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../readonlyftp.html"><strong>4</strong><span>Download files using ftp</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../instruction.html"><strong>5</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../pid.html"><strong>6</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../compound.html"><strong>7</strong><span>Compound objects</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../administration.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../compound.html">&lt;&lt; <strong>7</strong><span>Compound objects</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>8.1 Ftp accounts - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="user">8.1 Ftp accounts</h2>
+The account section will allow you manage ftp accounts for uploading and managing files on the staging area.
+An additional function of such accounts is to to supply webservice keys.
+This key gives access to all admin and stored repository resources.<p class="paragraph"/><h4>Create a user</h4>
+You need to fill in or edit the following fields:
+<ul class="star">
+<li><code>Login name</code>: A user name containing letters and numbers</li>
+<li><code>Password</code>: If the password is left blank, a random password will be created</li>
+<li><code>E-mail</code>: The end-user's mail address.</li>
+<li><code>Enabled</code>: If on, the account can be used to login.</li>
+</ul><p class="paragraph"/>Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details
+to login.<p class="paragraph"/><h4>User display</h4>
+This view will also show the webservice key. The key is intended to access an object repository resource that is
+normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
+Or be in the header file of a client that is responsible for downloading the files.<p class="paragraph"/>The webservice key has the same effect when a user uses a username and password to access the administration interface.<p class="paragraph"/>To modify the webservice key select "Change key"<p class="paragraph"/><h4>editing and removing</h4>
+Any account can be modified and deleted. If you delete an ftp account; the user's uploaded files and home
+directory still remain on the staging area. You need to move or delete these yourself with your administration account.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../compound.html">&lt;&lt; <strong>7</strong><span>Compound objects</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
