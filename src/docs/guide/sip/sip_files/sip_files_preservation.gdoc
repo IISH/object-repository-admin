@@ -1,0 +1,5 @@
+Digital data that is intended to be preserved is designated as a "master". These are files whose content is to be
+stored perpetually. Such data is kept in a way to allow for media migration; and the automatic production of derivatives.
+
+The data can be of any content type: audio, video, image, text, software. Simply put:
+a file with a name that has one or more bytes.

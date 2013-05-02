@@ -74,14 +74,6 @@ The results of the validation will show up in the CP administration interface pe
 downloading the file via the CP administration interface will give you the XML instruction with @error@ elements if any.
 After you correct the issue, you can reupload the XML processing instruction and files where needed.
 
-The validation will look for a number of issues:
-* all files in the main folder must be in the instruction
-* all stagingfile elements in the instruction must be found the main folder content
-* the md5 checksum values must match
-* a PID ( or lid substitute ) must be present
-* the PID or LID values may not occur elsewhere in the instruction
-* a file cannot be zero bytes in length
-
 h3. Viewing and changing the XML instruction after upload
 All the uploaded datasets's main folders are visible at the [instructions page|guide:administration] of the administration
 interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.

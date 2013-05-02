@@ -1,6 +1,7 @@
 package org.objectrepository.orfiles
 
 import org.objectrepository.instruction.Instruction
+import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
@@ -68,7 +69,7 @@ class OrfileController extends NamingAuthorityInterceptor {
             forward(action: "list")
         }
         else
-            [orfileInstance: orfileInstance, policyList: Policy.findAllByNa(params.na)]
+            [orfileInstance: orfileInstance, policyList: Policy.findAllByNa(params.na), profile:Profile.findByNa(params.na)]
     }
 
     def update() {

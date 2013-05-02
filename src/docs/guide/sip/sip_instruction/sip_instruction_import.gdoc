@@ -1,0 +1,6 @@
+An import will occur automatically once the instruction is placed onto the staging area, provided:
+* it is a well formed XML document;
+* the submission package did not already include an instruction.
+
+A new instruction will only be accepted if a current processing instruction is cleared from the system via the
+administration panel.

@@ -1,0 +1,20 @@
+The workflow controller is the brain of the object repository.
+
+Directly after the Instruction Ingest procedure was successful; the controller will append a stack of
+logically ordered tasks to each stagingfile element within the instruction. For example to ingest the master file, then
+to bind a persistent identifier to the dissemination package resolve url, then to create derivatives.
+
+These stacked tasks are picked up one-by-one by the same workflow controller. It will send the task in the form of a
+ message to a designated message queue.
+
+Each service listens to their own designated message queue. It will execute it's own logic after a task is taken from
+the message queue. It will report the task status, success and failure back to the instruction's
+task element. There the workflow controller can pick it up again and decide what to do next.
+
+Once all the tasks are processed, the workflow will end for the staged file. When all staged files tasks were
+completed, the ingest is completed - with or without any remaining issues.
+
+TODO:
+Add sequence diagram here
+
+The administration panel shows the result of the ingest to the content manager.

@@ -1,0 +1,4 @@
+A processing instruction can be downloaded before an ingest to add modifications to it.
+Or post-ingest to embed it's referential metadata in the producer's local metadata system. At download time
+the stagingfile elements and profile information is blended into a XML document.
+

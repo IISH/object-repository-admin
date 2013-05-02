@@ -1,51 +1,28 @@
 introduction:
   title: Introduction
-  changes: Change Log
-  milestones: Milestones
-  roadmap: Roadmap
-architecture:
-  title: Architecture
-  architectureWorkflowService:
-      title: Workflow services
-      architectureWorkflowServiceInitiate: Initiate
-      architectureWorkflowServiceActive: Active
-      architectureWorkflowServiceRetire: End
-  architectureMessageQueue:
-      title: Message queue producer
-      architectureMessageQueueInstruction: Processing instruction consumer
-      architectureMessageQueueIngest: Ingest consumer
-      architectureMessageQueueDerivative: Derivative consumer
-      architectureMessageQueuePidWebservice: PID consumer
-stagingarea:
-  title: Staging area
-  ftp: FTP
-  datasets: Datasets
-  customderivatives: Your own derivatives
-readonlyftp:
-  title: Download files using ftp
-instruction:
-  title: Prepare the ingest
-  settings: Instruction settings
-  xmlinstruction: The XML instruction
-  running: Starting\run an instruction
-pid:
-  title: PIDs and the repository's resolve urls
-  resolveurls: Resolve URLs
-  pids: PIDs created via the PID webservice
-compound:
-  title: Compound objects
-  objid: Object identifiers and file order
-  mets: Mets
-  pdf: Pdf
-administration:
-  title: Administration interface
-  user:
-    title: Ftp accounts
-  profile:
-    title: Profile
-  policy:
-    title: Access policies
-  instructions:
-    title: Managing and monitoring instructions
-  orfiles:
-    title: Stored files
+  introduction_changes: Change Log
+  introduction_milestones: Milestones
+  introduction_roadmap: Roadmap
+content_producer: Content producer
+sip:
+  title: Submission Information Package
+  sip_files:
+    title: Files and their delivery
+    sip_files_preservation: Files for preservation
+    sip_files_presentation: Files for presentation
+  sip_metadata:
+    title: Metadata
+    sip_metadata_technical: Technical metadata
+    sip_metadata_operation: Operational metadata
+    sip_metadata_descriptive: No descriptive metadata
+  sip_instruction:
+    title: Defining the process instruction
+    sip_instruction_autocreate: Autocreate Instruction service
+    sip_instruction_validate: Validate Instruction service
+    sip_instruction_import: Import Instruction service
+    sip_instruction_export: Export Instruction service
+ingest:
+  title: Ingest
+  ingest_instruction: Ingest instruction service
+  ingest_workflow: Workflow controller service
+  ingest_master: Ingest master service

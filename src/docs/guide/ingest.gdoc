@@ -1,0 +1,2 @@
+The ingest is a sequence of tasks whereby the submission package is transformed into the archival package which is
+ then persisted into the archival storage.

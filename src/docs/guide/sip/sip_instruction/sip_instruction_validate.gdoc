@@ -1,0 +1,13 @@
+The validation service will ensure data integrity in all stages of the submission phase. When master files are ingested
+this procedure will look if:
+* all files in the staging area are in fact declared in the instruction as stagingfile elements
+* all stagingfile elements in the instruction are indeed found the main folder content
+* the md5 checksum values match
+* a persistent identifier is present; and not used elsewhere in the instruction
+* the file has one or more bytes
+
+If the instruction is used for post-ingest operations (e.g. creation of derivatives, ingest of custom derivatives,
+re-creation of labels or access policy) whereby an existing archival package is updated, this validation will only check
+if the persistent identifier is registered.
+
+A validated instruction without error will allow for an ingest to start.

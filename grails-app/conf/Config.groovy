@@ -177,7 +177,7 @@ grails.doc.title = "Object-repository"
 //grails.doc.subtitle
 grails.doc.authors = "Lucien van Wouw"
 grails.doc.license = "Licensed under the Apache License, Version 2.0"
-grails.doc.copyright = "Copyright (c) 2012 Social History Services"
+grails.doc.copyright = "Copyright (c) 2013 Social History Services"
 //grails.doc.footer
 //grails.doc.css
 grails.doc.images = new File("src/docs/images")

@@ -1,0 +1,3 @@
+This service is initiated by the Instruction Ingest service on command. It is issued automatically via a processing
+instruction or via the administration panel. For each staged file it will set a single task element to start the first
+cycle of the file's ingest career.

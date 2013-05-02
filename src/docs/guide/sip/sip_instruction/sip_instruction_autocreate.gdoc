@@ -1,0 +1,7 @@
+The content producer can automatically create the entire processing instruction. The service will calculate the
+checksum and if desired reserve persistent identifier per file. Any other settings will be inherited from the Profile.
+
+Note that the use of this service has an effect for the validation service. The latter will no longer apply a checksum
+comparison between the content at the producer's side (outside the staging area that is ). And the material stored onto
+the staging area. The content provider should decide if the transport is reliable enough to ensure the data's
+integrity.

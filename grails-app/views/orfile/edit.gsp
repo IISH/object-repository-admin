@@ -1,3 +1,4 @@
+<%@ page import="org.objectrepository.util.OrUtil" %>
 <!doctype html>
 <html>
 <head>
@@ -37,7 +38,6 @@
                 <g:textField name="label" value="${orfileInstance.master.metadata.label}"/>
             </li>
 
-            <g:if test="${orfileInstance.master.metadata.objid}">
                 <li class="fieldcontain">
                     <span id="objid-label" class="property-label"><g:message code="files.objid.label"
                                                                              default="Mets OBJID"/></span>
@@ -48,7 +48,18 @@
                                                                            default="Order"/></span>
                     <g:textField name="seq" value="${orfileInstance.master.metadata.seq as Integer}"/>
                 </li>
-            </g:if>
+
+            <li class="fieldcontain">
+                <span id="workflow-label" class="property-label"><g:message code="workflow.label"
+                                                                            default="Services to execute"/></span>
+                <span class="property-value" aria-labelledby="workflow-label">
+                    <g:each in="${OrUtil.availablePlans(grailsApplication.config.plans)}" var="plan">
+                        <g:set var="check" value="${plan in profile.plan}"/>
+                        <g:message code="${plan}.0.info"
+                                   default="${plan}"/>: <strong>${check ? "enabled" : "skip"}</strong><br/>
+                    </g:each>
+                </span>
+            </li>
 
         </ol>
         <fieldset class="buttons">

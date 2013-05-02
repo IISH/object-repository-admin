@@ -1,0 +1,5 @@
+Descriptive metadata such as title, subject, or provenance is not part of the architecture of the object repository. Nor
+does it facilitate discovery of content via a search-and-find solution. Seen from a perspective that goes beyond the
+architecture of the repository the domain of descriptive metadata storage remains that of catalog, archival and library
+systems. There reference information to the dissemination package in the object repository is expressed with persistent
+identifiers.

@@ -1,0 +1,11 @@
+The object repository is part of a service oriented framework. That is, the latter offers a collection of services:
+
+* ftp upload of files to a staging area (temporary storage)
+* ingesting those files into persistent storage
+* image, audio and video derivative generation
+* accepts custom made derivatives of any content type
+* persistent identifier creation by calling a PID webservice (binding file and compound object locations and their handles via a [PID webservice|]https://pid.socialhistoryservices.org/.)
+* dissemination of the resources via HTTP and FTP
+* exports compound objects by via METS and PDF
+* an administration interface plus account system to manage the above services and access policies
+

@@ -1,0 +1,51 @@
+introduction:
+  title: Introduction
+  changes: Change Log
+  milestones: Milestones
+  roadmap: Roadmap
+architecture:
+  title: Architecture
+  architectureWorkflowService:
+      title: Workflow services
+      architectureWorkflowServiceInitiate: Initiate
+      architectureWorkflowServiceActive: Active
+      architectureWorkflowServiceRetire: End
+  architectureMessageQueue:
+      title: Message queue producer
+      architectureMessageQueueInstruction: Processing instruction consumer
+      architectureMessageQueueIngest: Ingest consumer
+      architectureMessageQueueDerivative: Derivative consumer
+      architectureMessageQueuePidWebservice: PID consumer
+stagingarea:
+  title: Staging area
+  ftp: FTP
+  datasets: Datasets
+  customderivatives: Your own derivatives
+readonlyftp:
+  title: Download files using ftp
+instruction:
+  title: Prepare the ingest
+  settings: Instruction settings
+  xmlinstruction: The XML instruction
+  running: Starting\run an instruction
+pid:
+  title: PIDs and the repository's resolve urls
+  resolveurls: Resolve URLs
+  pids: PIDs created via the PID webservice
+compound:
+  title: Compound objects
+  objid: Object identifiers and file order
+  mets: Mets
+  pdf: Pdf
+administration:
+  title: Administration interface
+  user:
+    title: Ftp accounts
+  profile:
+    title: Profile
+  policy:
+    title: Access policies
+  instructions:
+    title: Managing and monitoring instructions
+  orfiles:
+    title: Stored files

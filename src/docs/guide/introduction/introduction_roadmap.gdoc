@@ -1,0 +1,6 @@
+h3. Integrity assurance service
+The object-repository needs a further integrity validation of stored master material. This involves random checksum
+calculations on files; and repairing invalid information.
+
+h3. File identification and validation service
+A service that invokes Fido, JHOVE and PRONOM for file identification to assist determining and verifying a given content type.
