@@ -2,4 +2,4 @@ The profile is where you set the default values that are taken over by any proce
 the profile substitute any absent values in the XML processing instruction. It makes sense therefore, to place all your
 broad access policies and most frequently used file content values.
 
-The available options are described at the [settings section|guide:instruction/settings].
+The available options are described at the [settings section|guide:administration/administration_instruction/administration_instruction_settings].

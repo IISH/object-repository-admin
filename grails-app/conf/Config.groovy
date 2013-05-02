@@ -173,8 +173,8 @@ log4j = {
     "$loglevel" 'grails.app.services'
 }
 
-grails.doc.title = "Object-repository"
-//grails.doc.subtitle
+grails.doc.title = "Object repository"
+grails.doc.subtitle="Object repository"
 grails.doc.authors = "Lucien van Wouw"
 grails.doc.license = "Licensed under the Apache License, Version 2.0"
 grails.doc.copyright = "Copyright (c) 2013 Social History Services"

@@ -1,1 +1,22 @@
-The Ingest master service is specifically intended to persist master files
+The Ingest master service is specifically intended to persist master files. It is the first task to do when an ingest
+starts... when the plan is set so to ingest new or updated master files that is.
+
+The requirements this services adheres to is for an addition or update action:
+# look for the file on the staging area
+## if found; add the file to the archival storage
+### if not found; update the preservation description information in the archival package
+### if no such information was known ( no persistent identifier ) throw an error
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+For a delete action:
+# remove the content data objects ( the master file )
+# check the removal
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# remove the preservation description information
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# return success

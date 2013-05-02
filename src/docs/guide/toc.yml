@@ -3,9 +3,9 @@ introduction:
   introduction_changes: Change Log
   introduction_milestones: Milestones
   introduction_roadmap: Roadmap
-content_producer: Content producer
+content_producer: Content producer and consumer
 sip:
-  title: Submission Information Package
+  title: Submission information package
   sip_files:
     title: Files and their delivery
     sip_files_preservation: Files for preservation
@@ -26,3 +26,35 @@ ingest:
   ingest_instruction: Ingest instruction service
   ingest_workflow: Workflow controller service
   ingest_master: Ingest master service
+  ingest_pid: PID bind file service
+  ingest_OBJID: PID bind OBJID service
+  ingest_derivative_custom: Custom derivative service
+  ingest_derivative_image: Image derivative service
+  ingest_derivative_av: Audio-video derivative service
+aip:
+  title: Archival information package
+  aip_cdo: Content Data Objects
+  aip_pdi: Preservation Description Information
+storage:
+  title: Archival Storage
+  storage_primary: Primary data
+  storage_replicated: Replicated data
+dip:
+  title: Dissemination information package
+  dip_http: HTTP 1.1 service
+  dip_ftp: FTP service
+  dip_pdf: PDF service
+  dip_mets: METS service
+administration:
+  title: Administration interface
+  administration_user: Ftp accounts
+  administration_profile: Profile
+  administration_policy: Access policies
+  administration_instruction: Managing and monitoring instructions
+  administration_orfiles: Stored files
+  administration_instruction:
+    title: Process instruction settings
+    administration_instruction_running: Start an ingest
+    administration_instruction_xml: The instruction as a XML document
+    administration_instruction_settings: Instruction settings
+
