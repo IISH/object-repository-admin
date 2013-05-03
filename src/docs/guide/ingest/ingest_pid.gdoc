@@ -1,1 +1,9 @@
-/home/lwo/object-repository/object-repository-admin/src/docs/guide/ingest/ingest_pid.gdoc
+The Persistent identifier services will bind the fixity information to the resolve URLs of what is the dissemination
+package. This will produce stable, resolvable URLs to the object repository's consumers.
+
+These service are only available if the content producer has outsourced - or host - a PID webservice. The PID webservice
+offers SOAP methods to manage the Handle System(r) resolution technology. As a PID webservice account is associated with
+ a webservice key to operate it, the producer needs to add that key to their Profile.
+
+Producers that have their own resolver technology should make such bindings themselves using the Dissemination conventions
+available.

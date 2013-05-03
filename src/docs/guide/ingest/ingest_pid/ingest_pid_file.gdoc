@@ -1,0 +1,34 @@
+The PID file service will bind persistent identifiers to resolve URLs of stored file's.
+
+Persistent identifiers convention for files:
+@http://hdl.handle.net/[persistent identifier]?locatt=view:[dissemination type]@
+The resolve URL convention:
+@http://[object repository domain]/file/[dissemination type]/[persistent identifier]
+
+The @locatt@ is a qualifier that specifies the dissemination type. For as the dissemination package may offer several
+views of the data, this qualifier will lead the consumer to them.
+
+For example, if this was your PID: @12345/1@ then the persistent URLs will be:
+
+{table}
+*view* | *persistent URL* | *Resolve Url*
+metadata | http://hdl.handle.net/12345/1 | http://disseminate.objectrepository.org/metadata/12345/1
+master | http://hdl.handle.net/12345/1?locatt=view:master | http://disseminate.objectrepository.org/file/master/12345/1
+level 1 derivative | http://hdl.handle.net/12345/1?locatt=view:level1 | http://disseminate.objectrepository.org/file/level1/12345/1
+level 2 derivative | http://hdl.handle.net/12345/1?locatt=view:level2 | http://disseminate.objectrepository.org/file/level2/12345/1
+level 3 derivative | http://hdl.handle.net/12345/1?locatt=view:level3 | http://disseminate.objectrepository.org/file/level2/12345/1
+{table}
+
+The requirements this services adheres to is for an addition or update action:
+# Construct a PID webservice SOAP request. This request contains the persistent identifier; and the qualifier per
+dissemination resolve URLs.
+# Call the PID webservice using the PID webservice key.
+# Check for the PID webservice response
+## If an invalid or response, service unavailability or a failure message is in the response, then throw an error
+# return success
+
+For a delete action:
+# remove the persistent identifier from the PID webservice
+# Check for the PID webservice response
+## If an invalid or response, service unavailability or a failure message is in the response, then throw an error
+# return success

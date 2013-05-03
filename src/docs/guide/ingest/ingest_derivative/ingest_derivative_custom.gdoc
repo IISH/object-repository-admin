@@ -1,0 +1,23 @@
+At any time the content producer can offer their own custom derivatives. These can be of any content type or file size.
+It is advisable to remain consistent with regard to the to the level 1, 2 and 3 derivative types.
+
+The requirements this services adheres to is for an addition or update action:
+# Look for a custom placed derivative in the submission package
+# if not found, return success
+# if found, determine the derivative level
+# calculate a md5 checksum
+# add the file to the archival storage
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+For a delete action:
+# remove the content data objects ( the derivative file )
+# check the removal
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# remove the preservation description information
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# return success

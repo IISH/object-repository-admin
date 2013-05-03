@@ -1,1 +1,73 @@
-/home/lwo/object-repository/object-repository-admin/src/docs/guide/dip/dip_http.gdoc
+The HTTP dissemination service is probably the most familiar technique to distributing content to the human consumer:
+ a website. Usually it is here persistent identifiers will need to resolve to. It offers:
+
+h3. Html page of the metadata
+The archival package's preservation descriptive information is presented for the master and it's derivatives.
+The conventional dissemination url is:
+@http://disseminate.objectrepository.org/metadata/[persistent identifier]@
+
+h3. Xml document of the metadata
+Again the AIP's DPI but now rendered as a XML document.
+The conventional dissemination url is:
+@http://disseminate.objectrepository.org/metadata/[persistent identifier]?accept=xml@
+
+An example of the response could be:
+<?xml version="1.0" encoding="utf-8"?>
+<orfiles xmlns="http://objectrepository.org/orfiles/1.0/">
+    <orfile>
+        <pid>10622/30051002935671</pid>
+        <resolverBaseUrl>http://hdl.handle.net/</resolverBaseUrl>
+        <pidurl>http://hdl.handle.net/10622/30051002935671</pidurl>
+        <filename>30051002935671.tif</filename>
+        <label>2012-09-08 batch filer4</label>
+        <access>restricted</access>
+        <master>
+            <pidurl>http://hdl.handle.net/10622/30051002935671?locatt=view:master</pidurl>
+            <resolveUrl>http://disseminate.objectrepository.org/file/master/10622/30051002935671</resolveUrl>
+            <contentType>image/tiff</contentType>
+            <length>293909478</length>
+            <content x-resolution="300.0" y-resolution="300.0" width="8066.0" height="12142.0"/>
+            <md5>dc3fc60cf5ec720fbef6cbfaf04d7352</md5>
+            <uploadDate>Tue Nov 29 13:21:00 CET 2011</uploadDate>
+            <firstUploadDate>Sat Sep 08 22:32:58 CEST 2012</firstUploadDate>
+            <lastUploadDate>Sat Sep 08 22:32:58 CEST 2012</lastUploadDate>
+        </master>
+        <level2>
+            <pidurl>http://hdl.handle.net/10622/30051002935671?locatt=view:level2</pidurl>
+            <resolveUrl>http://disseminate.objectrepository.org/file/level2/10622/30051002935671</resolveUrl>
+            <contentType>image/jpeg</contentType>
+            <length>102768</length>
+            <md5>15471cf308f739ea548496530277425d</md5>
+            <uploadDate>Sat Sep 08 22:34:06 CEST 2012</uploadDate>
+            <firstUploadDate>Sat Sep 08 22:34:06 CEST 2012</firstUploadDate>
+            <lastUploadDate>Sat Sep 08 22:34:06 CEST 2012</lastUploadDate>
+        </level2>
+        <level3>
+            <pidurl>http://hdl.handle.net/10622/30051002935671?locatt=view:level3</pidurl>
+            <resolveUrl>http://disseminate.objectrepository.org/file/level3/10622/30051002935671</resolveUrl>
+            <contentType>image/jpeg</contentType>
+            <length>21065</length>
+            <content height="350" width="232" x-resolution="72 PixelsPerInch" y-resolution="72 PixelsPerInch"/>
+            <md5>ba0682b465bf6d600d213eebb9b43388</md5>
+            <uploadDate>Sat Sep 08 22:34:01 CEST 2012</uploadDate>
+            <firstUploadDate>Sat Sep 08 22:34:01 CEST 2012</firstUploadDate>
+            <lastUploadDate>Sat Sep 08 22:34:01 CEST 2012</lastUploadDate>
+        </level3>
+    </orfile>
+</orfiles>
+{code}
+
+h3. A filestream
+A http request for an openly accessible resource would return the corresponding file in the appropriate content
+type such as an image. The template URL would be:
+@http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]@
+
+The returning filename can also be set by setting a contentType and filename parameter so:
+@http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]?contentType=application/save&filename=myfile.tif@
+
+{note}Access to individual resources are governed by access policies that may disallow unauthorized views{code}
+
+h4. Streaming
+De HTTP service handles the HTTP 206 protocol, which will enable the streaming of content to most common audio and video
+players. The Real Time Streaming Protocol is not supported.
+

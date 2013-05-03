@@ -1,1 +1,10 @@
-/home/lwo/object-repository/object-repository-admin/src/docs/guide/dip/dip_ftp.gdoc
+The content producer can place itself in the context of a consumer and download ingested files using ftp.
+
+The ftp home directory will represent files in the same way as the masters were ingested. There is a folder for
+ each of the stored master and it's derivatives there:
+{code}/master
+/level1
+/level2
+/level3{code}
+
+The directory tree is similar to the way files are offered to the staging area at ingest time.

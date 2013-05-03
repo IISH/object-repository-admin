@@ -1,0 +1,64 @@
+The Audio and Video derivative service will turn the master video or audio file into a derivative.
+
+h3. Audio additions
+For master audio, the service will produce a level 1 type, high quality mp3.
+The requirements this services adheres to is for an addition or update action:
+# retrieve the master audio file
+# use ffmpeg software to create the audio file in the desired mp3 content type
+# add the derivative to the archival package
+# when issues arrive, throw an error
+# otherwise return success
+
+h3. Video additions
+For video, three derivative levels are produced:
+
+h4. Level 1
+A high quality h264 AAC (mp4) movie.
+The requirements this services adheres to is for an addition or update action:
+# retrieve the master video file
+# use ffmpeg software to create the video file in the desired mp4 content type. No resolution, frame or height and width
+are altered.
+# calculate a md5 checksum
+# add the file to the archival storage
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+h4. level 2
+A montage of 16 stills taken from the entire movie's range.
+The requirements this services adheres to is for an addition or update action:
+# retrieve the level 1 derivative video file. Or if not available the master.
+# use ffmpeg software to create 16 video stills; the height is set to about 800px each.
+# use ImageMagick to collate these images into one image/png file
+# calculate a md5 checksum
+# add the file to the archival storage
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+h4. level 3
+A small, thumbnail quality taken from the middle of the movie.
+The requirements this services adheres to is for an addition or update action:
+# retrieve the level 1 derivative video file. Or if not available the master.
+# use ffmpeg software to create a single video stills from an estimated "middle" of the movie.
+# use ImageMagick to scale the image into one image/png file
+# calculate a md5 checksum
+# add the file to the archival storage
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+
+h3. Removal
+The requirements this services adheres to is for a removal action is:
+# remove the content data objects ( the derivative file )
+# check the removal
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# remove the preservation description information
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# return success

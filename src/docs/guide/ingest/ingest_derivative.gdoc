@@ -1,0 +1,20 @@
+Generally speaking, the object repository derivative services will generate - on command and if possible  - three types
+of preview material which is intended as display to the consumer. There range from "light weight" presentations to "heavy"
+normalizations of the original master data. Derivative production may involve a simple reduction; but also the introduction
+of a completely new content type.
+
+The types are:
+* Level 1 derivatives: these are normalisations. Or near-enough reproductions of the master files.
+* level 2 derivatives: medium sized, fit-to-screen sized content. That still give a good insight of the details of the
+ master files.
+* level 3 derivatives: small, quick-peek, thumbnail like material.
+
+Both master and derivatives become part of the archival package, be it that only the master has the intended durable
+status. It goes without saying that derivative production is only possible after a master is persisted and part of
+the archival package.
+
+Supplying the submission package of custom derivatives is also possible.
+
+All derivative services will apply a derivative when:
+* No derivative of that level exists;
+* Or when the processing instruction explicitly states to replaced existing derivatives. If not, the action is skipped.

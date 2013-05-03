@@ -26,11 +26,15 @@ ingest:
   ingest_instruction: Ingest instruction service
   ingest_workflow: Workflow controller service
   ingest_master: Ingest master service
-  ingest_pid: PID bind file service
-  ingest_OBJID: PID bind OBJID service
-  ingest_derivative_custom: Custom derivative service
-  ingest_derivative_image: Image derivative service
-  ingest_derivative_av: Audio-video derivative service
+  ingest_pid:
+    title: PID services
+    ingest_pid_file: PID bind file service
+    ingest_pid_OBJID: PID bind OBJID service
+  ingest_derivative:
+    title: Ingest derivative
+    ingest_derivative_custom: Custom derivative service
+    ingest_derivative_image: Image derivative service
+    ingest_derivative_av: Audio-video derivative service
 aip:
   title: Archival information package
   aip_cdo: Content Data Objects
