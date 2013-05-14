@@ -1,7 +1,0 @@
-Persistent identifiers can be created and bound via an object-repository service that calls the PID webservice.
-In other cases you can operate your own PID and resolver technology and point to resources that are exposed by the
-repository.
-
-The object repository will bind PIDs for:
-* files
-* compound objects

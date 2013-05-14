@@ -16,7 +16,7 @@ using the administration panel.
 
 h3. Working example of an XML instruction
 Lets say we automatically create an instruction via the administration panel for the five files we just uploaded.
-On the [instructions page|guide:administration] we edit the settings and indicate the following:
+On the [instructions page|guide:management/management_instruction] we edit the settings and indicate the following:
 {table}
 *element* | *value*
 Label | My five files
@@ -75,7 +75,7 @@ downloading the file via the CP administration interface will give you the XML i
 After you correct the issue, you can reupload the XML processing instruction and files where needed.
 
 h3. Viewing and changing the XML instruction after upload
-All the uploaded datasets's main folders are visible at the [instructions page|guide:administration] of the administration
+All the uploaded datasets's main folders are visible at the [instructions page|guide:management/management_instruction] of the administration
 interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.
 
 h3. Question: Should I automatically create an XML processing instruction?

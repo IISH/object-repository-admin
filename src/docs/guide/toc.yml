@@ -3,7 +3,6 @@ introduction:
   introduction_changes: Change Log
   introduction_milestones: Milestones
   introduction_roadmap: Roadmap
-content_producer: Content producer and consumer
 sip:
   title: Submission information package
   sip_files:
@@ -49,16 +48,23 @@ dip:
   dip_ftp: FTP service
   dip_pdf: PDF service
   dip_mets: METS service
-administration:
-  title: Administration interface
-  administration_user: Ftp accounts
-  administration_profile: Profile
-  administration_policy: Access policies
-  administration_instruction: Managing and monitoring instructions
-  administration_orfiles: Stored files
-  administration_instruction:
-    title: Process instruction settings
-    administration_instruction_running: Start an ingest
-    administration_instruction_xml: The instruction as a XML document
-    administration_instruction_settings: Instruction settings
-
+preparation:
+  title: Preparing the submission package
+  preparation_stagingarea:
+    title: Sending digital information to the staging area
+    preparation_stagingarea_ftp: Connecting to the stagingarea
+    preparation_stagingarea_datasets: Folder and file conventions
+    preparation_stagingarea_customderivatives: Supply custom derivatives
+  preparation_instruction:
+    title: Setting the Process instruction
+    preparation_instruction_running: Start an ingest
+    preparation_instruction_xml: The instruction as a XML document
+    preparation_instruction_settings: Instruction settings
+    preparation_instruction_compound: Files and Compound objects
+management:
+    title: Administration interface
+    management_user: Ftp accounts
+    management_profile: Profile
+    management_policy: Access policies
+    management_instruction: Managing and monitoring instructions
+    management_orfiles: Stored files

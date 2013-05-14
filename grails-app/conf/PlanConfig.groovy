@@ -50,6 +50,19 @@ plans = [
                         800: [purpose: 'Instruction read in.']
                 ]
         ],
+        InstructionRecreatefile: [
+                visible: false,
+                statusCodes: [
+                        100: [purpose: 'A user asked to create an instruction for a file.'],
+                        200: [purpose: 'Sending request to the queue'],
+                        300: [purpose: 'A request to produce a instruction is on the queue'],
+                        400: [purpose: 'The request is taken from the queue.'],
+                        500: [purpose: 'The service node completed the task. Creating folder'],
+                        600: [purpose: 'Validating if the task was successful'],
+                        700: [purpose: 'There was an error.'],
+                        800: [purpose: 'Instruction folder created.']
+                ]
+        ],
         InstructionUpload: [
                 service: [method: 'hasFSFiles'],
                 statusCodes: [

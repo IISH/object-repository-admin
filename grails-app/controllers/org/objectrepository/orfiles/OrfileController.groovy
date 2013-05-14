@@ -3,6 +3,7 @@ package org.objectrepository.orfiles
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
+import org.objectrepository.instruction.Task
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
@@ -44,8 +45,9 @@ class OrfileController extends NamingAuthorityInterceptor {
             if (file)
                 orfileInstanceList << file
             else {
-                gridFSService.listFilesByObjid(params.na, 'master', params.pid.split('/')[1]).each {
-                    orfileInstanceList << [master:it,level3:it]
+                def split = params.pid.split('/', 2)
+                gridFSService.listFilesByObjid(params.na, 'master', (split.size() == 2) ? split[1] : split[0]).each {
+                    orfileInstanceList << [master: it, level3: it]
                 }
             }
         }
@@ -67,9 +69,8 @@ class OrfileController extends NamingAuthorityInterceptor {
         if (!orfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
             forward(action: "list")
-        }
-        else
-            [orfileInstance: orfileInstance, policyList: Policy.findAllByNa(params.na), profile:Profile.findByNa(params.na)]
+        } else
+            [orfileInstance: orfileInstance, policyList: Policy.findAllByNa(params.na), profile: Profile.findByNa(params.na)]
     }
 
     def update() {
@@ -106,27 +107,61 @@ class OrfileController extends NamingAuthorityInterceptor {
             return
         }
 
-        Instruction instructionInstance = Instruction.findByFileSet(file.metaData.fileSet)
+        def fileSet = file.metaData.fileSet
+        Instruction instructionInstance = Instruction.findByFileSet(fileSet)
         if (instructionInstance) {
             if (Stagingfile.countByFileSet(file.metaData.fileSet) != 0) {
-                flash.message = "There is already an instruction for this dataset: " + file.metaData.fileSet
+                flash.message = "There is already an instruction for this dataset: " + instructionInstance.label + " on " + fileSet
                 redirect(action: "list")
                 return
             }
         } else
             instructionInstance = new Instruction()
 
-        instructionInstance.na = params.na
-        instructionInstance.fileSet = file.metaData.fileSet
-        instructionInstance.autoIngestValidInstruction = false
-        instructionInstance.label = params.label
-        instructionInstance.task = [name: OrUtil.camelCase(['Instruction', actionName])]
-        instructionInstance.task.taskKey()
+        sendRecreate(instructionInstance, fileSet, null)
+    }
 
-        workflowActiveService.first(instructionInstance)
-        if (instructionInstance.save(flush: true)) {
+    /**
+     * instruction
+     *
+     * This individual file will be reinserted into an instruction
+     *
+     * @return
+     */
+    def recreatefile() {
+        def orfileInstance = gridFSService.findByPid(new String(params.id.decodeBase64()))
+        if (!orfileInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
+            forward(action: 'list')
+            return
+        }
+
+        def stagingFile = Stagingfile.findByPid(orfileInstance.metaData.pid)
+        if (stagingFile) {
+            flash.message = "This file is already staged in another instruction: " + stagingFile.parent.label
+            forward(action: 'show')
+            return
+        }
+
+        def fileSet = orfileInstance.metaData.fileSet
+        def instructionInstance = Instruction.findByFileSet(fileSet)
+        if (!instructionInstance) instructionInstance = new Instruction()
+        sendRecreate(instructionInstance, fileSet, orfileInstance)
+    }
+
+    def sendRecreate(Instruction instruction, String fileSet, def orfileInstance) {
+        instruction.na = params.na
+        instruction.fileSet = fileSet
+        instruction.autoIngestValidInstruction = false
+        instruction.label = params.label
+        instruction.task = [name: OrUtil.camelCase(['Instruction', actionName])]
+        instruction.task.taskKey()
+        instruction.task.info = orfileInstance?.metaData.pid
+
+        workflowActiveService.first(instruction)
+        if (instruction.save(flush: true)) {
             try {
-                sendMessage("activemq:status", instructionInstance.task.identifier)
+                sendMessage("activemq:status", instruction.task.identifier)
             }
             catch (Exception e) {
                 // message queue may be down
@@ -136,7 +171,8 @@ class OrfileController extends NamingAuthorityInterceptor {
                 return
             }
         }
-        forward(controller: 'instruction', action: 'show', id: instructionInstance.id)
+        params.id = instruction.id
+        forward(controller: 'instruction', action: 'show', id: instruction.id)
     }
 
     def download() {
@@ -146,4 +182,5 @@ class OrfileController extends NamingAuthorityInterceptor {
         params.pid = (params.pid) ? new String(params.pid.decodeBase64()) : null
         downloadService.writeOrfiles(params, response.outputStream)
     }
+
 }

@@ -69,7 +69,7 @@ class VFSUserManager extends AbstractUserManager {
                 authorities.add(new TransferRatePermission(downloadRate, uploadRate));
 
                 def homeDir = principal.authorities*.authority.findAll {
-                    it.startsWith('ROLE_OR_USER_')
+                    it.startsWith('ROLE_OR_USER_') || it.startsWith('ROLE_OR_FTPUSER_')
                 }.collect {
                     '/' + it.split('_').last()
                 }.join(',')

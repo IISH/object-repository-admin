@@ -1,4 +1,4 @@
-To connect to the staging area you need one or more ftp accounts which a CP administrator can via with the [Accounts section|guide:administration/user].
+To connect to the staging area you need one or more ftp accounts which a CP administrator can via with the [Accounts section|guide:management/management_user].
 at the administrator interface.
 
 [FileZilla|http://filezilla-project.org/download.php?type=client] and [WinSCP|http://winscp.net/eng/download.php] are known to work well

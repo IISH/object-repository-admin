@@ -48,23 +48,12 @@
                                                                            default="Order"/></span>
                     <g:textField name="seq" value="${orfileInstance.master.metadata.seq as Integer}"/>
                 </li>
-
-            <li class="fieldcontain">
-                <span id="workflow-label" class="property-label"><g:message code="workflow.label"
-                                                                            default="Services to execute"/></span>
-                <span class="property-value" aria-labelledby="workflow-label">
-                    <g:each in="${OrUtil.availablePlans(grailsApplication.config.plans)}" var="plan">
-                        <g:set var="check" value="${plan in profile.plan}"/>
-                        <g:message code="${plan}.0.info"
-                                   default="${plan}"/>: <strong>${check ? "enabled" : "skip"}</strong><br/>
-                    </g:each>
-                </span>
-            </li>
-
         </ol>
         <fieldset class="buttons">
             <g:actionSubmit class="update" action="update"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
+            <g:actionSubmit class="update" action="recreatefile"
+                            value="${message(code: 'default.button.instruction.label', default: 'New instruction')}"/>
         </fieldset>
     </g:form>
 </div>

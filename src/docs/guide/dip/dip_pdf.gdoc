@@ -10,4 +10,4 @@ http://disseminate.objectrepository.org/pdf/12345/my-object-id/[derivative level
 
 {note}If the level has a restrictive access, the pdf will not render{note}
 
-The PID of the compound object will resolve to the the @pdfLevel@ element set in instruction. See [pids|guide:pid/pids].
+The PID of the compound object will resolve to the the @pdfLevel@ element set in instruction. See [pids|guide:preparation/preparation_instruction/preparation_instruction_compound].

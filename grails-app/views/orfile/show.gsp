@@ -28,6 +28,10 @@
                     id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
                     code="default.button.edit.label"
                     default="Edit"/></g:link>
+            <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="recreatefile"
+                    id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
+                    code="default.button.instruction.label"
+                    default="New instruction"/></g:link>
         </fieldset>
     </g:form>
 </div>

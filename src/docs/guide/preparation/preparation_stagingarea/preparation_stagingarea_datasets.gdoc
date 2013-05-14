@@ -11,7 +11,7 @@ Also any digital file placed right in the home directory and not in a main folde
 
 See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum. This is
  stored next to the file in the format @filename.md5@. The checksum it contains is compared the one you
-deliver in a [processing instruction|guide:instruction] in order to assert integrity. It contains something like this:
+deliver in a [processing instruction|guide:preparation/preparation_instruction] in order to assert integrity. It contains something like this:
 {code}181c838e29cbb0602da4a160eece2217  1.1.tif{code}
 
 {note}

@@ -82,8 +82,7 @@ class MetsService {
      * Output the METS object to the writer.
      *
      * Strategy:
-     *  - collect the documents by first retrieving a document that has the requested objid, or label or PID value;
-     *  - then use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
+     *  - use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
     private METSWrapper metsFile(String na, def buckets, String objid) {

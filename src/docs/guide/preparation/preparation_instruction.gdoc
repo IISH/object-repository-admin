@@ -2,7 +2,7 @@ The administration interface and an XML processing instruction together makes it
 An instruction has required and optional values. Those values can be set at three levels:
 
 h4. 1. Profile
-Via the administration interface select [profile|guide:administration/profile]. Default [instruction settings|guide:instruction/settings] can be
+Via the administration interface select [profile|guide:management/management_profile]. Default [instruction settings|guide:preparation/preparation_instruction/preparation_instruction_settings] can be
 placed there by a CP administrator. It makes sense therefore, to set all your broad access policies and most frequently
 used file content values here. Settings in the profile substitute any absent values in the XML processing instruction.
 
