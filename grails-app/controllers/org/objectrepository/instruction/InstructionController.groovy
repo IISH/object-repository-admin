@@ -209,7 +209,7 @@ class InstructionController extends NamingAuthorityInterceptor {
                     sendMessage("activemq:status", instructionInstance.task.identifier)
                 }
                 catch (Exception e) {
-                    log.warn e.message
+                    log.warn e
                 }
             }
         }
