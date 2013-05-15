@@ -105,6 +105,12 @@ body {
     color: red;
 }
 
+.required-approval {
+    margin:0px;
+    padding:0px;
+    color: #ff6c27;
+}
+
 .statusCode800 {
     color: green;
 }

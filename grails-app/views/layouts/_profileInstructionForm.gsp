@@ -5,6 +5,7 @@
         <g:message code="profile.action.label" default="Action"/>
     </label>
     <g:select name="action1" from="${grailsApplication.config.action}" value="${instance.action}"/>
+    <g:render template="approval" model="[instance: instance]"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'access', 'error')} ">

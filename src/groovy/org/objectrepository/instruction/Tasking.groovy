@@ -28,10 +28,16 @@ abstract class Tasking {
         }
     }
 
-    //protected int _total = -1
-
+    /**
+     * getTasks
+     *
+     * Starts a mapreduce to collate all statusCode per workflow
+     * Not very fast if the fileSet is large.
+     *
+     * @return
+     */
     List getTasks() {
-
+        
         final c = mongo.getDB('sa').stagingfile
         MapReduceCommand mapReduceCommand = new MapReduceCommand(c,
                 """

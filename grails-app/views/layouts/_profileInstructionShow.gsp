@@ -4,8 +4,11 @@
     <span id="action-label" class="property-label"><g:message
             code="profile.action.label" default="Action"/></span>
     <span class="property-value" aria-labelledby="action-label"><g:fieldValue
-            bean="${instance}" field="action"/></span>
+            bean="${instance}" field="action"/>
 
+        <g:render template="approval" model="[instance: instance]"/>
+
+    </span>
 </li>
 
 <li class="fieldcontain">

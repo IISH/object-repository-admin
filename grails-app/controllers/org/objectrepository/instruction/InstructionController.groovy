@@ -13,7 +13,7 @@ class InstructionController extends NamingAuthorityInterceptor {
     def workflowActiveService
     def downloadService
 
-    static allowedMethods = [save: "POST", update: "POST", uploadfile: "POST"]
+    static allowedMethods = [update: "POST", uploadfile: "POST"]
 
     def index = {
         forward(action: "list", params: params)
@@ -44,7 +44,7 @@ class InstructionController extends NamingAuthorityInterceptor {
     }
 
     def showremote = {
-        def instructionInstance = instructionAvailable()
+        def instructionInstance = serviceAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
             forward(action: 'list')
@@ -118,7 +118,7 @@ class InstructionController extends NamingAuthorityInterceptor {
 
     def edit = {
 
-        def instructionInstance = Instruction.get(params.id)
+        def instructionInstance = serviceAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id]) }"
             forward(action: 'list')
@@ -157,11 +157,15 @@ class InstructionController extends NamingAuthorityInterceptor {
                 }
             }
 
-            if (instructionInstance.plan.size() == 0) {
+            if (!instructionInstance.plan) {
                 render(view: "edit", model: [instructionInstance: instructionInstance])
                 flash.message = "You need to select at least one plan"
                 return
             }
+
+            if (!instructionInstance.approval)
+                instructionInstance.approval = [springSecurityService.principal.username]
+            else if (!springSecurityService.principal.username in instructionInstance.approval) instructionInstance.approval << springSecurityService.principal.username
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
@@ -196,16 +200,7 @@ class InstructionController extends NamingAuthorityInterceptor {
     protected runMethod() {
 
         def instructionInstance = serviceAvailable()
-        if (instructionInstance) {
-
-            if (instructionInstance.action == "delete") {
-                if (!springSecurityService.hasAuthority(params.na, "USER_OR_ALLOW_DELETE")) {
-                    flash.message = "${message(code: 'default.not.allowed.deleted.message', default: 'This account is not allowed to manage instructions with the action set to delete')}"
-                    forward(action: 'show', id: params.id)
-                    return
-                }
-            }
-
+        if (instructionInstance?.status == 200) {
             instructionInstance.task.name = OrUtil.camelCase([controllerName, actionName])
             instructionInstance.task.taskKey()
             workflowActiveService.first(instructionInstance)
@@ -217,32 +212,31 @@ class InstructionController extends NamingAuthorityInterceptor {
                     log.warn e.message
                 }
             }
-            forward(action: 'show', id: params.id)
         }
+        forward(action: 'show', id: params.id)
     }
 
+    /**
+     * serviceAvailable
+     *
+     * Returns the instruction if it exists.
+     * Adds a status code to indicate if the service is available ( 200 ) or locked ( 403 )
+     *
+     * @return
+     */
     protected Instruction serviceAvailable() {
 
-        def instructionInstance = instructionAvailable()
-        if (instructionInstance?.status == 200) {
+        def instructionInstance = Instruction.get(params.id)// Is this item available ?
+        if (instructionInstance) {
+            instructionInstance.status = 200
             def taskName = OrUtil.camelCase([controllerName, actionName])
-            println("Task name : " + taskName)
-            if (!instructionInstance.services.(taskName)) { // Is this service open \ unlocked ?
-                render status: 403
+            if (taskName in grailsApplication.config.plans) {
+                if (!instructionInstance.services.find { it.name == taskName }) {
+                    instructionInstance.status = 403
+                    flash.message = "Service locked."
+                }
             }
         }
         instructionInstance
     }
-
-    protected Instruction instructionAvailable() {
-
-        def instructionInstance = Instruction.get(params.id)// Is this item available ?
-        if (!instructionInstance) {
-            render status: 404
-        } else {
-            instructionInstance.status = 200
-        }
-        instructionInstance
-    }
-
 }

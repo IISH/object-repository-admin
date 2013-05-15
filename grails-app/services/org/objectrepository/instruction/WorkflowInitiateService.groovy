@@ -69,7 +69,6 @@ class WorkflowInitiateService extends WorkflowJob {
      * uploadInstruction
      *
      * Checks if an instruction is present or not.
-     * Remove an instruction when there is no associate fileSet
      *
      * @param na
      */

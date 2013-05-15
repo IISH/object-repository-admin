@@ -36,8 +36,10 @@ class Instruction extends Tasking {
     String pidwebserviceKey
     String notificationEMail
     String objid
+    String resubmitPid
     List<String> plan
     List<Task> workflow = []
+    List<String> approval = []
 
     // End move
 
@@ -70,6 +72,10 @@ class Instruction extends Tasking {
         Stagingfile.collection.find(query)
     }
 
+    protected Boolean getApprovalNeeded() {
+        approval?.size() < 2 && (action == 'delete' || Stagingfile.countByFileSetAndAction(fileSet, 'delete') != 0)
+    }
+
     /**
      * We will not show the absolute path of the fileSet. Rather only the cpfolder and the main folder name that can be
      * derived from it.
@@ -80,8 +86,9 @@ class Instruction extends Tasking {
     }
 
     protected int declaredFiles = -1
+
     protected int getDeclaredFiles() {
-        if ( declaredFiles == -1) declaredFiles = Stagingfile.countByFileSet(fileSet)
+        if (declaredFiles == -1) declaredFiles = Stagingfile.countByFileSet(fileSet)
         declaredFiles
     }
 
@@ -100,14 +107,16 @@ class Instruction extends Tasking {
         contentType(nullable: true)
         resolverBaseUrl(nullable: true)
         autoGeneratePIDs(nullable: true, inList: ['none', 'uuid', 'lid', 'filename2pid', 'filename2lid'])
-        pdfLevel(nullable: true, inList:['master','level1','level2','level3'])
+        pdfLevel(nullable: true, inList: ['master', 'level1', 'level2', 'level3'])
         autoIngestValidInstruction(nullable: true)
         deleteCompletedInstruction(nullable: true)
         replaceExistingDerivatives(nullable: true)
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
         objid(nullable: true)
+        resubmitPid(nullable: true)
         plan(nullable: true)
+        approval(nullable: true)
     }
 
     static embedded = ['workflow', 'plan']

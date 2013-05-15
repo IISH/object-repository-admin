@@ -33,7 +33,7 @@ class TaskValidationService {
          *
          */
         Instruction.metaClass.getServices = {
-            _services = (_services) ?: grailsApplication.config.plans.inject([]) {acc, v ->
+            _services = (_services) ?: grailsApplication.config.plans.inject([]) { acc, v ->
                 def service = v.value.service
                 if (service) {
                     def method = service.method
@@ -103,8 +103,8 @@ class TaskValidationService {
      *
      * @return
      */
-    protected boolean hasValidDBInstruction(document) {
-        hasDBInstruction(document) && countInvalidFiles(document) == 0
+    protected boolean hasValidDBInstruction(def document) {
+        hasDBInstruction(document) && countInvalidFiles(document) == 0 && !document.approvalNeeded
     }
 
     protected int countInvalidFiles(def document) {

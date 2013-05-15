@@ -156,7 +156,7 @@ class OrfileController extends NamingAuthorityInterceptor {
         instruction.label = params.label
         instruction.task = [name: OrUtil.camelCase(['Instruction', actionName])]
         instruction.task.taskKey()
-        instruction.task.info = orfileInstance?.metaData.pid
+        instruction.resubmitPid = orfileInstance?.metaData.pid
 
         workflowActiveService.first(instruction)
         if (instruction.save(flush: true)) {
