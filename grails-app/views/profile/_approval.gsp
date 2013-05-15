@@ -1,4 +1,4 @@
-<g:if test="${instance.approvalNeeded}">
+<g:if test="${instance instanceof org.objectrepository.instruction.Instruction && instance.approvalNeeded}">
     <div class="required-approval">${message(code: 'instruction.approval', default: 'Approval needed')}
         Currently approval is given by: <g:if test="${!instance.approval}">no one</g:if>
         <g:else>

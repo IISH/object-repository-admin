@@ -6,7 +6,7 @@
     <span class="property-value" aria-labelledby="action-label"><g:fieldValue
             bean="${instance}" field="action"/>
 
-        <g:render template="approval" model="[instance: instance]"/>
+        <g:render template="/profile/approval" model="[instance: instance]"/>
 
     </span>
 </li>
