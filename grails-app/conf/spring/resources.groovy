@@ -21,9 +21,11 @@ beans = {
         planManagerService(PlanManagerService, application) {
             timeout = 10000
         }
+    }
 
+    if (Boolean.parseBoolean(System.properties.getProperty("mq"))) {
         println("Loading activemq broker endpoint")
-        activemq(ActiveMQComponent){
+        activemq(ActiveMQComponent) {
             brokerURL = application.config.brokerURL
         }
     }
