@@ -23,7 +23,7 @@ beans = {
         }
     }
 
-    if (Boolean.parseBoolean(System.properties.getProperty("mq"))) {
+    if (Boolean.parseBoolean(System.properties.getProperty("mq")) || Boolean.parseBoolean(System.properties.getProperty("plans"))) {
         println("Loading activemq broker endpoint")
         activemq(ActiveMQComponent) {
             brokerURL = application.config.brokerURL
