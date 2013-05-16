@@ -115,6 +115,7 @@ class OrfileController extends NamingAuthorityInterceptor {
                 redirect(action: "list")
                 return
             }
+            instructionInstance.workflow.clear()
         } else
             instructionInstance = new Instruction()
 
@@ -167,8 +168,6 @@ class OrfileController extends NamingAuthorityInterceptor {
                 // message queue may be down
                 log.warn e.message
                 flash.message = e.message
-                redirect(action: "list")
-                return
             }
         }
         params.id = instruction.id
