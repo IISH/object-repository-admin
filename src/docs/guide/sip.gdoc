@@ -1,9 +1,9 @@
-The stagingarea is where it all begins. Here the content provider - possibly through the agent of a digital archivist -
+The stagingarea is where it all begins. Here the content producer - possibly through the agent of a digital archivist -
 assembles the Digital files and metadata needed for the archival and dissemination package. THis information can be
 delivered via ftp for example, or by disk.
 
 The manifest for this submission packaged is called a processing instruction. It declares the files placed on the staging
-area together with their related metadata. This instruction may be delivered by the provider; or be partly or
+area together with their related metadata. This instruction may be delivered by the producer; or be partly or
 entirely manufactured inside the object repository administration panels.
 
 The assembly of an submission package - and the archival ingest - can be completely automated. Or performed manually

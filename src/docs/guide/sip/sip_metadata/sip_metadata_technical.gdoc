@@ -1,9 +1,6 @@
-Metadata about the files is purely technical, administrative and structural in nature. And there is a minimum amount of it
-required for assembling a submission package:
-* Access policies to indicate the nature of  availability to the content consumer
-* A content type to identification of the digital files
-* Fixity: a MD5 checksum to ensure file transport integrity from the producer into the archival package
-* Reference: persistent identifiers to allow for access durability between information systems
-
-A content provider may provide context information such as file order to describe physical relations ( pages of a book
-for example ) together with an optional reference to a bundled set of files.
+Metadata about the files is purely technical, administrative and structural in nature. A minimum amount of it is required for assembling a submission package:
+* Access policies to indicate the  degrees of availability to the content consumer.
+* A content type to identification of the digital files.
+* Fixity: a MD5 checksum to ensure file transport integrity from the producer into the archival package.
+* Reference: persistent identifiers to allow for access durability between information systems.
+* Optional: a content producer may provide context information such as file order to describe physical relations ( pages of a book for example ) together with an optional reference to a bundled set of files.

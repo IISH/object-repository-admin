@@ -8,6 +8,8 @@ h3. Commands
 This will autocreate an instruction. Press it and depending on the number of files, the instruction will be put into
 the database.
 
+{note}that the use of this service will not apply a checksum comparison between the content at the producer's side (outside the staging area that is ). And the material stored onto the staging area. The content producer should decide if the transport is reliable enough to ensure the data's integrity.{note}
+
 @Recreate@
 This option is available at the "Stored objects panel". It will reconstruct an earlier used instruction.
 This command will not work, if there are still files staged with an existing instruction.

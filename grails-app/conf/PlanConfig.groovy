@@ -4,7 +4,7 @@ autoGeneratePIDs = [
 
 action = ['upsert', 'add', 'update', 'delete']
 
-pdfLevel = ['master','level1','level2','level3']
+pdfLevel = ['master', 'level1', 'level2', 'level3']
 
 /**
  * Place methods for determining if the service should be offered in the service.method key
@@ -101,12 +101,13 @@ plans = [
                         700: [purpose: 'Something went wrong'],
                         800: [purpose: 'Instruction is ongoing. Files are now processed individualy']
                 ],
-        ], InstructionRetry: [
-        service: [method: 'hasFailedTasks', statusCode: 900],
-        statusCodes: [
-                100: [purpose: 'The user has made a request to retry failed tasks in this instruction']
         ],
-],
+        InstructionRetry: [
+                service: [method: 'hasFailedTasks', statusCode: 900],
+                statusCodes: [
+                        100: [purpose: 'The user has made a request to retry failed tasks in this instruction']
+                ],
+        ],
         Start: [
                 statusCodes: [
                         000: [purpose: 'The file is ready for ingest'],
@@ -128,7 +129,6 @@ plans = [
                 ],
         ],
         StagingfileBindPIDs: [
-                methods: [executeAfter: 'StagingfileBindObjId'],
                 statusCodes: [
                         100: [purpose: 'The system received a request to create or bind PIDs'],
                         200: [purpose: 'Sending request to the queue'],
@@ -141,7 +141,6 @@ plans = [
                 ]
         ],
         StagingfileBindObjId: [
-                visible: false,
                 statusCodes: [
                         100: [purpose: 'The system received a request to create or bind an objid'],
                         200: [purpose: 'Sending request to the queue'],

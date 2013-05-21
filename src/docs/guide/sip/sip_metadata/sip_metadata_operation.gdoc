@@ -3,6 +3,3 @@ services involve amongst others:
 * which files to add, delete or update
 * if derivatives should be created
 * if Persistent identifiers are to be created or bound
-
-Like all other metadata, these operations are expressed via a processing instruction. The latter can be defined
-by the content producer via an XML document and through the administration panel.

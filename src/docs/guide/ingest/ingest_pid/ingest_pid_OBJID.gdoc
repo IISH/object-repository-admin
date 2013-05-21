@@ -1,11 +1,13 @@
-The PID OBJID service will bind a compound object's persistent identifier (the OBJID ) to the resolve URLs which will lead to
-METS document and PDF file renderings. As an added feature it will point to the derivative of the first file the
-compound object consists of. This latter will be usedfull to offer a preview image for the compound object.
+The PID OBJID service will bind a compound object's persistent identifier (the OBJID ) to the Mets and PDF dissemination services. These are exposed via conventional resolve URLs that when invoked produce METS document and PDF file renderings.
+As an added feature it will point to the derivative of the first file the compound object consists of. This latter will be useful to offer a preview image for the compound object.
 
-Persistent identifiers convention for OBJIDs:
-@http://hdl.handle.net/[persistent identifier]?locatt=view:[dissemination type]@
-The resolve URL convention:
-@http://[object repository domain]/file/[dissemination type]/[persistent identifier]
+The persistent identifiers convention for OBJIDs is:
+
+@http://hdl.handle.net/[[persistent identifier]]?locatt=view:[[dissemination type]]@
+
+And the resolve URL convention:
+
+@http://[[object repository domain]]/[[mets or pdf]]/[[persistent identifier]]@
 
 {table}
 *view* | *persistent URL* | *Resolve Url*
@@ -16,7 +18,3 @@ level 1 derivative | http://hdl.handle.net/12345/my-object-id?locatt=view:level1
 level 2 derivative | http://hdl.handle.net/12345/my-object-id?locatt=view:level2 | http://disseminate.objectrepository.org/file/level2/12345/1.1
 level 3 derivative | http://hdl.handle.net/12345/my-object-id?locatt=view:level3 | http://disseminate.objectrepository.org/file/level2/12345/1.1
 {table}
-
-The PDF made here is pointing to:
-http://disseminate.objectrepository.org/pdf/12345/my-object-id/[@pdfLevel@]
-where @pidLevel@ refers to the derivative level of the images that will become the pdf.

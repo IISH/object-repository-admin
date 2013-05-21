@@ -1,5 +1,3 @@
-Metadata concerns the files that are submitted for ingest; but also the operations needed to determine how these
-files are processed at ingest time in order to assemble the desired archival package.
-
-When possible, the ingest procedure will add new content metadata about the stored media. For example image resolution,
-frames per second for movies.
+Metadata concern the files that are submitted for ingest; and also the operations needed to determine how these files are processed at ingest time in order to assemble the desired archival package.
+Not all metadata needs to be supplied. The ingest procedure will add new content metadata about the stored media. For example image resolution, frames per second for movies.
+Metadata is expressed via a processing instruction. The latter can be defined by the content producer via an XML document and through the administration panel.

@@ -1,7 +1,7 @@
 At any time the content producer can offer their own custom derivatives. These can be of any content type or file size.
 It is advisable to remain consistent with regard to the to the level 1, 2 and 3 derivative types.
 
-The requirements this services adheres to is for an addition or update action:
+The requirements this service adheres to is for an addition or update action:
 # Look for a custom placed derivative in the submission package
 # if not found, return success
 # if found, determine the derivative level

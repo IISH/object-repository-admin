@@ -1,6 +1,5 @@
-An import will occur automatically once the instruction is placed onto the staging area, provided:
+The import service will read in a custom made processing instruction that is placed on the staging area. Provided:
 * it is a well formed XML document;
-* the submission package did not already include an instruction.
+* the submission package did not already include an instruction. A new instruction will only be accepted if a current processing instruction is cleared from the system via the administration panel.
 
-A new instruction will only be accepted if a current processing instruction is cleared from the system via the
-administration panel.
+After an import, the service will invoke the instructino validation service.

@@ -1,9 +1,9 @@
-The Persistent identifier services will bind the fixity information to the resolve URLs of what is the dissemination
-package. This will produce stable, resolvable URLs to the object repository's consumers.
+The Persistent identifier services will bind the fixity information to the resolve URLs of what is the dissemination package.
+This will produce stable, resolvable URLs to the object repository's consumers.
 
-The PID calling services are only available if the content producer has outsourced - or host - a PID webservice. The PID webservice
-offers SOAP methods to manage the Handle System(r) resolution technology. As a PID webservice account is associated with
- a webservice key to operate it, the producer needs to add that key to their Profile.
+The PID calling services are only available if the content producer has outsourced - or hosts - a PID webservice. The PID webservice
+offers SOAP methods to manage the Handle System(r) resolution technology. As a PID webservice account is associated with a
+webservice key to operate it, the producer needs to add that key to their Profile.
 
-Producers that have their own resolver technology should make such bindings themselves using the Dissemination conventions
+Producers that have their own resolver technology should make such bindings themselves using the existing Dissemination conventions
 available.

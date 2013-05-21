@@ -147,7 +147,7 @@ The processing instruction would then could look like this:
     </instruction>{code}
 
 h4. Example with lid elements
-As a second example, lets suggest you are a content provider that can not supply persistent identifiers but only supply
+As a second example, lets suggest you are a content producer that can not supply persistent identifiers but only supply
 local identifiers. Lets also assume that you made things easy and the local identifiers can be derived from the filenames
 but without the extension. Here we can automatically create an instruction.
 

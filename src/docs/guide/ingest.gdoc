@@ -1,2 +1,1 @@
-The ingest is a sequence of tasks whereby the submission package is transformed into the archival package which is
- then persisted into the archival storage.
+The ingest is a sequence of tasks whereby the submission package is transformed into the archival package. The latter is then persisted into the archival storage. These tasks are performed by various services, each performing operations following their own logic.

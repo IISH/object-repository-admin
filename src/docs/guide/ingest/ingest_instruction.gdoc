@@ -1,3 +1,6 @@
-This service is initiated by the Instruction Ingest service on command. It is issued automatically via a processing
-instruction or via the administration panel. For each staged file it will set a single task element to start the first
-cycle of the file's ingest career.
+This service initiates each individually declared file in the instruction. It will become available during the submission stage, where the Instruction validation service confirmed all files to be in order. The requirements this service adheres to is for an addition, delete or update action:
+# Select each stagingfile element in the instruction.
+# Verify if the element has been validated.
+# Set the first task to start the cycle of the file's ingest career.
+## If all stagingfile elements are set return success
+## If not, unset all tasks and throw an error

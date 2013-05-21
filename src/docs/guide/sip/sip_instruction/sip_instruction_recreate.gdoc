@@ -1,0 +1,1 @@
+This service will create an instruction for files that were already ingested and are part of the archival package. This instruction will cover all files that share the same label. Or the individual file by referencing the persistent identifier.

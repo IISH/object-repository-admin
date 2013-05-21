@@ -15,11 +15,12 @@ sip:
     sip_metadata_operation: Operational metadata
     sip_metadata_descriptive: No descriptive metadata
   sip_instruction:
-    title: Defining the process instruction
+    title: The processing instruction
     sip_instruction_autocreate: Autocreate Instruction service
     sip_instruction_validate: Validate Instruction service
     sip_instruction_import: Import Instruction service
     sip_instruction_export: Export Instruction service
+    sip_instruction_recreate: Recreate Instruction service
 ingest:
   title: Ingest
   ingest_instruction: Ingest instruction service
@@ -30,7 +31,7 @@ ingest:
     ingest_pid_file: PID bind file service
     ingest_pid_OBJID: PID bind OBJID service
   ingest_derivative:
-    title: Ingest derivative
+    title: Ingest derivative services
     ingest_derivative_custom: Custom derivative service
     ingest_derivative_image: Image derivative service
     ingest_derivative_av: Audio-video derivative service
@@ -40,8 +41,6 @@ aip:
   aip_pdi: Preservation Description Information
 storage:
   title: Archival Storage
-  storage_primary: Primary data
-  storage_replicated: Replicated data
 dip:
   title: Dissemination information package
   dip_http: HTTP 1.1 service

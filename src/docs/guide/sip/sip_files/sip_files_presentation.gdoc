@@ -1,9 +1,3 @@
-Derivatives and other data are used for presentational purposes. Rather then emitting the master files in the
-dissemination package, the Content Producer can choose to supply custom data. For example png images to offer a
-preview image for an audio master file.
-
-The files intended for presentation - or content substitution - is temporal in nature and may be deleted or replaced
-with different content all the time.
-
-The object repository has services to generate derivative content from the master as well. Wether custom derivatives are
-supplied or automatically generated, their use is entirely optional.
+Derivatives and other data are used for presentational purposes. Rather than emitting the master files in the dissemination package, the Content Producer can choose to supply custom data. For example png images to offer a preview image for an audio master file.
+The files intended for presentation - or content substitution - should be regarded as temporal in nature and may be deleted or replaced with different content all the time.
+The object repository has services to generate derivative content from the master as well. Whether custom derivatives are supplied or automatically generated, their use is entirely optional.

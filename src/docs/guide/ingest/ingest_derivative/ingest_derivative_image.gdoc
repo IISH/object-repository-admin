@@ -1,4 +1,24 @@
 It attempts to create three levels for images and first page pdf documents:
-* level 1: high print quality
-* level 2: medium screen quality
-* level 3: small, thumbnail quality
+* level 1: high print quality; standardization to pdf
+* level 2: medium screen quality; length and width reduction
+* level 3: small, thumbnail quality; length and width and resolution reduction
+
+The requirements this service adheres to is for an addition or update action:
+# Obtain the master file; or if available a suitable level 1 derivative from the archival storage
+# Produce a derivative using ImageMagick
+# calculate a md5 checksum
+# add the file to the archival storage
+## compare the checksum between the submission package and the archival package
+### when these match, add the preservation description information to the archival package.
+### if there is a mismatch, throw an error
+# return success
+
+For a delete action:
+# remove the content data objects ( the derivative file )
+# check the removal
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# remove the preservation description information
+## verify the removal action. if it succeeded, continue
+## if removal failed, throw an error
+# return success

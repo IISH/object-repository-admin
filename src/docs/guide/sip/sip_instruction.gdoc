@@ -1,5 +1,3 @@
-The processing instruction will take default values from a set Profile. This profile has already all the global metadata
-properties set such as access policies and the desired ingest services to use.
+Metadata is expressed with processing instructions. Various instruction services will assist the content producer during the assembling of the submission package. These involve both the creation and import of custom made instructions. And the export and validation of those instructions.
+The processing instruction will take default values from a set Profile. This profile has already all the global metadata properties set such as access policies and the desired ingest services to use.
 
-Various instruction services will assist the content provider during the assembling of the submission package. These
-involve both creation and import of instructions. And the export and validation of those instructions.

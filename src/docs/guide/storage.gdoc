@@ -1,1 +1,8 @@
-The archival information package is persisted into a noSQL database.
+h4. gridFS
+Physically the data is stored into a NoSQL database called [MongoDB|http://docs.mongodb.org/]. During
+an ingest a document is created with the md5 checksum, length and generic metadata (the preservation descriptive information). This is placed in a files collection. The actual bytestream is split up into smaller segments called "chunks". Each segment is stored as a document using [GridFS|http://docs.mongodb.org/manual/core/gridfs/] technology.
+
+!gridfs.png!
+
+h4. Data and replication
+!storage.png!

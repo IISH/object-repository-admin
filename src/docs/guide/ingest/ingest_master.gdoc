@@ -1,7 +1,7 @@
 The Ingest master service is specifically intended to persist master files. It is the first task to do when an ingest
 starts... when the plan is set so to ingest new or updated master files that is.
 
-The requirements this services adheres to is for an addition or update action:
+The requirements this service adheres to is for an addition or update action:
 # look for the file on the staging area
 ## if found; add the file to the archival storage
 ### if not found; update the preservation description information in the archival package

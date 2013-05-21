@@ -1,14 +1,18 @@
-The PID file service will bind persistent identifiers to resolve URLs of stored file's.
+The PID file service will bind persistent identifiers to resolve URLs of stored file's. It will use the Handle System's
+capacity to handle multiple resolve URLs per PID. It will follow a convention to make such binds. For the PID:
 
-Persistent identifiers convention for files:
-@http://hdl.handle.net/[persistent identifier]?locatt=view:[dissemination type]@
-The resolve URL convention:
-@http://[object repository domain]/file/[dissemination type]/[persistent identifier]
+@http://hdl.handle.net/[[persistent identifier]]?locatt=view:[[dissemination type]]@
+
+and the bind to the resolve URL:
+
+@http://[[object repository domain]]/file/[[dissemination type]]/[[persistent identifier]]
 
 The @locatt@ is a qualifier that specifies the dissemination type. For as the dissemination package may offer several
-views of the data, this qualifier will lead the consumer to them.
+views of the data, this qualifier will lead the consumer to them. For example, if this was your PID:
 
-For example, if this was your PID: @12345/1@ then the persistent URLs will be:
+@12345/1@
+
+then the persistent URLs of the master and derivatives become by convention:
 
 {table}
 *view* | *persistent URL* | *Resolve Url*
@@ -19,9 +23,8 @@ level 2 derivative | http://hdl.handle.net/12345/1?locatt=view:level2 | http://d
 level 3 derivative | http://hdl.handle.net/12345/1?locatt=view:level3 | http://disseminate.objectrepository.org/file/level2/12345/1
 {table}
 
-The requirements this services adheres to is for an addition or update action:
-# Construct a PID webservice SOAP request. This request contains the persistent identifier; and the qualifier per
-dissemination resolve URLs.
+The requirements this service adheres to is for an addition or update action:
+# Construct a PID webservice SOAP request. This request contains the persistent identifier; and the qualifiers per dissemination resolve URLs.
 # Call the PID webservice using the PID webservice key.
 # Check for the PID webservice response
 ## If an invalid or response, service unavailability or a failure message is in the response, then throw an error
