@@ -154,7 +154,7 @@ class WorkflowActiveServiceTest {
 
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
-                contentType: 'image/jpeg', task: task, action: 'add']
+                contentType: 'image/jpeg', task: task, action: 'add', objid:'hello', seq:1]
         document.parent = [id: new ObjectId()]
         document.parent.plan = OrUtil.availablePlans(config.plans)
         workflowActiveService.runMethod(document)
@@ -175,12 +175,12 @@ class WorkflowActiveServiceTest {
 
         Task task = [name: 'Start', statusCode: 100]
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
-                contentType: 'image/jpeg', task: task, action: 'upsert']
+                contentType: 'image/jpeg', task: task, action: 'upsert', objid:'hello', seq:1]
         def allWorkflow = OrUtil.availablePlans(config.plans)
         document.parent = [id: new ObjectId()]
         document.parent.plan = [
                 allWorkflow[1],
-                allWorkflow[2]
+                allWorkflow[3]
         ] as List<Task>
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
@@ -197,7 +197,7 @@ class WorkflowActiveServiceTest {
             it.name == allWorkflow[0]
         }
         assert !document.workflow.find {
-            it.name == allWorkflow[3]
+            it.name == allWorkflow[4]
         }
     }
 
