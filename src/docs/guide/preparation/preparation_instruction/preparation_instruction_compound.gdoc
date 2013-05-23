@@ -1,14 +1,11 @@
 Compound objects are abstractions of ordered files. The way you express a compound object is through the processing instruction.
 Here you determine:
- * the pid value to refer to a group of files
- * the physical file order ;
+* the pid value to refer to a group of files
+* the physical file order
 
- This information is used to offer the download of:
- * METS documents
- * PDFs
- at the dissemination api or website.
+This information is used to offer the download of METS documents and on the fly PDFs at the dissemination api or website.
 
- h3. Expressing objid and order of files
+h3. Expressing objid and order of files
 The compound object has a persistent identifier. In the instruction this is set with the element *objid*
 This is a PID just like the PIDs you supply to identify your files with.
 
@@ -47,9 +44,5 @@ Object ID and order is expressed this way in an instruction:
 If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
 can be set after the autocreate procedure is completed.
 
-h3. The PID of the objid and it's resolve URLs
 When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
-the PID webservice. This pid will refer to:
-* a METS document
-* a PDF
-* and to the derivative levels of the very first file.
+the PID webservice. For this the plan must have the workflow 'StagingFileBindObjId' set.

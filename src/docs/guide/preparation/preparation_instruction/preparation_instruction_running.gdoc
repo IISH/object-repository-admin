@@ -1,13 +1,9 @@
 Starting an instruction can be automated, provided the conditions are right:
 * a FTP client has uploaded files
-* a valid XML processing instruction is in a main folder
+* a valid XML processing instruction is in a main folder; or you automatically created one via the administration's instruction panel
 * If you had set the element ( in either the XML document itself or if not, at the profile panel ) :
 {code}autoIngestValidInstruction=true{code}
 
-In those cased the ingest of your files will start by itself.
-This is the same for instructions that were automatically created using this setting.
+If you disable @autoIngestValidInstruction@ a manual ingest command is needed. From the administration interface select @Process instruction@ to start.
 
-If you disable @autoIngestValidInstruction@, then a start needs a manual command. From the administration interface
-select @Process instruction@ to start.
-
-{Note}The manual option to Process an instruction will not appear until the instruction is considered valid.{Note}
+{note}The manual option to Process an instruction will not appear until the instruction is considered valid.{note}

@@ -15,9 +15,14 @@ Determines what services are to be used ( in no particular order ). Seperated by
 To tell you want a master ingest or update:
 {code}plan='StagingfileIngestMaster'{code}
 
-To call the PID webservice:
+To call the PID webservice to bind the persistent identifier of a file:
 {code}plan='StagingFileBindPIDs'{code}
-This will invoke the PID webservice to bind the PIDs to the resolve url's of the object repository. One must have
+This will invoke the PID webservice to bind the PIDs to the resolve url's of the dissemination package. One must have
+an account at a PID webservice and have the @pidwebserviceEndpoint@ and @pidwebserviceKey@ set.
+
+To call the PID webservice to bind the persistent identifier of a compound identifier ( objid ):
+{code}plan='StagingFileBindObjId'{code}
+This will invoke the PID webservice to bind the object identifier to the resolve url's of the dissemination package. One must have
 an account at a PID webservice and have the @pidwebserviceEndpoint@ and @pidwebserviceKey@ set.
 
 To produce derivatives:
@@ -26,7 +31,7 @@ To produce derivatives:
 * @plan='StagingfileIngestLevel3'
 
 If left empty, the default is to use all the services. This is equivalent to adding the following in an XML instruction:
-{code}plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'{code}
+{code}plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingFileBindObjId,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'{code}
 
 h3. Additions and updates
 @action@ (profile, instruction and stagingfile elements)

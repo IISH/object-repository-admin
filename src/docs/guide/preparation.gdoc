@@ -1,8 +1,17 @@
-The administration interface is where a CP administrator can:
+When you prepare a submission package there are a number of questions to take into consideration. Namely:
+* who will have access to the administration panel ?
+* who is responsible for the FTP upload of digital files ?
+* what is to be preserved ? And what is to be presented ? Is there need for producing derivatives or will you supply these ?
+* what is the access status for the particular files that are to be submitted ?
+* will you supply your own persistent identifiers; or will you use allow the repository to create these ?
+* is there any context you want to preserve such as file ordering
+
+Once decided you can use the administration interface to:
  * create ftp accounts.
  * set a profile. That is, defaults for the processing instruction such as access, mimetype, the prefered services to use
  * define access policies
  * oversee the production of instructions, starting procedures and monitor the status
+ * recreate past instructions
  * download technical metadata of stored material
 
  Access to the administration interface is possible via a privileged account only. Such accounts cannot be set

@@ -15,15 +15,12 @@ Each main folder ought to contain an XML document. However with automated creati
 
 h4. 3. Stagingfile
 In the instruction.xml's child elements one should mention @stagingfile@ elements. A stagingfile element represents the
-file and any settings here will override those in the main element and profile.
-
-The stagingfile is the only element that has some unique settings not present in the profile or instruction, such as md5,
+file and any settings here will override those in the main element and profile. The stagingfile is the only element that has some unique settings not present in the profile or instruction, such as md5,
 location and pid value.
 
-In short
-Profile settings provide reasonable defaults for an organizations processing instruction.
-Instruction settings in an instruction.xml document override profile values and provide specific defaults for
-stagingfiles.
-Stagingfile settings in their final turn override instruction and profile settings. The smallest always win.
+h4. In short
+_Profile_ settings provide reasonable defaults for an organizations processing instruction.
+Instruction settings in an _instruction.xml_ document override profile values and provide specific defaults for stagingfiles.
+_Stagingfile_ settings in their final turn override instruction and profile settings. The smallest always win.
 
 

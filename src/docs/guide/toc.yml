@@ -50,7 +50,7 @@ dip:
 preparation:
   title: Preparing the submission package
   preparation_stagingarea:
-    title: Sending digital information to the staging area
+    title: The staging area
     preparation_stagingarea_ftp: Connecting to the stagingarea
     preparation_stagingarea_datasets: Folder and file conventions
     preparation_stagingarea_customderivatives: Supply custom derivatives
@@ -62,7 +62,7 @@ preparation:
     preparation_instruction_compound: Files and Compound objects
 management:
     title: Administration interface
-    management_user: Ftp accounts
+    management_user: Staging area Ftp accounts
     management_profile: Profile
     management_policy: Access policies
     management_instruction: Managing and monitoring instructions

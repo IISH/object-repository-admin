@@ -2,12 +2,9 @@ After a CP user (of course, ftp procedures can be automated also) logs in with a
 is the **home directory**. A FTP client will show this as a "/".
 
 The user should at least upload one **main folder** containing files (your dataset) in the
-home directory. This example illustrates the upload of a main folder called "unittest" and it contains 5 files.
+home directory. This example illustrates the upload of a main folder called "unittest" and it contains a sub folder with 5 files.
 
 !fileset.gif!
-
-{note}Any folder or file that starts with a dot, will be ignored by the ingest procedures.
-Also any digital file placed right in the home directory and not in a main folder will be ignored.{note}
 
 See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum. This is
  stored next to the file in the format @filename.md5@. The checksum it contains is compared the one you
@@ -17,3 +14,6 @@ deliver in a [processing instruction|guide:preparation/preparation_instruction] 
 {note}
 You should not delete automatically created md5 files. If you do; the ingest of your files can take a long time.
 {note}
+
+{note}Any folder or file that starts with a dot, will be ignored by the ingest procedures.
+Also any digital file placed right in the home directory and not in a main folder will be ignored.{note}

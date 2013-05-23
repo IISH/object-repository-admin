@@ -1,18 +1,12 @@
-The object-repository has a service to create lower level copies of the masters.
-
-If you want you can add your own derivative material because it is of better quality or the type of derivative
+The object-repository has a service to create lower level copies of the masters. If you want you can add your own derivative material because it is of better quality or the type of derivative
 manufacturing is not supported.
 
 h3. Conventional offerings
 The position and names of the derivatives must follow conventions:
-* the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice these names
-start with a dot.
-* the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file
-extension. For example
-if the master is called @MyFile.tiff@ or @BigVideo.mpg@ then the custom derivative must be positioned and named like
-@/.level1/MyFile.jpg@ or @/.level2/BigVideo.mpg@
+* the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice these names start with a dot.
+* the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file extension. For example, if the master is called @MyFile.tiff@ or @BigVideo.mpg@ then the custom derivative must be positioned and named like @/.level1/MyFile.jpg@ or @/.level2/BigVideo.mpg@
 * the derivative must be parallel to the master file.
-* the extension of the derivative must be related to a known contenttype as [indicated in this list|https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt]. If you see that your derivative extension is not in this list, then make a feature request.
+* the extension of the derivative must be related to a known content type as [indicated in this list|http://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt]. If you see that your derivative extension is not in this list, then make a feature request.
 
 A few examples will clarify the points just made.
 
@@ -43,13 +37,10 @@ Then we offer both level1, level2 and a level3 file like this:
 h4. Supplying derivatives some time after an ingest
 To add custom derivatives after the ingest is completed, you follow the same procedure:
 * upload your custom derivative files according to the location convention
-* in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and
-any other non-related derivative tasks. Then validate the instruction
- * Start processing your files.
+* in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and any other non-related derivative tasks. Then validate the instruction
+* Start processing your files.
 
- Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
- reupload a new one which should contain the location elements from which the custom derivative
- can be found.
+Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
+re upload a new one which should contain the location elements from which the custom derivative can be found.
 
- {note}In case you reupload for the sake of ingesting custom derivatives, the location element
- need not be the same as the original master files from a previous instruction.{note}
+{note}In case you re upload for the sake of ingesting custom derivatives, the location element need not be the same as the original master files from a previous instruction.{note}

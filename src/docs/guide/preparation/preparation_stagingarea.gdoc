@@ -1,4 +1,3 @@
-The staging area is a work space where you can assemble your ingest package. Here you:
+Once you have selected the files intended for preservation and presentation you can upload these to the staging area. This is a work space where you can assemble your ingest package. Here you:
 * use ftp to upload files to temporary storage and rearrange these
-* optionally upload a XML processing instruction
-* optionally upload derivative material
+* optionally upload a custom XML processing instruction

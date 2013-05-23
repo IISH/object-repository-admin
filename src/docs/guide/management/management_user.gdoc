@@ -1,6 +1,5 @@
-The account section will allow you manage ftp accounts for uploading and managing files on the staging area.
-An additional function of such accounts is to to supply webservice keys.
-This key gives access to all admin and stored repository resources.
+The "Staging area" section will allow you manage ftp accounts for uploading and managing files on the staging area.
+An additional function of such accounts is to to supply webservice keys. This key gives access to all admin and stored repository resources.
 
 h4. Create a user
 You need to fill in or edit the following fields:
@@ -9,8 +8,7 @@ You need to fill in or edit the following fields:
 * @E-mail@: The end-user's mail address.
 * @Enabled@: If on, the account can be used to login.
 
-Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details
-to login.
+Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details to login.
 
 h4. User display
 This view will also show the webservice key. The key is intended to access an object repository resource that is
@@ -21,6 +19,6 @@ The webservice key has the same effect when a user uses a username and password 
 
 To modify the webservice key select "Change key"
 
-h4. editing and removing
+h4. Editing and removing
 Any account can be modified and deleted. If you delete an ftp account; the user's uploaded files and home
 directory still remain on the staging area. You need to move or delete these yourself with your administration account.

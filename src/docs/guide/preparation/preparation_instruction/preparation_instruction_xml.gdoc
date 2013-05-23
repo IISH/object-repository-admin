@@ -1,16 +1,15 @@
 A XML processing instruction should be:
  * named @instruction.xml@
  * placed in the main folder of the uploaded dataset.
+ * well formed XML. There is no schema validation. The schema [can be found here|http://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
 
-For example if you uploaded these five files onto the staging area in the main folder @unittest@ then you must add the
-instruction in the folder @unittest@ as well:
+For example if you uploaded these five files onto the staging area in the main folder @unittest@ then you must add the @instruction.xml@ document in the folder @unittest@ as well:
+
 !filesetxml.gif!
 
 This file will be deleted automatically after you uploaded it, as it is read into a database. You can re upload the
 instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
 using the administration panel.
-
-[The schema can be found here|https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd]
 
 {note}When you download a XML processing instruction, it may have added validation messages.{note}
 
@@ -24,7 +23,7 @@ Action | upsert
 Access | open
 Contenttype\Mimetype | image/tiff
 Auto generate PIDs | filename2pid
-Auto ingest valid instructions : off
+Auto ingest valid instructions | off
 Resolver baseUrl | http://hdl.handle.net/
 Service to execute | all
 {table}
@@ -78,13 +77,10 @@ h3. Viewing and changing the XML instruction after upload
 All the uploaded datasets's main folders are visible at the [instructions page|guide:management/management_instruction] of the administration
 interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.
 
-h3. Question: Should I automatically create an XML processing instruction?
+h3. Autocreate an XML processing instruction?
 It can be useful when you make your own custom instructions. You can use this feature to experiment to see how a
-valid instruction looks like.
-
-Should your PID or LID values be identical to the filenames, you could produce an instruction that is perfect for
+valid instruction looks like. Should your PID or LID values be identical to the filenames, you could produce an instruction that is perfect for
 ingest.
-
 
 h3. Two more examples of an XML processing instruction
 
@@ -107,11 +103,11 @@ default settings in the profile via the administration interface:
     contentType=image/tiff{code}
 
 Now we can mostly fall back on the defaults the profile provides, but we do want to add some exceptions to the
-profile rules by adding new values the XML processing instruction:
+profile rules by adding new values the XML processing instruction. Notice:
 
-1. Notice the @contentType@ for the potato ? It is not a tiff but an *image/png*.
-2. And we feel the @access@ of the policy is too strict. Lets set it all to *open*.
-3. And lets set the @access@ to SecretRecipe.tiff to *restricted*.
+* the @contentType@ for the potato ? It is not a tiff but an *image/png*.
+* And we feel the @access@ of the policy is too strict. Lets set it all to *open*.
+* And lets set the @access@ to SecretRecipe.tiff to *restricted*.
 
 The processing instruction would then could look like this:
 
