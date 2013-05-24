@@ -29,8 +29,7 @@ Service to execute | all
 {table}
 
 After we press "update" we can download the XML for viewing:
-{code}
-<?xml version="1.0" encoding="utf-8"?>
+{code:xml}<?xml version="1.0" encoding="utf-8"?>
 <!--Instruction extracted on 11 Jun 2012 11:05:15 GMT-->
 <instruction xmlns="http://objectrepository.org/instruction/1.0/"
     access="open"
@@ -111,7 +110,7 @@ profile rules by adding new values the XML processing instruction. Notice:
 
 The processing instruction would then could look like this:
 
-   {code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+   {code:xml}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/" access="open"> <!-- access added here -->
         <stagingfile>
             <pid>12345/a</pid>
@@ -171,7 +170,7 @@ Via the administration interface "instruction" tab, you can now press the autocr
 
 Alternatively, you could have created the XML instruction yourself so:
 
-    {code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    {code:xml}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/">
         <stagingfile>
             <lid>12345/Apple</lid>

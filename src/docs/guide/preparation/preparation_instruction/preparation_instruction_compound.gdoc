@@ -19,7 +19,7 @@ As an example, take the situation where you offer a three page letter. You place
         /folderA/page_0003.tiff{code}
 
 Object ID and order is expressed this way in an instruction:
-{code}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+{code:xml}<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <instruction xmlns="http://objectrepository.org/instruction/1.0/" objid="12345/my-object-id">
         <stagingfile>
             <pid>12345/my-identifier-a</pid>

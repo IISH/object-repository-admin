@@ -9,7 +9,7 @@ And if the producer used a PID webservice, then the persistent identifier is
 http://hdl.handle.net/12345/my-object-id
 
 As an example, the Mets disseminated would be similar to:
-{code}<?xml version="1.0" encoding="UTF-8"?>
+{code:xml}<?xml version="1.0" encoding="UTF-8"?>
       <mets xmlns="http://www.loc.gov/METS/" OBJID="10622/ARCH00483.511">
           <fileSec>
               <fileGrp ID="master" USE="archive image">

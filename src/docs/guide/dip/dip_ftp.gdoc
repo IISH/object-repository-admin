@@ -1,16 +1,11 @@
-The content producer can place itself in the context of a consumer and download ingested files using ftp.
-
-The ftp home directory will represent files in the same way as the masters were ingested. There is a folder for
- each of the stored master and it's derivatives there:
+The content producer can download ingested files using ftp. The ftp home directory will look like this, showing the stored master and it's derivatives:
 {code}/master
 /level1
 /level2
 /level3{code}
 
-The directory tree is similar to the way files are offered to the staging area at ingest time.
-
-[FileZilla|http://filezilla-project.org/download.php?type=client] and [WinSCP|http://winscp.net/eng/download.php] are
-ftp clients you can use. Or any other for that matter, provided you use these settings:
+From thereon the directory tree is similar to the way files are offered to the staging area when the dissemination package was assembled.
+Use your favorite ftp client to access the data. Use these settings:
 
 * connect to ftp.objectrepository.org
 * set the ftp client to support an **implicit FTP over TLS** connection

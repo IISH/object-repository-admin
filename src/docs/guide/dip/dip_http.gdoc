@@ -1,17 +1,19 @@
-The HTTP dissemination service is probably the most familiar technique to distributing content to the human consumer:
- a website. Usually it is here persistent identifiers will need to resolve to. It offers:
+The HTTP dissemination service is probably the most familiar technique to distributing content to the human consumer or API client.
+Usually it is here persistent identifiers will need to resolve to. It offers:
 
-h3. Html page of the metadata
+h4. Html page of the metadata
 The archival package's preservation descriptive information is presented for the master and it's derivatives.
 The conventional dissemination url is:
-@http://disseminate.objectrepository.org/metadata/[persistent identifier]@
 
-h3. Xml document of the metadata
-Again the AIP's DPI but now rendered as a XML document.
-The conventional dissemination url is:
-@http://disseminate.objectrepository.org/metadata/[persistent identifier]?accept=xml@
+@http://disseminate.objectrepository.org/metadata/[[persistent identifier]]@
+
+h4. Xml document of the metadata
+Again the AIP rendered as a XML document. The conventional dissemination url is:
+
+@http://disseminate.objectrepository.org/metadata/[[persistent identifier]]?accept=xml@
 
 An example of the response could be:
+{code:xml}
 <?xml version="1.0" encoding="utf-8"?>
 <orfiles xmlns="http://objectrepository.org/orfiles/1.0/">
     <orfile>
@@ -57,17 +59,16 @@ An example of the response could be:
 </orfiles>
 {code}
 
-h3. A filestream
+h4. A file stream with mimetype
 A http request for an openly accessible resource would return the corresponding file in the appropriate content
 type such as an image. The template URL would be:
-@http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]@
+
+@http://disseminate.objectrepository.org/file/[[derivative level]]/[[persistent identifier]]@
 
 The returning filename can also be set by setting a contentType and filename parameter so:
-@http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]?contentType=application/save&filename=myfile.tif@
 
-{note}Access to individual resources are governed by access policies that may disallow unauthorized views{code}
+@http://disseminate.objectrepository.org/file/[[derivative level]]/[[persistent identifier]]?contentType=application/save&filename=myfile.tif@
 
 h4. Streaming
-De HTTP service handles the HTTP 206 protocol, which will enable the streaming of content to most common audio and video
-players. The Real Time Streaming Protocol is not supported.
-
+De HTTP service handles the HTTP 206 protocol, which will enable the streaming of content to most common audio and video players.
+The Real Time Streaming Protocol is not supported.
