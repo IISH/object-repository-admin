@@ -25,6 +25,7 @@ class Stagingfile extends Tasking {
     String pidwebserviceKey
     String objid
     Integer seq
+    String pdfLevel
     // End move
 
     List<Task> workflow = []
@@ -56,6 +57,7 @@ class Stagingfile extends Tasking {
         pidwebserviceKey(nullable: true)
         objid(nullable: true)
         seq(nullable: true)
+        pdfLevel(nullable: true)
     }
 
     static embedded = ['workflow']

@@ -1,4 +1,4 @@
-This service initiates each individually declared file in the instruction. It will become available during the submission stage, where the Instruction validation service confirmed all files to be in order. The requirements this service adheres to is for an addition, delete or update action:
+This service will become available during the submission stage, once the Instruction validation service confirmed all files to be in pristine condition.The service initiates each individually declared file in the instruction, thus kick starting the file's lifecycle. The requirements this service adheres to is for an addition, delete or update action:
 # Select each stagingfile element in the instruction.
 # Verify if the element has been validated.
 # Set the first task to start the cycle of the file's ingest career.
