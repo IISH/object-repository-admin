@@ -1,0 +1,18 @@
+The file stream itself is stored in one or more chunked documents. Each document has a checksum of its own.
+
+{table}
+*element*|*type*|*purpose*
+files_id|number|the local identifier
+n|number|sequence of the chunk
+data|Base64|file stream
+md5|string|checksum of the chunk
+{table}
+
+For example, for the earlier image:
+{code:json}
+"_id" : ObjectId(12345),
+"files_id" : NumberLong(12345),
+"n", 0,
+"data" : BinData(0,"/9j/4AAQSkIdXbV (...snip...) Na8SalaRajGVUoC0ig=="),
+"md5" : "f1c8b344033c30f1670626b087b607bc"
+{code}

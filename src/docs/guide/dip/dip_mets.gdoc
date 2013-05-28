@@ -1,6 +1,6 @@
 The object repository can disseminate compound objects in a standardized way by exporting a by default profile level 3 Mets
 document. Mets is a [metadata standard of the Library of Congres|http://www.loc.gov/standards/mets/]. As this is a standardized
-way of describing files, their content type and their structure it can be used to
+way of describing files, their content type and their structure it can be used by third party software to render content.
 
 The dissemination URL of a mets document is:
 http://disseminate.objectrepository.org/mets/12345/my-object-id

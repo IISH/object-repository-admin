@@ -1,18 +1,17 @@
-The object repository is part of a service oriented framework. It offers a collection of services:
+The object repository should is a service oriented framework. It offers a collection of services:
 
 * ftp upload of files to a staging area (temporary storage)
 * ingesting those files and related metadata into persistent storage
 * image, audio and video derivative generation
 * accepts custom made derivatives of any content type
-* persistent identifier creation by calling a PID webservice (binding resource and compound object locations and their
-handles via a [PID webservice|]https://pid.socialhistoryservices.org/.)
+* persistent identifier creation by calling a [PID webservice|https://pid.socialhistoryservices.org/]. Here persistent URLs become available that resolve to the stored resource and compound object locations
 * dissemination of the resources via HTTP and FTP
 * exports compound objects by via METS and PDF
 * an administration interface plus account system to manage the above services and access policies
 
 h3. Purpose of this documentation
-This document will describe two aspects which are outlined by this architecture:
-* How it works: On the left side are the service levels placed in context. A description of them should make clear how the framework handles the digital information you supply to it.
-* How to operate it: On the right is the administration panel where you manage your content. A guide will help you how to control it.
+This document will describe two aspects as outlined in this sketch:
+* What it is: on the left side are the service levels placed in context. A description of them should make clear how the framework handles the digital information you supply to it.
+* How to operate it: on the right is the administration panel where you manage your content. A guide will help you how to control it.
 
 !oais.png!

@@ -7,4 +7,4 @@ The validation service will ensure data integrity over all stages of the submiss
 
 If the instruction is used for post-ingest operations (e.g. creation of derivatives, ingest of custom derivatives, re-creation of labels or access policy) whereby an existing archival package is updated, this validation will only check if the persistent identifier is registered.
 
-A validated instruction with no error will unlock the ingest service.
+This service will unlock the ingest service, after it confirmed the instruction is without error.

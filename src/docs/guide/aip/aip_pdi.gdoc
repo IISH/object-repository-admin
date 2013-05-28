@@ -1,1 +1,47 @@
-/home/lwo/object-repository/object-repository-admin/src/docs/guide/aip/aip_pdi.gdoc
+This document consists of the following archival elements:
+
+{table}
+*element*|*type*|*purpose*
+md5|number|The md5 checksum for the stored file
+length|number|The length in bytes of the file
+filename|string|original file
+contentType|string|The mimetype
+metadata.pid|string|The persistent identifier
+metadata.pidType|string|The indicator of the type of pid resolver
+metadata.resolverBaseUrl|string|The base URL to prefix the metadata.pid value with
+metadata.objid|string|The object identifier or group identifier
+metadata.seq|number|The physical order of the file vis a vis other files under the shared metadata.objid
+metadata.content|json|The fingerprint of the content. Such as width, length, resolution, etc.
+metadata.access|string|Access status of this file and all
+metadata.fileSet|string|the location of the file in the dissemination package
+metadata.l|string|the relative location of the file in the dissemination package
+metadata.label|string|the label for the dissemination package
+metadata.firstUploadDate|date|The date the file with this metadata.pid value was first uploaded
+uploadDate|date|The last date this file was uploaded.
+{table}
+
+For example, an image:
+{code:json}
+"_id" : NumberLong(12345),
+"contentType" : "image/jpeg",
+"filename" : "myfile.TIFF",
+"length" : NumberLong(10058),
+"md5" : "f1c8b344033c30f1670626b087b607bc",
+"metadata" : {
+	"access" : "restricted",
+	"content" : {
+		"x-resolution" : 72,
+		"y-resolution" : 72,
+		"width" : 368,
+		"height" : 313
+	},
+	"fileSet" : "/data/stagingarea/12345/12347/2007-08-27",
+	"firstUploadDate" : ISODate("2012-06-27T15:15:57.957Z"),
+	"l" : "/2007-08-27/30051/00/013",
+	"label" : "2012-06-27 batch filer4",
+	"pid" : "12345/30051000131778",
+	"pidType" : "or",
+	"resolverBaseUrl" : "http://hdl.handle.net/",
+},
+"uploadDate" : ISODate("2007-08-27T14:30:00Z")
+{code}

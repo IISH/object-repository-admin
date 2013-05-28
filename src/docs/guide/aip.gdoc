@@ -1,1 +1,2 @@
-The archival package is complete once the ingest workflow applied all tasks to the dissemination package.
+The archival package is complete once the ingest workflow applied all it's tasks. At a minimum the package consists of at least
+two documents: the file to be preserved and it's metadata.

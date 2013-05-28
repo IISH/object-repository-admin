@@ -15,7 +15,7 @@ sip:
     sip_metadata_operation: Operational metadata
     sip_metadata_descriptive: No descriptive metadata
   sip_instruction:
-    title: The processing instruction
+    title: The processing instruction services
     sip_instruction_autocreate: Autocreate Instruction service
     sip_instruction_validate: Validate Instruction service
     sip_instruction_import: Import Instruction service
@@ -37,8 +37,8 @@ ingest:
     ingest_derivative_av: Audio-video derivative service
 aip:
   title: Archival information package
-  aip_cdo: Content Data Objects
   aip_pdi: Preservation Description Information
+  aip_cdo: Content Data Object
 storage:
   title: Archival Storage
 dip:
