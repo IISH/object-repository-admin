@@ -15,6 +15,20 @@
     <g:select name="access" from="${policyList}" value="${instance.access}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'embargo', 'error')} ">
+    <label for="embargo">
+        <g:message code="profile.embargo.label" default="Embargo"/>
+    </label>
+    <g:textField name="embargo" value="${instance.embargo}"/>
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'embargoAccess', 'error')} ">
+    <label for="embargoAccess">
+        <g:message code="profile.embargoAccess.label" default="Embargo access"/>
+    </label>
+    <g:select name="embargoAccess" from="${policyList}" value="${instance.embargoAccess}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'contentType', 'error')} ">
     <label for="contentType">
         <g:message code="profile.contentType.label" default="Contenttype"/>

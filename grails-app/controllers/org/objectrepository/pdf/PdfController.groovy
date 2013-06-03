@@ -5,9 +5,17 @@ class PdfController {
     def pdfService
 
     def index() {
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/pdf")
-        response.setHeader 'Content-disposition', 'attachment; filename="' + params.objid + '.pdf"'
-        pdfService.list(response.outputStream, params.na, params.bucket ?: "level2", params.objid)
+
+        def bucket = params.bucket ?: "level2"
+        def list = pdfService.find(params.na, bucket, params.objid)
+        if (list) {
+            response.setCharacterEncoding("utf-8")
+            response.setContentType("application/pdf")
+            response.setHeader 'Content-disposition', 'attachment; filename="' + params.objid + '.pdf"'
+            pdfService.pdf(response.outputStream, list, params.na, bucket)
+        } else {
+            params.pid = params.na + '/' + params.objid
+            render(view: '/file/404', status: 404)
+        }
     }
 }

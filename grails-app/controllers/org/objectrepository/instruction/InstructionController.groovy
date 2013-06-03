@@ -162,10 +162,11 @@ class InstructionController extends NamingAuthorityInterceptor {
                 flash.message = "You need to select at least one plan"
                 return
             }
-
-            if (!instructionInstance.approval)
-                instructionInstance.approval = [springSecurityService.principal.username]
-            else if (!springSecurityService.principal.username in instructionInstance.approval) instructionInstance.approval << springSecurityService.principal.username
+            final username = springSecurityService.principal.username.toLowerCase()
+            if (!instructionInstance.approval) {
+                instructionInstance.approval = [username]
+            }
+            else if (!username in instructionInstance.approval) instructionInstance.approval << username
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"

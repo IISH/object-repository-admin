@@ -22,6 +22,10 @@ class PolicyService {
         if (cache == 'no') policies.clear()
         String na = fileInstance.metadata.na
         String access = fileInstance.metadata.access
+        _getPolicy(na, access)
+    }
+
+    Policy _getPolicy(String na, String access) {
         String key = na + "." + access
         def policy = policies[key]
         if (!policy) {

@@ -33,6 +33,19 @@
             </li>
 
             <li class="fieldcontain">
+                <span id="embargo-label" class="property-label"><g:message code="files.embargo.label"
+                                                                         default="embargo"/></span>
+                <g:textField name="embargo" value="${orfileInstance.master.metadata.embargo}"/>
+            </li>
+
+            <li class="fieldcontain">
+                <span id="embargoAccess-label" class="property-label"><g:message code="files.embargoAccess.label"
+                                                                         default="Embargo access"/></span>
+                <g:select from="${policyList.access}" name="embargoAccess"
+                          value="${orfileInstance.master.metadata.embargoAccess}"/>
+            </li>
+
+            <li class="fieldcontain">
                 <span id="label-label" class="property-label"><g:message code="files.label.label"
                                                                          default="Label"/></span>
                 <g:textField name="label" value="${orfileInstance.master.metadata.label}"/>

@@ -1,7 +1,11 @@
 package org.objectrepository.mets
 
+import au.edu.apsr.mtk.base.AmdSec
 import au.edu.apsr.mtk.base.Div
 import au.edu.apsr.mtk.base.METSWrapper
+import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
+import org.objectrepository.util.OrUtil
 
 /**
  * MetsService
@@ -15,6 +19,7 @@ class MetsService {
     static def uses = ['master': 'archive', 'level1': 'hires reference', 'level2': 'reference', 'level3': 'thumbnail']
     def grailsApplication
     def gridFSService
+    def policyService
 
     /**
      * writeMetsFile
@@ -26,54 +31,12 @@ class MetsService {
      * @param cache
      * @return
      */
-    METSWrapper writeMetsFile(String na, String objid, def buckets = ['master', 'level1', 'level2', 'level3']) {
+    String writeMetsFile(String na, String objid, def buckets = ['master', 'level1', 'level2', 'level3']) {
 
         if (objid)
             metsFile(na, buckets, objid)
         else
-            writeRootMetsFile(na, objid)
-    }
-
-    /**
-     *      The main mets fileSec just a list of objids \ virtual folders
-     * @param na
-     * @return
-     */
-    private writeRootMetsFile(def na, def objid) {
-
-        def objids = gridFSService.objid(na)
-
-        final def metsWrapper = new METSWrapper()
-        final mets = metsWrapper.getMETSObject()
-        mets.setObjID(na + '/' + objid)
-        final fileSection = mets.newFileSec()
-        mets.setFileSec(fileSection)
-        final fileGrp = fileSection.newFileGrp()
-        fileSection.addFileGrp(fileGrp)
-        fileGrp.setID("g0")
-        fileGrp.setUse("mets")
-
-        final logicalMap = mets.newStructMap()
-        mets.addStructMap(logicalMap)
-        logicalMap.setType("logical")
-
-        int _file_ID = 0
-        objids.each {
-            String file_ID = "f" + ++_file_ID
-            def file = fileGrp.newFile()
-            fileGrp.addFile(file)
-            file.setID(file_ID)
-
-            def locat = file.newFLocat()
-            file.addFLocat(locat)
-            locat.setHref("http://hdl.handle.net/$it")
-
-            def div = logicalMap.newDiv()
-            div.setLabel("/" + it)
-            logicalMap.addDiv(div)
-            addFptrToDiv(div, file_ID)
-        }
-        metsWrapper
+            null
     }
 
     /**
@@ -85,90 +48,113 @@ class MetsService {
      *  - use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
-    private METSWrapper metsFile(String na, def buckets, String objid) {
+    private String metsFile(String na, def buckets, String objid) {
 
-        final def metsWrapper = new METSWrapper()
-        final mets = metsWrapper.getMETSObject()
-        mets.setObjID(na + '/' + objid)
-        final fileSection = mets.newFileSec()
-        mets.setFileSec(fileSection)
+        def levels = buckets.inject([:]) { map, bucket ->
+            def list = gridFSService.listFilesByObjid(na, bucket, objid)
+            if (list.size()) map[bucket] = list
+            map
+        }
 
-        final physicalMap = mets.newStructMap()
-        mets.addStructMap(physicalMap)
-        physicalMap.setType("physical");
-        final divMainPhysical = physicalMap.newDiv()
-        physicalMap.addDiv(divMainPhysical)
+        if ( !levels ) return null
 
         int _file_ID = 0
         def map = [:]
-        buckets.each { bucket ->
-            gridFSService.listFilesByObjid(na, bucket, objid).each { d ->
 
-                String type = d.contentType.split('/')[0]
-                String use = uses[bucket] + " " + type
+        def fileSec = {
+            fileSec {
+                levels.each {
+                    def bucket = it.key
+                    def listOfFiles = it.value
+                    String type = listOfFiles[0].contentType.split('/')[0]
+                    String use = uses[bucket] + " " + type
+                    fileGrp(ID: bucket, USE: use) {
+                        listOfFiles.each { d ->
+                            String file_ID = "f" + ++_file_ID;
+                            file(
+                                    CHECKSUM: d.md5,
+                                    CHECKSUMTYPE: 'MD5',
+                                    CREATED: d.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"),
+                                    ID: file_ID,
+                                    MIMETYPE: d.contentType,
+                                    SIZE: d.length
+                            ) {
+                                String _LOCTYPE = (d.metadata.pidType == 'or') ? 'HANDLE' : 'URL'
+                                String href = (d.metadata.pidType == 'or') ? d.metadata.resolverBaseUrl + d.metadata.pid + "?locatt=view:" + bucket : d.metadata.resolverBaseUrl + d.metadata.pid
+                                FLocat(
+                                        LOCTYPE: _LOCTYPE,
+                                        'xlink:href': href,
+                                        'xlink:title': d.filename,
+                                        'xlink:type': 'simple'
+                                )
+                            }
 
-                def fileGrps = fileSection.getFileGrpByUse(use)
-                def fileGrp = (fileGrps.size() == 0) ? null : fileGrps[0]
-                if (!fileGrp) {
-                    fileGrp = fileSection.newFileGrp()
-                    fileSection.addFileGrp(fileGrp)
-                    fileGrp.setID(bucket)
-                    fileGrp.setUse(use)
+                            if (bucket == 'master') map[d.metadata.pid] = []
+                            map[d.metadata.pid] << [file_ID: file_ID, seq: d.metadata.seq as Integer]
+                        }
+                    }
                 }
-
-                String file_ID = "f" + ++_file_ID;
-                def file = fileGrp.newFile()
-                fileGrp.addFile(file)
-                file.setID(file_ID)
-                file.setChecksumType("MD5")
-                file.setChecksum(d.md5)
-                file.setSize(d.length)
-                file.setMIMEType(d.contentType)
-                file.setCreated(d.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"))
-                def locat = file.newFLocat()
-                file.addFLocat(locat)
-                if (d.metadata.pidType == 'or') {
-                    locat.setLocType("HANDLE")
-                    locat.setHref(d.metadata.resolverBaseUrl + d.metadata.pid + "?locatt=view:" + bucket)
-                }
-                else {
-                    locat.setHref(d.metadata.resolverBaseUrl + d.metadata.pid)
-                }
-                locat.setType("simple")
-                locat.setTitle(d.filename)
-
-                if (bucket == 'master') map[d.metadata.pid] = []
-                map[d.metadata.pid] << [file_ID: file_ID, seq: d.metadata.seq as Integer]
             }
         }
 
-        map.eachWithIndex { val, i ->
-            def div = divMainPhysical.newDiv()
-            div.setID("g" + i)
-            div.setOrder(val.value[0].seq as String)
-            div.setType("page")
-            div.setLabel("Page " + (i + 1))
-            divMainPhysical.addDiv(div)
-            val.value.each {
-                addFptrToDiv(div, it.file_ID)
+        def structMap = {
+            structMap(TYPE: 'physical') {
+                div {
+                    map.eachWithIndex { val, i ->
+                        div(
+                                ID: "g" + i,
+                                LABEL: "Page " + (i + 1),
+                                ORDER: val.value[0].seq as String,
+                                TYPE: 'page'
+                        ) {
+                            val.value.each {
+                                fptr(FILEID: it.file_ID)
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        metsWrapper
-    }
-
-    private void addFptrToDiv(Div div, String ID) {
-        final fptr = div.newFptr()
-        fptr.setFileID(ID)
-        div.addFptr(fptr)
-    }
-
-    private Div findDiv(Div div, String ID) {
-        if (div.ID == ID) return div;
-        for (int i = 0; i < div.divs.size(); i++) {
-            def d = findDiv(div.divs[i], ID)
-            if (d) return d;
+        def amdSec = {
+            amdSec(ID: 'admSec-1') {
+                rightsMD(ID: 'rightsMD-1') {
+                    mdWrap(MDTYPE: 'OTHER') {
+                        xmlData {
+                            'epdcx:descriptionSet'('xmlns:epdcx': 'http://purl.org/eprint/epdcx/2006-11-16/', 'xsi:schemaLocation': 'http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd') {
+                                levels.each {
+                                    def resourceId = it.key
+                                    def listOfFiles = it.value
+                                    String access = listOfFiles[0].metadata.access
+                                    String valueRef = "http://purl.org/eprint/accessRights/" + OrUtil.camelCase([policyService._getPolicy(na, access).getAccessForBucket(resourceId), "Access"])
+                                    'epdcx:description'('epdcx:resourceId': resourceId) {
+                                        'epdcx:statement'('epdcx:propertyURI': 'http://purl.org/dc/terms/available', 'epdcx:valueRef': valueRef) {
+                                            // For embargo date add  <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF">2013-05-29</epdcx:valueString>
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        null
+
+        def mets = {
+            mets(
+                    xmlns: 'http://www.loc.gov/METS/',
+                    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+                    'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                    'xsi:schemaLocation': 'http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd',
+                    OBJID: na + '/' + objid) {
+                out << amdSec
+                out << fileSec
+                out << structMap
+            }
+        }
+
+        def xml = new StreamingMarkupBuilder().bind(mets)
+        // if (_file_ID == 0) return null
+        xml
     }
 }

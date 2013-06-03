@@ -73,6 +73,8 @@ if (System.properties.containsKey("or.properties")) {
 }
 
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket
+// Definitions accessStatus taken from:
+// http://purl.org/dc/terms/available
 accessStatus = ['open', 'restricted', 'closed']
 accessMatrix = [
         closed: [

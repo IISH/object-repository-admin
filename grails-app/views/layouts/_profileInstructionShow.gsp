@@ -17,7 +17,22 @@
 
     <span class="property-value" aria-labelledby="access-label"><g:fieldValue
             bean="${instance}" field="access"/></span>
+</li>
 
+<li class="fieldcontain">
+    <span id="embargo-label" class="property-label"><g:message
+            code="profile.embargo.label" default="Embargo"/></span>
+
+    <span class="property-value" aria-labelledby="embargo-label"><g:fieldValue
+            bean="${instance}" field="embargo"/></span>
+</li>
+
+<li class="fieldcontain">
+    <span id="embargoAccess-label" class="property-label"><g:message
+            code="profile.embargoAccess.label" default="Embargo access"/></span>
+
+    <span class="property-value" aria-labelledby="embargoAccess-label"><g:fieldValue
+            bean="${instance}" field="embargoAccess"/></span>
 </li>
 
 <li class="fieldcontain">

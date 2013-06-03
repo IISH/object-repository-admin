@@ -6,6 +6,7 @@ import org.objectrepository.instruction.Instruction
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
 
+import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
 import java.util.regex.Pattern
@@ -120,7 +121,7 @@ class OrUtil {
         def map = [:]
         if (!object) return map
 
-        new DefaultGrailsDomainClass(object.class).persistentProperties.each {p ->
+        new DefaultGrailsDomainClass(object.class).persistentProperties.each { p ->
             def key = p.name
             if (!(key in filter)) {
                 def value = object[key]
@@ -133,7 +134,7 @@ class OrUtil {
 
     static String camelCase(def map) {
 
-        map.inject("") {acc, val ->
+        map.inject("") { acc, val ->
             acc + val[0].toUpperCase() + val.substring(1)
         }
     }
@@ -241,5 +242,19 @@ class OrUtil {
 
     static String[] splitCamelcase(String name, int limit = 2) {
         Pattern.compile("([A-Z])").matcher(name).replaceAll(" \$1").trim().toLowerCase().split("\\s", limit)
+    }
+
+    /**
+     * stringtoNode
+     *
+     * Produce a node from a string
+     *
+     * @param s
+     * @return
+     */
+    static org.w3c.dom.Document stringtoNode(String s) {
+        def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        def inputStream = new ByteArrayInputStream(s.bytes)
+        builder.parse(inputStream)
     }
 }

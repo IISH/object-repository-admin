@@ -25,6 +25,8 @@ class Instruction extends Tasking {
     String na
     String action
     String access
+    String embargo
+    String embargoAccess
     String contentType
     String resolverBaseUrl
     String autoGeneratePIDs
@@ -101,6 +103,8 @@ class Instruction extends Tasking {
     static constraints = {
         fileSet(unique: true)
         access(nullable: true)
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargoAccess(nullable: true)
         label(nullable: true)
         notificationEMail(nullable: true)
         action(nullable: true, inList: ['upsert', 'add', 'update', 'delete'])

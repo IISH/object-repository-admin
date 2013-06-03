@@ -9,6 +9,8 @@ class Stagingfile extends Tasking {
     String na
     String action
     String access = "closed"
+    String embargo
+    String embargoAccess
     String contentType
     String md5
     Long length = 0
@@ -45,6 +47,8 @@ class Stagingfile extends Tasking {
     static constraints = {
         action(nullable: true)
         access(nullable: true)
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargoAccess(nullable: true)
         contentType(nullable: true)
         lid(nullable: true)
         length(nullable: true)

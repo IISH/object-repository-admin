@@ -10,6 +10,8 @@ class Profile {
     String na
     String action = "upsert"
     String access = "closed"
+    String embargo
+    String embargoAccess
     String label = "enter descriptive tag or title"
     String contentType = "application/octet-stream"
     String resolverBaseUrl = "http://hdl.handle.net/"
@@ -32,6 +34,8 @@ class Profile {
 
     static constraints = {
         access(blank: false)
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargoAccess(nullable: true)
         notificationEMail(nullable: true)
         contentType(blank: false)
         resolverBaseUrl(blank: false)
