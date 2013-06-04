@@ -103,7 +103,7 @@ class Instruction extends Tasking {
     static constraints = {
         fileSet(unique: true)
         access(nullable: true)
-        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-1][0-9]-[0-3][0-9]')
         embargoAccess(nullable: true)
         label(nullable: true)
         notificationEMail(nullable: true)

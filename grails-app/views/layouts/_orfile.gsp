@@ -10,6 +10,20 @@
         <span class="property-value" aria-labelledby="access-label">${orfileInstance.master.metadata.access}</span>
     </li>
 
+    <g:if test="${orfileInstance.master.metadata.embargo}">
+    <li class="fieldcontain">
+        <span id="embargo-label" class="property-label"><g:message code="files.embargo.label"
+                                                                  default="Embargo"/></span>
+        <span class="property-value" aria-labelledby="embargo-label">${orfileInstance.master.metadata.embargo}</span>
+    </li></g:if>
+
+    <g:if test="${orfileInstance.master.metadata.embargoAccess}">
+    <li class="fieldcontain">
+        <span id="embargoAccess-label" class="property-label"><g:message code="files.embargoAccess.label"
+                                                                  default="Embargo access"/></span>
+        <span class="property-value" aria-labelledby="embargo-embargoAccess">${orfileInstance.master.metadata.embargoAccess}</span>
+    </li></g:if>
+
     <li class="fieldcontain">
         <span id="label-label" class="property-label"><g:message code="files.label.label"
                                                                  default="Label"/></span>

@@ -80,6 +80,8 @@ class OrfileController extends NamingAuthorityInterceptor {
             forward(action: 'list')
         } else {
             orfileInstance.master.metadata.access = params.access
+            orfileInstance.master.metadata.embargo = params.embargo
+            orfileInstance.master.metadata.embargoAccess = params.embargoAccess
             orfileInstance.master.metadata.label = params.label
             orfileInstance.master.metadata.objid = params.objid
             orfileInstance.master.metadata.seq = params.seq

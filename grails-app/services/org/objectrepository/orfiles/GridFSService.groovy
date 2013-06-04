@@ -89,9 +89,12 @@ class GridFSService {
      * @param file
      */
     void update(def document) {
+
         ['master', 'level1', 'level2', 'level3'].each {
             mongo.getDB(OR + document.metadata.na).getCollection(it + ".files").update(['metadata.pid': document.metadata.pid],
                     [$set: ['metadata.access': document.metadata.access,
+                            'metadata.embargo': document.metadata.embargo,
+                            'metadata.embargoAccess': document.metadata.embargoAccess,
                             'metadata.label': document.metadata.label,
                             'metadata.objid': document.metadata.objid,
                             'metadata.seq': document.metadata.seq]], false, false)

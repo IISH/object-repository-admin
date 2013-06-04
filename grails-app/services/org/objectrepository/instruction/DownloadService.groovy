@@ -100,7 +100,7 @@ class DownloadService {
         writer << builder.bind {
             mkp.xmlDeclaration()
             comment << String.format('Selection contains %s documents. Export extracted on %s',
-                    list.size(), new Date().toGMTString())
+                    list.size(), new Date().format("yyyy-MM-dd'T'mm:hh:ss'Z'"))
             orfiles(orfileAttributes) {
                 list.each { orfileInstance ->
                     orfile {
@@ -114,7 +114,9 @@ class DownloadService {
                         }
                         filename orfileInstance.filename
                         label orfileInstance.metadata.label
-                        access orfileInstance.metadata.acc
+                        access orfileInstance.metadata.access
+                        embargo orfileInstance.metadata.embargo
+                        embargoAccess orfileInstance.metadata.embargoAccess
                         out << metadata(orfileInstance, "master")
                         ['level1', 'level2', 'level3'].each {  bucket ->
                             out << metadata(gridFSService.findByPid(orfileInstance.metadata.pid, bucket), bucket)

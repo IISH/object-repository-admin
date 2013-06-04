@@ -47,7 +47,7 @@ class Stagingfile extends Tasking {
     static constraints = {
         action(nullable: true)
         access(nullable: true)
-        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-1][0-9]-[0-3][0-9]')
         embargoAccess(nullable: true)
         contentType(nullable: true)
         lid(nullable: true)

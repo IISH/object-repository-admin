@@ -21,7 +21,12 @@ class PolicyService {
     Policy getPolicy(def fileInstance, def cache = null) {
         if (cache == 'no') policies.clear()
         String na = fileInstance.metadata.na
-        String access = fileInstance.metadata.access
+        final String access
+        if (fileInstance.metadata.embargo?.length==10 && Date.parse('yyyy-MM-dd', fileInstance.metadata.embargo) > new Date()) {
+            access = (fileInstance.metadata.embargoAccess) ?: 'closed'
+        } else {
+            access = fileInstance.metadata.access
+        }
         _getPolicy(na, access)
     }
 
@@ -31,7 +36,7 @@ class PolicyService {
         if (!policy) {
             policy = Policy.findByNaAndAccess(na, access)
             if (!policy) {
-                access = "closed" // apply the default policy
+                access = 'closed'
                 def buckets = grailsApplication.config.accessMatrix[access].collect {
                     new Bucket(it)
                 }

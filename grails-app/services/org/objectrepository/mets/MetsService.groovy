@@ -1,9 +1,5 @@
 package org.objectrepository.mets
 
-import au.edu.apsr.mtk.base.AmdSec
-import au.edu.apsr.mtk.base.Div
-import au.edu.apsr.mtk.base.METSWrapper
-import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 import org.objectrepository.util.OrUtil
 

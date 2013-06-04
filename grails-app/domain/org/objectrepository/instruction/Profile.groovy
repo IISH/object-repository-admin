@@ -34,7 +34,7 @@ class Profile {
 
     static constraints = {
         access(blank: false)
-        embargo(nullable: true,  matches:'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        embargo(nullable: true,  matches:'[0-9]{4}-[0-1][0-9]-[0-3][0-9]')
         embargoAccess(nullable: true)
         notificationEMail(nullable: true)
         contentType(blank: false)
