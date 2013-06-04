@@ -7,7 +7,7 @@ h3. To begin with: a friendly description
 A human readable bit of information. This will show up on the administration
 interface when viewing your instructions.
 
-h3. Plan the services
+h3. Choose the services
 @plan@ (profile and instruction)
 
 Determines what services are to be used ( in no particular order ). Seperated by a comma.
@@ -68,6 +68,25 @@ There are three out-of-the-box policies available:
     {code}access='closed' (default){code}
 
 In the administration interface a CP administrator can add new policies and thus apply custom view levels.
+
+h3. Access policy with embargo
+@embargo@ (profile, instruction and stagingfile elements)
+
+@embargoAccess@ (profile, instruction and stagingfile elements, default: closed)
+
+The @embargo@ is a date with the format [[yyyy-MM-dd]]. It will enforce an alternative access policy as defined in the
+ @embargoAccess@ element.
+
+Some examples:
+{table}
+*@access@* | *@embargo@* | *@embargoAccess@* | *@policy enforced@*
+open | 2010-12-01 | restricted | On 2009-12-01 the resource has *restricted* access
+open | 2010-12-01 | restricted | On 2011-12-01 the resource has *open* access
+open | 2010-12-01 |  | On 2009-12-01 the resource has *closed* access
+open | 2010-12-01 |  | On 2011-12-01 the resource has *open* access
+closed | 2010-12-01 | open | On 2009-12-01 the resource has *open* access
+closed | 2010-12-01 | open | On 2011-12-01 the resource has *closed* access
+{table}
 
 h3. The compound object identifier and ordering of files
 @objid@ (instruction, stagingfile; empty by default)

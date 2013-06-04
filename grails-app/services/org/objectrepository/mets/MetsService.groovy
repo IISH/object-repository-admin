@@ -52,7 +52,7 @@ class MetsService {
             map
         }
 
-        if ( !levels ) return null
+        if (!levels) return null
 
         int _file_ID = 0
         def map = [:]
@@ -125,7 +125,8 @@ class MetsService {
                                     String valueRef = "http://purl.org/eprint/accessRights/" + OrUtil.camelCase([policyService._getPolicy(na, access).getAccessForBucket(resourceId), "Access"])
                                     'epdcx:description'('epdcx:resourceId': resourceId) {
                                         'epdcx:statement'('epdcx:propertyURI': 'http://purl.org/dc/terms/available', 'epdcx:valueRef': valueRef) {
-                                            // For embargo date add  <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF">2013-05-29</epdcx:valueString>
+                                            if (listOfFiles[0].metadata.embargo?.length() == 10)
+                                                'epdcx:valueString'('epdcx:sesURI': 'http://purl.org/dc/terms/W3CDTF', listOfFiles[0].metadata.embargo)
                                         }
                                     }
                                 }
@@ -149,8 +150,6 @@ class MetsService {
             }
         }
 
-        def xml = new StreamingMarkupBuilder().bind(mets)
-        // if (_file_ID == 0) return null
-        xml
+        new StreamingMarkupBuilder().bind(mets)
     }
 }

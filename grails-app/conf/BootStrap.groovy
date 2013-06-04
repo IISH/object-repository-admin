@@ -52,7 +52,7 @@ class BootStrap {
                 break
             case Environment.DEVELOPMENT:
                 addUser(["0"], "admin")
-                addUser(["12345", "10622"], "12345")
+                addUser(["12345", "10622", "11152"], "12345")
                 addUser(["20000"], "20000")
                 break
             case Environment.TEST:

@@ -22,7 +22,7 @@ class PolicyService {
         if (cache == 'no') policies.clear()
         String na = fileInstance.metadata.na
         final String access
-        if (fileInstance.metadata.embargo?.length==10 && Date.parse('yyyy-MM-dd', fileInstance.metadata.embargo) > new Date()) {
+        if (fileInstance.metadata.embargo?.length()==10 && Date.parse('yyyy-MM-dd', fileInstance.metadata.embargo) > new Date()) {
             access = (fileInstance.metadata.embargoAccess) ?: 'closed'
         } else {
             access = fileInstance.metadata.access

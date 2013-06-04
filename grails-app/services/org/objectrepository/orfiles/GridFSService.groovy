@@ -216,7 +216,7 @@ class GridFSService {
     def listFilesByLabel(String na, String bucket = 'master', String label) {
         new GridFS(mongo.getDB(OR + na), bucket)
                 .find(new BasicDBObject('metadata.label', label))
-                .sort { it.metaData.seq }
+                .sort { it.metadata.seq }
     }
 
 }
