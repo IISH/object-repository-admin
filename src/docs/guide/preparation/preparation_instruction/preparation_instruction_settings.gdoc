@@ -49,8 +49,8 @@ to use as it covers most use cases.
     Updates a file with the given pid. But error will occur if the pid does not exists in the object repository
 
     {code}action='delete'{code}
-    Removes the file with the specified PID. In this version of the object-repository the delete action does not remove
-    a file. Rather it sets the access value to 'deleted' and makes the digital object unavailable this way.
+    Removes the file with the specified PID. At least two independent account holders are needed to save the instruction
+    with this setting. If not, the command will not be executed.
 
 h3. Access policy
 @access@ (profile, instruction and stagingfile elements)

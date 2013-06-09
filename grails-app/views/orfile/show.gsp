@@ -22,14 +22,14 @@
 <div id="show-files" class="content scaffold-show" role="main">
     <g:render template="/layouts/orfile" model="[orfileInstance: orfileInstance]"/>
     <g:form mapping="namingAuthority"
-            params="[na: params.na, id: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">
+            params="[na: params.na, id: orfileInstance.master.metadata.pid]">
         <fieldset class="buttons">
             <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="edit"
-                    id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
+                    id="${orfileInstance.master.metadata.pid}"><g:message
                     code="default.button.edit.label"
                     default="Edit"/></g:link>
             <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="recreatefile"
-                    id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}"><g:message
+                    id="${orfileInstance.master.metadata.pid}"><g:message
                     code="default.button.instruction.label"
                     default="New instruction"/></g:link>
         </fieldset>

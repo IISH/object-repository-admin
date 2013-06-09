@@ -48,7 +48,7 @@
         <g:each in="${orfileInstanceList}" status="i" var="orfileInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
-                            id="${orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()}">
+                            id="${orfileInstance.master.metadata.pid}">
                     <g:set var="hasPreview"
                            value="${orfileInstance.level3?.contentType?.startsWith('image')}"/>
                     <g:if test="${hasPreview}">
@@ -67,7 +67,7 @@
                 </td>
                 <td>${orfileInstance.master.metadata.lastUploadDate}</td>
                 <td><g:link mapping="namingAuthority" action="download"
-                            params="[na: params.na, pid: orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]">metadata</g:link></td>
+                            params="[na: params.na, pid: orfileInstance.master.metadata.pid]">metadata</g:link></td>
             </tr>
         </g:each>
         </tbody>

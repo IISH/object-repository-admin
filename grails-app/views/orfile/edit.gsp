@@ -21,7 +21,7 @@
 <g:render template="/layouts/header" model="[instance: master]"/>
 
 <div id="edit-files" class="content scaffold-edit" role="main">
-    <g:form mapping="namingAuthority" params="[na:params.na, id:orfileInstance.master.metadata.pid.bytes.encodeBase64().toString()]" method="post">
+    <g:form mapping="namingAuthority" params="[na:params.na, id:orfileInstance.master.metadata.pid]" method="post">
         <ol class="property-list files">
 
             <li class="fieldcontain">

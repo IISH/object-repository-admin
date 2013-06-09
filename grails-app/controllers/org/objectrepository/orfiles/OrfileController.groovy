@@ -56,27 +56,30 @@ class OrfileController extends NamingAuthorityInterceptor {
     }
 
     def show() {
-        def orfileInstance = gridFSService.get(params.na, new String(params.id.decodeBase64()))
+        final String pid = params.na + '/' + params.pid
+        def orfileInstance = gridFSService.get(params.na, pid)
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.na + '/' + params.pid])
             forward(action: 'list')
         } else
             [orfileInstance: orfileInstance]
     }
 
     def edit() {
-        def orfileInstance = gridFSService.get(params.na, new String(params.id.decodeBase64()))
+        final String pid = params.na + '/' + params.pid
+        def orfileInstance = gridFSService.get(params.na, pid)
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), params.na + '/' + params.pid])
             forward(action: "list")
         } else
             [orfileInstance: orfileInstance, policyList: Policy.findAllByNa(params.na), profile: Profile.findByNa(params.na)]
     }
 
     def update() {
-        def orfileInstance = gridFSService.get(params.na, new String(params.id.decodeBase64()))
+        final String pid = params.na + '/' + params.pid
+        def orfileInstance = gridFSService.get(params.na, pid)
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), pid])
             forward(action: 'list')
         } else {
             orfileInstance.master.metadata.access = params.access
@@ -84,12 +87,12 @@ class OrfileController extends NamingAuthorityInterceptor {
             orfileInstance.master.metadata.embargoAccess = params.embargoAccess
             orfileInstance.master.metadata.label = params.label
             orfileInstance.master.metadata.objid = params.objid
-            orfileInstance.master.metadata.seq = Integer.parseInt( params.seq )
+            orfileInstance.master.metadata.seq = Integer.parseInt(params.seq)
 
             gridFSService.update(orfileInstance.master)
 
-            flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), params.id])
-            forward(action: 'show', id: params.id)
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'files.label', default: 'Files'), pid])
+            forward(action: 'show', pid: params.pid)
         }
     }
 
@@ -132,14 +135,15 @@ class OrfileController extends NamingAuthorityInterceptor {
      * @return
      */
     def recreatefile() {
-        def orfileInstance = gridFSService.findByPid(new String(params.id.decodeBase64()))
+        final String pid = params.na + '/' + params.pid
+        def orfileInstance = gridFSService.findByPid(pid)
         if (!orfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), new String(params.id.decodeBase64())])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'files.label', default: 'Files'), pid])
             forward(action: 'list')
             return
         }
 
-        def stagingFile = Stagingfile.findByPid(orfileInstance.metaData.pid)
+        def stagingFile = Stagingfile.findByPid(pid)
         if (stagingFile) {
             flash.message = "This file is already staged in another instruction: " + stagingFile.parent.label
             forward(action: 'show')
@@ -180,7 +184,6 @@ class OrfileController extends NamingAuthorityInterceptor {
 
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/xml")
-        params.pid = (params.pid) ? new String(params.pid.decodeBase64()) : null
         downloadService.writeOrfiles(params, response.outputStream)
     }
 
