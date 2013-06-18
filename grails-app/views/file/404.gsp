@@ -13,6 +13,7 @@
 <div id="show-file" class="content scaffold-show" role="main">
     <h1>File not found</h1>
     <p>${params.pid}</p>
+    <g:if test="${flash.message}"><p class="message">${flash.message}</p></g:if>
 </div>
 </body>
 </html>

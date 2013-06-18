@@ -1,5 +1,7 @@
 package org.objectrepository.instruction
 
+import com.mongodb.DBPortPool
+import com.mongodb.MongoException
 import org.objectrepository.util.OrUtil
 
 /**
@@ -81,12 +83,23 @@ class WorkflowActiveService extends WorkflowJob {
 
         if (identifier) {
             def query = [workflow: [$elemMatch: [n: 0, identifier: identifier]]]
-            def document = mongo.getDB('sa').instruction.findOne(query) as Instruction
+            def document = null
+            try {
+                document = mongo.getDB('sa').instruction.findOne(query) as Instruction
+            } catch (DBPortPool.ConnectionWaitTimeOut e) {
+                log.error(e)
+                log.error("The server instance may need to restart. See for a possible explanation https://jira.mongodb.org/browse/JAVA-767")
+            }
             if (document) {
                 log.info id(document) + "Status from message queue for instruction"
                 progress(document)
             } else {
-                document = mongo.getDB('sa').stagingfile.findOne(query) as Stagingfile
+                try {
+                    document = mongo.getDB('sa').stagingfile.findOne(query) as Stagingfile
+                } catch (DBPortPool.ConnectionWaitTimeOut e) {
+                    log.error(e)
+                    log.error("The server instance may need to restart. See for a possible explanation https://jira.mongodb.org/browse/JAVA-767")
+                }
                 if (document) {
                     log.info id(document) + "Status from message queue for stagingfile"
                     stagingfile(document)
@@ -145,8 +158,7 @@ class WorkflowActiveService extends WorkflowJob {
         if (document.task.exitValue == 0) {
             OrUtil.setInstructionPlan(document)
             last(document)
-        }
-        else {
+        } else {
             next(document)
         }
     }
