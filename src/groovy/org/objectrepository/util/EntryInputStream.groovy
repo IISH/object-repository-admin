@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory
 /**
  * EntryInputStream
  *
- * Input stream to support HTTP 206 and Image Iso 9660 file delivery
+ * ToDo: Expand this Input stream to support HTTP 206 and Image Iso 9660 file delivery.
  *
  */
 class EntryInputStream extends InputStream {

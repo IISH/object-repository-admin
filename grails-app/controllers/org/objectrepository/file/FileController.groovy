@@ -1,7 +1,5 @@
 package org.objectrepository.file
 
-import org.objectrepository.iso9660.impl.Iso9660FileEntry
-import org.objectrepository.iso9660.impl.Iso9660FileSystem
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -147,19 +145,6 @@ class FileController {
 
     def deleted = {
         [params: params]
-    }
-
-    def iso9660 = {
-        final def file = getFile(params)
-        if (file) {
-            final Iso9660FileSystem iso9660FileSystem = new Iso9660FileSystem(file)
-            def entries = []
-            for (Iso9660FileEntry fileEntry : iso9660FileSystem) {
-                entries << fileEntry
-            }
-          [entries:entries]
-        } else
-            render(view: '404', statuscode: 404)
     }
 
 /**
