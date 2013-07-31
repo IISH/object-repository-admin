@@ -41,7 +41,7 @@ class FtpController extends NamingAuthorityInterceptor {
         params.username = params.username.toLowerCase()
 
         if (User.findByUsername(params.username)) {
-            flash.message = "User already has an account in LDAP. Choose a different name."
+            flash.message = "Account already exists. Choose a different name."
             render(view: "create", model: [userInstance: params])
             return
         }
@@ -61,6 +61,11 @@ class FtpController extends NamingAuthorityInterceptor {
             render(view: "create", model: [userInstance: userInstance])
             return
         }
+
+
+        final authority = 'ROLE_OR_USER_' + params.username
+        final role = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
+        UserRole.create userInstance, role
 
         if (params.sendmail) {
             sendMail {

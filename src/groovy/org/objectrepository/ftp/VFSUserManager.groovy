@@ -59,10 +59,10 @@ class VFSUserManager extends AbstractUserManager {
         if (authentication instanceof UsernamePasswordAuthentication) {
             UsernamePasswordAuthentication upauth = (UsernamePasswordAuthentication) authentication
 
-            if (!(upauth.getPassword() && upauth.getUsername()))
+            if (!(upauth.password && upauth.username))
                 throw new AuthenticationFailedException("Authentication failed")
 
-            def principal = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(upauth.getUsername(), upauth.getPassword()))?.principal
+            def principal = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(upauth.username, upauth.password))?.principal
             if (principal) {
                 List<Authority> authorities = new ArrayList<Authority>();
                 authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
@@ -74,10 +74,9 @@ class VFSUserManager extends AbstractUserManager {
                     '/' + it.split('_').last()
                 }.join(',')
 
-                return new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+                new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
             } else
                 throw new AuthenticationFailedException("Authentication failed")
-
         } else
             throw new IllegalArgumentException(
                     "Authentication not supported by this user manager")

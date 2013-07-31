@@ -1,6 +1,7 @@
 package org.objectrepository.instruction
 
 import com.mongodb.DBPortPool
+import com.mongodb.Mongo
 import org.objectrepository.util.OrUtil
 
 /**

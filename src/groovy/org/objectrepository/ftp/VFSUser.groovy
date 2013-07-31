@@ -28,15 +28,11 @@ class VFSUser implements User {
     }
 
     public List<Authority> getAuthorities() {
-        (authorities) ? Collections.unmodifiableList(authorities) : null
+        authorities
     }
 
     public void setAuthorities(List<Authority> authorities) {
-        if (authorities) {
-            this.authorities = Collections.unmodifiableList(authorities);
-        } else {
-            this.authorities = null
-        }
+        this.authorities = (authorities) ? Collections.unmodifiableList(authorities) : null
     }
 
     /**
@@ -50,8 +46,7 @@ class VFSUser implements User {
      * Set the maximum idle time in second.
      */
     public void setMaxIdleTime(int idleSec) {
-        if (idleSec < 0) idleSec = 0
-        maxIdleTimeSec = idleSec
+        maxIdleTimeSec = (idleSec < 0) ? 0 : idleSec
     }
 
     /**
