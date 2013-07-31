@@ -45,7 +45,7 @@ class GridFSService {
      * @return
      */
     GridFSDBFile findByPid(String pid, String bucket = 'master') {
-        if (pid) new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
+        if (bucket in grailsApplication.config.buckets && pid) new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     GridFSDBFile findByField(String na, String bucket, String key, String value) {
@@ -90,7 +90,7 @@ class GridFSService {
      */
     void update(def document) {
 
-        ['master', 'level1', 'level2', 'level3'].each {
+        grailsApplication.config.buckets.each {
             mongo.getDB(OR + document.metadata.na).getCollection(it + ".files").update(['metadata.pid': document.metadata.pid],
                     [$set: ['metadata.access': document.metadata.access,
                             'metadata.embargo': document.metadata.embargo,
@@ -146,8 +146,6 @@ class GridFSService {
  * Derived from the GridFSDBFile class.
  *
  * Locates the chunks that over the specified range bytes=n-m
- *
- * ToDo: dynamically glue these methods into GridFSDBFile in Bootstrap
  */
     public int range(OutputStream writer, GridFSDBFile file, long from, long to) {
 
