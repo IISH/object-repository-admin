@@ -15,7 +15,7 @@
 
 <g:form mapping="namingAuthority" params="[na:params.na]">
     <label for="interval">Select interval:</label>
-    <g:select name="interval" value="${params.interval}" from="['year', 'month', 'week', 'day']"
+    <g:select name="interval" value="${params.interval}" from="['year', 'month', 'day']"
               onchange="this.form.submit();"/>
 </g:form>
 
@@ -32,7 +32,7 @@
         </tr>
         </thead>
         <g:each in="${storage}" var="interval" status="i">
-            <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
+            <g:each in="${grailsApplication.config.buckets}" var="bucket" status="j">
                 <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                     <td><g:if test="${j == 0}"><g:formatDate date="${interval._id}"
                                                              format="yyyy-MM-dd"/></g:if></td>
