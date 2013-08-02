@@ -69,9 +69,9 @@ class StatisticsService {
      * @param na
      * @return
      */
-    def getStorage(String na, String interval) {
+    def getStorage(String na, String unit) {
 
-        final String collection = interval + ".storage.statistics"
+        final String collection = "statistics.storage." + unit
         mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
     }
 
@@ -83,9 +83,9 @@ class StatisticsService {
      * @param na
      * @return
      */
-    def getSiteusage(String na, String interval) {
+    def getSiteusage(String na, String unit) {
 
-        final String collection = interval + ".siteusage.statistics"
+        final String collection = "statistics.siteusage." + unit
         mongo.getDB('or_' + na).getCollection(collection).find().sort([_id:-1]).collect() { it }
     }
 }

@@ -27,7 +27,7 @@ class MetsService {
      * @param cache
      * @return
      */
-    String writeMetsFile(String na, String objid, def buckets = ['master', 'level1', 'level2', 'level3']) {
+    String writeMetsFile(String na, String objid, def buckets = grailsApplication.config.buckets) {
 
         if (objid)
             metsFile(na, buckets, objid)
