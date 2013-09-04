@@ -25,7 +25,7 @@ class DashboardController extends NamingAuthorityInterceptor {
             if (!Profile.findByNa(params.na)) new Profile(na: params.na).save(failOnError: true)
         }
 
-        final interval = (params.interval) ?: 'year'
+        final interval = (params.interval) ?: 'all'
         [storage: statisticsService.getStorage(params.na, interval), siteusage: statisticsService.getSiteusage(params.na, interval), tasks: null]
     }
 }

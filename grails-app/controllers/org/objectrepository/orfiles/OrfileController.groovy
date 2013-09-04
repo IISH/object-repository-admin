@@ -86,8 +86,8 @@ class OrfileController extends NamingAuthorityInterceptor {
             orfileInstance.master.metadata.embargo = params.embargo
             orfileInstance.master.metadata.embargoAccess = params.embargoAccess
             orfileInstance.master.metadata.label = params.label
-            orfileInstance.master.metadata.objid = params.objid
-            orfileInstance.master.metadata.seq = Integer.parseInt(params.seq)
+            if ( params.objid ) orfileInstance.master.metadata.objid = params.objid
+            if ( params.seq ) orfileInstance.master.metadata.seq = Integer.parseInt(params.seq)
 
             gridFSService.update(orfileInstance.master)
 
