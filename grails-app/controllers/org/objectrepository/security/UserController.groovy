@@ -1,18 +1,23 @@
 package org.objectrepository.security
 
-import grails.converters.JSON
 import org.apache.commons.lang.RandomStringUtils
-import org.objectrepository.ftp.VFSView
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.oauth2.common.OAuth2AccessToken
+import org.springframework.security.oauth2.provider.ClientToken
+import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 @Secured(['ROLE_OR_USER'])
-class FtpController extends NamingAuthorityInterceptor {
+class UserController extends NamingAuthorityInterceptor {
 
     static allowedMethods = [save: "POST", update: "POST"]
 
     def springSecurityService
     def gridFSService
+    def tokenStore
+    def tokenServices
+    def clientDetailsService
+    def ldapUserDetailsManager
 
     def index() {
         redirect(action: "list", params: params)
@@ -57,22 +62,20 @@ class FtpController extends NamingAuthorityInterceptor {
         params.password = springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes())
 
         def userInstance = new User(params)
+        userInstance.resources = [ new UserResource(pid: "a", expirationDate: new Date()) ]
         if (!userInstance.save(flush: true)) {
             render(view: "create", model: [userInstance: userInstance])
             return
         }
 
-
-        final authority = 'ROLE_OR_USER_' + params.username
-        final role = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
-        UserRole.create userInstance, role
+        _updatekey(userInstance)
 
         if (params.sendmail) {
             sendMail {
                 to params.mail
                 from grailsApplication.config.mail.from
                 subject message(code: "mail.user.created.subject")
-                body message(code: "mail.user.created.body", args: [springSecurityService.principal.username,
+                body message(code: "mail.user.created." + userInstance.useFor, args: [springSecurityService.principal.username,
                         grailsApplication.config.grails.serverURL,
                         grailsApplication.config.mail.sftpServer,
                         params.id,
@@ -89,9 +92,19 @@ class FtpController extends NamingAuthorityInterceptor {
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "list")
+            return
         }
-        else
-            [userInstance: userInstance]
+
+        def token = tokenStore.selectKeys(userInstance.username)
+        if (!token && userInstance.useFor == 'api') {
+            def client = clientDetailsService.clientDetailsStore.get("clientId")
+            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
+                    ldapUserDetailsManager.authentication(params.id, roles(userInstance)))
+            token = tokenServices.createAccessToken(authentication)
+        }
+        [userInstance: userInstance, token: token]
     }
 
     def edit(Long id) {
@@ -99,8 +112,7 @@ class FtpController extends NamingAuthorityInterceptor {
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "list")
-        }
-        else
+        } else
             [userInstance: userInstance]
     }
 
@@ -110,8 +122,7 @@ class FtpController extends NamingAuthorityInterceptor {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "list")
             return
-        }
-        else if (version != null) {
+        } else if (version != null) {
             if (userInstance.version > version) {
                 userInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'user.label', default: 'User')] as Object[],
@@ -128,8 +139,43 @@ class FtpController extends NamingAuthorityInterceptor {
             return
         }
 
+        _updatekey(userInstance)
+
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
         forward(action: "show", id: userInstance.id)
+    }
+
+    def updatekey(Long id) {
+
+        def userInstance = User.findByIdAndNa(id, params.na)
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            forward(action: "list")
+            return
+        }
+
+        _updatekey(userInstance)
+        forward(action: "show", id: params.id)
+    }
+
+    private void _updatekey(def userInstance){
+        final OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
+        if (token) {
+            tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
+            tokenStore.removeRefreshToken(token.refreshToken.value)
+            if (userInstance.useFor == 'api') {
+                def client = clientDetailsService.clientDetailsStore.get("clientId")
+                ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                        client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+                final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
+                        ldapUserDetailsManager.authentication(params.id, roles(userInstance)))
+                tokenServices.createAccessToken(authentication)
+            }
+        }
+    }
+
+    private def roles(def userInstance) {
+        (userInstance.useFor == 'api') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + params.na] : ['ROLE_OR_FTPUSER_' + userInstance.username]
     }
 
     def delete(Long id) {
@@ -159,7 +205,7 @@ class FtpController extends NamingAuthorityInterceptor {
      *
      * @return
      */
-    def homeDirectory() {
+    /*def homeDirectory() {
 
         response.setContentType('application/json')
         assert params.id
@@ -171,7 +217,7 @@ class FtpController extends NamingAuthorityInterceptor {
                 unselectable: true, expand: true]
         tree['children'] = treeChildren(_view.workingDirectory)
         render tree as JSON
-    }
+    }*/
 
     /**
      * workingDirectory
@@ -181,6 +227,7 @@ class FtpController extends NamingAuthorityInterceptor {
      * @param key
      * @return
      */
+/*
     def workingDirectory(String key) {
 
         response.setContentType('application/json')
@@ -192,11 +239,15 @@ class FtpController extends NamingAuthorityInterceptor {
             } as JSON
         }
     }
+*/
 
-    def updateDirectory(){
+/*
+    def updateDirectory() {
         println(params)
     }
+*/
 
+/*
     private def treeChildren(def f) {
         f.listFiles().collect {
             def item = [title: it.name, isFolder: it.directory, key: it.name.split(':')[0], isLazy: params.isLazy]
@@ -208,4 +259,5 @@ class FtpController extends NamingAuthorityInterceptor {
             item
         }
     }
+*/
 }

@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.LdapUser
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.*
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.ldap.LdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
@@ -128,5 +129,26 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
             return "!" + password
         }
         password
+    }
+
+    /**
+     * authentication
+     *
+     * Create an UsernamePasswordAuthenticationToken for the oauth authentication provider.
+     * See config grails.plugins.springsecurity.controllerAnnotations.staticRules:
+     * ROLE_OR_USER will allow access to the oauth controller
+     * ROLE_OR_USER_[na] will allow access to the resource
+     *
+     * @param na
+     * @return
+     */
+    def UsernamePasswordAuthenticationToken authentication(String username, def authorities) {
+        new UsernamePasswordAuthenticationToken(
+                username,
+                UUID.randomUUID().toString(),
+                authorities.collect {
+                    new GrantedAuthorityImpl(it)
+                }
+        )
     }
 }

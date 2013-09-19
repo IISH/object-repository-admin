@@ -1,4 +1,4 @@
-<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
+<g:set var="entityName" value="StagingareaAccount"/>
 <!doctype html>
 <html>
 <head>

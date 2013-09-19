@@ -1,5 +1,4 @@
-<%@ page import="org.springframework.security.oauth2.common.OAuth2AccessToken;" %>
-<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
+<g:set var="entityName" value="StagingareaAccount"/>
 <!doctype html>
 <html>
 <head>
@@ -51,38 +50,6 @@
         <td valign="top" class="name"><g:message code="user.enabled.label" default="Enabled"/></td>
         <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.password[0]!='!'}"/></td>
     </tr>
-
-    <g:if test="${token}">
-        <tr class="prop">
-            <td valign="top" class="name"><g:message code="user.key.label" default="Webservice key"/></td>
-            <td valign="top" class="value">
-                <table>
-                    <tr>
-                        <th>key</th>
-                        <th>valid until</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td><input id="token" type="text" size="50" value="${token.value}"/></td>
-                        <td><g:formatDate date="${token.expiration}" format="yyyy-MM-dd"/></td>
-                        <td><g:form mapping="namingAuthority" params="[na: params.na, id:userInstance.id]"><span
-                                class="button"><g:actionSubmit
-                                    class="edit" action="updatekey"
-                                    value="${message(code: 'user.changekey.label', default: 'Change key')}"/></span></g:form>
-                        </td>
-                    </tr>
-                </table>
-
-                <p>If you know or feel your key is compromised in some way, just use the refresh option. This will generate a new key for
-                you.</p>
-                <hr/>
-
-                <p>Place the key in a HTTP header request as expressed in this pseudo code:<br/>
-                    HTTP-header("Authorization", "${OAuth2AccessToken.BEARER_TYPE} ${token.value}")<br/>
-                    Or in your browser url: ?${OAuth2AccessToken.BEARER_TYPE_PARAMETER}=${token.value}</p>
-            </td>
-        </tr>
-    </g:if>
 
     </tbody>
 </table>

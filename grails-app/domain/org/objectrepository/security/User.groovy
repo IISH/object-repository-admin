@@ -16,6 +16,8 @@ class User {
     boolean accountExpired
     boolean accountLocked
     boolean passwordExpired
+    String useFor = 'ftp'
+    List<UserResource> resources = []
 
     Set<Role> getAuthorities() {
         UserRole.findAllByUser(this).collect { it.role } as Set
@@ -25,6 +27,7 @@ class User {
 
     static constraints = {
         na(nullable: true, blank: false)
+        useFor(inList:['ftp', 'api'])
         verification(nullable: true, unique: true)
         newpassword(nullable: true)
         username(blank: false, unique: true, size: 3..30, matches: /^[a-zA-Z0-9_\.]*/)
@@ -36,6 +39,8 @@ class User {
         database 'security'
         password column: '`password`'
     }
+
+    static embedded = ['resources']
 
     static mapWith = "mongo"
 }

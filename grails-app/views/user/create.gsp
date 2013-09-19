@@ -1,4 +1,4 @@
-<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
+<g:set var="entityName" value="UserAccount"/>
 <!doctype html>
 <html>
 <head>
@@ -27,7 +27,7 @@
                 <label for="username"><g:message code="user.username.label" default="username"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'username', 'errors')}">
-                <g:textField name="username" maxlength="30" value="${userInstance?.username}"/>
+                <g:textField name="username" maxlength="30" />
             </td>
         </tr>
         <tr class="prop">
@@ -35,7 +35,7 @@
                 <label for="password"><g:message code="user.password.label" default="Password"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'password', 'errors')}">
-                <g:passwordField name="password" value=""/> <g:message code="user.default.autopass"/>
+                <g:passwordField name="password" /> <g:message code="user.default.autopass"/>
             </td>
         </tr>
 
@@ -45,7 +45,16 @@
                                                  default="Confirm password"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'confirmpassword', 'errors')}">
-                <g:passwordField name="confirmpassword" value=""/>
+                <g:passwordField name="confirmpassword" />
+            </td>
+        </tr>
+
+        <tr class="prop">
+            <td valign="top" class="name">
+                <label for="useFor"><g:message code="user.useFor.label"/></label>
+            </td>
+            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'useFor', 'errors')}">
+                <g:select name="useFor" from="${grailsApplication.config.usesFor}" value="${userInstance.useFor}"/>
             </td>
         </tr>
 
@@ -54,7 +63,7 @@
                 <label for="mail"><g:message code="user.email.label" default="Email"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'mail', 'errors')}">
-                <g:textField name="mail" value="${userInstance?.mail}"/>
+                <g:textField name="mail" />
             </td>
         </tr>
 
@@ -63,7 +72,7 @@
                 <label for="enabled"><g:message code="user.enabled.label" default="Enabled"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'enabled', 'errors')}">
-                <g:checkBox name="enabled" value="${userInstance?.enabled}"/>
+                <g:checkBox name="enabled" value="true"/>
             </td>
         </tr>
 

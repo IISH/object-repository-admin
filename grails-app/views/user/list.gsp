@@ -1,4 +1,4 @@
-<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
+<g:set var="entityName" value="UserAccount"/>
 <!doctype html>
 <html>
 <head>
@@ -24,6 +24,8 @@
         <tr>
             <g:sortableColumn property="username"
                               title="${message(code: 'user.username.label', default: 'username')}"/>
+            <g:sortableColumn property="use"
+                              title="${message(code: 'user.useFor.label', default: 'use for')}"/>
             <g:sortableColumn property="mail" title="${message(code: 'user.email.label', default: 'Email')}"/>
             <g:sortableColumn property="enabled"
                               title="${message(code: 'user.enabled.label', default: 'Account Enabled')}"/>
@@ -35,6 +37,7 @@
             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></td>
+                <td>${fieldValue(bean: userInstance, field: "useFor")}</td>
                 <td>${fieldValue(bean: userInstance, field: "mail")}</td>
                 <td><g:formatBoolean boolean="${userInstance.password[0]!='!'}"/></td>
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"

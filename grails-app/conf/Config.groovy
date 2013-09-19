@@ -104,6 +104,9 @@ accessMatrix = [
         ]
 ]
 
+// Possibilities for our user roles
+usesFor = ['ftp', 'api']
+
 // LDAP settings
 def dn = ",dc=socialhistoryservices,dc=org"
 

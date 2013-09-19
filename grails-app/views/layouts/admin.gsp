@@ -69,11 +69,11 @@
     <ul>
         <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="dashboard">Dashboard</g:link></li>
         <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="stagingarea">Stagingarea</g:link></li>
+        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">Customer Access</g:link></li>
         <li class="profile"><g:link mapping="namingAuthority" params="[na:params.na]" controller="profile">Profile</g:link></li>
         <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">Policies</g:link></li>
         <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">Instructions</g:link></li>
-        <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">Stored objects</g:link></li>
-        %{--<li class="ftp"><g:link mapping="namingAuthority" params="[na:params.na]" controller="ftp">Guest ftp users</g:link></li>--}%
+        <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">Stored Objects</g:link></li>
     </ul>
 </div>
 

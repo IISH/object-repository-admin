@@ -2,11 +2,6 @@ package org.objectrepository.security
 
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.GrantedAuthorityImpl
-import org.springframework.security.oauth2.common.OAuth2AccessToken
-import org.springframework.security.oauth2.provider.ClientToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 /**
  * UserController
@@ -20,9 +15,6 @@ class StagingareaController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def ldapUserDetailsManager
-    def tokenStore
-    def tokenServices
-    def clientDetailsService
 
     static allowedMethods = [save: "POST", update: "POST", changekey: "POST"]
 
@@ -75,7 +67,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
                 to params.mail
                 from grailsApplication.config.mail.from
                 subject message(code: "mail.user.created.subject")
-                body message(code: "mail.user.created.body", args: [springSecurityService.principal.username,
+                body message(code: "mail.user.created.stagingarea", args: [springSecurityService.principal.username,
                         grailsApplication.config.grails.serverURL,
                         grailsApplication.config.mail.sftpServer,
                         params.id,
@@ -93,17 +85,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
             forward(action: "list")
             return
         }
-
-        def token = tokenStore.selectKeys(params.id)
-        if (!token) {
-            def client = clientDetailsService.clientDetailsStore.get("clientId")
-            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    authentication(params))
-            token = tokenServices.createAccessToken(authentication)
-        }
-        [userInstance: userInstance, token: token]
+        [userInstance: userInstance]
     }
 
     def edit = {
@@ -115,23 +97,6 @@ class StagingareaController extends NamingAuthorityInterceptor {
             [userInstance: userInstance]
     }
 
-    def updatekey = {
-
-        def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
-        OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
-        if (token) {
-            tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
-            tokenStore.removeRefreshToken(token.refreshToken.value)
-            def client = clientDetailsService.clientDetailsStore.get("clientId")
-            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    authentication(params))
-            tokenServices.createAccessToken(authentication)
-        }
-        forward(action: "show", id: params.id)
-    }
-
     def update = {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
@@ -140,12 +105,10 @@ class StagingareaController extends NamingAuthorityInterceptor {
         } else if (!ldapUserDetailsManager.manages(userInstance, params.na)) {
             flash.message = "Cannot set this ftp account; as it does not belong to your naming authority."
             render(view: "edit", model: [userInstance: userInstance])
-        }
-        else if (params.confirmpassword && params.confirmpassword != params.password) {
+        } else if (params.confirmpassword && params.confirmpassword != params.password) {
             flash.message = "Passwords do not match"
             render(view: "edit", model: [userInstance: userInstance])
-        }
-        else {
+        } else {
             boolean passwordAltered = (params.confirmpassword != "" && params.password != userInstance.password)
             params.password = (passwordAltered) ?
                 springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes()) :
@@ -162,12 +125,9 @@ class StagingareaController extends NamingAuthorityInterceptor {
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             forward(action: "list")
-        }
-        else
-        if (userInstance.id == springSecurityService.principal.username) {
+        } else if (userInstance.id == springSecurityService.principal.username) {
             render(message(code: "delete.self"))
-        }
-        else
+        } else
             try {
                 ldapUserDetailsManager.deleteUser(params.id)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])}"
@@ -180,24 +140,4 @@ class StagingareaController extends NamingAuthorityInterceptor {
             }
     }
 
-    /**
-     * authentication
-     *
-     * Create an UsernamePasswordAuthenticationToken for the oauth authentication provider.
-     * See config grails.plugins.springsecurity.controllerAnnotations.staticRules:
-     * ROLE_OR_USER will allow access to the oauth controller
-     * ROLE_OR_USER_[na] will allow access to the resource
-     *
-     * @param na
-     * @return
-     */
-    private UsernamePasswordAuthenticationToken authentication(def params) {
-        new UsernamePasswordAuthenticationToken(
-                params.id,
-                UUID.randomUUID().toString(),
-                [
-                        new GrantedAuthorityImpl('ROLE_OR_USER'),
-                        new GrantedAuthorityImpl('ROLE_OR_USER_' + params.na)]
-        )
-    }
 }

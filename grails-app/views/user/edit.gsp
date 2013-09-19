@@ -1,15 +1,10 @@
-<g:set var="entityName" value="${message(code: 'user.label', default: 'Account')}"/>
+<g:set var="entityName" value="UserAccount"/>
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${System.getProperty("layout")}"/>
     <title><g:message code="default.edit.label" args="[entityName]"/></title>
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'dynatree/skin/ui.dynatree.css')}"/>
-    <g:javascript src="dynatree/jquery-ui.custom.min.js"/>
-    <g:javascript src="dynatree/jquery.cookie.js"/>
-    <g:javascript src="dynatree/jquery.dynatree.min.js"/>
-    <g:render template="tree" model="[checkbox:true,treeOptions:[isLazy:true,hideCheckbox: true, unselectable: true]]"/>
 </head>
 
 <body>
@@ -30,8 +25,6 @@
 
 <g:render template="/layouts/header" model="[instance: userInstance]"/>
 
-<div>
-<div style="float:left">
 <g:form mapping="namingAuthority" params="[na: params.na, id: userInstance.id]" method="post"
         onsubmit="return validate(this);">
     <table>
@@ -77,6 +70,15 @@
 
         <tr class="prop">
             <td valign="top" class="name">
+                <label for="mail"><g:message code="user.useFor.label" default="Use for"/></label>
+            </td>
+            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'useFor', 'errors')}">
+                <g:select name="useFor" from="${grailsApplication.config.usesFor}" value="${userInstance.useFor}"/>
+            </td>
+        </tr>
+
+        <tr class="prop">
+            <td valign="top" class="name">
                 <label for="enabled"><g:message code="user.enabled.label" default="Enabled"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'enabled', 'errors')}">
@@ -85,11 +87,9 @@
         </tr>
         </tbody>
     </table>
+    %{--<div id="tree" style="float:left;margin-left:50px"></div>
     </div>
-    <div id="tree" style="float:left;margin-left:50px"></div>
-    </div>
-
-    <div style="clear:both;"></div>
+--}%
 
     <div class="buttons">
         <span class="button"><g:actionSubmit class="save" action="update"

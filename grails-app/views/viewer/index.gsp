@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'or.css')}"/>
     <link rel="stylesheet" href="${resource(dir: 'video-js', file: 'video-js.min.css')}"/>
-    <script type="text/javascript" src="${resource(dir: 'video-js', file: 'video.min.js')}"></script>
+    <script type="text/javascript" src="${resource(dir: 'video-js', file: 'video.js')}"></script>
     <script>
         _V_.options.flash.swf = "${resource(dir:'video-js', file:'video-js.swf')}";
     </script>

@@ -30,8 +30,6 @@ grails.project.dependency.resolution = {
         // group, name, version
         compile "org.apache.ftpserver:ftpserver-core:1.0.6"
         compile "com.lowagie:itext:4.2.0"
-        compile "com.github.stephenc.java-iso-tools:loop-fs-api:2.0.0"
-
         compile "org.apache.activemq:activemq-camel:5.8.0"
         compile "org.apache.activemq:activemq-pool:5.8.0"
     }
