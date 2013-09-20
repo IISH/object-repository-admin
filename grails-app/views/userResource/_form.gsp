@@ -1,36 +1,39 @@
 <%@ page import="org.objectrepository.security.UserResource" %>
 
-
-
-<div class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'downloadLimit', 'error')} ">
-	<label for="downloadLimit">
-		<g:message code="userResource.downloadLimit.label" default="Download Limit" />
-		
-	</label>
-	<g:field type="number" name="downloadLimit" value="${userResourceInstance.downloadLimit}" />
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'downloads', 'error')} ">
-	<label for="downloads">
-		<g:message code="userResource.downloads.label" default="Downloads" />
-		
-	</label>
-	<g:field type="number" name="downloads" value="${userResourceInstance.downloads}" />
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'expirationDate', 'error')} ">
-	<label for="expirationDate">
-		<g:message code="userResource.expirationDate.label" default="Expiration Date" />
-		
-	</label>
-	<g:datePicker name="expirationDate" precision="day" value="${userResourceInstance?.expirationDate}" />
+<div class="fieldcontain">
+    <p id="username"><label for="username">Username</label>${userInstance.username}</p>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'pid', 'error')} ">
-	<label for="pid">
-		<g:message code="userResource.pid.label" default="Pid" />
-		
-	</label>
-	<g:textField name="pid" value="${userResourceInstance?.pid}" />
+    <label for="pid">
+        <g:message code="userResource.pid.label" default="Pid"/>
+
+    </label>
+    <g:textField name="pid" value="${userResourceInstance?.pid}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'downloadLimit', 'error')} ">
+    <label for="downloadLimit">
+        <g:message code="userResource.downloadLimit.label" default="Download Limit"/>
+    </label>
+    <g:field type="number" name="downloadLimit" value="${userResourceInstance.downloadLimit}"/>
+</div>
+
+<div id="t" class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'expirationDate', 'error')}">
+    <label for="expirationDate"><g:checkBox name="expirationDateEnable" type="checkbox"
+                                            checked="${userResourceInstance.expirationDate}"/><g:message
+            code="userResource.expirationDate.label" default="Expiration Date"/></label>
+    <g:datePicker disabled="true" name="expirationDate" precision="day"
+                  value="${userResourceInstance?.expirationDate}"/>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        var expirationDateEnable = $("#expirationDateEnable");
+        expirationDateEnable.click(function () {
+            $("#t").find("select").attr("disabled", !this.checked);
+        });
+        $("#t").find("select").attr("disabled", !expirationDateEnable.checked);
+        console.log(!expirationDateEnable.checked)                             ;
+    });
+</script>

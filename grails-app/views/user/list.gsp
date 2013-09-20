@@ -24,8 +24,8 @@
         <tr>
             <g:sortableColumn property="username"
                               title="${message(code: 'user.username.label', default: 'username')}"/>
-            <g:sortableColumn property="use"
-                              title="${message(code: 'user.useFor.label', default: 'use for')}"/>
+            <th>${message(code: 'user.useFor.label', default: 'use for')}</th>
+            <th>${message(code: 'user.resource.label', default: 'resources')}</th>
             <g:sortableColumn property="mail" title="${message(code: 'user.email.label', default: 'Email')}"/>
             <g:sortableColumn property="enabled"
                               title="${message(code: 'user.enabled.label', default: 'Account Enabled')}"/>
@@ -38,6 +38,9 @@
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></td>
                 <td>${fieldValue(bean: userInstance, field: "useFor")}</td>
+                <td><g:if test="${userInstance.useFor == 'dissemination'}">
+                    <g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link>
+                </g:if></td>
                 <td>${fieldValue(bean: userInstance, field: "mail")}</td>
                 <td><g:formatBoolean boolean="${userInstance.password[0]!='!'}"/></td>
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"

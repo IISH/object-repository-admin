@@ -16,7 +16,7 @@ class User {
     boolean accountExpired
     boolean accountLocked
     boolean passwordExpired
-    String useFor = 'ftp'
+    String useFor = 'dissemination'
     List<UserResource> resources = []
 
     Set<Role> getAuthorities() {
@@ -27,7 +27,7 @@ class User {
 
     static constraints = {
         na(nullable: true, blank: false)
-        useFor(inList:['ftp', 'api'])
+        useFor(inList:['administration', 'dissemination'])
         verification(nullable: true, unique: true)
         newpassword(nullable: true)
         username(blank: false, unique: true, size: 3..30, matches: /^[a-zA-Z0-9_\.]*/)

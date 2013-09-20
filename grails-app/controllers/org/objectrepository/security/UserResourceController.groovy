@@ -1,5 +1,6 @@
 package org.objectrepository.security
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
 
@@ -7,15 +8,18 @@ import org.springframework.security.access.annotation.Secured
  *  UserResourceController
  *
  *  There is no domain class for UserResource. Rather it is an embedded part of the User domain class
- *  The reference to the User instance will be uid
+ *  The reference to the User instance will be 'id'
+ *  The reference to the UserResource the 'pid'
  *
  *  We will translate the embedded class into a list here for our view.
  */
 @Secured(['ROLE_OR_USER'])
 class UserResourceController extends NamingAuthorityInterceptor {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "POST"]
     def springSecurityService
+    def ldapUserDetailsManager
+    def gridFSService
 
     /**
      * List all pid values.... no limits
@@ -24,91 +28,117 @@ class UserResourceController extends NamingAuthorityInterceptor {
      */
     def list(Long id) {
         final User userInstance = User.findByIdAndNa(id, params.na)
-        [userResourceInstanceList: userInstance.resources, userResourceInstanceTotal: userInstance.resources.size()]
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/user/list/' + id)
+            return
+        }
+        [userInstance: userInstance, userResourceInstanceList: userInstance.resources, userResourceInstanceTotal: userInstance.resources.size()]
     }
 
-    def create() {
-        [userResourceInstance: new UserResource(params)]
+    def create(Long id) {
+
+        def userInstance = User.get(id)
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/user/list/' + id)
+            return
+        }
+
+        final resource = new UserResource(pid: params.na + '/')
+        [userInstance: userInstance, userResourceInstance: resource]
     }
 
-    def save() {
+    def save(Long id) {
+
+        def userInstance = User.get(id)
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/user/list/' + id)
+            return
+        }
+
+        params.downloads = 0
         def userResourceInstance = new UserResource(params)
-        if (!userResourceInstance.save(flush: true)) {
+        final String pid = params.pid
+        final String prefix = pid[0..pid.indexOf('/') - 1]
+
+        final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.principal.authorities).findAll {
+            it.startsWith('ROLE_OR_USER_')
+        }
+        if (!('ROLE_OR_USER_' + prefix in authorities)) {
+            flash.message = "Resource is not under your control. The PID value must start with: " + authorities.collect { it[13..-1] }.join(', ')
             render(view: "create", model: [userResourceInstance: userResourceInstance])
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'userResource.label', default: 'UserResource'), userResourceInstance.id])
-        redirect(action: "show", id: userResourceInstance.id)
-    }
+        if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())
+            userResourceInstance.expirationDate = null
 
-    def show(Long id) {
-        def userResourceInstance = UserResource.get(id)
-        if (!userResourceInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "list")
+        userResourceInstance.interval = (pid[-1] == '*') ? 1 : gridFSService.countPidOrObjId(params.na, pid)
+        if (userResourceInstance.interval == 0) {
+            flash.message = "Unknown resource: " + pid
+            render(view: "create", model: [userResourceInstance: userResourceInstance])
             return
         }
 
-        [userResourceInstance: userResourceInstance]
+        userInstance.resources?.removeAll {
+            it.pid == pid
+        }
+        userInstance.resources << userResourceInstance
+
+        if (!userInstance.save(flush: true)) {
+            render(view: "create", model: [userResourceInstance: userResourceInstance])
+            return
+        }
+
+        flash.message = message(code: 'default.created.message', args: [message(code: 'userResource.label', default: 'UserResource'), pid])
+        redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
     }
 
     def edit(Long id) {
-        def userResourceInstance = UserResource.get(id)
-        if (!userResourceInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "list")
+        def userInstance = User.get(id)
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/user/list/' + id)
             return
         }
 
-        [userResourceInstance: userResourceInstance]
+        def userResourceInstance = userInstance.resources?.find {
+            it.pid == params.pid
+        }
+        if (!userResourceInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'userResource.label', default: 'UserResource'), params.pid])
+            redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
+            return
+        }
+
+        [userInstance: userInstance, userResourceInstance: userResourceInstance]
     }
 
-    def update(Long id, Long version) {
-        def userResourceInstance = UserResource.get(id)
-        if (!userResourceInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "list")
-            return
-        }
-
-        if (version != null) {
-            if (userResourceInstance.version > version) {
-                userResourceInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'userResource.label', default: 'UserResource')] as Object[],
-                        "Another user has updated this UserResource while you were editing")
-                render(view: "edit", model: [userResourceInstance: userResourceInstance])
-                return
-            }
-        }
-
-        userResourceInstance.properties = params
-
-        if (!userResourceInstance.save(flush: true)) {
-            render(view: "edit", model: [userResourceInstance: userResourceInstance])
-            return
-        }
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'userResource.label', default: 'UserResource'), userResourceInstance.id])
-        redirect(action: "show", id: userResourceInstance.id)
+    def update(Long id) {
+        save(id)
     }
 
     def delete(Long id) {
-        def userResourceInstance = UserResource.get(id)
-        if (!userResourceInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "list")
+        def userInstance = User.get(id)
+        if (!userInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/user/list/' + id)
             return
         }
 
-        try {
-            userResourceInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "list")
+        userInstance.resources?.removeAll {
+            it.pid == params.pid
         }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'userResource.label', default: 'UserResource'), id])
-            redirect(action: "show", id: id)
+
+        if (!userInstance.save(flush: true)) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
+            redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
+            return
         }
+
+        flash.message = message(code: 'default.deleted.message', args: [message(code: 'userResource.label', default: 'UserResource'), params.pid])
+        redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
     }
 }

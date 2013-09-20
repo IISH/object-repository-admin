@@ -4,6 +4,8 @@ import com.mongodb.BasicDBObject
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
+import org.objectrepository.security.User
+import org.objectrepository.security.UserResource
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -102,8 +104,15 @@ class GridFSService {
     }
 
     void siteusage(String na, def document) {
-        mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
+        if ( grailsApplication.config.siteusage )
+            mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
+
+    /*void download(User user, UserResource resource) {
+        mongo.getDB('security').user.update(
+                [_id:user.id,'resource.pid':resource.pid],
+                [$set:['resources.$.downloads':user.resources]], false, false, WriteConcern.NONE)
+    }*/
 
 /**
  * labels
@@ -225,4 +234,7 @@ class GridFSService {
                 .sort { it.metadata.seq }
     }
 
+    int countPidOrObjId(String na, String id) {
+        mongo.getDB(OR + na).'master.files'.count([$or:[['metadata.objid':id],['metadata.pid':id]]])
+    }
 }

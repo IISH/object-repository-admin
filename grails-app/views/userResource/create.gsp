@@ -1,4 +1,5 @@
 <%@ page import="org.objectrepository.security.UserResource" %>
+<g:set var="entityName" value="UserResource"/>
 <!doctype html>
 <html>
 <head>
@@ -11,33 +12,33 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" id="userInstance.id" class="list"
+                    action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance:userResourceInstance]"/>
+<g:render template="/layouts/header" model="[instance: userResourceInstance]"/>
 
-<a href="#create-userResource" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div id="create-userResource" class="content scaffold-create" role="main">
-			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
-			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
-			</g:if>
-			<g:hasErrors bean="${userResourceInstance}">
-			<ul class="errors" role="alert">
-				<g:eachError bean="${userResourceInstance}" var="error">
-				<li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
-				</g:eachError>
-			</ul>
-			</g:hasErrors>
-			<g:form action="save" >
-				<fieldset class="form">
-					<g:render template="form"/>
-				</fieldset>
-				<fieldset class="buttons">
-					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
-				</fieldset>
-			</g:form>
-		</div>
-	</body>
+<div id="create-userResource" class="content scaffold-create" role="main">
+    <h1><g:message code="default.create.label" args="[entityName]"/> for user: ${userInstance.username}</h1>
+    <g:hasErrors bean="${userResourceInstance}">
+        <ul class="errors" role="alert">
+            <g:eachError bean="${userResourceInstance}" var="error">
+                <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message
+                        error="${error}"/></li>
+            </g:eachError>
+        </ul>
+    </g:hasErrors>
+    <g:form mapping="namingAuthority" params="[na: params.na]" action="save" id="${userInstance.id}">
+        <fieldset class="form">
+            <g:render template="form"/>
+        </fieldset>
+        <fieldset class="buttons">
+            <g:submitButton name="create" class="save"
+                            value="${message(code: 'default.button.create.label', default: 'Create')}"/>
+        </fieldset>
+    </g:form>
+</div>
+
+</body>
 </html>

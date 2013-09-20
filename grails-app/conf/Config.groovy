@@ -72,6 +72,8 @@ if (System.properties.containsKey("or.properties")) {
     //System.exit(-1)
 }
 
+siteusage=true
+
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket
 // Definitions accessStatus taken from:
 // http://purl.org/dc/terms/available
@@ -105,7 +107,7 @@ accessMatrix = [
 ]
 
 // Possibilities for our user roles
-usesFor = ['ftp', 'api']
+usesFor = ['dissemination', 'administration']
 
 // LDAP settings
 def dn = ",dc=socialhistoryservices,dc=org"

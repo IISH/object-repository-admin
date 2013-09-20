@@ -41,14 +41,14 @@
         <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.password[0] != '!'}"/></td>
     </tr>
 
-<g:if test="${userInstance.useFor == 'ftp'}">
+<g:if test="${userInstance.useFor == 'dissemination'}">
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
         <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link></td>
     </tr>
 </g:if>
 
-    <g:if test="${userInstance.useFor == 'api' && token}">
+    <g:if test="${token}">
         <tr class="prop">
             <td valign="top" class="name"><g:message code="user.key.label" default="Webservice key"/></td>
             <td valign="top" class="value">

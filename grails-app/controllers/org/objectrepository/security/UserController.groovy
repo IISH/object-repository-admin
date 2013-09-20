@@ -14,9 +14,6 @@ class UserController extends NamingAuthorityInterceptor {
 
     def springSecurityService
     def gridFSService
-    def tokenStore
-    def tokenServices
-    def clientDetailsService
     def ldapUserDetailsManager
 
     def index() {
@@ -62,13 +59,12 @@ class UserController extends NamingAuthorityInterceptor {
         params.password = springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes())
 
         def userInstance = new User(params)
-        userInstance.resources = [ new UserResource(pid: "a", expirationDate: new Date()) ]
         if (!userInstance.save(flush: true)) {
             render(view: "create", model: [userInstance: userInstance])
             return
         }
 
-        _updatekey(userInstance)
+        ldapUserDetailsManager.replacekey(userInstance)
 
         if (params.sendmail) {
             sendMail {
@@ -95,15 +91,8 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        def token = tokenStore.selectKeys(userInstance.username)
-        if (!token && userInstance.useFor == 'api') {
-            def client = clientDetailsService.clientDetailsStore.get("clientId")
-            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    ldapUserDetailsManager.authentication(params.id, roles(userInstance)))
-            token = tokenServices.createAccessToken(authentication)
-        }
+        def token = ldapUserDetailsManager.selectKeys(userInstance.username)
+        if (!token) token = ldapUserDetailsManager.replacekey(userInstance)
         [userInstance: userInstance, token: token]
     }
 
@@ -139,7 +128,7 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        _updatekey(userInstance)
+        ldapUserDetailsManager.replacekey(userInstance)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
         forward(action: "show", id: userInstance.id)
@@ -154,28 +143,8 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        _updatekey(userInstance)
+        ldapUserDetailsManager.replacekey(userInstance)
         forward(action: "show", id: params.id)
-    }
-
-    private void _updatekey(def userInstance){
-        final OAuth2AccessToken token = tokenStore.selectKeys(userInstance.username)
-        if (token) {
-            tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
-            tokenStore.removeRefreshToken(token.refreshToken.value)
-            if (userInstance.useFor == 'api') {
-                def client = clientDetailsService.clientDetailsStore.get("clientId")
-                ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                        client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-                final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                        ldapUserDetailsManager.authentication(params.id, roles(userInstance)))
-                tokenServices.createAccessToken(authentication)
-            }
-        }
-    }
-
-    private def roles(def userInstance) {
-        (userInstance.useFor == 'api') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + params.na] : ['ROLE_OR_FTPUSER_' + userInstance.username]
     }
 
     def delete(Long id) {
@@ -188,6 +157,7 @@ class UserController extends NamingAuthorityInterceptor {
 
         try {
             userInstance.delete(flush: true)
+            ldapUserDetailsManager.removeToken(ldapUserDetailsManager.selectKeys(userInstance.username))
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "list")
         }
@@ -198,66 +168,4 @@ class UserController extends NamingAuthorityInterceptor {
         }
     }
 
-    /**
-     * showHomeDirectory
-     *
-     * Render all selected nodes from the root
-     *
-     * @return
-     */
-    /*def homeDirectory() {
-
-        response.setContentType('application/json')
-        assert params.id
-        final homeDir = '/' + params.na + ':' + params.id
-        final _view = new VFSView(gridFSService, [homeDirectory: homeDir])
-        _view.currentFolder = homeDir
-
-        def tree = [title: homeDir, isFolder: true, key: params.na, isLazy: params.isLazy, hideCheckbox: true,
-                unselectable: true, expand: true]
-        tree['children'] = treeChildren(_view.workingDirectory)
-        render tree as JSON
-    }*/
-
-    /**
-     * workingDirectory
-     *
-     * Show the first level of children of the workingDirectory node
-     *
-     * @param key
-     * @return
-     */
-/*
-    def workingDirectory(String key) {
-
-        response.setContentType('application/json')
-        def view = new VFSView(gridFSService, [homeDirectory: '/' + params.na])
-        if (view.changeWorkingDirectory(key)) {
-            render view.workingDirectory.listFiles().collect {
-                final childKey = key + '/' + it.name
-                [title: it.name, isFolder: it.directory, key: childKey, isLazy: true]
-            } as JSON
-        }
-    }
-*/
-
-/*
-    def updateDirectory() {
-        println(params)
-    }
-*/
-
-/*
-    private def treeChildren(def f) {
-        f.listFiles().collect {
-            def item = [title: it.name, isFolder: it.directory, key: it.name.split(':')[0], isLazy: params.isLazy]
-            if (it.directory) {
-                final _view = new VFSView(gridFSService, [homeDirectory: '/' + params.na + ':' + params.id])
-                _view.currentFolder += '/' + it.name
-                item['children'] = treeChildren(it)
-            }
-            item
-        }
-    }
-*/
 }

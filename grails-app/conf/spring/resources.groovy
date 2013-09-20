@@ -58,6 +58,9 @@ beans = {
             groupMemberAttributeName = conf.ldap.rememberMe.detailsManager.groupMemberAttributeName
             grailsApplication = application
             springSecurityService = ref('springSecurityService')
+            clientDetailsService = ref('clientDetailsService')
+            tokenStore = ref('tokenStore')
+            tokenServices = ref('tokenServices')
         }
     }
 

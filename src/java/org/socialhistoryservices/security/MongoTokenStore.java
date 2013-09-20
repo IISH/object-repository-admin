@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import java.io.*;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -75,8 +76,6 @@ final public class MongoTokenStore implements TokenStore {
         document.put("name", name);
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
         collection.insert(document);
-
-
     }
 
     public OAuth2AccessToken readAccessToken(String tokenValue) {
@@ -186,6 +185,11 @@ final public class MongoTokenStore implements TokenStore {
 
     private void expiration(String tokenValue) {
         this.expirationTokenStore.put(tokenValue, new Date().getTime() + sliderExpiration);
+    }
+
+    public void updateAuthentication(OAuth2AccessToken token, OAuth2Authentication authentication ) {
+
+        storeAccessToken(token, authentication);
     }
 
     /**

@@ -4,11 +4,13 @@ import com.lowagie.text.*
 import com.lowagie.text.pdf.PdfReader
 import com.lowagie.text.pdf.PdfWriter
 import org.apache.commons.io.IOUtils
+import org.objectrepository.security.User
 
 class PdfService {
 
     def gridFSService
     def policyService
+    def springSecurityService
 
     final static float rotationToLandscape = Math.PI * 2 * 0.75
     private static float documentRatio = 210f / 297f  // A4
@@ -36,10 +38,11 @@ class PdfService {
         final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open()
+        def userInstance
         list.each {
             final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
-            final Boolean denied = policyService.denied(access, na)
-            if (denied) {
+            final def hasAccess = policyService.hasAccess(access, na, [it.metadata.objid, it.metadata.pid], userInstance)
+            if (!hasAccess) {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             } else if (it.contentType.startsWith('image')) {
                 def image = null
@@ -71,6 +74,7 @@ class PdfService {
 
             document.newPage()
         }
+        userInstance.save()
         document.close()
         pdfWriter.close()
     }

@@ -13,7 +13,7 @@
 
 <body>
 
-<g:form mapping="namingAuthority" params="[na:params.na]">
+<g:form mapping="namingAuthority" params="[na: params.na]">
     <label for="interval">Select interval:</label>
     <g:select name="interval" value="${params.interval}" from="['all', 'year', 'month', 'day']"
               onchange="this.form.submit();"/>
@@ -119,36 +119,39 @@
     </table>
 </div>
 
-<div class="stat" style="clear: both;">
-    <table style="width:400px;white-space: nowrap;">
-        <caption>Site usage</caption>
-        <thead>
-        <tr>
-            <th>date</th>
-            <th colspan="4">types</th>
-        </tr>
-        </thead>
-        <g:each in="${siteusage}" var="interval" status="i">
-            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-            <td><g:if test="${first}"><g:formatDate date="${interval._id}"
-                                                    format="yyyy-MM-dd"/></g:if></td>
-            <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
-                <td>
-                    <table>
-                        <caption>${bucket}</caption>
-                        <g:each in="${interval.value.findAll {it.key.endsWith('.' + bucket)}}" var="item" status="k">
-                            <tr class="${(k % 2) == 0 ? 'even' : 'odd'}">
-                                <td><g:message code="${item.key.substring(0, 2).toLowerCase()}"/></td>
-                                <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
-                            </tr>
-                        </g:each>
-                    </table>
-                </td>
-            </g:each>
+<g:if test="${grailsApplication.config.siteusage}">
+    <div class="stat" style="clear: both;">
+        <table style="width:400px;white-space: nowrap;">
+            <caption>Site usage</caption>
+            <thead>
+            <tr>
+                <th>date</th>
+                <th colspan="4">types</th>
             </tr>
-        </g:each>
-    </table>
-</div>
+            </thead>
+            <g:each in="${siteusage}" var="interval" status="i">
+                <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                    <td><g:if test="${first}"><g:formatDate date="${interval._id}"
+                                                            format="yyyy-MM-dd"/></g:if></td>
+                    <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
+                        <td>
+                            <table>
+                                <caption>${bucket}</caption>
+                                <g:each in="${interval.value.findAll { it.key.endsWith('.' + bucket) }}" var="item"
+                                        status="k">
+                                    <tr class="${(k % 2) == 0 ? 'even' : 'odd'}">
+                                        <td><g:message code="${item.key.substring(0, 2).toLowerCase()}"/></td>
+                                        <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
+                                    </tr>
+                                </g:each>
+                            </table>
+                        </td>
+                    </g:each>
+                </tr>
+            </g:each>
+        </table>
+    </div>
+</g:if>
 
 <div id="badges" style="clear: both;">
     <a href="http://www.mongodb.org/" title="MongoDB"><img border="0"

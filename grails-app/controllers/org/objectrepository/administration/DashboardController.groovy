@@ -26,6 +26,7 @@ class DashboardController extends NamingAuthorityInterceptor {
         }
 
         final interval = (params.interval) ?: 'all'
-        [storage: statisticsService.getStorage(params.na, interval), siteusage: statisticsService.getSiteusage(params.na, interval), tasks: null]
+        def ret = [storage: statisticsService.getStorage(params.na, interval), tasks: null]
+        if ( grailsApplication.config.siteusage ) ret << [siteusage: statisticsService.getSiteusage(params.na, interval)]
     }
 }

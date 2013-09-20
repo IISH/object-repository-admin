@@ -1,5 +1,6 @@
 package org.objectrepository.file
 
+import org.objectrepository.security.User
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -151,8 +152,7 @@ class FileController {
 /**
  * getFile
  *
- * Retrieved the GridFSFile and cache it for the user.
- * We cache in case of a http 206 protocol
+ * Retrieved the GridFSFile.
  *
  * @param params
  * @return
@@ -177,12 +177,14 @@ class FileController {
         }
 
         final String access = policyService.getPolicy(fileInstance, params.cache).getAccessForBucket(params.bucket)
-        final Boolean denied = policyService.denied(access, fileInstance.metadata.na)
-        if (denied) {
+        final def hasAccess = policyService.hasAccess(access, fileInstance.metadata.na, [pid])
+        if (!hasAccess) {
             render(view: "denied", status: 401, model: [access: access])
             return null
-        }
+        } else if (hasAccess instanceof User)
+            hasAccess.save(flush: false)
 
-        fileInstance
+        null
+        //fileInstance
     }
 }

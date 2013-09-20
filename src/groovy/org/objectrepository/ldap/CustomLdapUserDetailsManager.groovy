@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.ldap.LdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager
+import org.springframework.security.oauth2.provider.ClientToken
+import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
 
@@ -15,6 +17,9 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
     def _usernameMapper
     def grailsApplication
     def springSecurityService
+    def clientDetailsService
+    def tokenStore
+    def tokenServices
     final static loginshell = "/bin/sh"
     final static FTP_ROLE = "OR_SA_"
 
@@ -106,7 +111,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
             updateUser(person.createUserDetails())
     }
 
-    def manages(def userInstance, def na) {
+    static def manages(def userInstance, def na) {
         userInstance.authorities.find {
             it.authority == 'ROLE_' + FTP_ROLE + na
         }
@@ -121,7 +126,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      * @param enable
      * @return
      */
-    private def toggleEnable(String password, def _enable) {
+    private static def toggleEnable(String password, def _enable) {
         boolean enable = _enable as Boolean
         if (enable && password[0] == '!') {
             return password.substring(1)
@@ -139,16 +144,64 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      * ROLE_OR_USER will allow access to the oauth controller
      * ROLE_OR_USER_[na] will allow access to the resource
      *
-     * @param na
+     * @param id Identifier of the user
+     * @param authorities Roles of the user
      * @return
      */
-    def UsernamePasswordAuthenticationToken authentication(String username, def authorities) {
+    static def authentication(def userInstance, def authorities) {
+
         new UsernamePasswordAuthenticationToken(
-                username,
-                UUID.randomUUID().toString(),
+                userInstance.username,
+                userInstance.password,
                 authorities.collect {
                     new GrantedAuthorityImpl(it)
                 }
         )
+    }
+
+    def selectKeys(def username) {
+        tokenStore.selectKeys(username)
+    }
+
+    /***
+     * replacekey
+     *
+     * Replaces the existing key with a new one
+     *
+     * @param userInstance
+     */
+    void replacekey(def userInstance) {
+        tokenServices.createAccessToken(refresh(userInstance))
+    }
+
+    /**
+     * refreshkey
+     *
+     * Refreshed the existing key with new resources
+     *
+     * @param userInstance
+     */
+    void refreshkey(def userInstance) {
+        tokenStore.updateAuthentication(selectKeys(userInstance.username), refresh(userInstance))
+    }
+
+    private OAuth2Authentication refresh(userInstance) {
+        removeToken(selectKeys(userInstance.username))
+        def client = clientDetailsService.clientDetailsStore.get("clientId")
+        ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
+                client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
+        new OAuth2Authentication(clientToken,
+                authentication(userInstance, roles(userInstance)))
+    }
+
+    void removeToken(def token) {
+        if (token) {
+            tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
+            tokenStore.removeRefreshToken(token.refreshToken.value)
+        }
+    }
+
+    private static def roles(def userInstance) {
+        (userInstance.useFor == 'administration') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : ['ROLE_OR_FTPUSER_' + userInstance.username]
     }
 }
