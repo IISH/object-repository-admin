@@ -1,7 +1,6 @@
 package org.objectrepository.security
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
 
 /**
@@ -50,7 +49,6 @@ class UserResourceController extends NamingAuthorityInterceptor {
     }
 
     def save(Long id) {
-
         def userInstance = User.get(id)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
@@ -63,12 +61,12 @@ class UserResourceController extends NamingAuthorityInterceptor {
         final String pid = params.pid
         final String prefix = pid[0..pid.indexOf('/') - 1]
 
-        final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.principal.authorities).findAll {
+        final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
             it.startsWith('ROLE_OR_USER_')
         }
         if (!('ROLE_OR_USER_' + prefix in authorities)) {
             flash.message = "Resource is not under your control. The PID value must start with: " + authorities.collect { it[13..-1] }.join(', ')
-            render(view: "create", model: [userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
@@ -78,7 +76,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
         userResourceInstance.interval = (pid[-1] == '*') ? 1 : gridFSService.countPidOrObjId(params.na, pid)
         if (userResourceInstance.interval == 0) {
             flash.message = "Unknown resource: " + pid
-            render(view: "create", model: [userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
@@ -88,7 +86,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
         userInstance.resources << userResourceInstance
 
         if (!userInstance.save(flush: true)) {
-            render(view: "create", model: [userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
             return
         }
 

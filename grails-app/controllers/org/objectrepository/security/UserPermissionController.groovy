@@ -1,9 +1,10 @@
 package org.objectrepository.security
 
-import groovy.xml.StreamingMarkupBuilder
+import grails.converters.JSON
+import grails.converters.XML
+import org.apache.commons.lang.RandomStringUtils
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.oauth2.provider.ClientToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 /**
  * UserPermissionController
@@ -15,6 +16,14 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
     final static String OR = "or_"
     final static String t = "yyyy-MM-dd'T'hh:mm:ss'Z'"
+    static {
+        grails.converters.JSON.registerObjectMarshaller(UserPermissionMessage) {
+            return it.properties.findAll { k, v -> k != 'class' }
+        }
+        grails.converters.XML.registerObjectMarshaller(UserPermissionMessage) {
+            return it.properties.findAll { k, v -> k != 'class' }
+        }
+    }
 
 
     def springSecurityService
@@ -32,25 +41,76 @@ class UserPermissionController extends NamingAuthorityInterceptor {
      */
     def save() {
 
-        def permission = new UserResource(params.permission)
-        assert permission.pid
-        assert permission.username
+        String username = params.username?.trim()
+        if (!username)
+            return message('Expecting: username', 400)
 
-        String user = params.username.trim()
-        assert user != params.na
-        def pid = (params.pid instanceof String) ? [params.pid] : params.pid
-        String downloadLimit = (params.downloadLimit) ? params.downloadLimit as Integer : null
-        final format = (params.expirationDate.length() == 10) ? t[0..9] : t
-        String expirationDate = (params.expirationDate) ? Date.parse(format, params.expirationDate).format(format) : null
+        final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
+            it.startsWith('ROLE_OR_USER_')
+        }
 
-        def list = []
+        // Does the username exists ?
+        def userInstance = User.findByUsername(username)
+        def password = (params.password) ?: RandomStringUtils.random(6, true, false)
+        def token
+        def encryptedPassword = springSecurityService.encodePassword(password, UUID.randomUUID().encodeAsMD5Bytes())
+        if (userInstance) {
+            if (!('ROLE_OR_USER_' + userInstance.na in authorities)) {
+                return message('User ' + username + ' already exists and is not under your control. You can only manage users from the authorities ' +
+                        authorities.collect { it[13..-1] }.join(', '))
+            }
+            if (params.useFor) userInstance.useFor = params.useFor
+            if (params.mail) userInstance.mail = params.mail
+            if (params.password) userInstance.password = encryptedPassword
+            token = (params.refreshkey) ? ldapUserDetailsManager.replacekey(userInstance) : ldapUserDetailsManager.selectKeys(username)
+        } else {
+            userInstance = new User(
+                    na: params.na,
+                    username: username,
+                    password: encryptedPassword,
+                    useFor: 'dissemination',
+                    enabled: true
+            )
+            if (params.mail)
+                userInstance.mail = params.mail
+            else
+                return message('Expecting: mail', 400)
+            token = ldapUserDetailsManager.replacekey(userInstance)
+        }
+
+        def pids = (params.pid instanceof String) ? [params.pid] : params.pid
+        if (pids) {
+            params.downloadLimit = (params.downloadLimit) ? params.downloadLimit as Integer : null
+            final format = (params.expirationDate.length() == 10) ? t[0..9] : t
+            params.expirationDate = (params.expirationDate) ? Date.parse(format, params.expirationDate).format(format) : null
+
+            for (String pid : pids) {
+                def resource = new UserResource(pid: pid, downloadLimit: params.downloadLimit, expirationDate: params.expirationDate)
+                resource.interval = gridFSService.countPidOrObjId(params.na, pid)
+                if (resource.interval == 0)
+                    return message('The resource with pid ' + pid + ' does not exist.', 400)
+                userInstance.resources.removeAll {
+                    it.pid = pid
+                }
+                userInstance.resources << resource
+            }
+        }
+
+        if (!userInstance.save(flush: true)) {
+            return message('Failed to save user', 500)
+        }
+
+        String url = grailsApplication.config.grails.serverURL + '/' + username + '/resource/list?access_token=' + token.value
+        message("ok", 200, url)
+
+        /*def list = []
         pid.each {
             final orfile = gridFSService.findByPidAsOrfile(it)
             if (orfile)
                 grailsApplication.config.buckets.each {
                     if (orfile[it] && orfile[it].metadata?.l) {
                         def d = orfile[it]
-                        final String l = "/" + user + d.metadata.l
+                        final String l = "/" + username + d.metadata.l
                         def parent = l
                         int i
                         while ((i = parent.lastIndexOf("/")) > 0) {
@@ -74,18 +134,6 @@ class UserPermissionController extends NamingAuthorityInterceptor {
                 }
         }
 
-        def accessToken = tokenStore.selectKeys(user)
-        if (!accessToken) {
-            def client = clientDetailsService.clientDetailsStore.get("clientId")
-            ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
-                    client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
-            final OAuth2Authentication authentication = new OAuth2Authentication(clientToken,
-                    ldapUserDetailsManager.authentication(user, ['ROLE_OR_USER_' + user]))
-            accessToken = tokenServices.createAccessToken(authentication)
-        }
-
-        assert accessToken?.value
-
         response.setCharacterEncoding("utf-8")
         response.setContentType("text/xml")
         def builder = new StreamingMarkupBuilder()
@@ -95,12 +143,31 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             mkp.xmlDeclaration()
             xml() {
                 token accessToken.value
-                username user
+                username username
                 list.each {
                     id it
                 }
             }
-        }
+        }*/
     }
 
+    private void message(String message, int statusCode, String url = null) {
+
+        final userPermissionMessage = new UserPermissionMessage(url: url, message: message,
+                request: params.findAll {
+                    it.key != 'action'
+                }
+        )
+        response.status = statusCode
+        switch (request.format) {  // withFormat does not seem to work...
+            case 'js':
+            case 'json':
+                render userPermissionMessage as JSON
+                break
+            default:
+                response.status = statusCode
+                render userPermissionMessage as XML
+                break
+        }
+    }
 }

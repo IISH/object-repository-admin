@@ -10,7 +10,7 @@ class AuthoritiesTagLib {
     def list = { attrs ->
 
         def roles = (springSecurityService.isLoggedIn()) ?
-            SpringSecurityUtils.authoritiesToRoles(springSecurityService.principal.authorities).findAll {
+            SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
                 it.startsWith('ROLE_OR_USER_')
             } : []
 

@@ -15,4 +15,12 @@ class UserResource {
         interval(min: 1)
     }
 
+    static mapping = {
+        version false
+        pid attr: 'p'
+        expirationDate attr: 'e'
+        downloadLimit attr: 'l'
+        downloads attr: 'd'
+        interval attr: 'i'
+    }
 }

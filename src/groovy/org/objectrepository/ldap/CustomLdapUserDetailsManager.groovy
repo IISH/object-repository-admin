@@ -170,7 +170,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      *
      * @param userInstance
      */
-    void replacekey(def userInstance) {
+    def replacekey(def userInstance) {
         tokenServices.createAccessToken(refresh(userInstance))
     }
 

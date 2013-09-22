@@ -2,6 +2,7 @@ package org.objectrepository.file
 
 import org.objectrepository.security.User
 import org.objectrepository.util.OrUtil
+import org.springframework.security.access.annotation.Secured
 
 import javax.servlet.http.HttpServletResponse
 
