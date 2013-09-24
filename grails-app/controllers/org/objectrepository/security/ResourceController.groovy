@@ -33,6 +33,6 @@ class ResourceController {
             redirect(url: '/login/c403.gsp')
             return
         }
-        render(view: '../userResource/list.gsp', model: [userInstance: userInstance, userResourceInstanceList: userInstance.resources, userResourceInstanceTotal: userInstance.resources.size()])
+        [userInstance: userInstance, userResourceInstanceList: userInstance.resources, userResourceInstanceTotal: userInstance.resources.size()]
     }
 }

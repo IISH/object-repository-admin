@@ -1,5 +1,8 @@
 package org.objectrepository.security
 
+import grails.converters.JSON
+import grails.converters.XML
+import org.apache.commons.lang.RandomStringUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.security.access.annotation.Secured
 
@@ -49,6 +52,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
     }
 
     def save(Long id) {
+
         def userInstance = User.get(id)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
@@ -73,12 +77,17 @@ class UserResourceController extends NamingAuthorityInterceptor {
         if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())
             userResourceInstance.expirationDate = null
 
-        userResourceInstance.interval = (pid[-1] == '*') ? 1 : gridFSService.countPidOrObjId(params.na, pid)
+        final resource = gridFSService.countPidOrObjId(params.na, pid)
+        userResourceInstance.interval = (pid[-1] == '*') ? 1 : resource.count
         if (userResourceInstance.interval == 0) {
             flash.message = "Unknown resource: " + pid
             render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
             return
         }
+
+        userResourceInstance.thumbnail = (resource.orfile.level3) ? true : false
+        userResourceInstance.contentType = resource.orfile.master.contentType
+        userResourceInstance.objid = (resource.orfile.master.metadata.objid) ? true : false
 
         userInstance.resources?.removeAll {
             it.pid == pid

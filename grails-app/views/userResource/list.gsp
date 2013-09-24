@@ -19,37 +19,41 @@
 </div>
 
 <g:render template="/layouts/header" model="[instance: userResourceInstance]"/>
+
 <div id="list-userResource" class="content scaffold-list" role="main">
-    <h1><g:message code="default.list.label" args="[entityName]"/> of user: ${userInstance.username}</h1>
     <table>
         <thead>
         <tr>
-            <th>Username</th>
-            <g:sortableColumn property="pid" title="${message(code: 'userResource.pid.label', default: 'Pid')}"/>
-            <g:sortableColumn property="downloadLimit"
-                              title="${message(code: 'userResource.downloadLimit.label', default: 'Download Limit')}"/>
-            <g:sortableColumn property="downloads"
-                              title="${message(code: 'userResource.downloads.label', default: 'Downloads')}"/>
-            <g:sortableColumn property="expirationDate"
-                              title="${message(code: 'userResource.expirationDate.label', default: 'Expiration Date')}"/>
-            <th></th>
+            <th>%{--Thumbnail--}%</th>
+            <th>${message(code: 'userResource.pid.label', default: 'Pid')}</th>
+            <th>${message(code: 'userResource.downloadLimit.label', default: 'Download Limit')}</th>
+            <th>${message(code: 'userResource.downloads.label', default: 'Downloads')}</th>
+            <th>${message(code: 'userResource.expirationDate.label', default: 'Expiration Date')}</th>
+            <th>%{--Controls--}%</th>
         </tr>
         </thead>
         <tbody>
         <g:each in="${userResourceInstanceList}" status="i" var="userResourceInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td>${fieldValue(bean: userInstance, field: "username")}</td>
+                <td><g:if test="${userResourceInstance.thumbnail}">
+                    <img src="${grailsApplication.config.grails.serverURL + "/file/level3/" + userResourceInstance.pid}"
+                         width="100px"/>
+                </g:if>
+                    <g:else>
+                        <g:set var="file" value="${userResourceInstance.contentType.split('/')[0] + '.png'}"/>
+                        <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
+                    </g:else></td>
                 <td>${fieldValue(bean: userResourceInstance, field: "pid")}</td>
                 <td>${userResourceInstance.downloadLimit / userResourceInstance.interval}</td>
                 <td>${userResourceInstance.downloads / userResourceInstance.interval}</td>
                 <td><g:formatDate date="${userResourceInstance.expirationDate}"/></td>
-                <td>
-                    <g:link class="edit" action="edit" mapping="namingAuthority"
+                <td><g:link class="edit" action="edit" mapping="namingAuthority"
                             params="[na: params.na, pid: userResourceInstance.pid]" id="${userInstance.id}"><g:message
                             code="default.button.edit.label" default="Edit"/></g:link>
-                    <g:link class="delete" action="delete" mapping="namingAuthority"
-                            params="[na: params.na, pid: userResourceInstance.pid]" id="${userInstance.id}"
-                            onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">${message(code: 'default.button.delete.label', default: 'Delete')}</g:link></td>
+                <g:link class="delete" action="delete" mapping="namingAuthority"
+                        params="[na: params.na, pid: userResourceInstance.pid]" id="${userInstance.id}"
+                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">${message(code: 'default.button.delete.label', default: 'Delete')}</g:link>
+                </td>
             </tr>
         </g:each>
         </tbody>

@@ -85,14 +85,18 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             params.expirationDate = (params.expirationDate) ? Date.parse(format, params.expirationDate).format(format) : null
 
             for (String pid : pids) {
-                def resource = new UserResource(pid: pid, downloadLimit: params.downloadLimit, expirationDate: params.expirationDate)
-                resource.interval = gridFSService.countPidOrObjId(params.na, pid)
-                if (resource.interval == 0)
-                    return message('The resource with pid ' + pid + ' does not exist.', 400)
+                def userResourceInstance = new UserResource(pid: pid, downloadLimit: params.downloadLimit, expirationDate: params.expirationDate)
+                final countPidOrObjId = gridFSService.countPidOrObjId(params.na, pid)
+                userResourceInstance.interval = countPidOrObjId.count
+                if (userResourceInstance.interval == 0)
+                    return message('The userResourceInstance with pid ' + pid + ' does not exist.', 400)
+                userResourceInstance.thumbnail = (countPidOrObjId.orfile.level3) ? true : false
+                userResourceInstance.contentType = countPidOrObjId.orfile.master.contentType
+                userResourceInstance.objid = (countPidOrObjId.orfile.master.metadata.objid) ? true : false
                 userInstance.resources.removeAll {
                     it.pid = pid
                 }
-                userInstance.resources << resource
+                userInstance.resources << userResourceInstance
             }
         }
 
@@ -164,9 +168,12 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             case 'json':
                 render userPermissionMessage as JSON
                 break
-            default:
+            case 'xml':
                 response.status = statusCode
                 render userPermissionMessage as XML
+                break
+            default:
+                render params.view
                 break
         }
     }

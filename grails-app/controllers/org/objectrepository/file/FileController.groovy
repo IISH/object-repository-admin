@@ -182,10 +182,9 @@ class FileController {
         if (!hasAccess) {
             render(view: "denied", status: 401, model: [access: access])
             return null
-        } else if (hasAccess instanceof User)
+        } else if (access != 'open' && hasAccess instanceof User && params.bucket in ['master', 'level1'])
             hasAccess.save(flush: false)
 
-        null
-        //fileInstance
+        fileInstance
     }
 }

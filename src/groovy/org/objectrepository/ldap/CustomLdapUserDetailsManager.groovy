@@ -202,6 +202,6 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
     }
 
     private static def roles(def userInstance) {
-        (userInstance.useFor == 'administration') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : ['ROLE_OR_FTPUSER_' + userInstance.username]
+        (userInstance.useFor == 'administration') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : ['ROLE_OR_FTPUSER', 'ROLE_OR_FTPUSER_' + userInstance.username]
     }
 }

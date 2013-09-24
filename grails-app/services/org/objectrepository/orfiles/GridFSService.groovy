@@ -61,7 +61,7 @@ class GridFSService {
     }
 
     def get(String na, String pid) {
-        query(OR + na, String.format("{'metadata.pid':'%s'}", pid))[0]
+        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s', 'metadata.seq':1}]}", pid, pid))[0]
     }
 
     /**
@@ -234,7 +234,20 @@ class GridFSService {
                 .sort { it.metadata.seq }
     }
 
-    int countPidOrObjId(String na, String id) {
-        mongo.getDB(OR + na).'master.files'.count([$or:[['metadata.objid':id],['metadata.pid':id]]])
+    /**
+     * countPidOrObjId
+     *
+     * Counts all master files with the given pid or objid
+     * Returns at least one level3 instance for preview
+     *
+     * @param na
+     * @param id
+     * @return
+     */
+    def countPidOrObjId(String na, String id) {
+        final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
+        int count = mongo.getDB(OR + na).'master.files'.count(q)
+        def orfile = ( count ) ? get(na, id) : null
+        [count:count, orfile:orfile]
     }
 }
