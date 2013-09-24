@@ -72,7 +72,7 @@ if (System.properties.containsKey("or.properties")) {
     //System.exit(-1)
 }
 
-siteusage=true
+siteusage = true
 
 // The access matrix has policies ( like 'closed', 'restricted' ) and each determines the access status of a bucket
 // Definitions accessStatus taken from:
@@ -182,7 +182,7 @@ log4j = {
 }
 
 grails.doc.title = "Object repository"
-grails.doc.subtitle="Object repository"
+grails.doc.subtitle = "Object repository"
 grails.doc.authors = "Lucien van Wouw"
 grails.doc.license = "Licensed under the Apache License, Version 2.0"
 grails.doc.copyright = "Copyright (c) 2013 Social History Services"

@@ -2,12 +2,16 @@ package org.objectrepository.security
 
 import grails.converters.JSON
 import grails.converters.XML
+import groovy.json.JsonBuilder
+import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 import org.apache.commons.lang.RandomStringUtils
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.security.access.annotation.Secured
 
 /**
- * UserPermissionController
+ * UserController
  *
  * Sets permissions for access to OR resources.
  */
@@ -16,15 +20,12 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
     final static String OR = "or_"
     final static String t = "yyyy-MM-dd'T'hh:mm:ss'Z'"
-    static {
-        grails.converters.JSON.registerObjectMarshaller(UserPermissionMessage) {
-            return it.properties.findAll { k, v -> k != 'class' }
-        }
-        grails.converters.XML.registerObjectMarshaller(UserPermissionMessage) {
-            return it.properties.findAll { k, v -> k != 'class' }
-        }
-    }
 
+    static userProperties
+
+    UserPermissionController() {
+        userProperties = new DefaultGrailsDomainClass(User.class).persistentProperties.collect { it.name }
+    }
 
     def springSecurityService
     def gridFSService
@@ -41,71 +42,91 @@ class UserPermissionController extends NamingAuthorityInterceptor {
      */
     def save() {
 
-        String username = params.username?.trim()
-        if (!username)
-            return message('Expecting: username', 400)
+        // Deep conversion does not seem to tricker, so...
+        def userPermission = new User(na: params.na, resources: [])
+        params.user.findAll {
+            it.key.startsWith('resources')
+        }.collect {
+            [(it.key), params.user.remove(it.key)]
+        }.each { k, v ->
+            int index = k[10] as Integer
+            String key = k[13..-1]
+            if (userPermission.resources.size() == index) userPermission.resources << new UserResource()
+            switch (key) {
+                case 'pid':
+                    userPermission.resources[index].pid = v
+                    break
+                case 'expirationDate':
+                    final format = (v.length() == 10) ? t[0..9] : t
+                    userPermission.resources[index].expirationDate = Date.parse(format, v)
+                    break;
+                case 'downloadLimit':
+                    userPermission.resources[index].downloadLimit = v as Integer
+                    break;
+            }
+        }
+        params.user.each {
+            userPermission.properties[it.key] = it.value
+        }
+
+        if (!userPermission.username)
+            return message(userPermission, 'Expecting: username', 400)
+
 
         final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
             it.startsWith('ROLE_OR_USER_')
         }
 
         // Does the username exists ?
-        def userInstance = User.findByUsername(username)
-        def password = (params.password) ?: RandomStringUtils.random(6, true, false)
-        def token
+        def userInstance = User.findByUsername(userPermission.username)
+        def password = (userPermission.password) ?: RandomStringUtils.random(6, true, false)
         def encryptedPassword = springSecurityService.encodePassword(password, UUID.randomUUID().encodeAsMD5Bytes())
+        def token
         if (userInstance) {
             if (!('ROLE_OR_USER_' + userInstance.na in authorities)) {
-                return message('User ' + username + ' already exists and is not under your control. You can only manage users from the authorities ' +
+                return message(userPermission, 'User ' + userPermission.username + ' already exists and is not under your control. You can only manage users from the authorities ' +
                         authorities.collect { it[13..-1] }.join(', '))
             }
-            if (params.useFor) userInstance.useFor = params.useFor
-            if (params.mail) userInstance.mail = params.mail
-            if (params.password) userInstance.password = encryptedPassword
-            token = (params.refreshkey) ? ldapUserDetailsManager.replacekey(userInstance) : ldapUserDetailsManager.selectKeys(username)
+            userProperties.each { p ->
+                if (p != 'resources' && userPermission[p]) userInstance[p] = userPermission[p]
+            }
+            if (userPermission.password) userInstance.password = encryptedPassword
+            token = (userPermission.refreshKey) ? ldapUserDetailsManager.replacekey(userInstance) : ldapUserDetailsManager.selectKeys(userPermission.username)
         } else {
-            userInstance = new User(
-                    na: params.na,
-                    username: username,
-                    password: encryptedPassword,
-                    useFor: 'dissemination',
-                    enabled: true
-            )
-            if (params.mail)
-                userInstance.mail = params.mail
-            else
-                return message('Expecting: mail', 400)
+            if (!userPermission.mail)
+                return message(userPermission, 'Expecting: mail', 400)
+            userInstance = new User(password: encryptedPassword)
+            userProperties.each { p ->
+                if (userPermission[p]) userInstance[p] = userPermission[p]
+            }
             token = ldapUserDetailsManager.replacekey(userInstance)
         }
 
-        def pids = (params.pid instanceof String) ? [params.pid] : params.pid
-        if (pids) {
-            params.downloadLimit = (params.downloadLimit) ? params.downloadLimit as Integer : null
-            final format = (params.expirationDate.length() == 10) ? t[0..9] : t
-            params.expirationDate = (params.expirationDate) ? Date.parse(format, params.expirationDate).format(format) : null
-
-            for (String pid : pids) {
-                def userResourceInstance = new UserResource(pid: pid, downloadLimit: params.downloadLimit, expirationDate: params.expirationDate)
-                final countPidOrObjId = gridFSService.countPidOrObjId(params.na, pid)
-                userResourceInstance.interval = countPidOrObjId.count
-                if (userResourceInstance.interval == 0)
-                    return message('The userResourceInstance with pid ' + pid + ' does not exist.', 400)
-                userResourceInstance.thumbnail = (countPidOrObjId.orfile.level3) ? true : false
-                userResourceInstance.contentType = countPidOrObjId.orfile.master.contentType
-                userResourceInstance.objid = (countPidOrObjId.orfile.master.metadata.objid) ? true : false
-                userInstance.resources.removeAll {
-                    it.pid = pid
-                }
-                userInstance.resources << userResourceInstance
+        for (def userResourceInstance : userPermission.resources) {
+            final countPidOrObjId = gridFSService.countPidOrObjId(params.na, userResourceInstance.pid)
+            userResourceInstance.interval = countPidOrObjId.count
+            if (userResourceInstance.interval == 0)
+                return message(userPermission, 'The userResourceInstance with pid ' + userResourceInstance.pid + ' does not exist.', 400)
+            if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())
+                userResourceInstance.expirationDate = null
+            userResourceInstance.thumbnail = (countPidOrObjId.orfile.level3) ? true : false
+            userResourceInstance.contentType = countPidOrObjId.orfile.master.contentType
+            userResourceInstance.objid = (countPidOrObjId.orfile.master.metadata.objid) ? true : false
+            userInstance.resources.removeAll {
+                it.pid == userResourceInstance.pid
             }
+
+            userInstance.resources << userResourceInstance
         }
 
         if (!userInstance.save(flush: true)) {
-            return message('Failed to save user', 500)
+            String error = (userInstance.errors) ? userInstance.errors.allErrors[0].defaultMessage : 'Failed to save user'
+            return message(userPermission, error, 500)
         }
 
-        String url = grailsApplication.config.grails.serverURL + '/' + username + '/resource/list?access_token=' + token.value
-        message("ok", 200, url)
+        userInstance.password = password
+        userInstance.url = grailsApplication.config.grails.serverURL + '/' + userPermission.username + '/resource/list?access_token=' + token.value
+        message(userInstance, "ok", 200)
 
         /*def list = []
         pid.each {
@@ -137,44 +158,37 @@ class UserPermissionController extends NamingAuthorityInterceptor {
                     }
                 }
         }
-
-        response.setCharacterEncoding("utf-8")
-        response.setContentType("text/xml")
-        def builder = new StreamingMarkupBuilder()
-        builder.setEncoding("utf-8")
-        builder.setUseDoubleQuotes(true)
-        response.writer << builder.bind {
-            mkp.xmlDeclaration()
-            xml() {
-                token accessToken.value
-                username username
-                list.each {
-                    id it
-                }
-            }
-        }*/
+        */
     }
 
-    private void message(String message, int statusCode, String url = null) {
+    private void message(User userInstance, String _message, int statusCode) {
 
-        final userPermissionMessage = new UserPermissionMessage(url: url, message: message,
-                request: params.findAll {
-                    it.key != 'action'
-                }
-        )
         response.status = statusCode
+        response.setCharacterEncoding("utf-8")
+        def builder
         switch (request.format) {  // withFormat does not seem to work...
             case 'js':
             case 'json':
-                render userPermissionMessage as JSON
+                response.setContentType("text/javascript")
+                builder = new JsonBuilder()
                 break
             case 'xml':
-                response.status = statusCode
-                render userPermissionMessage as XML
-                break
             default:
-                render params.view
+                response.setContentType("text/xml")
+                builder = new MarkupBuilder(response.writer)
                 break
         }
+
+        builder.user {
+            message _message
+            url userInstance.url
+            username userInstance.username
+            password userInstance.password
+        }
+
+        if ( builder instanceof JsonBuilder ) response.writer.write( builder.toString() )
+        response.writer.close()
     }
+
+
 }

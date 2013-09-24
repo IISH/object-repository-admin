@@ -3,9 +3,6 @@ package org.objectrepository.security
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.oauth2.common.OAuth2AccessToken
-import org.springframework.security.oauth2.provider.ClientToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 @Secured(['ROLE_OR_USER'])
 class UserController extends NamingAuthorityInterceptor {
@@ -31,6 +28,13 @@ class UserController extends NamingAuthorityInterceptor {
     }
 
     def save() {
+
+        switch (request.format) {
+            case 'js':
+            case 'json':
+            case 'xml':
+                return forward(controller: 'userPermission', action: 'save')
+        }
 
         // Set password when it was left empty
         final def newPassword

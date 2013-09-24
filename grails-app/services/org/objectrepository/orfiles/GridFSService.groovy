@@ -61,7 +61,7 @@ class GridFSService {
     }
 
     def get(String na, String pid) {
-        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s', 'metadata.seq':1}]}", pid, pid))[0]
+        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s'}]}", pid, pid))[0]
     }
 
     /**

@@ -14,7 +14,7 @@ class UrlMappings {
         "/lostpassword/$action?"(controller: "lostpassword")
         "/"(controller: "login")
 
-        "/$na/userPermission"(resource: 'userPermission')
+        "/$na/user"(resource: 'user')
         name namingAuthority: "/$na/$controller/$action?/$id?"()
 
         "500"(view: '/error')
