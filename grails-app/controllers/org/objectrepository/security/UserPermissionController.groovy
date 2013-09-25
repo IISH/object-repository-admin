@@ -1,10 +1,7 @@
 package org.objectrepository.security
 
-import grails.converters.JSON
-import grails.converters.XML
 import groovy.json.JsonBuilder
 import groovy.xml.MarkupBuilder
-import groovy.xml.StreamingMarkupBuilder
 import org.apache.commons.lang.RandomStringUtils
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
@@ -44,30 +41,10 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
         // Deep conversion does not seem to tricker, so...
         def userPermission = new User(na: params.na, resources: [])
-        params.user.findAll {
-            it.key.startsWith('resources')
-        }.collect {
-            [(it.key), params.user.remove(it.key)]
-        }.each { k, v ->
-            int index = k[10] as Integer
-            String key = k[13..-1]
-            if (userPermission.resources.size() == index) userPermission.resources << new UserResource()
-            switch (key) {
-                case 'pid':
-                    userPermission.resources[index].pid = v
-                    break
-                case 'expirationDate':
-                    final format = (v.length() == 10) ? t[0..9] : t
-                    userPermission.resources[index].expirationDate = Date.parse(format, v)
-                    break;
-                case 'downloadLimit':
-                    userPermission.resources[index].downloadLimit = v as Integer
-                    break;
-            }
-        }
-        params.user.each {
-            userPermission.properties[it.key] = it.value
-        }
+        marshal(userPermission,
+                (request.format == 'xml') ? params.user : params,
+                (request.format == 'xml') ? 'resources' : 'user'
+        )
 
         if (!userPermission.username)
             return message(userPermission, 'Expecting: username', 400)
@@ -90,7 +67,10 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             userProperties.each { p ->
                 if (p != 'resources' && userPermission[p]) userInstance[p] = userPermission[p]
             }
-            if (userPermission.password) userInstance.password = encryptedPassword
+            if (userPermission.password)
+                userInstance.password = encryptedPassword
+            else
+                password = null
             token = (userPermission.refreshKey) ? ldapUserDetailsManager.replacekey(userInstance) : ldapUserDetailsManager.selectKeys(userPermission.username)
         } else {
             if (!userPermission.mail)
@@ -161,6 +141,44 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         */
     }
 
+    /**
+     * marshal
+     *
+     * Deep marshalling does not seem to work with our classes. Even when set in the Config file.
+     * Hence this effort. ToDo: see in next Grails release if deep marshalling works, so we can remove this method.
+     *
+     * @param userPermission
+     * @param tag
+     */
+    private static void marshal(def userPermission, def base, String tag) {
+        base.findAll {
+            it.key.contains('].')
+        }.collect {
+            [(it.key), base.remove(it.key)]
+        }.each { k, v ->
+            int index = k[tag.length() + 1] as Integer
+            String key = k[tag.length() + 4..-1]
+            if (userPermission.resources.size() == index) userPermission.resources << new UserResource()
+            switch (key) {
+                case 'pid':
+                    println(userPermission.resources[index])
+                    userPermission.resources[index].pid = v
+                    break
+                case 'expirationDate':
+                    final format = (v.length() == 10) ? t[0..9] : t
+                    userPermission.resources[index].expirationDate = Date.parse(format, v)
+                    break
+                case 'downloadLimit':
+                    userPermission.resources[index].downloadLimit = v as Integer
+                    break
+            }
+        }
+        def p = (tag == 'user') ? base.user : base
+        p.each {
+            userPermission.properties[it.key] = it.value
+        }
+    }
+
     private void message(User userInstance, String _message, int statusCode) {
 
         response.status = statusCode
@@ -181,12 +199,15 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
         builder.user {
             message _message
-            url userInstance.url
-            username userInstance.username
-            password userInstance.password
+            if (statusCode == 200) {
+                url userInstance.url
+                username userInstance.username
+                if (userInstance.password) password userInstance.password
+            }
         }
 
-        if ( builder instanceof JsonBuilder ) response.writer.write( builder.toString() )
+        if (request.format == 'json') builder.writeTo(response.writer)
+        response.writer.flush()
         response.writer.close()
     }
 
