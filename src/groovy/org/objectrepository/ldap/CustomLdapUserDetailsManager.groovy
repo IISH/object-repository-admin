@@ -154,7 +154,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
                 userInstance.username,
                 userInstance.password,
                 authorities.collect {
-                    new GrantedAuthorityImpl(it)
+                    new GrantedAuthorityImpl(it.authority)
                 }
         )
     }
@@ -170,19 +170,24 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      *
      * @param userInstance
      */
-    def replacekey(def userInstance) {
+    def replaceKey(def userInstance) {
         tokenServices.createAccessToken(refresh(userInstance))
     }
 
     /**
      * refreshkey
      *
-     * Refreshed the existing key with new resources
+     * Refreshes the current key with new resources.
+     * If the key does not exist, we create a new one
      *
      * @param userInstance
      */
-    void refreshkey(def userInstance) {
-        tokenStore.updateAuthentication(selectKeys(userInstance.username), refresh(userInstance))
+    void refreshKey(def userInstance) {
+        final token = selectKeys(userInstance.username)
+        if (token)
+            tokenStore.updateAuthentication(token, refresh(userInstance))
+        else
+            tokenServices.createAccessToken(refresh(userInstance))
     }
 
     private OAuth2Authentication refresh(userInstance) {
@@ -191,7 +196,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
         ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,
                 client.clientSecret, client.scope as Set<String>, client.authorizedGrantTypes)
         new OAuth2Authentication(clientToken,
-                authentication(userInstance, roles(userInstance)))
+                authentication(userInstance, userInstance.authorities))
     }
 
     void removeToken(def token) {
@@ -199,9 +204,5 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
             tokenStore.removeAccessTokenUsingRefreshToken(token.refreshToken.value)
             tokenStore.removeRefreshToken(token.refreshToken.value)
         }
-    }
-
-    private static def roles(def userInstance) {
-        (userInstance.useFor == 'administration') ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : ['ROLE_OR_FTPUSER', 'ROLE_OR_FTPUSER_' + userInstance.username]
     }
 }

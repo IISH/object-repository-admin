@@ -47,7 +47,7 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         )
 
         if (!userPermission.username)
-            return message(userPermission, 'Expecting: username', 400)
+            return msg(userPermission, 'Expecting: username', 400)
 
 
         final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
@@ -58,35 +58,33 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         def userInstance = User.findByUsername(userPermission.username)
         def password = (userPermission.password) ?: RandomStringUtils.random(6, true, false)
         def encryptedPassword = springSecurityService.encodePassword(password, UUID.randomUUID().encodeAsMD5Bytes())
-        def token
         if (userInstance) {
             if (!('ROLE_OR_USER_' + userInstance.na in authorities)) {
-                return message(userPermission, 'User ' + userPermission.username + ' already exists and is not under your control. You can only manage users from the authorities ' +
-                        authorities.collect { it[13..-1] }.join(', '))
+                return msg(userPermission, 'User ' + userPermission.username + ' already exists and is not under your control. You can only manage users from the authorities ' +
+                        authorities.collect { it[13..-1] }.join(', '), 400)
             }
             userProperties.each { p ->
                 if (p != 'resources' && userPermission[p]) userInstance[p] = userPermission[p]
             }
+            userPermission.refreshKey = true
             if (userPermission.password)
                 userInstance.password = encryptedPassword
             else
                 password = null
-            token = (userPermission.refreshKey) ? ldapUserDetailsManager.replacekey(userInstance) : ldapUserDetailsManager.selectKeys(userPermission.username)
         } else {
             if (!userPermission.mail)
-                return message(userPermission, 'Expecting: mail', 400)
+                return msg(userPermission, 'Expecting: mail', 400)
             userInstance = new User(password: encryptedPassword)
             userProperties.each { p ->
                 if (userPermission[p]) userInstance[p] = userPermission[p]
             }
-            token = ldapUserDetailsManager.replacekey(userInstance)
         }
 
         for (def userResourceInstance : userPermission.resources) {
             final countPidOrObjId = gridFSService.countPidOrObjId(params.na, userResourceInstance.pid)
             userResourceInstance.interval = countPidOrObjId.count
             if (userResourceInstance.interval == 0)
-                return message(userPermission, 'The userResourceInstance with pid ' + userResourceInstance.pid + ' does not exist.', 400)
+                return msg(userPermission, 'The userResourceInstance with pid ' + userResourceInstance.pid + ' does not exist.', 400)
             if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())
                 userResourceInstance.expirationDate = null
             userResourceInstance.thumbnail = (countPidOrObjId.orfile.level3) ? true : false
@@ -97,48 +95,45 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             }
 
             userInstance.resources << userResourceInstance
+
+           /* def orfile = countPidOrObjId.orfile
+            grailsApplication.config.buckets.each {
+                if (orfile[it] && orfile[it].metadata?.l) {
+                    def d = orfile[it]
+                    final String l = "/" + username + d.metadata.l
+                    def parent = l
+                    int i
+                    while ((i = parent.lastIndexOf("/")) > 0) {
+                        def child = parent
+                        parent = parent.substring(0, i)
+                        def n = child.substring(i + 1)
+                        if (child.equals(l)) {           // file
+                            final f = [n: d.filename, p: d.metadata.pid, l: d.length, t: d.uploadDate.getTime(), a: 'o']
+                            if (downloadLimit) f << [l: downloadLimit]
+                            if (expirationDate) f << [e: expirationDate]
+                            mongo.getDB(OR + params.na).vfs.update([_id: child], [$pull: ['f.p': d.metadata.pid]])
+                            mongo.getDB(OR + params.na).vfs.update([_id: child],
+                                    [$addToSet: [f: f]],
+                                    true, false)
+                            list << f
+                        }
+                        // folder
+                        mongo.getDB(OR + params.na).vfs.update([_id: parent], [$addToSet: [d: [n: n]]], true, false)
+                    }
+                }
+            }*/
         }
 
         if (!userInstance.save(flush: true)) {
             String error = (userInstance.errors) ? userInstance.errors.allErrors[0].defaultMessage : 'Failed to save user'
-            return message(userPermission, error, 500)
+            return msg(userPermission, error, 500)
         }
 
+        UserController.roles(userInstance)
+        def token = (userPermission.refreshKey) ? ldapUserDetailsManager.refreshKey(userInstance) : ldapUserDetailsManager.replaceKey(userPermission.username)
         userInstance.password = password
         userInstance.url = grailsApplication.config.grails.serverURL + '/' + userPermission.username + '/resource/list?access_token=' + token.value
-        message(userInstance, "ok", 200)
-
-        /*def list = []
-        pid.each {
-            final orfile = gridFSService.findByPidAsOrfile(it)
-            if (orfile)
-                grailsApplication.config.buckets.each {
-                    if (orfile[it] && orfile[it].metadata?.l) {
-                        def d = orfile[it]
-                        final String l = "/" + username + d.metadata.l
-                        def parent = l
-                        int i
-                        while ((i = parent.lastIndexOf("/")) > 0) {
-                            def child = parent
-                            parent = parent.substring(0, i)
-                            def n = child.substring(i + 1)
-                            if (child.equals(l)) {           // file
-                                final f = [n: d.filename, p: d.metadata.pid, l: d.length, t: d.uploadDate.getTime(), a: 'o']
-                                if (downloadLimit) f << [l: downloadLimit]
-                                if (expirationDate) f << [e: expirationDate]
-                                mongo.getDB(OR + params.na).vfs.update([_id: child], [$pull: ['f.p': d.metadata.pid]])
-                                mongo.getDB(OR + params.na).vfs.update([_id: child],
-                                        [$addToSet: [f: f]],
-                                        true, false)
-                                list << f
-                            }
-                            // folder
-                            mongo.getDB(OR + params.na).vfs.update([_id: parent], [$addToSet: [d: [n: n]]], true, false)
-                        }
-                    }
-                }
-        }
-        */
+        msg(userInstance, "ok", 200)
     }
 
     /**
@@ -179,7 +174,7 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         }
     }
 
-    private void message(User userInstance, String _message, int statusCode) {
+    private void msg(User userInstance, String _message, int statusCode) {
 
         response.status = statusCode
         response.setCharacterEncoding("utf-8")

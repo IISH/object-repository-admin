@@ -70,10 +70,12 @@
 
         <tr class="prop">
             <td valign="top" class="name">
-                <label for="mail"><g:message code="user.useFor.label" default="Use for"/></label>
+                <label for="mail"><g:message code="user.accessScope.label" default="Access scope"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'useFor', 'errors')}">
-                <g:select name="useFor" from="${grailsApplication.config.usesFor}" value="${userInstance.useFor}"/>
+            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'accessScope', 'errors')}">
+                <g:select name="accessScope" from="${grailsApplication.config.accessScope.collect {
+                    [k: (it), v: it + ': ' + message(code: 'user.accessScope.' + it + '.label')]
+                }}" optionKey="k" optionValue="v" value="${userInstance.accessScope}"  />
             </td>
         </tr>
 

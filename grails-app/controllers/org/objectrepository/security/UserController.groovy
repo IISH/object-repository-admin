@@ -68,14 +68,15 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        ldapUserDetailsManager.replacekey(userInstance)
+        roles(userInstance)
+        ldapUserDetailsManager.replaceKey(userInstance)
 
         if (params.sendmail) {
             sendMail {
                 to params.mail
                 from grailsApplication.config.mail.from
                 subject message(code: "mail.user.created.subject")
-                body message(code: "mail.user.created." + userInstance.useFor, args: [springSecurityService.principal.username,
+                body message(code: "mail.user.created." + userInstance.accessScope, args: [springSecurityService.principal.username,
                         grailsApplication.config.grails.serverURL,
                         grailsApplication.config.mail.sftpServer,
                         params.id,
@@ -125,6 +126,7 @@ class UserController extends NamingAuthorityInterceptor {
             }
         }
 
+        userInstance.refreshKey = (userInstance.accessScope == params.accessScope)
         userInstance.properties = params
 
         if (!userInstance.save(flush: true)) {
@@ -132,10 +134,28 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        ldapUserDetailsManager.replacekey(userInstance)
+        roles(userInstance)
+        if (userInstance.refreshKey)
+            ldapUserDetailsManager.refreshKey(userInstance)
+        else
+            ldapUserDetailsManager.replaceKey(userInstance)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
         forward(action: "show", id: userInstance.id)
+    }
+
+    static def roles(def userInstance) {
+        userInstance.authorities?.each {
+            UserRole.remove(userInstance, it)
+        }
+
+        def r = (userInstance.accessScope == 'administration') ?
+            ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] :
+            ['ROLE_OR_DISSEMINATION_' + userInstance.accessScope.toUpperCase() + '_' + userInstance.na]
+        r.each {
+            def role = Role.findByAuthority(it) ?: new Role(authority: it).save(failOnError: true)
+            UserRole.create userInstance, role
+        }
     }
 
     def updatekey(Long id) {
@@ -147,7 +167,7 @@ class UserController extends NamingAuthorityInterceptor {
             return
         }
 
-        ldapUserDetailsManager.replacekey(userInstance)
+        ldapUserDetailsManager.replaceKey(userInstance)
         forward(action: "show", id: params.id)
     }
 
@@ -160,6 +180,10 @@ class UserController extends NamingAuthorityInterceptor {
         }
 
         try {
+            userInstance.authorities?.each {
+                UserRole.remove(userInstance, it, true)
+            }
+
             userInstance.delete(flush: true)
             ldapUserDetailsManager.removeToken(ldapUserDetailsManager.selectKeys(userInstance.username))
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), id])

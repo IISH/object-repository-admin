@@ -74,6 +74,9 @@ class VFSUserManager extends AbstractUserManager {
                     '/' + it.split('_').last()
                 }.join(',')
 
+
+
+
                 new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
             } else
                 throw new AuthenticationFailedException("Authentication failed")

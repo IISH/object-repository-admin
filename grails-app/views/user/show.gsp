@@ -33,20 +33,21 @@
         <td valign="top" class="value">${fieldValue(bean: userInstance, field: "mail")}</td>
     </tr>
     <tr class="prop">
-        <td valign="top" class="name"><g:message code="user.useFor.label" default="Use for"/></td>
-        <td valign="top" class="value">${fieldValue(bean: userInstance, field: "useFor")}</td>
+        <td valign="top" class="name"><g:message code="user.accessScope.label" default="Access scope"/></td>
+        <td valign="top" class="value">${fieldValue(bean: userInstance, field: "accessScope")} : <g:message code="${'user.accessScope.' + userInstance.accessScope + '.label'}" /></td>
     </tr>
+    <g:if test="${userInstance.accessScope == 'limited'}">
+        <tr class="prop">
+            <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
+            <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link></td>
+        </tr>
+    </g:if>
+
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.enabled.label" default="Enabled"/></td>
         <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.password[0] != '!'}"/></td>
     </tr>
 
-<g:if test="${userInstance.useFor == 'dissemination'}">
-    <tr class="prop">
-        <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
-        <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link></td>
-    </tr>
-</g:if>
 
     <g:if test="${token}">
         <tr class="prop">

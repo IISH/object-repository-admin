@@ -11,14 +11,15 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label"
-                                                                                                            args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="list" action="list"><g:message
+                code="default.list.label"
+                args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance:userInstance]"/>
+<g:render template="/layouts/header" model="[instance: userInstance]"/>
 
-<g:form mapping="namingAuthority" params="[na:params.na]" action="save" onsubmit="return validate(this);">
+<g:form mapping="namingAuthority" params="[na: params.na]" action="save" onsubmit="return validate(this);">
     <table>
         <tbody>
 
@@ -27,7 +28,7 @@
                 <label for="username"><g:message code="user.username.label" default="username"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'username', 'errors')}">
-                <g:textField name="username" maxlength="30" />
+                <g:textField name="username" maxlength="30"/>
             </td>
         </tr>
         <tr class="prop">
@@ -35,7 +36,7 @@
                 <label for="password"><g:message code="user.password.label" default="Password"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'password', 'errors')}">
-                <g:passwordField name="password" /> <g:message code="user.default.autopass"/>
+                <g:passwordField name="password"/> <g:message code="user.default.autopass"/>
             </td>
         </tr>
 
@@ -45,16 +46,18 @@
                                                  default="Confirm password"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'confirmpassword', 'errors')}">
-                <g:passwordField name="confirmpassword" />
+                <g:passwordField name="confirmpassword"/>
             </td>
         </tr>
 
         <tr class="prop">
             <td valign="top" class="name">
-                <label for="useFor"><g:message code="user.useFor.label"/></label>
+                <label for="accessScope"><g:message code="user.accessScope.label"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'useFor', 'errors')}">
-                <g:select name="useFor" from="${grailsApplication.config.usesFor}" value="${userInstance.useFor}"/>
+            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'accessScope', 'errors')}">
+                <g:select name="accessScope" from="${grailsApplication.config.accessScope.collect {
+                    [k: (it), v: it + ': ' + message(code: 'user.accessScope.' + it + '.label')]
+                }}" optionKey="k" optionValue="v" value="${userInstance.accessScope}"/>
             </td>
         </tr>
 
@@ -63,7 +66,7 @@
                 <label for="mail"><g:message code="user.email.label" default="Email"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'mail', 'errors')}">
-                <g:textField name="mail" />
+                <g:textField name="mail"/>
             </td>
         </tr>
 

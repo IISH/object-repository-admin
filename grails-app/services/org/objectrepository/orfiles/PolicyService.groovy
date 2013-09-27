@@ -55,24 +55,27 @@ class PolicyService {
         policies.put(key, policy)
     }
 
-    def hasAccess(def access, def na, def pids = null) {
-        if (access == "open" || springSecurityService.hasNa(na)) return true
-        hasPid(pids)
-    }
-
     /**
-     * hasPid
+     * hasAccess
      *
      * Detects if the user is allowed to see the resource as if it has an access=open status
-     * Returns a userInstance with the downloads upped.
+     * Returns a true or a userInstance with the downloads upped. Null if no access is allowed.
      *
-     * @param pid
-     * @return userInstance
+     * @param access Access status: 'open', 'restricted' or 'closed'
+     * @param na Prefix of the PID
+     * @param pids PID value
+     * @return
      */
-    private def hasPid(def pids) {
-        if (pids &&
-                springSecurityService.authentication instanceof OAuth2Authentication) {
-            def userInstance = User.findByUsernameAndUseFor(springSecurityService.principal, "dissemination")
+    def hasAccess(def access, def na, def pids) {
+        if (access == "open" || springSecurityService.hasNa(na)) return true
+
+        def accessScope = springSecurityService.authentication.authorities*.authority.find {
+            it.startsWith("ROLE_OR_DISSEMINATION_")
+        }?.split('_')
+        if (!accessScope) return false
+
+        if (accessScope[3] == 'LIMITED') {
+            def userInstance = User.findByUsername(springSecurityService.principal)
             def date = new Date()
             for (String pid : pids) {
                 def resource = userInstance.resources.find {
@@ -85,6 +88,8 @@ class PolicyService {
                     return userInstance
                 }
             }
-        }
+        } else
+            accessScope[4] == na && (accessScope[3].equalsIgnoreCase(access.toUpperCase()) || accessScope[3] == 'CLOSED')
     }
+
 }

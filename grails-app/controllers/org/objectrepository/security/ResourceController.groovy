@@ -13,7 +13,7 @@ class ResourceController {
      * Anyone with the correct NA may see this controller's actions.
      */
     def beforeInterceptor = {
-        def role = 'ROLE_OR_FTPUSER_' + params.na
+        def role = 'ROLE_OR_DISSEMINATION_USER_' + params.na
         if (springSecurityService.isLoggedIn() && (role in springSecurityService.authentication.authorities*.authority)) {
             true
         } else {

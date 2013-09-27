@@ -41,7 +41,7 @@ class PdfService {
         def userInstance
         list.each {
             final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
-            final def hasAccess = policyService.hasAccess(access, na, [it.metadata.objid, it.metadata.pid], userInstance)
+            final def hasAccess = policyService.hasAccess(access, na, [it.metadata.objid, it.metadata.pid])
             if (!hasAccess) {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             } else if (it.contentType.startsWith('image')) {

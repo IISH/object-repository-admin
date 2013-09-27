@@ -75,12 +75,6 @@ class BootStrap {
             }.sort { it }
             if (authorities) authorities[0].split('_').last()
         }
-
-        springSecurityService.metaClass.hasAuthority = { def na, def authority ->
-            def role = "ROLE_" + authority + "_"  + na
-            (role in authentication.authorities*.authority)
-        }
-
     }
 
     private void oauth2() {

@@ -24,7 +24,7 @@
         <tr>
             <g:sortableColumn property="username"
                               title="${message(code: 'user.username.label', default: 'username')}"/>
-            <th>${message(code: 'user.useFor.label', default: 'use for')}</th>
+            <th>${message(code: 'user.accessScope.label', default: 'use for')}</th>
             <th>${message(code: 'user.resource.label', default: 'resources')}</th>
             <g:sortableColumn property="mail" title="${message(code: 'user.email.label', default: 'Email')}"/>
             <g:sortableColumn property="enabled"
@@ -37,8 +37,8 @@
             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link mapping="namingAuthority" params="[na:params.na]" action="show"
                             id="${userInstance.id}">${fieldValue(bean: userInstance, field: "username")}</g:link></td>
-                <td>${fieldValue(bean: userInstance, field: "useFor")}</td>
-                <td><g:if test="${userInstance.useFor == 'dissemination'}">
+                <td>${fieldValue(bean: userInstance, field: "accessScope")}</td>
+                <td><g:if test="${userInstance.accessScope == 'dissemination'}">
                     <g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link>
                 </g:if></td>
                 <td>${fieldValue(bean: userInstance, field: "mail")}</td>
