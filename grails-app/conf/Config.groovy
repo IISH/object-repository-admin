@@ -97,12 +97,6 @@ accessMatrix = [
                 [bucket: 'level1', access: 'open'],
                 [bucket: 'level2', access: 'open'],
                 [bucket: 'level3', access: 'open']
-        ],
-        deleted: [
-                [bucket: 'master', access: 'closed'],
-                [bucket: 'level1', access: 'closed'],
-                [bucket: 'level2', access: 'closed'],
-                [bucket: 'level3', access: 'closed']
         ]
 ]
 

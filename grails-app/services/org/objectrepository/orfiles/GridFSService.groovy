@@ -47,7 +47,8 @@ class GridFSService {
      * @return
      */
     GridFSDBFile findByPid(String pid, String bucket = 'master') {
-        if (bucket in grailsApplication.config.buckets && pid) new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).findOne(new BasicDBObject('metadata.pid', pid))
+        if (bucket in grailsApplication.config.buckets && pid) new GridFS(mongo.getDB(OR + OrUtil.getNa(pid)), bucket).
+                findOne(new BasicDBObject('metadata.pid', pid))
     }
 
     GridFSDBFile findByField(String na, String bucket, String key, String value) {
@@ -104,7 +105,7 @@ class GridFSService {
     }
 
     void siteusage(String na, def document) {
-        if ( grailsApplication.config.siteusage )
+        if (grailsApplication.config.siteusage)
             mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
@@ -247,7 +248,7 @@ class GridFSService {
     def countPidOrObjId(String na, String id) {
         final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
         int count = mongo.getDB(OR + na).'master.files'.count(q)
-        def orfile = ( count ) ? get(na, id) : null
-        [count:count, orfile:orfile]
+        def orfile = (count) ? get(na, id) : null
+        [count: count, orfile: orfile]
     }
 }

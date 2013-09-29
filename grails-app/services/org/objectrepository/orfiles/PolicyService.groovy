@@ -3,9 +3,6 @@ package org.objectrepository.orfiles
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
 import org.objectrepository.security.User
-import org.objectrepository.util.OrUtil
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 class PolicyService {
 
@@ -17,7 +14,10 @@ class PolicyService {
     private policies = [:]
 
     /**
-     * Retrieves the access matrix for the desired na and status and caches its result
+     * getPolicy
+     *
+     * Retrieves the access policy as defined in the metadata.access element of the file.
+     * Applies the embargo if set, to switch to a different access policy as defined in the metadata.embargoAccess element
      *
      * @param filesInstance
      * @return
@@ -26,7 +26,7 @@ class PolicyService {
         if (cache == 'no') policies.clear()
         String na = fileInstance.metadata.na
         final String access
-        if (fileInstance.metadata.embargo?.length() == 10 && Date.parse('yyyy-MM-dd', fileInstance.metadata.embargo) > new Date()) {
+        if (fileInstance.metadata.embargo?.length() == 10 && Date.parse('yyyy-MM-dd', fileInstance.metadata.embargo) < new Date()) {
             access = (fileInstance.metadata.embargoAccess) ?: 'closed'
         } else {
             access = fileInstance.metadata.access
@@ -34,6 +34,16 @@ class PolicyService {
         _getPolicy(na, access)
     }
 
+    /**
+     *  _getPolicy
+     *
+     *  Retrieves an access policy and caches it.
+     *  Default to a closed access policy when the policy is not known
+     *
+     * @param na Naming authority
+     * @param access Access policy name
+     * @return The access policy suitable to the file
+     */
     Policy _getPolicy(String na, String access) {
         String key = na + "." + access
         def policy = policies[key]
@@ -46,12 +56,20 @@ class PolicyService {
                 }
                 policy = new Policy(na: na, access: access, buckets: buckets).save(failOnError: true)
             }
-            setPolicy(key, policy)
+            cachePolicy(key, policy)
         }
         policy
     }
 
-    void setPolicy(String key, Policy policy) {
+    /**
+     * cachePolicy
+     *
+     * Adds an access policy to the memory cache
+     *
+     * @param key Cache key
+     * @param policy The policy to cache
+     */
+    void cachePolicy(String key, Policy policy) {
         policies.put(key, policy)
     }
 
@@ -64,32 +82,43 @@ class PolicyService {
      * @param access Access status: 'open', 'restricted' or 'closed'
      * @param na Prefix of the PID
      * @param pids PID value
-     * @return
+     * @return Array of [status:http status, level:open|restricted|closed, user:null|userInstance]
+     *
      */
-    def hasAccess(def access, def na, def pids) {
-        if (access == "open" || springSecurityService.hasNa(na)) return true
+    def hasAccess(def fileInstance, def bucket = 'master', def cache = null) {
+        final def policy = getPolicy(fileInstance, cache)
+        final String level = policy.getAccessForBucket(bucket)
+        final String na = fileInstance.metadata.na
+        if (level == "open" || springSecurityService.hasNa(na)) return [status: 200, level: level]
 
         def accessScope = springSecurityService.authentication.authorities*.authority.find {
-            it.startsWith("ROLE_OR_DISSEMINATION_")
-        }?.split('_')
-        if (!accessScope) return false
+            it.equalsIgnoreCase("ROLE_OR_DISSEMINATION_*_" + na) ||
+                    it.equalsIgnoreCase("ROLE_OR_DISSEMINATION_" + policy.access + "_" + na) ||
+                    it == "ROLE_OR_DISSEMINATION_LIMITED_" + na
+        }
 
-        if (accessScope[3] == 'LIMITED') {
-            def userInstance = User.findByUsername(springSecurityService.principal)
-            def date = new Date()
-            for (String pid : pids) {
-                def resource = userInstance.resources.find {
-                    (it.pid == pid || it.pid[-1] == '*' && pid.startsWith(it.pid[0..-2])) &&
-                            (it.downloadLimit < 1 || (it.downloads / it.interval < it.downloadLimit)) &&
-                            (!it.expirationDate || it.expirationDate > date)
+        if (accessScope) {
+            def split = accessScope.split('_')
+            if (split[3] == 'LIMITED') {
+                def userInstance = User.findByUsername(springSecurityService.principal)
+                def date = new Date()
+                def pids = [fileInstance.metadata.pid, fileInstance.metadata.objid]
+                for (String pid : pids) {
+                    def resource = userInstance.resources.find {
+                        (it.pid == pid/* || it.pid[-1] == '*' && pid.startsWith(it.pid[0..-2])*/) &&
+                                (it.downloadLimit < 1 || (it.downloads < it.downloadLimit)) &&
+                                (!it.expirationDate || it.expirationDate > date)
+                    }
+                    if (resource) {
+                        if (bucket in resource.buckets) resource.downloads++
+                        return [status: 200, level: level, user: userInstance]
+                    }
                 }
-                if (resource) {
-                    resource.downloads++
-                    return userInstance
-                }
-            }
+                [status: 401, level: level]
+            } else
+                [status: 200, level: level]
         } else
-            accessScope[4] == na && (accessScope[3].equalsIgnoreCase(access.toUpperCase()) || accessScope[3] == 'CLOSED')
+            [status: 401, level: level]
     }
 
 }

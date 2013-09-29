@@ -12,7 +12,7 @@ class PdfController {
             response.setCharacterEncoding("utf-8")
             response.setContentType("application/pdf")
             response.setHeader 'Content-disposition', 'attachment; filename="' + params.objid + '.pdf"'
-            pdfService.pdf(response.outputStream, list, params.na, bucket)
+            pdfService.pdf(response.outputStream, list, bucket, params.cache)
         } else {
             params.pid = params.na + '/' + params.objid
             render(view: '/file/404', status: 404)

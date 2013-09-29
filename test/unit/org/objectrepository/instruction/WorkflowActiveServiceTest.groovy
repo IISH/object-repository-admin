@@ -22,7 +22,7 @@ class WorkflowActiveServiceTest {
     void setUp() {
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-        config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
+        config = slurper.parse(classLoader.loadClass("PlanConfig"))
 
         WorkflowJob.metaClass.message = { def document ->  // make sure we skip the message queue method and move right to the last document
             document.task.info = document.task.name

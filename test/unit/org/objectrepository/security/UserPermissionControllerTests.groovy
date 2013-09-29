@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
 @TestFor(UserPermissionController)
 class UserPermissionControllerTests {
 
-    UserPermissionControllerTests() {
+    void setUp() {
         LinkedHashMap.metaClass.encodePassword { password, hash ->
             "encrypted password"
         }

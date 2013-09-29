@@ -41,8 +41,8 @@
                         <img style="width: 100px;" src="${resource(dir: 'images/or', file: file)}"/>
                     </g:else></td>
                 <td>${fieldValue(bean: userResourceInstance, field: "pid")}</td>
-                <td>${userResourceInstance.downloadLimit / userResourceInstance.interval}</td>
-                <td>${userResourceInstance.downloads / userResourceInstance.interval}</td>
+                <td>${userResourceInstance.downloadLimit}</td>
+                <td>${userResourceInstance.downloads}</td>
                 <td><g:formatDate date="${userResourceInstance.expirationDate}"/></td>
                 <td><a href="${grailsApplication.config.grails.serverURL}/file/master/${userResourceInstance.pid}?access_token=${params.access_token}" target="_blank">download it</a></td>
             </tr>

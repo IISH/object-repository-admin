@@ -9,14 +9,14 @@ class UserResource {
     Date expirationDate
     int downloadLimit = 0
     int downloads = 0
-    int interval = 1
+    String[] buckets = ['master']
 
     static constraints = {
         contentType(nullable: true)
         expirationDate(nullable: true)
         downloadLimit(min: 0)
         downloads(min: 0)
-        interval(min: 1)
+        buckets(inList:['master', 'level1', 'level2', 'level3'])
     }
 
     static mapping = {
@@ -28,6 +28,6 @@ class UserResource {
         expirationDate attr: 'e'
         downloadLimit attr: 'l'
         downloads attr: 'd'
-        interval attr: 'i'
+        buckets attr: 'b'
     }
 }

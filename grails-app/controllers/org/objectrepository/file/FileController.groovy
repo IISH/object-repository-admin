@@ -2,7 +2,6 @@ package org.objectrepository.file
 
 import org.objectrepository.security.User
 import org.objectrepository.util.OrUtil
-import org.springframework.security.access.annotation.Secured
 
 import javax.servlet.http.HttpServletResponse
 
@@ -172,19 +171,13 @@ class FileController {
             return null
         }
 
-        if (fileInstance.metadata.access == "deleted") {
-            render(view: '404', statuscode: 404)
-            return null
+        final def access = policyService.hasAccess(fileInstance, params.bucket, params.cache)
+        if (access.status == 200) {
+            if (access.level != 'open' && params.bucket in ['master', 'level1'])
+                access.user?.save(flush: false)
+            return fileInstance
         }
 
-        final String access = policyService.getPolicy(fileInstance, params.cache).getAccessForBucket(params.bucket)
-        final def hasAccess = policyService.hasAccess(access, fileInstance.metadata.na, [pid])
-        if (!hasAccess) {
-            render(view: "denied", status: 401, model: [access: access])
-            return null
-        } else if (access != 'open' && hasAccess instanceof User && params.bucket in ['master', 'level1'])
-            hasAccess.save(flush: false)
-
-        fileInstance
+        render(view: "denied", status: access.status, model: [level: access.level])
     }
 }

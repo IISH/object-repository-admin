@@ -78,8 +78,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
             userResourceInstance.expirationDate = null
 
         final resource = gridFSService.countPidOrObjId(params.na, pid)
-        userResourceInstance.interval = (pid[-1] == '*') ? 1 : resource.count
-        if (userResourceInstance.interval == 0) {
+        if (resource.count == 0) {
             flash.message = "Unknown resource: " + pid
             render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
             return

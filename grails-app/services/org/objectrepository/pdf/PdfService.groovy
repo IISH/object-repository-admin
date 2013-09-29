@@ -1,10 +1,8 @@
 package org.objectrepository.pdf
 
 import com.lowagie.text.*
-import com.lowagie.text.pdf.PdfReader
 import com.lowagie.text.pdf.PdfWriter
 import org.apache.commons.io.IOUtils
-import org.objectrepository.security.User
 
 class PdfService {
 
@@ -31,7 +29,7 @@ class PdfService {
      * @param pid
      * @param use
      */
-    void pdf(def writer, def list, String na, String bucket) {
+    void pdf(def writer, def list, String bucket, def cache) {
 
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0)
         final float documentWidth = document.getPageSize().getWidth() + document.getPageSize().getBorderWidthLeft() + document.getPageSize().getBorderWidthRight()
@@ -40,8 +38,7 @@ class PdfService {
         document.open()
         def userInstance
         list.each {
-            final String access = policyService.getPolicy(it).getAccessForBucket(bucket)
-            final def hasAccess = policyService.hasAccess(access, na, [it.metadata.objid, it.metadata.pid])
+            final def hasAccess = policyService.hasAccess(it, bucket, cache)
             if (!hasAccess) {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             } else if (it.contentType.startsWith('image')) {

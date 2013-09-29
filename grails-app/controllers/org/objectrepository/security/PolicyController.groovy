@@ -84,7 +84,7 @@ class PolicyController extends NamingAuthorityInterceptor {
             return
         }
 
-        policyService.setPolicy(params.na, policyInstance)
+        policyService.cachePolicy(params.na, policyInstance)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
         forward(action: "show", id: policyInstance.id)

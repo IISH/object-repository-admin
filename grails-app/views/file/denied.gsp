@@ -12,7 +12,7 @@
 
 <div id="show-file" class="content scaffold-show" role="main">
     <h1>No access</h1>
-    <p>Access for this resource is ${access}</p>
+    <p>Access for this resource is ${level}</p>
 </div>
 </body>
 </html>
