@@ -100,9 +100,6 @@ accessMatrix = [
         ]
 ]
 
-// Possibilities for our user roles
-accessScope = ['limited', 'open', 'restricted', 'closed', 'administration']
-
 // LDAP settings
 def dn = ",dc=socialhistoryservices,dc=org"
 

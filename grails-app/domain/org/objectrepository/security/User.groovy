@@ -10,7 +10,7 @@ class User {
     String newpassword
     String username
     String url
-    boolean refreshKey = false
+    boolean replaceKey = true
 
     // Spring minimal User fields
     String password
@@ -18,18 +18,32 @@ class User {
     boolean accountExpired
     boolean accountLocked
     boolean passwordExpired
-    String accessScope = 'limited'
     List<UserResource> resources = []
 
     Set<Role> getAuthorities() {
-        UserRole.findAllByUser(this).collect { it.role } as Set
+        (enabled) ? UserRole.findAllByUser(this).collect { it.role } as Set : [] as Set
     }
 
-    static transients = ["confirmpassword", "refreshKey", "url"]
+    /**
+     * authorities
+     *
+     * Produces a list of dissemination authorities
+     *
+     * @param userInstance
+     * @return
+     */
+    List<String> authoritiesFiltered(String filter) {
+        authorities.findAll {
+            (filter) ? it.authority.startsWith(filter) : true
+        }?.collect {
+            it.authority.split('_')[3]
+        }
+    }
+
+    static transients = ["confirmpassword", "replaceKey", "url"]
 
     static constraints = {
         na(nullable: true, blank: false)
-        accessScope(inList:['limited', 'open', 'restricted', 'closed', 'administration'])
         verification(nullable: true, unique: true)
         newpassword(nullable: true)
         username(blank: false, unique: true, size: 3..100, matches: /^[a-zA-Z0-9_\.@]*/)

@@ -91,34 +91,30 @@ class PolicyService {
         final String na = fileInstance.metadata.na
         if (level == "open" || springSecurityService.hasNa(na)) return [status: 200, level: level]
 
-        def accessScope = springSecurityService.authentication.authorities*.authority.find {
-            it.equalsIgnoreCase("ROLE_OR_DISSEMINATION_*_" + na) ||
-                    it.equalsIgnoreCase("ROLE_OR_DISSEMINATION_" + policy.access + "_" + na) ||
-                    it == "ROLE_OR_DISSEMINATION_LIMITED_" + na
+        if (springSecurityService.authentication.authorities*.authority.find {
+            it == "ROLE_OR_DISSEMINATION_all_" + na ||
+                    it == "ROLE_OR_DISSEMINATION_" + policy.access + "_" + na
+        })
+            return [status: 200, level: level]
+
+        def userInstance = User.findByUsernameAndNa(springSecurityService.principal, na)
+        if (userInstance) {
+            def date = new Date()
+            def pids = [fileInstance.metadata.pid, fileInstance.metadata.objid]
+            for (String pid : pids) {
+                def resource = userInstance.resources.find {
+                    (it.pid == pid/* || it.pid[-1] == '*' && pid.startsWith(it.pid[0..-2])*/) &&
+                            (it.downloadLimit < 1 || (it.downloads < it.downloadLimit)) &&
+                            (!it.expirationDate || it.expirationDate > date)
+                }
+                if (resource) {
+                    if (bucket in resource.buckets) resource.downloads++
+                    return [status: 200, level: level, user: userInstance]
+                }
+            }
         }
 
-        if (accessScope) {
-            def split = accessScope.split('_')
-            if (split[3] == 'LIMITED') {
-                def userInstance = User.findByUsername(springSecurityService.principal)
-                def date = new Date()
-                def pids = [fileInstance.metadata.pid, fileInstance.metadata.objid]
-                for (String pid : pids) {
-                    def resource = userInstance.resources.find {
-                        (it.pid == pid/* || it.pid[-1] == '*' && pid.startsWith(it.pid[0..-2])*/) &&
-                                (it.downloadLimit < 1 || (it.downloads < it.downloadLimit)) &&
-                                (!it.expirationDate || it.expirationDate > date)
-                    }
-                    if (resource) {
-                        if (bucket in resource.buckets) resource.downloads++
-                        return [status: 200, level: level, user: userInstance]
-                    }
-                }
-                [status: 401, level: level]
-            } else
-                [status: 200, level: level]
-        } else
-            [status: 401, level: level]
+        [status: 401, level: level]
     }
 
 }

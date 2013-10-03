@@ -9,7 +9,8 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
 class PolicyServiceTests {
 
     final String na = "00000"
-    Policy cache
+    Policy policyCache
+    User userCache
 
     // What we would expect with the build in policies 'open', 'restricted', 'closed' ( or null ) and administration
     final expectedPolicieResponses = [
@@ -33,11 +34,14 @@ class PolicyServiceTests {
         Policy.metaClass.'static'.save << { map ->
             delegate
         }
-        cache = new Policy(na: na, buckets: [])
+        policyCache = new Policy(na: na, buckets: [])
         Policy.metaClass.'static'.findByNaAndAccess << { na, access ->
             new Policy(na: na, access: access, buckets: config.accessMatrix[access].collect {
                 new Bucket(it)
             })
+        }
+        User.metaClass.'static'.findByUsernameAndNa << { username, na_ ->
+            (userCache?.username == username && userCache?.na == na_) ? userCache : null
         }
     }
 
@@ -177,11 +181,8 @@ class PolicyServiceTests {
                 authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_LIMITED_' + na)]]]
 
         final String pid = na + '/' + UUID.randomUUID().toString()
-        final User cache = new User(username: principal, resources: [
+        userCache = new User(username: principal, na: na, resources: [
                 new UserResource(pid: pid, downloadLimit: 5)])
-        User.metaClass.'static'.findByUsername << { username ->
-            cache
-        }
 
         // Same as anonymous view
         [
@@ -205,8 +206,8 @@ class PolicyServiceTests {
                 service.hasAccess(metadata(pid, accessStatus), bucket)
             }
         }
-        assert cache.resources[0].downloads == 0
-        for (int downloads = 1; downloads <= cache.resources[0].downloadLimit; downloads++) {
+        assert userCache.resources[0].downloads == 0
+        for (int downloads = 1; downloads <= userCache.resources[0].downloadLimit; downloads++) {
             assert service.hasAccess(metadata(pid, 'open'), 'master').user.resources[0].downloads == downloads
         }
         assert service.hasAccess(metadata(pid, 'open'), 'master').status == 401
@@ -214,9 +215,9 @@ class PolicyServiceTests {
         assert service.hasAccess(metadata(pid, 'open'), 'level2').status == 200
         assert service.hasAccess(metadata(pid, 'open'), 'level3').status == 200
 
-        cache.resources[0].downloads = 0
-        cache.resources[0].downloadLimit = 0
-        cache.resources[0].expirationDate = new Date().plus(1) // Tomorrow
+        userCache.resources[0].downloads = 0
+        userCache.resources[0].downloadLimit = 0
+        userCache.resources[0].expirationDate = new Date().plus(1) // Tomorrow
         for (int downloads = 1; downloads <= 10; downloads++) {
             final hasAccess = service.hasAccess(metadata(pid, 'open'), 'master')
             assert hasAccess.status == 200
@@ -225,7 +226,7 @@ class PolicyServiceTests {
             assert service.hasAccess(metadata('12345/another pid', 'open'), 'master').status == 401
         }
 
-        cache.resources[0].expirationDate = new Date().minus(1) // Yesterday. Should be treated as anonymous
+        userCache.resources[0].expirationDate = new Date().minus(1) // Yesterday. Should be treated as anonymous
         [
                 'open':
                         expectedPolicieResponses.open,

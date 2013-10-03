@@ -29,19 +29,21 @@
         <td valign="top" class="value">${fieldValue(bean: userInstance, field: "username")}</td>
     </tr>
     <tr class="prop">
+        <td valign="top" class="name"><g:message code="user.dissemination.label"/></td>
+        <td valign="top" class="value">
+            <g:render template="dissemination" model="[policyList: policyList, userInstance: userInstance]"/>
+        </td>
+    </tr>
+    <tr class="prop">
+        <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
+        <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na: params.na]"
+                                               controller="userResource" action="list"
+                                               id="${userInstance.id}">Manage access to resources</g:link></td>
+    </tr>
+    <tr class="prop">
         <td valign="top" class="name"><g:message code="user.email.label" default="Email"/></td>
         <td valign="top" class="value">${fieldValue(bean: userInstance, field: "mail")}</td>
     </tr>
-    <tr class="prop">
-        <td valign="top" class="name"><g:message code="user.accessScope.label" default="Access scope"/></td>
-        <td valign="top" class="value">${fieldValue(bean: userInstance, field: "accessScope")} : <g:message code="${'user.accessScope.' + userInstance.accessScope + '.label'}" /></td>
-    </tr>
-    <g:if test="${userInstance.accessScope == 'limited'}">
-        <tr class="prop">
-            <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
-            <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na:params.na]" controller="userResource" action="list" id="${userInstance.id}">Manage access to resources</g:link></td>
-        </tr>
-    </g:if>
 
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.enabled.label" default="Enabled"/></td>

@@ -9,12 +9,16 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl
 @TestFor(UserPermissionController)
 class UserPermissionControllerTests {
 
+    final String na = "00000"
+
+    final User databaseUser = new User()
+
     void setUp() {
         LinkedHashMap.metaClass.encodePassword { password, hash ->
             "encrypted password"
         }
         User.metaClass.'static'.findByUsername << { username ->
-            [username:username]
+            (databaseUser.username == username) ? databaseUser : null
         }
         User.metaClass.'static'.save << { map ->
             delegate
@@ -26,7 +30,7 @@ class UserPermissionControllerTests {
 
     void testNoUsername() {
 
-        params.na = 00000
+        params.na = na
         params.user = [
                 mail: 'wedwed@wedwed.ede',
                 password: 'wedwed'
@@ -42,14 +46,16 @@ class UserPermissionControllerTests {
 
     void testNoAuthority() {
 
-        params.na = 00000
+        params.na = na
         params.user = [
                 mail: 'wedwed@wedwed.ede',
-                password: 'wedwed' ,
+                password: 'wedwed',
                 username: 'a username'
         ]
 
-        controller.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_USER_00000')]]]
+        databaseUser.na = "12345"
+        controller.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_USER_na')]]]
+
 
         controller.save()
         assert response.status == 400
@@ -57,7 +63,7 @@ class UserPermissionControllerTests {
     }
 
     /*void testResouces() {
-        params.na = 00000
+        params.na = na
         params.user = [
                 mail: 'wedwed@wedwed.ede',
                 password: 'wedwed' ,
@@ -68,6 +74,6 @@ class UserPermissionControllerTests {
         params.'user[0].pid' = '10622/30051001064648'
         params.'user[1].expirationDate' = '2012-10-13'
         params.'user[1].downloadLimit' = '100'
-        params.'user[1].pid' = '00000/30051000924891'
+        params.'user[1].pid' = 'na/30051000924891'
     }*/
 }

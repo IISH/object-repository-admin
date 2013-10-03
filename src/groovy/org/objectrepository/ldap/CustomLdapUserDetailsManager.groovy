@@ -163,6 +163,10 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
         tokenStore.selectKeys(username)
     }
 
+    def updateKey(def userInstance) {
+        (userInstance.replaceKey) ? replaceKey(userInstance) : refreshKey(userInstance)
+    }
+
     /***
      * replacekey
      *
@@ -170,7 +174,7 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      *
      * @param userInstance
      */
-    def replaceKey(def userInstance) {
+    private def replaceKey(def userInstance) {
         tokenServices.createAccessToken(refresh(userInstance))
     }
 
@@ -182,15 +186,16 @@ public class CustomLdapUserDetailsManager extends LdapUserDetailsManager {
      *
      * @param userInstance
      */
-    void refreshKey(def userInstance) {
+    private def refreshKey(def userInstance) {
         final token = selectKeys(userInstance.username)
-        if (token)
+        if (token) {
             tokenStore.updateAuthentication(token, refresh(userInstance))
-        else
+            token
+        } else
             tokenServices.createAccessToken(refresh(userInstance))
     }
 
-    private OAuth2Authentication refresh(userInstance) {
+    private OAuth2Authentication refresh(def userInstance) {
         removeToken(selectKeys(userInstance.username))
         def client = clientDetailsService.clientDetailsStore.get("clientId")
         ClientToken clientToken = new ClientToken(client.clientId, client.resourceIds as Set<String>,

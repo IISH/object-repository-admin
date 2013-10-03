@@ -8,6 +8,7 @@ import org.springframework.security.access.annotation.Secured
 class UserController extends NamingAuthorityInterceptor {
 
     static allowedMethods = [save: "POST", update: "POST"]
+    final static fixedPolicies = ['administration', 'all']
 
     def springSecurityService
     def gridFSService
@@ -24,7 +25,7 @@ class UserController extends NamingAuthorityInterceptor {
     }
 
     def create() {
-        [userInstance: new User(params)]
+        [userInstance: new User(params), policyList: fixedPolicies + Policy.findAllByNa(params.na).access]
     }
 
     def save() {
@@ -48,28 +49,27 @@ class UserController extends NamingAuthorityInterceptor {
 
         if (User.findByUsername(params.username)) {
             flash.message = "Account already exists. Choose a different name."
-            render(view: "create", model: [userInstance: params])
-            return
+            return render(view: "create", model: [userInstance: params, policyList: fixedPolicies + Policy.findAllByNa(params.na).access])
         }
 
         // confirm password check
         if (!params.skippassword) {
             if (params.password != params.confirmpassword) {
                 flash.message = "Passwords do not match"
-                render(view: "create", model: [userInstance: params])
-                return
+                return render(view: "create", model: [userInstance: params])
             }
         }
         params.password = springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes())
 
         def userInstance = new User(params)
-        if (!userInstance.save(flush: true)) {
-            render(view: "create", model: [userInstance: userInstance])
-            return
-        }
+        if (!userInstance.save(flush: true))
+            return render(view: "create", model: [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access])
 
-        roles(userInstance)
-        ldapUserDetailsManager.replaceKey(userInstance)
+        def policyList = create().policyList
+        userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
+            it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
+        }.collect { it.key })
+        ldapUserDetailsManager.updateKey(userInstance)
 
         if (params.sendmail) {
             sendMail {
@@ -92,13 +92,13 @@ class UserController extends NamingAuthorityInterceptor {
         def userInstance = User.findByIdAndNa(id, params.na)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-            return
+            return forward(action: "list")
         }
 
         def token = ldapUserDetailsManager.selectKeys(userInstance.username)
-        if (!token) token = ldapUserDetailsManager.replacekey(userInstance)
-        [userInstance: userInstance, token: token]
+        userInstance.replaceKey = (token)
+        if (!token) token = ldapUserDetailsManager.updateKey(userInstance)
+        [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access, token: token]
     }
 
     def edit(Long id) {
@@ -107,55 +107,78 @@ class UserController extends NamingAuthorityInterceptor {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "list")
         } else
-            [userInstance: userInstance]
+            [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access]
     }
 
     def update(Long id, Long version) {
         def userInstance = User.findByIdAndNa(id, params.na)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-            return
+            return forward(action: "list")
         } else if (version != null) {
             if (userInstance.version > version) {
                 userInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'user.label', default: 'User')] as Object[],
                         "Another ftp has updated this User while you were editing")
-                render(view: "edit", model: [userInstance: userInstance])
-                return
+                return render(view: "edit", model: [userInstance: userInstance])
             }
         }
 
-        userInstance.refreshKey = (userInstance.accessScope == params.accessScope)
         userInstance.properties = params
-
         if (!userInstance.save(flush: true)) {
-            render(view: "edit", model: [userInstance: userInstance])
-            return
+            return render(view: "edit", model: [userInstance: userInstance])
         }
 
-        roles(userInstance)
-        if (userInstance.refreshKey)
-            ldapUserDetailsManager.refreshKey(userInstance)
-        else
-            ldapUserDetailsManager.replaceKey(userInstance)
+        def policyList = create().policyList
+        userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
+            it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
+        }.collect { it.key })
+
+        ldapUserDetailsManager.updateKey(userInstance)
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
         forward(action: "show", id: userInstance.id)
     }
 
-    static def roles(def userInstance) {
-        userInstance.authorities?.each {
-            UserRole.remove(userInstance, it)
+    /**
+     * roles
+     *
+     * Removes all authorities and resets these with the given parameters.
+     *
+     * @param userInstance
+     * @param dissemination
+     * @return True if there was a change in the user's authority status
+     */
+    static boolean roles(def userInstance, def dissemination) {
+
+        fixedPolicies.each { scope ->
+            if (scope in dissemination)
+                dissemination.removeAll { it != scope }
         }
 
-        def r = (userInstance.accessScope == 'administration') ?
-            ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] :
-            ['ROLE_OR_DISSEMINATION_' + userInstance.accessScope.toUpperCase() + '_' + userInstance.na]
-        r.each {
-            def role = Role.findByAuthority(it) ?: new Role(authority: it).save(failOnError: true)
-            UserRole.create userInstance, role
+        List roles = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
+        roles += dissemination.collect {
+            'ROLE_OR_DISSEMINATION_' + it + '_' + userInstance.na
         }
+
+        def currentAuthorities = userInstance.authorities?.collect {
+            it.authority
+        }
+
+        def removals = currentAuthorities.minus(roles)
+        removals.each { authority ->
+            UserRole.remove(userInstance, userInstance.authorities.find {
+                it.authority == authority
+            })
+        }
+
+        def additions = roles.minus(currentAuthorities)
+        additions.each {
+            UserRole.create userInstance,
+                    Role.findByAuthority(it) ?: new Role(authority: it).save(failOnError: true)
+        }
+
+        removals || additions
     }
 
     def updatekey(Long id) {
@@ -163,11 +186,11 @@ class UserController extends NamingAuthorityInterceptor {
         def userInstance = User.findByIdAndNa(id, params.na)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-            return
+            return forward(action: "list")
         }
 
-        ldapUserDetailsManager.replaceKey(userInstance)
+        userInstance.replaceKey = true
+        ldapUserDetailsManager.updateKey(userInstance)
         forward(action: "show", id: params.id)
     }
 
@@ -175,8 +198,7 @@ class UserController extends NamingAuthorityInterceptor {
         def userInstance = User.findByIdAndNa(id, params.na)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-            return
+            return forward(action: "list")
         }
 
         try {
@@ -190,7 +212,6 @@ class UserController extends NamingAuthorityInterceptor {
             forward(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            log.warn(e)
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
             forward(action: "show", id: id)
         }

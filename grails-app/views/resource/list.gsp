@@ -11,7 +11,7 @@
 <body>
 
 <div class="header" role="introduction">
-    <h1>Available resources for ${userInstance.username}</h1>
+    <h1>Available resources for <g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user" action="show" id="userInstance.id">${userInstance.username}</g:link></h1>
     <p>Information</p>
 </div>
 

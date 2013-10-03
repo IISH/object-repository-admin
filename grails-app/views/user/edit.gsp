@@ -61,6 +61,14 @@
 
         <tr class="prop">
             <td valign="top" class="name">
+                <label for="mail"><g:message code="user.accessScope.label" default="Access scope"/></label>
+            </td>
+            <td valign="top" class="value">
+                <g:render template="dissemination" model="[policyList: policyList, userInstance: userInstance]"/>
+            </td>
+        </tr>
+        <tr class="prop">
+            <td valign="top" class="name">
                 <label for="mail"><g:message code="user.email.label" default="Email"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'mail', 'errors')}">
@@ -68,16 +76,6 @@
             </td>
         </tr>
 
-        <tr class="prop">
-            <td valign="top" class="name">
-                <label for="mail"><g:message code="user.accessScope.label" default="Access scope"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'accessScope', 'errors')}">
-                <g:select name="accessScope" from="${grailsApplication.config.accessScope.collect {
-                    [k: (it), v: it + ': ' + message(code: 'user.accessScope.' + it + '.label')]
-                }}" optionKey="k" optionValue="v" value="${userInstance.accessScope}"  />
-            </td>
-        </tr>
 
         <tr class="prop">
             <td valign="top" class="name">

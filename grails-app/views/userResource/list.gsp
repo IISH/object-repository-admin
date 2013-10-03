@@ -20,6 +20,8 @@
 
 <g:render template="/layouts/header" model="[instance: userResourceInstance]"/>
 
+<p>Available resources for <g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user" action="show" id="${userInstance.id}">${userInstance.username}</g:link></p>
+
 <div id="list-userResource" class="content scaffold-list" role="main">
     <table>
         <thead>

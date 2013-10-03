@@ -52,12 +52,10 @@
 
         <tr class="prop">
             <td valign="top" class="name">
-                <label for="accessScope"><g:message code="user.accessScope.label"/></label>
+                <label><g:message code="user.dissemination.label"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'accessScope', 'errors')}">
-                <g:select name="accessScope" from="${grailsApplication.config.accessScope.collect {
-                    [k: (it), v: it + ': ' + message(code: 'user.accessScope.' + it + '.label')]
-                }}" optionKey="k" optionValue="v" value="${userInstance.accessScope}"/>
+            <td valign="top">
+                <g:render template="dissemination" model="[policyList: policyList, userInstance: userInstance]"/>
             </td>
         </tr>
 
