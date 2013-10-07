@@ -28,6 +28,10 @@
         <td valign="top" class="name"><g:message code="user.username.label" default="username"/></td>
         <td valign="top" class="value">${fieldValue(bean: userInstance, field: "username")}</td>
     </tr>
+    <tr>
+        <td valign="top" class="name"><g:message code="user.url.label" default="username"/></td>
+        <td valign="top" class="value"><input type="text" size="100" value="${grailsApplication.config.grails.serverURL + '/' + userInstance.username + '/resource/list?access_token=' + token.value}"/></td>
+    </tr>
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.dissemination.label"/></td>
         <td valign="top" class="value">

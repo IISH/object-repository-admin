@@ -158,7 +158,7 @@ class UserController extends NamingAuthorityInterceptor {
 
         List roles = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
         roles += dissemination.collect {
-            'ROLE_OR_DISSEMINATION_' + it + '_' + userInstance.na
+            'ROLE_OR_DISSEMINATION_' + it
         }
 
         def currentAuthorities = userInstance.authorities?.collect {
@@ -177,6 +177,11 @@ class UserController extends NamingAuthorityInterceptor {
             UserRole.create userInstance,
                     Role.findByAuthority(it) ?: new Role(authority: it).save(failOnError: true)
         }
+
+        def mainRole = 'ROLE_OR_DISSEMINATION_' + userInstance.na
+        if (!(mainRole in currentAuthorities))
+            UserRole.create userInstance,
+                    Role.findByAuthority(mainRole) ?: new Role(authority: mainRole).save(failOnError: true)
 
         removals || additions
     }

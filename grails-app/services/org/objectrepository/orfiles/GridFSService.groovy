@@ -202,11 +202,23 @@ class GridFSService {
      * @param currentFolder The path. For example: /a/b/c/d
      * @return
      */
-    def vfs(String currentFolder) {
+    def vfs(String currentFolder, def policies) {
 
         String na = currentFolder.split('/')[1].split(':')[0]
         final db = mongo.getDB(OR + na)
-        db.vfs.findOne([_id: currentFolder])
+
+        if (!policies || 'all' in policies || 'administration' in policies)
+            db.vfs.findOne([_id: currentFolder])
+        else {
+            def q = [_id: currentFolder, $or:[
+                    policies.collect {
+                        ['f.a': it]
+                    } + policies.collect {
+                        ['d.a': it]
+                    }]
+            ]
+            db.vfs.findOne(q)
+        }
     }
 
     /**

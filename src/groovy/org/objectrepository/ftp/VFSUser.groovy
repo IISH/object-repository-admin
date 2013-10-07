@@ -12,6 +12,7 @@ class VFSUser implements User {
     private String homeDir = null
     private boolean isEnabled = true
     private List<Authority> authorities = new ArrayList<Authority>()
+    private List<String> policies
 
     /**
      * Get the user name.
@@ -33,6 +34,10 @@ class VFSUser implements User {
 
     public void setAuthorities(List<Authority> authorities) {
         this.authorities = (authorities) ? Collections.unmodifiableList(authorities) : null
+    }
+
+    public void setPolicies(def policies) {
+         this.policies = (policies) ?: []
     }
 
     /**

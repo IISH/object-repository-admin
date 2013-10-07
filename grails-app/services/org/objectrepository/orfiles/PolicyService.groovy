@@ -91,9 +91,15 @@ class PolicyService {
         final String na = fileInstance.metadata.na
         if (level == "open" || springSecurityService.hasNa(na)) return [status: 200, level: level]
 
+        if (!springSecurityService.authentication.authorities*.authority.find {
+            it == 'ROLE_OR_DISSEMINATION_' + na
+        })
+            return [status: 401, level: level]
+
         if (springSecurityService.authentication.authorities*.authority.find {
-            it == "ROLE_OR_DISSEMINATION_all_" + na ||
-                    it == "ROLE_OR_DISSEMINATION_" + policy.access + "_" + na
+            it == 'ROLE_OR_DISSEMINATION_administration' ||
+                    it == 'ROLE_OR_DISSEMINATION_all' ||
+                    it == 'ROLE_OR_DISSEMINATION_' + policy.access
         })
             return [status: 200, level: level]
 
@@ -103,7 +109,7 @@ class PolicyService {
             def pids = [fileInstance.metadata.pid, fileInstance.metadata.objid]
             for (String pid : pids) {
                 def resource = userInstance.resources.find {
-                    (it.pid == pid/* || it.pid[-1] == '*' && pid.startsWith(it.pid[0..-2])*/) &&
+                    it.pid == pid &&
                             (it.downloadLimit < 1 || (it.downloads < it.downloadLimit)) &&
                             (!it.expirationDate || it.expirationDate > date)
                 }

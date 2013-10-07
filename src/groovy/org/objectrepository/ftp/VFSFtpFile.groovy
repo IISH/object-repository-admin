@@ -121,9 +121,8 @@ public class VFSFtpFile implements FtpFile {
             user.homeDirectory.split(',').each {
                 virtualFiles << new VFSFtpFile(it.split('/')[1].split(':')[0], user, gridFSService)
             }
-        }
-        else {
-            def vfs = gridFSService.vfs(currentFolder)
+        } else {
+            def vfs = gridFSService.vfs(currentFolder, user.policies)
             sort(vfs?.d)?.each {
                 virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService)
             }
@@ -144,7 +143,7 @@ public class VFSFtpFile implements FtpFile {
      */
     private def sort(def list) {
 
-        if ( ! list ) return
+        if (!list) return
 
         int max = list.max {
             it.n.length()

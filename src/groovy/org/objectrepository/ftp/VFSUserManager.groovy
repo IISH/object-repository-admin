@@ -10,6 +10,8 @@ import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
+import java.util.regex.Pattern
+
 class VFSUserManager extends AbstractUserManager {
 
     def authenticationManager
@@ -68,16 +70,24 @@ class VFSUserManager extends AbstractUserManager {
                 authorities.add(new ConcurrentLoginPermission(maxLogin, maxLoginPerIP))
                 authorities.add(new TransferRatePermission(downloadRate, uploadRate));
 
+                def p = Pattern.compile('^ROLE_OR_USER_(\\d*)$|^ROLE_OR_DISSEMINATION_(\\d*)$')
                 def homeDir = principal.authorities*.authority.findAll {
-                    it.startsWith('ROLE_OR_USER_') || it.startsWith('ROLE_OR_FTPUSER_')
-                }.collect {
+                    p.matcher(it).matches()
+                }?.collect {
                     '/' + it.split('_').last()
-                }.join(',')
+                }?.join(',')
 
+                p = Pattern.compile('^ROLE_OR_DISSEMINATION_(\\d*)_(.*)$')
+                def policies = principal.authorities*.authority.findAll {
+                    p.matcher(it).matches()
+                }?.collect {
+                    '/' + it.split('_').last()
+                }
 
+                if (!homeDir)
+                    throw new AuthenticationFailedException("Authentication failed")
 
-
-                new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, maxIdleTimeSec: maxIdleTimeSec)
+                new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, policies: policies, maxIdleTimeSec: maxIdleTimeSec)
             } else
                 throw new AuthenticationFailedException("Authentication failed")
         } else

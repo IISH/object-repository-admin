@@ -1,5 +1,7 @@
 package org.objectrepository.security
 
+import java.util.regex.Pattern
+
 class User {
 
     String na
@@ -32,9 +34,11 @@ class User {
      * @param userInstance
      * @return
      */
-    List<String> authoritiesFiltered(String filter) {
+    List<String> authoritiesFiltered(String pattern) {
+
+        def p = Pattern.compile(pattern)
         authorities.findAll {
-            (filter) ? it.authority.startsWith(filter) : true
+            (pattern) ? p.matcher(it.authority).matches() : true
         }?.collect {
             it.authority.split('_')[3]
         }

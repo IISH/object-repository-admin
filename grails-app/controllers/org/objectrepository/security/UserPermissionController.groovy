@@ -92,41 +92,16 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             userInstance.resources.removeAll {
                 it.pid == userResourceInstance.pid
             }
-
             userInstance.resources << userResourceInstance
-
-            /* def orfile = countPidOrObjId.orfile
-             grailsApplication.config.buckets.each {
-                 if (orfile[it] && orfile[it].metadata?.l) {
-                     def d = orfile[it]
-                     final String l = "/" + username + d.metadata.l
-                     def parent = l
-                     int i
-                     while ((i = parent.lastIndexOf("/")) > 0) {
-                         def child = parent
-                         parent = parent.substring(0, i)
-                         def n = child.substring(i + 1)
-                         if (child.equals(l)) {           // file
-                             final f = [n: d.filename, p: d.metadata.pid, l: d.length, t: d.uploadDate.getTime(), a: 'o']
-                             if (downloadLimit) f << [l: downloadLimit]
-                             if (expirationDate) f << [e: expirationDate]
-                             mongo.getDB(OR + params.na).vfs.update([_id: child], [$pull: ['f.p': d.metadata.pid]])
-                             mongo.getDB(OR + params.na).vfs.update([_id: child],
-                                     [$addToSet: [f: f]],
-                                     true, false)
-                             list << f
-                         }
-                         // folder
-                         mongo.getDB(OR + params.na).vfs.update([_id: parent], [$addToSet: [d: [n: n]]], true, false)
-                     }
-                 }
-             }*/
         }
 
         if (!userInstance.save(flush: true)) {
             String error = (userInstance.errors) ? userInstance.errors.allErrors[0].defaultMessage : 'Failed to save user'
             return msg(userPermission, error, 500)
         }
+
+        if (userInstance.resources)
+            UserController.roles(userInstance, userInstance.authorities.collect { it.authority })
 
         def token = ldapUserDetailsManager.updateKey(userInstance)
         userInstance.password = password

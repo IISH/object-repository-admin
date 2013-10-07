@@ -20,8 +20,8 @@ class UserPermissionControllerTests {
         User.metaClass.'static'.findByUsername << { username ->
             (databaseUser.username == username) ? databaseUser : null
         }
-        User.metaClass.'static'.save << { map ->
-            delegate
+        User.metaClass.'static'.save << {
+            databaseUser
         }
         UUID.metaClass.encodeAsMD5Bytes { password ->
             "d41d8cd98f00b204e9800998ecf8427e".bytes
@@ -54,7 +54,8 @@ class UserPermissionControllerTests {
         ]
 
         databaseUser.na = "12345"
-        controller.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_USER_na')]]]
+        databaseUser.username = params.user.username
+        controller.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_USER_' + na)]]]
 
 
         controller.save()

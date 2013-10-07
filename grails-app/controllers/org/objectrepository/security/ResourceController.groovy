@@ -1,37 +1,27 @@
 package org.objectrepository.security
 
-import org.springframework.security.access.annotation.Secured
+import grails.plugins.springsecurity.Secured
 
-//@Secured(['ROLE_OR_FTPUSER'])
+@Secured(['IS_AUTHENTICATED_FULLY'])
 class ResourceController {
 
     def springSecurityService
-
-    /**
-     * beforeInterceptor
-     *
-     * Anyone with the correct NA may see this controller's actions.
-     */
-    def beforeInterceptor = {
-        def role = 'ROLE_OR_DISSEMINATION_USER_' + params.na
-        if (springSecurityService.isLoggedIn() && (role in springSecurityService.authentication.authorities*.authority)) {
-            true
-        } else {
-            redirect(controller: 'login', action: 'c403')
-            false
-        }
-    }
 
     def index = {
         forward(action: "list", params: params)
     }
 
-    def list(String na) {
-        final User userInstance = User.findByUsername(na)
+    /**
+     * list
+     *
+     * @return A list of all resources the user can access.
+     */
+    def list() {
+
+        final User userInstance = User.findByUsername(springSecurityService.principal)
         if (!userInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), na])
-            redirect(url: '/login/c403.gsp')
-            return
+            return redirect(url: '/login/c403.gsp')
         }
         [userInstance: userInstance, userResourceInstanceList: userInstance.resources, userResourceInstanceTotal: userInstance.resources.size()]
     }

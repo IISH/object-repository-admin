@@ -136,13 +136,13 @@ class PolicyServiceTests {
 
     void testDisseminationRoleAccess() {
 
-        service.springSecurityService = [authentication: [authorities: []]]
+        service.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na)]]]
         [
                 open: ['administration', 'restricted', 'closed'],
                 restricted: ['administration', 'administration', 'closed'],
                 closed: ['administration', 'administration', 'administration']
         ].each {
-            service.springSecurityService.authentication.authorities << new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + it.key + '_' + na)
+            service.springSecurityService.authentication.authorities << new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na + '_' + it.key)
             [
                     'open':
                             expectedPolicieResponses[it.value[0]],
@@ -178,7 +178,7 @@ class PolicyServiceTests {
         String principal = 'a username'
         service.springSecurityService = [
                 principal: principal,
-                authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_LIMITED_' + na)]]]
+                authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na)]]]
 
         final String pid = na + '/' + UUID.randomUUID().toString()
         userCache = new User(username: principal, na: na, resources: [

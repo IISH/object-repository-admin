@@ -46,7 +46,7 @@ public class VFSView implements FileSystemView {
         if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
             (s + '/').startsWith(it.split(':')[0] + '/')
         }) {
-            if (!gridFSService.vfs(s)) return false
+            if (!gridFSService.vfs(s, user.policies)) return false
             currentFolder = s
             true
         } else false
