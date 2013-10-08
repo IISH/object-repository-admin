@@ -40,7 +40,7 @@ class User {
         authorities.findAll {
             (pattern) ? p.matcher(it.authority).matches() : true
         }?.collect {
-            it.authority.split('_')[3]
+            it.authority.split('_').last()
         }
     }
 

@@ -3,6 +3,7 @@ package org.objectrepository.ftp
 import org.apache.ftpserver.ftplet.Authority
 import org.apache.ftpserver.ftplet.AuthorizationRequest
 import org.apache.ftpserver.ftplet.User
+import org.objectrepository.security.UserResource
 
 class VFSUser implements User {
 
@@ -13,6 +14,7 @@ class VFSUser implements User {
     private boolean isEnabled = true
     private List<Authority> authorities = new ArrayList<Authority>()
     private List<String> policies
+    private List<UserResource> resources
 
     /**
      * Get the user name.
@@ -37,7 +39,11 @@ class VFSUser implements User {
     }
 
     public void setPolicies(def policies) {
-         this.policies = (policies) ?: []
+        this.policies = (policies) ?: []
+    }
+
+    public void setResources(def resources) {
+        this.resources = resources
     }
 
     /**

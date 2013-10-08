@@ -76,18 +76,24 @@ class VFSUserManager extends AbstractUserManager {
                 }?.collect {
                     '/' + it.split('_').last()
                 }?.join(',')
-
-                p = Pattern.compile('^ROLE_OR_DISSEMINATION_(\\d*)_(.*)$')
-                def policies = principal.authorities*.authority.findAll {
-                    p.matcher(it).matches()
-                }?.collect {
-                    '/' + it.split('_').last()
-                }
-
                 if (!homeDir)
                     throw new AuthenticationFailedException("Authentication failed")
 
-                new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, policies: policies, maxIdleTimeSec: maxIdleTimeSec)
+                p = Pattern.compile('^ROLE_OR_POLICY_(.*)$')
+                def policies = ('ROLE_OR_USER' in principal.authorities*.authority) ? ['administrator'] : principal.authorities*.authority.findAll {
+                    p.matcher(it).matches()
+                }?.collect {
+                    it.split('_').last()
+                }
+
+                def resources = null
+                if (!policies && principal.authorities*.authority.find {
+                    it.startsWith('ROLE_OR_DISSEMINATION_')
+                }) {
+                    resources = org.objectrepository.security.User.findByUsername(principal.username)?.resources
+                }
+
+                new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, policies: policies, resources: resources, maxIdleTimeSec: maxIdleTimeSec)
             } else
                 throw new AuthenticationFailedException("Authentication failed")
         } else

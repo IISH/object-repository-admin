@@ -44,9 +44,9 @@ public class VFSView implements FileSystemView {
         if (s[0] != '/') s = currentFolder + '/' + s // cd to subfolder in same folder
 
         if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            (s + '/').startsWith(it.split(':')[0] + '/')
+            (s + '/').startsWith(it + '/')
         }) {
-            if (!gridFSService.vfs(s, user.policies)) return false
+            if (!gridFSService.vfs(s, user.policies, user.resources)) return false
             currentFolder = s
             true
         } else false
@@ -63,7 +63,7 @@ public class VFSView implements FileSystemView {
     }
 
     public boolean isRandomAccessible() throws FtpException {
-        return false;
+        false
     }
 
     void dispose() {

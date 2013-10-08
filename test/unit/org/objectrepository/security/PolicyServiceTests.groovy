@@ -142,7 +142,7 @@ class PolicyServiceTests {
                 restricted: ['administration', 'administration', 'closed'],
                 closed: ['administration', 'administration', 'administration']
         ].each {
-            service.springSecurityService.authentication.authorities << new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na + '_' + it.key)
+            service.springSecurityService.authentication.authorities << new GrantedAuthorityImpl('ROLE_OR_POLICY_' + it.key)
             [
                     'open':
                             expectedPolicieResponses[it.value[0]],

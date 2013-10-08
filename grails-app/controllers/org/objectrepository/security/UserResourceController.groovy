@@ -70,7 +70,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
         }
         if (!('ROLE_OR_USER_' + prefix in authorities)) {
             flash.message = "Resource is not under your control. The PID value must start with: " + authorities.collect { it[13..-1] }.join(', ')
-            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
@@ -78,9 +78,9 @@ class UserResourceController extends NamingAuthorityInterceptor {
             userResourceInstance.expirationDate = null
 
         final resource = gridFSService.countPidOrObjId(params.na, pid)
-        if (resource.count == 0) {
+        if (!resource.locations) {
             flash.message = "Unknown resource: " + pid
-            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
@@ -88,18 +88,35 @@ class UserResourceController extends NamingAuthorityInterceptor {
         userResourceInstance.contentType = resource.orfile.master.contentType
         userResourceInstance.objid = (resource.orfile.master.metadata.objid) ? true : false
 
+        resource.orfile.each { orfile ->
+            resource.locations.each {
+                def location = params.na + '/' + orfile.key + it
+                listDirectories(userResourceInstance.folders, (location =~ /\/\d{4}-\d{2}-\d{2}\//).replaceFirst(''))
+            }
+        }
+
         userInstance.resources?.removeAll {
             it.pid == pid
         }
         userInstance.resources << userResourceInstance
 
         if (!userInstance.save(flush: true)) {
-            render(view: "create", model: [userInstance:userInstance, userResourceInstance: userResourceInstance])
+            render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'userResource.label', default: 'UserResource'), pid])
         redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
+    }
+
+     static void listDirectories(def list, String l) {
+
+        String s = ""
+        l.split('/').each {
+            s += '/' + it
+            if (!(s in list))
+                list << s
+        }
     }
 
     def edit(Long id) {

@@ -173,7 +173,7 @@ class FileController {
 
         final def access = policyService.hasAccess(fileInstance, params.bucket, params.cache)
         if (access.status == 200) {
-            if (access.level != 'open' && params.bucket in ['master', 'level1'])
+            if (access.level != 'open')
                 access.user?.save(flush: false)
             return fileInstance
         }

@@ -122,7 +122,7 @@ public class VFSFtpFile implements FtpFile {
                 virtualFiles << new VFSFtpFile(it.split('/')[1].split(':')[0], user, gridFSService)
             }
         } else {
-            def vfs = gridFSService.vfs(currentFolder, user.policies)
+            def vfs = gridFSService.vfs(currentFolder, user.policies, user.resources)
             sort(vfs?.d)?.each {
                 virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService)
             }

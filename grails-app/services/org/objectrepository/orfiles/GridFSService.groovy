@@ -195,29 +195,69 @@ class GridFSService {
      * The base name of the folder is always the database name.
      * /a/b/c/d => na=a
      *
-     * Convention:
-     * a colon in the na delimits a user
-     * /a:b/c/d/e => na = a
+     * If the policy is all or administration we give all resources
+     * However, if the policy matches a particular access status, we filter out only those thay cover this.
      *
      * @param currentFolder The path. For example: /a/b/c/d
      * @return
      */
-    def vfs(String currentFolder, def policies) {
+    def vfs(String currentFolder, def policies, def resources = null) {
 
-        String na = currentFolder.split('/')[1].split(':')[0]
+        final split = currentFolder.split('/')
+        String na = split[1]
         final db = mongo.getDB(OR + na)
 
-        if (!policies || 'all' in policies || 'administration' in policies)
-            db.vfs.findOne([_id: currentFolder])
-        else {
-            def q = [_id: currentFolder, $or:[
-                    policies.collect {
-                        ['f.a': it]
-                    } + policies.collect {
-                        ['d.a': it]
-                    }]
-            ]
-            db.vfs.findOne(q)
+        if (policies) {
+            if ('all' in policies || 'administration' in policies)
+                db.vfs.findOne([_id: currentFolder])
+            else {
+                def q = [_id: currentFolder, $or:
+                        policies.collect {
+                            ['f.a': it]
+                        } + policies.collect {
+                            ['d.a': it]
+                        }
+                ]
+                final doc = db.vfs.findOne(q)
+                doc?.d?.removeAll {
+                    !it.a.find {
+                        it in policies
+                    }
+                }
+                doc?.f?.removeAll {
+                    !it.a in policies
+                }
+                doc
+            }
+        } else {
+            if (resources) {
+                final doc = db.vfs.findOne([_id: currentFolder])
+                doc?.d?.removeAll {
+                    !hasAccess(currentFolder, resources)
+                }
+                doc?.f?.removeAll {
+                    !hasAccess(currentFolder, resources)
+                }
+                doc
+            }
+        }
+    }
+
+    /**
+     * hasAccess
+     *
+     * Show the folder if it is mentioned in the resource.
+     *
+     * @param currentFolder
+     * @param resources
+     * @return
+     */
+    def hasAccess(def currentFolder, def resources) {
+
+        resources.find {
+            it.d.find {
+                it == currentFolder
+            }
         }
     }
 
@@ -258,9 +298,14 @@ class GridFSService {
      * @return
      */
     def countPidOrObjId(String na, String id) {
+
         final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
-        int count = mongo.getDB(OR + na).'master.files'.count(q)
-        def orfile = (count) ? get(na, id) : null
-        [count: count, orfile: orfile]
+        def locations = []
+        mongo.getDB(OR + na).'master.files'.find(q, ['metadata.l': 1]).each {
+            if (!(it.l in locations))
+                locations << it.metadata.l
+        }
+        def orfile = (locations) ? get(na, id) : null
+        [locations: locations, orfile: orfile]
     }
 }

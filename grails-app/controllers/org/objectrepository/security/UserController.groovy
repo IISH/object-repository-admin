@@ -134,10 +134,9 @@ class UserController extends NamingAuthorityInterceptor {
             it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
         }.collect { it.key })
 
-        ldapUserDetailsManager.updateKey(userInstance)
-
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        forward(action: "show", id: userInstance.id)
+        params.action='show'
+        render(view: "show", model: [userInstance: userInstance, token:ldapUserDetailsManager.updateKey(userInstance), policyList:policyList])
     }
 
     /**
@@ -156,32 +155,27 @@ class UserController extends NamingAuthorityInterceptor {
                 dissemination.removeAll { it != scope }
         }
 
-        List roles = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
-        roles += dissemination.collect {
-            'ROLE_OR_DISSEMINATION_' + it
-        }
+        List r = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
+        r += dissemination.collect {
+            'ROLE_OR_POLICY_' + it
+        } + 'ROLE_OR_DISSEMINATION_'.concat( userInstance.na )
 
         def currentAuthorities = userInstance.authorities?.collect {
             it.authority
         }
 
-        def removals = currentAuthorities.minus(roles)
+        def removals = currentAuthorities.minus(r)
         removals.each { authority ->
             UserRole.remove(userInstance, userInstance.authorities.find {
                 it.authority == authority
             })
         }
 
-        def additions = roles.minus(currentAuthorities)
+        def additions = r.minus(currentAuthorities)
         additions.each {
             UserRole.create userInstance,
                     Role.findByAuthority(it) ?: new Role(authority: it).save(failOnError: true)
         }
-
-        def mainRole = 'ROLE_OR_DISSEMINATION_' + userInstance.na
-        if (!(mainRole in currentAuthorities))
-            UserRole.create userInstance,
-                    Role.findByAuthority(mainRole) ?: new Role(authority: mainRole).save(failOnError: true)
 
         removals || additions
     }

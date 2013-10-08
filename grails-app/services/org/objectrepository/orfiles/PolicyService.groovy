@@ -97,9 +97,9 @@ class PolicyService {
             return [status: 401, level: level]
 
         if (springSecurityService.authentication.authorities*.authority.find {
-            it == 'ROLE_OR_DISSEMINATION_administration' ||
-                    it == 'ROLE_OR_DISSEMINATION_all' ||
-                    it == 'ROLE_OR_DISSEMINATION_' + policy.access
+            it == 'ROLE_OR_POLICY_administration' ||
+                    it == 'ROLE_OR_POLICY_all' ||
+                    it == 'ROLE_OR_POLICY_' + policy.access
         })
             return [status: 200, level: level]
 
