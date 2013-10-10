@@ -170,10 +170,6 @@ public class VFSFtpFile implements FtpFile {
             (it.pid == pid || it.pid == objid) && bucket in it.buckets
         }?.ftpDownloads++
 
-
-        new ByteArrayInputStream(new byte[l])
-
-//        new FileInputStream('/home/lwo/object-repository/object-repository-admin/test/resources/sample.txt')
-//        gridFSService.findByPid(pid, bucket)?.inputStream
+        gridFSService.findByPid(pid, bucket)?.inputStream
     }
 }
