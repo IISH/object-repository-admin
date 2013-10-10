@@ -86,7 +86,12 @@ class UserResourceController extends NamingAuthorityInterceptor {
 
         userResourceInstance.thumbnail = (resource.orfile.level3) ? true : false
         userResourceInstance.contentType = resource.orfile.master.contentType
-        userResourceInstance.objid = (resource.orfile.master.metadata.objid) ? true : false
+        userResourceInstance.objid = resource.orfile.master.metadata.objid
+        userResourceInstance.buckets = params.buckets.findAll {
+            it.value == 'on'
+        }.collect {
+            it.key
+        }
 
         resource.orfile.each { orfile ->
             resource.locations.each {
@@ -109,7 +114,7 @@ class UserResourceController extends NamingAuthorityInterceptor {
         redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
     }
 
-     static void listDirectories(def list, String l) {
+    static void listDirectories(def list, String l) {
 
         String s = ""
         l.split('/').each {

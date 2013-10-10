@@ -20,7 +20,8 @@
 
 <g:render template="/layouts/header" model="[instance: userResourceInstance]"/>
 
-<p>Available resources for <g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user" action="show" id="${userInstance.id}">${userInstance.username}</g:link></p>
+<p>Available resources for <g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user"
+                                   action="show" id="${userInstance.id}">${userInstance.username}</g:link></p>
 
 <div id="list-userResource" class="content scaffold-list" role="main">
     <table>
@@ -29,6 +30,7 @@
             <th>%{--Thumbnail--}%</th>
             <th>${message(code: 'userResource.pid.label', default: 'Pid')}</th>
             <th>${message(code: 'userResource.downloadLimit.label', default: 'Download Limit')}</th>
+            <th>${message(code: 'userResource.buckets.label')}</th>
             <th>${message(code: 'userResource.downloads.label', default: 'Downloads')}</th>
             <th>${message(code: 'userResource.expirationDate.label', default: 'Expiration Date')}</th>
             <th>%{--Controls--}%</th>
@@ -47,6 +49,9 @@
                     </g:else></td>
                 <td>${fieldValue(bean: userResourceInstance, field: "pid")}</td>
                 <td>${userResourceInstance.downloadLimit}</td>
+                <td><g:each in="${userResourceInstance.buckets}" var="bucket">
+                    ${bucket}<br/>
+                </g:each></td>
                 <td>${userResourceInstance.downloads}</td>
                 <td><g:formatDate date="${userResourceInstance.expirationDate}"/></td>
                 <td><g:link class="edit" action="edit" mapping="namingAuthority"

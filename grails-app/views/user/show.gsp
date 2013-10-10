@@ -30,7 +30,9 @@
     </tr>
     <tr>
         <td valign="top" class="name"><g:message code="user.url.label" default="username"/></td>
-        <td valign="top" class="value"><input type="text" size="100" value="${grailsApplication.config.grails.serverURL + '/' + userInstance.username + '/resource/list?access_token=' + token.value}"/></td>
+        <td valign="top" class="value"><input type="text" size="100"
+                                              value="${grailsApplication.config.grails.serverURL + '/' + userInstance.username + '/resource/list?access_token=' + token.value}"/>
+        </td>
     </tr>
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.dissemination.label"/></td>
@@ -38,12 +40,17 @@
             <g:render template="dissemination" model="[policyList: policyList, userInstance: userInstance]"/>
         </td>
     </tr>
-    <tr class="prop">
-        <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
-        <td valign="top" class="value"><g:link mapping="namingAuthority" params="[na: params.na]"
-                                               controller="userResource" action="list"
-                                               id="${userInstance.id}">Manage access to resources</g:link></td>
-    </tr>
+
+    <g:if test="${!( userInstance.authoritiesFiltered('^ROLE_OR_POLICY_(.*)$').find{it in ['administration' ,'all']})}">
+        <tr class="prop">
+            <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
+            <td valign="top" class="value">
+                <g:link mapping="namingAuthority" params="[na: params.na]"
+                        controller="userResource" action="list"
+                        id="${userInstance.id}">Manage access to resources</g:link></td>
+        </tr>
+    </g:if>
+
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.email.label" default="Email"/></td>
         <td valign="top" class="value">${fieldValue(bean: userInstance, field: "mail")}</td>
@@ -51,7 +58,7 @@
 
     <tr class="prop">
         <td valign="top" class="name"><g:message code="user.enabled.label" default="Enabled"/></td>
-        <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.password[0] != '!'}"/></td>
+        <td valign="top" class="value"><g:formatBoolean boolean="${userInstance.enabled}"/></td>
     </tr>
 
 

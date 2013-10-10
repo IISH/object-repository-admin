@@ -49,7 +49,6 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         if (!userPermission.username)
             return msg(userPermission, 'Expecting: username', 400)
 
-
         final authorities = SpringSecurityUtils.authoritiesToRoles(springSecurityService.authentication.authorities).findAll {
             it.startsWith('ROLE_OR_USER_')
         }
@@ -89,12 +88,14 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             userResourceInstance.thumbnail = (resource.orfile.level3) ? true : false
             userResourceInstance.contentType = resource.orfile.master.contentType
             userResourceInstance.objid = (resource.orfile.master.metadata.objid) ? true : false
+
             resource.orfile.each { orfile ->
                 resource.locations.each {
                     def location = params.na + '/' + orfile.key + it
                     UserResourceController.listDirectories(userResourceInstance.folders, (location =~ /\/\d{4}-\d{2}-\d{2}\//).replaceFirst(''))
                 }
             }
+
             userInstance.resources.removeAll {
                 it.pid == userResourceInstance.pid
             }
@@ -135,7 +136,6 @@ class UserPermissionController extends NamingAuthorityInterceptor {
             if (userPermission.resources.size() == index) userPermission.resources << new UserResource()
             switch (key) {
                 case 'pid':
-                    println(userPermission.resources[index])
                     userPermission.resources[index].pid = v
                     break
                 case 'expirationDate':
@@ -145,6 +145,9 @@ class UserPermissionController extends NamingAuthorityInterceptor {
                 case 'downloadLimit':
                     userPermission.resources[index].downloadLimit = v as Integer
                     break
+                case 'buckets':
+                    userPermission.resources[index].buckets = v
+                    break;
             }
         }
         def p = (tag == 'user') ? base.user : base

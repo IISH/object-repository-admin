@@ -44,6 +44,9 @@ class FtpService implements DisposableBean {
         final fileSystemFactory = VFSFactory.newInstance()
         fileSystemFactory.gridFSService = gridFSService
         serverFactory.setFileSystem(fileSystemFactory)
+        final ftplet = new VFSFtplet()
+        ftplet.gridFSService = gridFSService
+        serverFactory.ftplets.put('VFSFtplet', ftplet)
         server = serverFactory.createServer()
         server.start()
     }

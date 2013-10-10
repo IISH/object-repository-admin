@@ -3,6 +3,8 @@ package org.objectrepository.orfiles
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
 import org.objectrepository.security.User
+import org.objectrepository.security.UserResource
+import org.objectrepository.util.OrUtil
 
 class PolicyService {
 
@@ -105,16 +107,13 @@ class PolicyService {
 
         def userInstance = User.findByUsernameAndNa(springSecurityService.principal, na)
         if (userInstance) {
-            def date = new Date()
             def pids = [fileInstance.metadata.pid, fileInstance.metadata.objid]
             for (String pid : pids) {
                 def resource = userInstance.resources.find {
-                    it.pid == pid &&
-                            (it.downloadLimit < 1 || (it.downloads < it.downloadLimit)) &&
-                            (!it.expirationDate || it.expirationDate > date)
+                    OrUtil.hasAccess(pid, it)
                 }
                 if (resource) {
-                    if (bucket in resource.buckets) resource.downloads++
+                    if (bucket in resource.buckets) resource.httpDownloads++
                     return [status: 200, level: level, user: userInstance]
                 }
             }

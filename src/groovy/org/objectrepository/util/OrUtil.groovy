@@ -257,4 +257,25 @@ class OrUtil {
         def inputStream = new ByteArrayInputStream(s.bytes)
         builder.parse(inputStream)
     }
+
+    /**
+     * hasAccess
+     *
+     * checks if the PID value is covered by the limitations
+     *
+     * @param pid
+     * @param resource
+     * @return
+     */
+    static def hasAccess(String pid, def resource) {
+        if (resource.pid == pid)
+            hasPolicyAccess(resource)
+    }
+
+    static def hasPolicyAccess(def resource) {
+        final date = new Date()
+        if ((resource.downloadLimit < 1 || (resource.downloads < resource.downloadLimit)) &&
+                (!resource.expirationDate || resource.expirationDate > date))
+            resource
+    }
 }

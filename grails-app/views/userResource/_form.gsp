@@ -19,6 +19,18 @@
     <g:field type="number" name="downloadLimit" value="${userResourceInstance.downloadLimit}"/>
 </div>
 
+<div class="fieldcontain">
+    <label>
+        <g:message code="userResource.buckets.label"/>
+    </label>
+    <g:each in="${grailsApplication.config.buckets}" var="bucket">
+        <g:set var="checked">${bucket in userResourceInstance.buckets}</g:set>
+        <g:checkBox name="buckets.${bucket}"
+                    checked="${checked == 'true'}"/>${bucket}<g:if
+            test="${status != grailsApplication.config.buckets.size()}"> </g:if>
+    </g:each>
+</div>
+
 <div id="t" class="fieldcontain ${hasErrors(bean: userResourceInstance, field: 'expirationDate', 'error')}">
     <label for="expirationDate"><g:checkBox name="expirationDateEnable" type="checkbox"
                                             checked="${userResourceInstance.expirationDate}"/><g:message
@@ -28,12 +40,11 @@
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         var expirationDateEnable = $("#expirationDateEnable");
         expirationDateEnable.click(function () {
             $("#t").find("select").attr("disabled", !this.checked);
         });
         $("#t").find("select").attr("disabled", !expirationDateEnable.checked);
-        console.log(!expirationDateEnable.checked)                             ;
     });
 </script>

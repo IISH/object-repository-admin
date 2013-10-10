@@ -4,8 +4,6 @@ import com.mongodb.BasicDBObject
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
-import org.objectrepository.security.User
-import org.objectrepository.security.UserResource
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -233,10 +231,17 @@ class GridFSService {
             if (resources) {
                 final doc = db.vfs.findOne([_id: currentFolder])
                 doc?.d?.removeAll {
-                    !hasAccess(currentFolder, resources)
+                    final folder = currentFolder + '/' + it.n
+                    !(resources.find { resource ->
+                        resource.folders.find {
+                            it == folder && OrUtil.hasPolicyAccess(resource)
+                        }
+                    })
                 }
                 doc?.f?.removeAll {
-                    !hasAccess(currentFolder, resources)
+                    !(resources.find { resource ->
+                        OrUtil.hasAccess(it.p, resource) || OrUtil.hasAccess(it.o, resource)
+                    })
                 }
                 doc
             }
@@ -244,21 +249,42 @@ class GridFSService {
     }
 
     /**
-     * hasAccess
+     * countPidOrObjId
      *
-     * Show the folder if it is mentioned in the resource.
+     * Counts all master files with the given pid or objid
+     * Returns at least one level3 instance for preview
      *
-     * @param currentFolder
-     * @param resources
+     * @param na
+     * @param id
      * @return
      */
-    def hasAccess(def currentFolder, def resources) {
+    def countPidOrObjId(String na, String id) {
 
-        resources.find {
-            it.d.find {
-                it == currentFolder
-            }
+        final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
+        def locations = []
+        mongo.getDB(OR + na).'master.files'.find(q, ['metadata.l': 1]).each {
+            if (!(it.l in locations))
+                locations << it.metadata.l
         }
+        def orfile = (locations) ? get(na, id) : null
+
+        [locations: locations, orfile: orfile]
+    }
+
+    /**
+     * updateResource
+     *
+     * Atomic update for the read action.
+     *
+     * @param _id
+     * @param pid
+     * @param ftpDownloads
+     */
+    void updateResource(String username, String pid, int ftpDownloads) {
+        mongo.getDB('security').user.update([username: username, 'resources.p': pid],
+                [$set: ['resources.$.fd': ftpDownloads]],
+                false,
+                false)
     }
 
     /**
@@ -287,25 +313,4 @@ class GridFSService {
                 .sort { it.metadata.seq }
     }
 
-    /**
-     * countPidOrObjId
-     *
-     * Counts all master files with the given pid or objid
-     * Returns at least one level3 instance for preview
-     *
-     * @param na
-     * @param id
-     * @return
-     */
-    def countPidOrObjId(String na, String id) {
-
-        final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
-        def locations = []
-        mongo.getDB(OR + na).'master.files'.find(q, ['metadata.l': 1]).each {
-            if (!(it.l in locations))
-                locations << it.metadata.l
-        }
-        def orfile = (locations) ? get(na, id) : null
-        [locations: locations, orfile: orfile]
-    }
 }

@@ -3,6 +3,7 @@ package org.objectrepository.ftp;
 
 import org.apache.ftpserver.ftplet.FtpFile
 import org.objectrepository.orfiles.GridFSService
+import org.objectrepository.security.UserResource
 
 public class VFSFtpFile implements FtpFile {
 
@@ -14,6 +15,7 @@ public class VFSFtpFile implements FtpFile {
     private GridFSService gridFSService
     private def bucket
     private def pid
+    private def objid
 
     public VFSFtpFile(String currentFolder, def user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
         this.currentFolder = currentFolder
@@ -50,7 +52,7 @@ public class VFSFtpFile implements FtpFile {
      */
     public boolean doesExist() {
         final parentFolder = currentFolder[0..currentFolder.lastIndexOf("/") - 1]
-        def file = gridFSService.vfs(parentFolder)?.f?.find {
+        def file = gridFSService.vfs(parentFolder, user.policies, user.resources)?.f?.find {
             parentFolder + '/' + it.n == currentFolder
         }
         if (file) {
@@ -58,10 +60,11 @@ public class VFSFtpFile implements FtpFile {
             length = file.l
             created = file.t
             pid = file.p
+            objid = file.o
             bucket = currentFolder.split('/')[2]
-            return true
-        }
-        false
+            true
+        } else
+            false
     }
 
     public boolean isReadable() {
@@ -162,6 +165,15 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public InputStream createInputStream(long l) throws IOException {
-        gridFSService.findByPid(pid, bucket)?.inputStream
+
+        user.resources?.find {
+            (it.pid == pid || it.pid == objid) && bucket in it.buckets
+        }?.ftpDownloads++
+
+
+        new ByteArrayInputStream(new byte[l])
+
+//        new FileInputStream('/home/lwo/object-repository/object-repository-admin/test/resources/sample.txt')
+//        gridFSService.findByPid(pid, bucket)?.inputStream
     }
 }
