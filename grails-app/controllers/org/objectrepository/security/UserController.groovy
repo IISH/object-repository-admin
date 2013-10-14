@@ -38,7 +38,7 @@ class UserController extends NamingAuthorityInterceptor {
         }
 
         // Set password when it was left empty
-        final def newPassword
+        def newPassword
         if (params.password == "" && params.confirmpassword == "") {
             newPassword = RandomStringUtils.random(6, true, false)
             params.password = newPassword
@@ -69,18 +69,16 @@ class UserController extends NamingAuthorityInterceptor {
         userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
             it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
         }.collect { it.key })
-        ldapUserDetailsManager.updateKey(userInstance)
+        def token = ldapUserDetailsManager.updateKey(userInstance)
 
+
+        def code = ('ROLE_OR_POLICY_administration' in userInstance.authorities*.authority) ? 'administration' : 'dissemination'
         if (params.sendmail) {
             sendMail {
                 to params.mail
                 from grailsApplication.config.mail.from
-                subject message(code: "mail.user.created.subject")
-                body message(code: "mail.user.created." + userInstance.accessScope, args: [springSecurityService.principal.username,
-                        grailsApplication.config.grails.serverURL,
-                        grailsApplication.config.mail.sftpServer,
-                        params.id,
-                        newPassword])
+                subject message(code: "mail.user.created.subject." + code)
+                body message(code: "mail.user.created." + code, args: [grailsApplication.config.grails.serverURL, grailsApplication.config.ftp.host, userInstance.username, newPassword, token.value])
             }
         }
 
@@ -135,8 +133,8 @@ class UserController extends NamingAuthorityInterceptor {
         }.collect { it.key })
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        params.action='show'
-        render(view: "show", model: [userInstance: userInstance, token:ldapUserDetailsManager.updateKey(userInstance), policyList:policyList])
+        params.action = 'show'
+        render(view: "show", model: [userInstance: userInstance, token: ldapUserDetailsManager.updateKey(userInstance), policyList: policyList])
     }
 
     /**
@@ -158,7 +156,7 @@ class UserController extends NamingAuthorityInterceptor {
         List r = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
         r += dissemination.collect {
             'ROLE_OR_POLICY_' + it
-        } + 'ROLE_OR_DISSEMINATION_'.concat( userInstance.na )
+        } + 'ROLE_OR_DISSEMINATION_'.concat(userInstance.na)
 
         def currentAuthorities = userInstance.authorities?.collect {
             it.authority

@@ -67,13 +67,13 @@
 
 <div id="navHome">
     <ul>
-        <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="dashboard">Dashboard</g:link></li>
-        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="stagingarea">Stagingarea</g:link></li>
-        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">Customer Access</g:link></li>
-        <li class="profile"><g:link mapping="namingAuthority" params="[na:params.na]" controller="profile">Profile</g:link></li>
-        <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">Policies</g:link></li>
-        <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">Instructions</g:link></li>
-        <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">Stored Objects</g:link></li>
+        <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="dashboard">${message(code: 'admin.dissemination.dashboard')}</g:link></li>
+        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="stagingarea">${message(code: 'admin.dissemination.stagingarea')}</g:link></li>
+        <li class="users"><g:link mapping="namingAuthority" params="[na:params.na]" controller="user">${message(code: 'admin.dissemination.account')}</g:link></li>
+        <li class="profile"><g:link mapping="namingAuthority" params="[na:params.na]" controller="profile">${message(code: 'admin.dissemination.profile')}</g:link></li>
+        <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">${message(code: 'admin.dissemination.policy')}</g:link></li>
+        <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">${message(code: 'admin.dissemination.instruction')}</g:link></li>
+        <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">${message(code: 'admin.dissemination.object')}</g:link></li>
     </ul>
 </div>
 

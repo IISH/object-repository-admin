@@ -8,6 +8,7 @@ class UrlMappings {
         "/mets/$na/$objid?"(controller: 'mets', action: 'index')
         "/pdf/$na/$objid/$bucket?"(controller: 'pdf', action: 'index')
         "/$na/orfile/$action/$bucket/$pid**"(controller: 'orfile')
+        "/resource/list"(controller:'resource', action: 'list')
 
         "/login/$action?"(controller: "login")
         "/logout/$action?"(controller: "logout")

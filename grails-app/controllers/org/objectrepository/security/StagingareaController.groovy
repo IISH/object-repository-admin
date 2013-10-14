@@ -66,7 +66,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
             sendMail {
                 to params.mail
                 from grailsApplication.config.mail.from
-                subject message(code: "mail.user.created.subject")
+                subject message(code: "mail.user.created.subject.stagingarea")
                 body message(code: "mail.user.created.stagingarea", args: [springSecurityService.principal.username,
                         grailsApplication.config.grails.serverURL,
                         grailsApplication.config.mail.sftpServer,

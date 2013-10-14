@@ -11,7 +11,8 @@
 <body>
 
 <div class="header" role="introduction">
-    <h1>Available resources for <g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user" action="show" id="userInstance.id">${userInstance.username}</g:link></h1>
+    <h1>Available resources for ${userInstance.username}</h1>
+
     <p>Information</p>
 </div>
 
@@ -43,11 +44,22 @@
                 <td>${fieldValue(bean: userResourceInstance, field: "pid")}</td>
                 <td>${userResourceInstance.downloadLimit}</td>
                 <td><g:formatDate date="${userResourceInstance.expirationDate}"/></td>
-                <td><a href="${grailsApplication.config.grails.serverURL}/file/master/${userResourceInstance.pid}?access_token=${params.access_token}" target="_blank">download it</a></td>
+                <td><g:if test="${userResourceInstance.objid}">Use ftp</g:if><g:else>Use ftp or <a
+                        href="${grailsApplication.config.grails.serverURL}/file/master/${userResourceInstance.pid}?access_token=${params.access_token}"
+                        target="_blank">download it now</a></g:else></td>
             </tr>
         </g:each>
         </tbody>
     </table>
+
+    <p>Ftp host : ${ftp.host}<br/>
+        Encryption : implicit ftp over TLS<br/>
+        Logintype : normal<br/>
+        Transfer mode : passive<br/>
+        Username : ${userInstance.username}<br/>
+        Password : ***** see your e-mail account
+    </p>
+
 </div>
 
 </body>
