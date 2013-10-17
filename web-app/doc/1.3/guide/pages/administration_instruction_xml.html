@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>8.4.2 The instruction as a XML document 1.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/content_producer.html"><strong>2</strong><span>Content producer and consumer</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>3</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>4</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>5</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>6</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>7</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/administration.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>7</strong><span>Dissemination information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>8.4.2 The instruction as a XML document - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.3</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="administration_instruction_xml">8.4.2 The instruction as a XML document</h2>
+A XML processing instruction should be:
+<ul class="star">
+<li>named <code>instruction.xml</code></li>
+<li>placed in the main folder of the uploaded dataset.</li>
+</ul><p class="paragraph"/>For example if you uploaded these five files onto the staging area in the main folder <code>unittest</code> then you must add the
+instruction in the folder <code>unittest</code> as well:
+<img border="0" class="center" src="../img/filesetxml.gif"></img><p class="paragraph"/>This file will be deleted automatically after you uploaded it, as it is read into a database. You can re upload the
+instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
+using the administration panel.<p class="paragraph"/><a href="../ref/Httpsrawgithubcom IISH objectrepositoryservicenodesmastercoresrcmainresourcesinstructionv10xsd/The schema can be found here.html" class="https://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd">The schema can be found here</a><p class="paragraph"/><blockquote class="note">When you download a XML processing instruction, it may have added validation messages.</blockquote><p class="paragraph"/><h3>Working example of an XML instruction</h3>
+Lets say we automatically create an instruction via the administration panel for the five files we just uploaded.
+On the <a href="../guide/single.html#administration" class="guide">instructions page</a> we edit the settings and indicate the following:
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">element</strong></th><th><strong class="bold">value</strong></th></tr><tr class="table-odd"><td>Label</td><td>My five files</td></tr><tr class="table-even"><td>Action</td><td>upsert</td></tr><tr class="table-odd"><td>Access</td><td>open</td></tr><tr class="table-even"><td>Contenttype&#77;imetype</td><td>image/tiff</td></tr><tr class="table-odd"><td>Auto generate PIDs</td><td>filename2pid</td></tr><tr class="table-even"><td>Auto ingest valid instructions : off</td></tr><tr class="table-odd"><td>Resolver baseUrl</td><td>http://hdl.handle.net/</td></tr><tr class="table-even"><td>Service to execute</td><td>all</td></tr></table><p class="paragraph"/>After we press "update" we can download the XML for viewing:
+<div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"utf&#45;8"</span>?&#62;
+&#60;!&#45;&#45;Instruction extracted on 11 Jun 2012 11:05:15 GMT&#45;&#45;&#62;
+&#60;instruction xmlns=<span class="java&#45;quote">"http://objectrepository.org/instruction/1.0/"</span>
+    access=<span class="java&#45;quote">"open"</span>
+    action=<span class="java&#45;quote">"upsert"</span>
+    autoGeneratePIDs=<span class="java&#45;quote">"filename2pid"</span>
+    contentType=<span class="java&#45;quote">"image/tiff"</span>
+    label=<span class="java&#45;quote">"My five files"</span>
+    resolverBaseUrl=<span class="java&#45;quote">"http://hdl.handle.net/"</span>&#62;
+    &#60;stagingfile&#62;
+        &#60;pid&#62;12345/1.1&#60;/pid&#62;
+            &#60;location&#62;/unittest/TIFF/1.1.tif&#60;/location&#62;
+            &#60;md5&#62;181c838e29cbb0602da4a160eece2217&#60;/md5&#62;
+    &#60;/stagingfile&#62;
+    &#60;stagingfile&#62;
+            &#60;pid&#62;12345/1.3&#60;/pid&#62;
+            &#60;location&#62;/unittest/TIFF/1.3.tif&#60;/location&#62;
+            &#60;md5&#62;efac78a3f9bc224b581bd9e6003813e3&#60;/md5&#62;
+    &#60;/stagingfile&#62;
+    &#60;stagingfile&#62;
+            &#60;pid&#62;12345/1.4&#60;/pid&#62;
+            &#60;location&#62;/unittest/TIFF/1.4.tif&#60;/location&#62;
+            &#60;md5&#62;b2d09024f5c5c9b823ec614a7d7bc8d0&#60;/md5&#62;
+    &#60;/stagingfile&#62;
+    &#60;stagingfile&#62;
+            &#60;pid&#62;12345/1.5&#60;/pid&#62;
+            &#60;location&#62;/unittest/TIFF/1.5.tif&#60;/location&#62;
+            &#60;md5&#62;4daae1f298383d440f725f195621cebf&#60;/md5&#62;
+            &#60;/stagingfile&#62;
+    &#60;stagingfile&#62;
+            &#60;pid&#62;12345/1.2&#60;/pid&#62;
+            &#60;location&#62;/unittest/TIFF/1.2.tif&#60;/location&#62;
+            &#60;md5&#62;5eaea136b6e49f2dabff2f8f1a278d7c&#60;/md5&#62;
+    &#60;/stagingfile&#62;
+&#60;/instruction&#62;</pre></div><p class="paragraph"/><h3>Validation</h3>
+An automatic validation procedure will run the moment you <code>autocreate</code> an instruction or ftp one into the main folder.
+The results of the validation will show up in the CP administration interface per instruction and per file. In addition,
+downloading the file via the CP administration interface will give you the XML instruction with <code>error</code> elements if any.
+After you correct the issue, you can reupload the XML processing instruction and files where needed.<p class="paragraph"/><h3>Viewing and changing the XML instruction after upload</h3>
+All the uploaded datasets's main folders are visible at the <a href="../guide/single.html#administration" class="guide">instructions page</a> of the administration
+interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.<p class="paragraph"/><h3>Question: Should I automatically create an XML processing instruction?</h3>
+It can be useful when you make your own custom instructions. You can use this feature to experiment to see how a
+valid instruction looks like.<p class="paragraph"/>Should your PID or LID values be identical to the filenames, you could produce an instruction that is perfect for
+ingest.<p class="paragraph"/>
+<h3>Two more examples of an XML processing instruction</h3><p class="paragraph"/><h4>Example with pid elements.</h4>
+Lets us assume a folder structure of one main folder with five files<p class="paragraph"/>    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/Apple.tiff
+        /folderA/Pear.tiff
+        /folderA/Banana.tiff
+        /folderA/Potato.png
+        /folderA/SecretRecipe.tiff</pre></div><p class="paragraph"/>And to stretch the borders of our imagination a little further, suppose the CP administrator has set the following
+default settings in the profile via the administration interface:<p class="paragraph"/>    <div class="code"><pre>action=upsert
+    access=closed
+    contentType=image/tiff</pre></div><p class="paragraph"/>Now we can mostly fall back on the defaults the profile provides, but we do want to add some exceptions to the
+profile rules by adding new values the XML processing instruction:
+<ol>
+<li>Notice the <code>contentType</code> for the potato ? It is not a tiff but an <strong class="bold">image/png</strong>.</li>
+</ol><p class="paragraph"/>2. And we feel the <code>access</code> of the policy is too strict. Lets set it all to <strong class="bold">open</strong>.
+3. And lets set the <code>access</code> to SecretRecipe.tiff to <strong class="bold">restricted</strong>.<p class="paragraph"/>The processing instruction would then could look like this:<p class="paragraph"/>   <div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"UTF&#45;8"</span> standalone=<span class="java&#45;quote">"yes"</span>?&#62;
+    &#60;instruction xmlns=<span class="java&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> access=<span class="java&#45;quote">"open"</span>&#62; &#60;!&#45;&#45; access added here &#45;&#45;&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/a&#60;/pid&#62;
+            &#60;location&#62;/folderA/Apple.tiff&#60;/location&#62;
+            &#60;md5&#62;cf3ee1101d19328145e94da1cade45bd&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/b&#60;/pid&#62;
+            &#60;location&#62;/folderA/Pear.tiff&#60;/location&#62;
+            &#60;md5&#62;f57eb0e65d11a5a73eab9d5dddf1e528&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/c&#60;/pid&#62;
+            &#60;location&#62;/folderA/Banana.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;contentType&#62;image/png&#60;/contentType&#62; &#60;!&#45;&#45; contentType here &#45;&#45;&#62;
+            &#60;pid&#62;12345/d&#60;/pid&#62;
+            &#60;location&#62;/folderA/Potato.png&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;access&#62;restricted&#60;/access&#62; &#60;!&#45;&#45; access element here &#45;&#45;&#62;
+            &#60;pid&#62;12345/e&#60;/pid&#62;
+            &#60;location&#62;/folderA/SecretRecipe.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+    &#60;/instruction&#62;</pre></div><p class="paragraph"/><h4>Example with lid elements</h4>
+As a second example, lets suggest you are a content provider that can not supply persistent identifiers but only supply
+local identifiers. Lets also assume that you made things easy and the local identifiers can be derived from the filenames
+but without the extension. Here we can automatically create an instruction.<p class="paragraph"/><blockquote class="note">this example would only work in the object repository when it can fall back on a Handle System compatible PID
+webservice for which a naming authority is required. In the example we assume this so and the authority is 12345.</blockquote><p class="paragraph"/>Lets say these are the files in the staging area:<p class="paragraph"/>    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/Apple.tiff
+        /folderA/Pear.tiff
+        /folderA/Banana.tiff
+        /folderA/Potato.tiff
+        /folderA/FreeRecipe.tiff</pre></div><p class="paragraph"/>And we have set our profile defaults via the administration interface thus:<p class="paragraph"/>    <div class="code"><pre>action=upsert
+    access=closed
+    contentType=image/tiff
+    autoGeneratePIDs='filename2lid'</pre></div><p class="paragraph"/>Via the administration interface "instruction" tab, you can now press the autocreate button.<p class="paragraph"/>Alternatively, you could have created the XML instruction yourself so:<p class="paragraph"/>    <div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"UTF&#45;8"</span> standalone=<span class="java&#45;quote">"yes"</span>?&#62;
+    &#60;instruction xmlns=<span class="java&#45;quote">"http://objectrepository.org/instruction/1.0/"</span>&#62;
+        &#60;stagingfile&#62;
+            &#60;lid&#62;12345/Apple&#60;/lid&#62;
+            &#60;location&#62;/folderA/Apple.tiff&#60;/location&#62;
+            &#60;md5&#62;cf3ee1101d19328145e94da1cade45bd&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;lid&#62;12345/Pear&#60;/lid&#62;
+            &#60;location&#62;/folderA/Pear.tiff&#60;/location&#62;
+            &#60;md5&#62;f57eb0e65d11a5a73eab9d5dddf1e528&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;lid&#62;12345/Banana&#60;/lid&#62;
+            &#60;location&#62;/folderA/Banana.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;lid&#62;12345/Potato&#60;/lid&#62;
+            &#60;location&#62;/folderA/Potato.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;lid&#62;12345/FreeRecipe&#60;/lid&#62;
+            &#60;location&#62;/folderA/FreeRecipe.tiff&#60;/location&#62;
+            &#60;md5&#62;d241cd201fafb15c5ec874ae167386ee&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+    &#60;/instruction&#62;</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>7</strong><span>Dissemination information package</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

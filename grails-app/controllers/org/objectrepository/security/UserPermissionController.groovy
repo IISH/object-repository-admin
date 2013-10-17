@@ -112,7 +112,7 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
         def token = ldapUserDetailsManager.updateKey(userInstance)
         userInstance.password = password
-        userInstance.url = grailsApplication.config.grails.serverURL + '/' + userPermission.username + '/resource/list?access_token=' + token.value
+        userInstance.url = grailsApplication.config.grails.serverURL + '/resource/list?access_token=' + token.value
         msg(userInstance, "ok", 200)
     }
 
@@ -146,7 +146,7 @@ class UserPermissionController extends NamingAuthorityInterceptor {
                     userPermission.resources[index].downloadLimit = v as Integer
                     break
                 case 'buckets':
-                    userPermission.resources[index].buckets = v
+                    userPermission.resources[index].buckets << v
                     break;
             }
         }

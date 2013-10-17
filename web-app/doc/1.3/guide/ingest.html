@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Ingest 1.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/sip.html">&lt;&lt; <strong>2</strong><span>Submission information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Ingest - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.3</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_instruction"><strong>3.1</strong><span>Ingest instruction service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_workflow"><strong>3.2</strong><span>Workflow controller service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_master"><strong>3.3</strong><span>Ingest master service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_pid"><strong>3.4</strong><span>PID services</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#ingest_pid_file"><strong>3.4.1</strong><span>PID bind file service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#ingest_pid_OBJID"><strong>3.4.2</strong><span>PID bind OBJID service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_derivative"><strong>3.5</strong><span>Ingest derivative services</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#ingest_derivative_custom"><strong>3.5.1</strong><span>Custom derivative service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#ingest_derivative_image"><strong>3.5.2</strong><span>Image derivative service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#ingest_derivative_av"><strong>3.5.3</strong><span>Audio-video derivative service</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="ingest">3 Ingest</h1>
+The ingest is a sequence of tasks whereby the submission package is transformed into the archival package. The latter is then persisted into the archival storage. These tasks are performed by various services, each performing operations following their own logic.
+
+
+
+<h2 id="ingest_instruction">3.1 Ingest instruction service</h2>
+This service will become available during the submission stage, once the Instruction validation service confirmed all files to be in pristine condition.The service initiates each individually declared file in the instruction, thus kick starting the file's lifecycle. The requirements this service adheres to is for an addition, delete or update action:
+<ol>
+<li>Select each stagingfile element in the instruction.</li>
+<li>Verify if the element has been validated.</li>
+<li>Set the first task to start the cycle of the file's ingest career.</li>
+<ol>
+<li>If all stagingfile elements are set return success</li>
+<li>If not, unset all tasks and throw an error</li>
+</ol></ol><p class="paragraph"/>
+
+
+<h2 id="ingest_workflow">3.2 Workflow controller service</h2>
+The workflow controller is the brain of the object repository.<p class="paragraph"/>Directly after the Instruction Ingest procedure was successful; the controller will append a stack of logically ordered tasks to each stagingfile element within the instruction. For example to ingest the master file, then to bind a persistent identifier to the dissemination package resolve url, then to create derivatives. These stacked tasks are picked up one-by-one by the same workflow controller. For each task it will send a message to a designated message queue.<p class="paragraph"/>Each Ingest service listens to their own designated message queue. It will execute it's own logic after a task is taken from the message queue. It will report the task status, success and failure back to the instruction's task element. There the workflow controller can pick it up again and decide what to do next.<p class="paragraph"/>Once all the tasks are processed, the workflow will end for the staged file. When all staged files tasks were completed, the ingest is completed - with or without any remaining issues.<p class="paragraph"/><blockquote class="note">The administration panel shows the result of the ingest to the content manager.</blockquote>
+
+
+
+<h2 id="ingest_master">3.3 Ingest master service</h2>
+The Ingest master service is specifically intended to persist master files. It is the first task to do when an ingest
+starts&#8230; when the plan is set so to ingest new or updated master files that is.<p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>look for the file on the staging area</li>
+<ol>
+<li>if found; add the file to the archival storage</li>
+<ol>
+<li>if not found; update the preservation description information in the archival package</li>
+<li>if no such information was known ( no persistent identifier ) throw an error</li>
+</ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the content data objects ( the master file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_pid">3.4 PID services</h2>
+The Persistent identifier services will bind the fixity information to the resolve URLs of what is the dissemination package.
+This will produce stable, resolvable URLs to the object repository's consumers.<p class="paragraph"/>The PID calling services are only available if the content producer has outsourced - or hosts - a PID webservice. The PID webservice
+offers SOAP methods to manage the Handle System(r) resolution technology. As a PID webservice account is associated with a
+webservice key to operate it, the producer needs to add that key to their Profile.<p class="paragraph"/>Producers that have their own resolver technology should make such bindings themselves using the existing Dissemination conventions
+available.
+
+
+<h2 id="ingest_pid_file">3.4.1 PID bind file service</h2>
+The PID file service will bind persistent identifiers to resolve URLs of stored file's. It will use the Handle System's
+capacity to handle multiple resolve URLs per PID. It will follow a convention to make such binds. For the PID:<p class="paragraph"/><code>http://hdl.handle.net/[persistent identifier]?locatt=view:[dissemination type]</code><p class="paragraph"/>and the bind to the resolve URL:<p class="paragraph"/><code>http://[object repository domain]/file/[dissemination type]/[persistent identifier]<p class="paragraph"/>The </code>locatt@ is a qualifier that specifies the dissemination type. For as the dissemination package may offer several
+views of the data, this qualifier will lead the consumer to them. For example, if this was your PID:<p class="paragraph"/><code>12345/1</code><p class="paragraph"/>then the persistent URLs of the master and derivatives become by convention:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">view</strong></th><th><strong class="bold">persistent URL</strong></th><th><strong class="bold">Resolve Url</strong></th></tr><tr class="table-odd"><td>metadata</td><td>http://hdl.handle.net/12345/1</td><td>http://disseminate.objectrepository.org/metadata/12345/1</td></tr><tr class="table-even"><td>master</td><td>http://hdl.handle.net/12345/1?locatt=view:master</td><td>http://disseminate.objectrepository.org/file/master/12345/1</td></tr><tr class="table-odd"><td>level 1 derivative</td><td>http://hdl.handle.net/12345/1?locatt=view:level1</td><td>http://disseminate.objectrepository.org/file/level1/12345/1</td></tr><tr class="table-even"><td>level 2 derivative</td><td>http://hdl.handle.net/12345/1?locatt=view:level2</td><td>http://disseminate.objectrepository.org/file/level2/12345/1</td></tr><tr class="table-odd"><td>level 3 derivative</td><td>http://hdl.handle.net/12345/1?locatt=view:level3</td><td>http://disseminate.objectrepository.org/file/level2/12345/1</td></tr></table><p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>Construct a PID webservice SOAP request. This request contains the persistent identifier; and the qualifiers per dissemination resolve URLs.</li>
+<li>Call the PID webservice using the PID webservice key.</li>
+<li>Check for the PID webservice response</li>
+<ol>
+<li>If an invalid or response, service unavailability or a failure message is in the response, then throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the persistent identifier from the PID webservice</li>
+<li>Check for the PID webservice response</li>
+<ol>
+<li>If an invalid or response, service unavailability or a failure message is in the response, then throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_pid_OBJID">3.4.2 PID bind OBJID service</h2>
+The PID OBJID service will bind a compound object's persistent identifier (the OBJID ) to the Mets and PDF dissemination services. These are exposed via conventional resolve URLs that when invoked produce METS document and PDF file renderings.
+As an added feature it will point to the derivative of the first file the compound object consists of. This latter will be useful to offer a preview image for the compound object.<p class="paragraph"/>The persistent identifiers convention for OBJIDs is:<p class="paragraph"/><code>http://hdl.handle.net/[persistent identifier]?locatt=view:[dissemination type]</code><p class="paragraph"/>And the resolve URL convention:<p class="paragraph"/><code>http://[object repository domain]/[mets or pdf]/[persistent identifier]</code><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">view</strong></th><th><strong class="bold">persistent URL</strong></th><th><strong class="bold">Resolve Url</strong></th></tr><tr class="table-odd"><td>mets</td><td>http://hdl.handle.net/12345/my-object-id</td><td>http://disseminate.objectrepository.org/mets/12345/my-object-id</td></tr><tr class="table-even"><td>master</td><td>http://hdl.handle.net/12345/my-object-id?locatt=view:master</td><td>http://disseminate.objectrepository.org/mets/12345/my-object-id</td></tr><tr class="table-odd"><td>pdf</td><td>http://hdl.handle.net/12345/my-object-id?locatt=view:pdf</td><td>http://disseminate.objectrepository.org/pdf/12345/my-object-id</td></tr><tr class="table-even"><td>level 1 derivative</td><td>http://hdl.handle.net/12345/my-object-id?locatt=view:level1</td><td>http://disseminate.objectrepository.org/file/level1/12345/1.1</td></tr><tr class="table-odd"><td>level 2 derivative</td><td>http://hdl.handle.net/12345/my-object-id?locatt=view:level2</td><td>http://disseminate.objectrepository.org/file/level2/12345/1.1</td></tr><tr class="table-even"><td>level 3 derivative</td><td>http://hdl.handle.net/12345/my-object-id?locatt=view:level3</td><td>http://disseminate.objectrepository.org/file/level2/12345/1.1</td></tr></table>
+
+
+<h2 id="ingest_derivative">3.5 Ingest derivative services</h2>
+The object repository derivative services will generate - on command and if possible  - three types
+of preview material which is intended as display to the consumer. There range from "light weight" presentations to "heavy"
+normalizations of the original master data. Derivative production may involve a simple reduction; but also the introduction
+of a completely new content type.<p class="paragraph"/>The types are:
+<ul class="star">
+<li>Level 1 derivatives: these are normalisations. Or near-enough reproductions of the master files.</li>
+<li>level 2 derivatives: medium sized, fit-to-screen sized content. That still give a good insight of the details of the master files.</li>
+<li>level 3 derivatives: small, quick-peek, thumbnail like material.</li>
+</ul><p class="paragraph"/>Both master and derivatives become part of the archival package, be it that only the master has the intended durable
+status. It goes without saying that derivative production is only possible after a master is persisted and part of
+the archival package.<p class="paragraph"/>Supplying the submission package of custom derivatives is also possible. The precise interpretation of what a level 1, 2 or 3 is therefor at the discretion of the content producer.<p class="paragraph"/>Derivative services will produce a derivative when:
+<ul class="star">
+<li>No derivative of that level exists;</li>
+<li>Or when the processing instruction explicitly states to replace existing derivatives.</li>
+<li>If not, the action is skipped.</li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_custom">3.5.1 Custom derivative service</h2>
+At any time the content producer can offer their own custom derivatives. These can be of any content type or file size.
+It is advisable to remain consistent with regard to the to the level 1, 2 and 3 derivative types.<p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>Look for a custom placed derivative in the submission package</li>
+<li>if not found, return success</li>
+<li>if found, determine the derivative level</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_image">3.5.2 Image derivative service</h2>
+It attempts to create three levels for images and first page pdf documents:
+<ul class="star">
+<li>level 1: high print quality; standardization to pdf</li>
+<li>level 2: medium screen quality; length and width reduction</li>
+<li>level 3: small, thumbnail quality; length and width and resolution reduction</li>
+</ul><p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>Obtain the master file; or if available a suitable level 1 derivative from the archival storage</li>
+<li>Produce a derivative using ImageMagick</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_av">3.5.3 Audio-video derivative service</h2>
+The Audio and Video derivative service will turn the master video or audio file into a derivative.<p class="paragraph"/><h3>Audio additions</h3>
+For master audio, the service will produce a level 1 type, high quality mp3. The requirements this service adheres to is to:
+<ol>
+<li>retrieve the master audio file</li>
+<li>use ffmpeg software to create the audio file in the desired mp3 content type</li>
+<li>add the derivative to the archival package</li>
+<li>when issues arrive, throw an error</li>
+<li>otherwise return success</li>
+</ol><p class="paragraph"/><h3>Video additions</h3>
+For video, three derivative levels are produced:<p class="paragraph"/><h4>Level 1</h4>
+A high quality h264 AAC (mp4) movie.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the master video file</li>
+<li>use ffmpeg software to create the video file in the desired mp4 content type. No resolution, frame or height and width are altered.</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h4>Level 2</h4>
+A montage of 16 stills taken from the entire movie's range.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the level 1 derivative video file. Or if not available the master.</li>
+<li>use ffmpeg software to create 16 video stills; the height is set to about 800px each.</li>
+<li>use ImageMagick to collate these images into one image/png file</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h4>Level 3</h4>
+A small, thumbnail quality taken from the middle of the movie.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the level 1 derivative video file. Or if not available the master.</li>
+<li>use ffmpeg software to create a single video stills from an estimated "middle" of the movie.</li>
+<li>use ImageMagick to scale the image into one image/png file</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h3>Removal</h3>
+The requirements this service adheres to is for a removal action is:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/sip.html">&lt;&lt; <strong>2</strong><span>Submission information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

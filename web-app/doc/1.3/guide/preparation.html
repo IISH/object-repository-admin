@@ -1,0 +1,549 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>7 Preparing the submission package 1.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>7 Preparing the submission package - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.3</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#preparation_stagingarea"><strong>7.1</strong><span>The staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_stagingarea_ftp"><strong>7.1.1</strong><span>Connecting to the stagingarea</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_stagingarea_datasets"><strong>7.1.2</strong><span>Folder and file conventions</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_stagingarea_customderivatives"><strong>7.1.3</strong><span>Supply custom derivatives</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#preparation_instruction"><strong>7.2</strong><span>Setting the Process instruction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_instruction_running"><strong>7.2.1</strong><span>Start an ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_instruction_xml"><strong>7.2.2</strong><span>The instruction as a XML document</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_instruction_settings"><strong>7.2.3</strong><span>Instruction settings</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:10px"><a href="#preparation_instruction_compound"><strong>7.2.4</strong><span>Files and Compound objects</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="preparation">7 Preparing the submission package</h1>
+When you prepare a submission package there are a number of questions to take into consideration. Namely:
+<ul class="star">
+<li>who will have access to the administration panel ?</li>
+<li>who is responsible for the FTP upload of digital files ?</li>
+<li>what is to be preserved ? And what is to be presented ? Is there need for producing derivatives or will you supply these ?</li>
+<li>what is the access status for the particular files that are to be submitted ?</li>
+<li>will you supply your own persistent identifiers; or will you use allow the repository to create these ?</li>
+<li>is there any context you want to preserve such as file ordering</li>
+</ul><p class="paragraph"/>Once decided you can use the administration interface to:
+<ul class="star">
+<li>create ftp accounts.</li>
+<li>set a profile. That is, defaults for the processing instruction such as access, mimetype, the prefered services to use</li>
+<li>define access policies</li>
+<li>oversee the production of instructions, starting procedures and monitor the status</li>
+<li>recreate past instructions</li>
+<li>download technical metadata of stored material</li>
+</ul><p class="paragraph"/> Access to the administration interface is possible via a privileged account only. Such accounts cannot be set
+ via the administration interface directly. Contact the administrator directly to set such accounts.
+
+
+<h2 id="preparation_stagingarea">7.1 The staging area</h2>
+Once you have selected the files intended for preservation and presentation you can upload these to the staging area. This is a work space where you can assemble your ingest package. Here you:
+<ul class="star">
+<li>use ftp to upload files to temporary storage and rearrange these</li>
+<li>optionally upload a custom XML processing instruction</li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="preparation_stagingarea_ftp">7.1.1 Connecting to the stagingarea</h2>
+To connect to the staging area you need one or more ftp accounts. A CP administrator can use the <a href="../guide/single.html#management_user" class="guide">Accounts section</a> to manage these.<p class="paragraph"/><a href="http://filezilla-project.org/download.php?type=client" target="blank">FileZilla</a> and <a href="http://winscp.net/eng/download.php" target="blank">WinSCP</a> are known to work well with the staging area. To make a connection:
+<ul class="star">
+<li>create an ftp-account</li>
+<li>set the host name of the staging area to the one mentioned in the ftp account confirmation e-mail</li>
+<li>set the ftp client to support an <strong class="bold"></strong>explicit FTP over TLS<strong class="bold"></strong> connection</li>
+<li>enable <strong class="bold"></strong>passive mode<strong class="bold"></strong>.</li>
+<li>The ftp port to use is the default 21.</li>
+</ul><p class="paragraph"/>As a rule (and avoid confusion) use the CP user account to upload files and XML processing instructions with. Not your
+CP administrator account.
+
+
+
+<h2 id="preparation_stagingarea_datasets">7.1.2 Folder and file conventions</h2>
+After a CP user (of course, ftp procedures can be automated also) logs in with a ftp-account, the first directory visible
+is the <strong class="bold"></strong>home directory<strong class="bold"></strong>. A FTP client will show this as a "/".<p class="paragraph"/>The user should at least upload one <strong class="bold"></strong>main folder<strong class="bold"></strong> containing files (your dataset) in the
+home directory. This example illustrates the upload of a main folder called "unittest" and it contains a sub folder with 5 files.<p class="paragraph"/><img border="0" class="center" src="../img/fileset.gif"></img><p class="paragraph"/>See there are 10 files ? For each file you upload to the staging area, the FTP server produces a md5 checksum. This is
+ stored next to the file in the format <code>filename.md5</code>. The checksum it contains is compared the one you
+deliver in a <a href="../guide/single.html#preparation_instruction" class="guide">processing instruction</a> in order to assert integrity. It contains something like this:
+<div class="code"><pre>181c838e29cbb0602da4a160eece2217  1.1.tif</pre></div><p class="paragraph"/><blockquote class="note">
+You should not delete automatically created md5 files. If you do; the ingest of your files can take a long time.
+</blockquote><p class="paragraph"/><blockquote class="note">Any folder or file that starts with a dot, will be ignored by the ingest procedures.
+Also any digital file placed right in the home directory and not in a main folder will be ignored.</blockquote>
+
+
+
+<h2 id="preparation_stagingarea_customderivatives">7.1.3 Supply custom derivatives</h2>
+The object-repository has a service to create lower level copies of the masters. If you want you can add your own derivative material because it is of better quality or the type of derivative
+manufacturing is not supported.<p class="paragraph"/><h3>Conventional offerings</h3>
+The position and names of the derivatives must follow conventions:
+<ul class="star">
+<li>the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice these names start with a dot.</li>
+<li>the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file extension. For example, if the master is called <code>MyFile.tiff</code> or <code>BigVideo.mpg</code> then the custom derivative must be positioned and named like <code>/.level1/MyFile.jpg</code> or <code>/.level2/BigVideo.mpg</code></li>
+<li>the derivative must be parallel to the master file.</li>
+<li>the extension of the derivative must be related to a known content type as <a href="http://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt" target="blank">indicated in this list</a>. If you see that your derivative extension is not in this list, then make a feature request.</li>
+</ul><p class="paragraph"/>A few examples will clarify the points just made.<p class="paragraph"/><h4>Example 1</h4>
+A master is placed deep within some subfolders: <code>/main_folder/b/c/d/myLargeFile.tiff</code>
+And the derivative file is called <code>myLargeFile.png</code><p class="paragraph"/>Then a level1 derivative can be placed anywhere by <strong class="bold">inserting</strong> a <strong class="bold">.level1</strong> folder thus:
+<ul class="star">
+<li><code>/main_folder/b/c/d/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/>Or by <strong class="bold">substituting</strong> a folder so:
+<ul class="star">
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/><h4>Example 2</h4>
+A master is placed in the main folder <code>/mydataset/myVeryLargeMovie.mpg</code>
+Then we offer both level1, level2 and a level3 file like this:
+<ul class="star">
+<li><code>/mydataset/.level1/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level2/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level3/myVeryLargeMovie.mpg</code></li>
+</ul><p class="paragraph"/><blockquote class="note">The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it</blockquote><p class="paragraph"/><h4>Supplying derivatives some time after an ingest</h4>
+To add custom derivatives after the ingest is completed, you follow the same procedure:
+<ul class="star">
+<li>upload your custom derivative files according to the location convention</li>
+<li>in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and any other non-related derivative tasks. Then validate the instruction</li>
+<li>Start processing your files.</li>
+</ul><p class="paragraph"/>Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
+re upload a new one which should contain the location elements from which the custom derivative can be found.<p class="paragraph"/><blockquote class="note">In case you re upload for the sake of ingesting custom derivatives, the location element need not be the same as the original master files from a previous instruction.</blockquote>
+
+
+<h2 id="preparation_instruction">7.2 Setting the Process instruction</h2>
+The administration interface and an XML processing instruction together makes it all work.
+An instruction has required and optional values. Those values can be set at three levels:<p class="paragraph"/><h4>1. Profile</h4>
+Via the administration interface select <a href="../guide/single.html#management_profile" class="guide">profile</a>. Default <a href="../guide/single.html#preparation_instruction_settings" class="guide">instruction settings</a> can be
+placed there by a CP administrator. It makes sense therefore, to set all your broad access policies and most frequently
+used file content values here. Settings in the profile substitute any absent values in the XML processing instruction.<p class="paragraph"/><h4>2. instruction.xml</h4>
+The instruction.xml is a XML document. It's main element is named <code>instruction</code> and contains attributes identical to
+those you set in the profile. Any setting here will override those in the profile. Typically you would set values that
+are exceptions to the more global general situation.<p class="paragraph"/>Each main folder ought to contain an XML document. However with automated creation of instructions you need no XML.<p class="paragraph"/><h4>3. Stagingfile</h4>
+In the instruction.xml's child elements one should mention <code>stagingfile</code> elements. A stagingfile element represents the
+file and any settings here will override those in the main element and profile. The stagingfile is the only element that has some unique settings not present in the profile or instruction, such as md5,
+location and pid value.<p class="paragraph"/><h4>In short</h4>
+ <em class="italic">Profile</em>  settings provide reasonable defaults for an organizations processing instruction.
+Instruction settings in an  <em class="italic">instruction.xml</em>  document override profile values and provide specific defaults for stagingfiles.
+ <em class="italic">Stagingfile</em>  settings in their final turn override instruction and profile settings. The smallest always win.<p class="paragraph"/>
+
+
+
+<h2 id="preparation_instruction_running">7.2.1 Start an ingest</h2>
+Starting an instruction can be automated, provided the conditions are right:
+<ul class="star">
+<li>a FTP client has uploaded files</li>
+<li>a valid XML processing instruction is in a main folder; or you automatically created one via the administration's instruction panel</li>
+<li>If you had set the element ( in either the XML document itself or if not, at the profile panel ) :</li>
+</ul><p class="paragraph"/><div class="code"><pre>autoIngestValidInstruction=<span class="java&#45;keyword">true</span></pre></div><p class="paragraph"/>If you disable <code>autoIngestValidInstruction</code> a manual ingest command is needed. From the administration interface select <code>Process instruction</code> to start.<p class="paragraph"/><blockquote class="note">The manual option to Process an instruction will not appear until the instruction is considered valid.</blockquote>
+
+
+<h2 id="preparation_instruction_xml">7.2.2 The instruction as a XML document</h2>
+A XML processing instruction should be:
+<ul class="star">
+<li>named <code>instruction.xml</code></li>
+<li>placed in the main folder of the uploaded dataset.</li>
+<li>well formed XML. There is no schema validation. The schema <a href="http://raw.github.com/IISH/object-repository-servicenodes/master/core/src/main/resources/instruction.v1.0.xsd" target="blank">can be found here</a></li>
+</ul><p class="paragraph"/>For example if you uploaded these five files onto the staging area in the main folder <code>unittest</code> then you must add the <code>instruction.xml</code> document in the folder <code>unittest</code> as well:<p class="paragraph"/><img border="0" class="center" src="../img/filesetxml.gif"></img><p class="paragraph"/>This file will be deleted automatically after you uploaded it, as it is read into a database. You can re upload the
+instruction any time you want. Or download it from the database back to your local PC or the staging area main folder
+using the administration panel.<p class="paragraph"/><blockquote class="note">When you download a XML processing instruction, it may have added validation messages.</blockquote><p class="paragraph"/><h3>Working example of an XML instruction</h3>
+Lets say we automatically create an instruction via the administration panel for the five files we just uploaded.
+On the <a href="../guide/single.html#management_instruction" class="guide">instructions page</a> we edit the settings and indicate the following:
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">element</strong></th><th><strong class="bold">value</strong></th></tr><tr class="table-odd"><td>Label</td><td>My five files</td></tr><tr class="table-even"><td>Action</td><td>upsert</td></tr><tr class="table-odd"><td>Access</td><td>open</td></tr><tr class="table-even"><td>Contenttype&#77;imetype</td><td>image/tiff</td></tr><tr class="table-odd"><td>Auto generate PIDs</td><td>filename2pid</td></tr><tr class="table-even"><td>Auto ingest valid instructions</td><td>off</td></tr><tr class="table-odd"><td>Resolver baseUrl</td><td>http://hdl.handle.net/</td></tr><tr class="table-even"><td>Service to execute</td><td>all</td></tr></table><p class="paragraph"/>After we press "update" we can download the XML for viewing:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"utf&#45;8"</span>?&#62;</span>
+<span class="xml&#45;comment">&#60;!&#45;&#45;Instruction extracted on 11 Jun 2012 11:05:15 GMT&#45;&#45;&#62;</span>
+<span class="xml&#45;tag">&#60;instruction xmlns=<span class="xml&#45;quote">"http://objectrepository.org/instruction/1.0/"</span>
+    access=<span class="xml&#45;quote">"open"</span>
+    action=<span class="xml&#45;quote">"upsert"</span>
+    autoGeneratePIDs=<span class="xml&#45;quote">"filename2pid"</span>
+    contentType=<span class="xml&#45;quote">"image/tiff"</span>
+    label=<span class="xml&#45;quote">"My five files"</span>
+    resolverBaseUrl=<span class="xml&#45;quote">"http://hdl.handle.net/"</span>&#62;</span>
+    <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;pid&#62;</span>12345/1.1<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/unittest/TIFF/1.1.tif<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>181c838e29cbb0602da4a160eece2217<span class="xml&#45;tag">&#60;/md5&#62;</span>
+    <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/1.3<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/unittest/TIFF/1.3.tif<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>efac78a3f9bc224b581bd9e6003813e3<span class="xml&#45;tag">&#60;/md5&#62;</span>
+    <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/1.4<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/unittest/TIFF/1.4.tif<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>b2d09024f5c5c9b823ec614a7d7bc8d0<span class="xml&#45;tag">&#60;/md5&#62;</span>
+    <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/1.5<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/unittest/TIFF/1.5.tif<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>4daae1f298383d440f725f195621cebf<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/1.2<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/unittest/TIFF/1.2.tif<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>5eaea136b6e49f2dabff2f8f1a278d7c<span class="xml&#45;tag">&#60;/md5&#62;</span>
+    <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+<span class="xml&#45;tag">&#60;/instruction&#62;</span></pre></div><p class="paragraph"/><h3>Validation</h3>
+An automatic validation procedure will run the moment you <code>autocreate</code> an instruction or ftp one into the main folder.
+The results of the validation will show up in the CP administration interface per instruction and per file. In addition,
+downloading the file via the CP administration interface will give you the XML instruction with <code>error</code> elements if any.
+After you correct the issue, you can reupload the XML processing instruction and files where needed.<p class="paragraph"/><h3>Viewing and changing the XML instruction after upload</h3>
+All the uploaded datasets's main folders are visible at the <a href="../guide/single.html#management_instruction" class="guide">instructions page</a> of the administration
+interface. There the instructions and stagingfile elements can be tweaked. This feature is locked after ingest.<p class="paragraph"/><h3>Autocreate an XML processing instruction?</h3>
+It can be useful when you make your own custom instructions. You can use this feature to experiment to see how a
+valid instruction looks like. Should your PID or LID values be identical to the filenames, you could produce an instruction that is perfect for
+ingest.<p class="paragraph"/><h3>Two more examples of an XML processing instruction</h3><p class="paragraph"/><h4>Example with pid elements.</h4>
+Lets us assume a folder structure of one main folder with five files<p class="paragraph"/>    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/Apple.tiff
+        /folderA/Pear.tiff
+        /folderA/Banana.tiff
+        /folderA/Potato.png
+        /folderA/SecretRecipe.tiff</pre></div><p class="paragraph"/>And to stretch the borders of our imagination a little further, suppose the CP administrator has set the following
+default settings in the profile via the administration interface:<p class="paragraph"/>    <div class="code"><pre>action=upsert
+    access=closed
+    contentType=image/tiff</pre></div><p class="paragraph"/>Now we can mostly fall back on the defaults the profile provides, but we do want to add some exceptions to the
+profile rules by adding new values the XML processing instruction. Notice:
+<ul class="star">
+<li>the <code>contentType</code> for the potato ? It is not a tiff but an <strong class="bold">image/png</strong>.</li>
+<li>And we feel the <code>access</code> of the policy is too strict. Lets set it all to <strong class="bold">open</strong>.</li>
+<li>And lets set the <code>access</code> to SecretRecipe.tiff to <strong class="bold">restricted</strong>.</li>
+</ul><p class="paragraph"/>The processing instruction would then could look like this:<p class="paragraph"/>   <div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"UTF&#45;8"</span> standalone=<span class="xml&#45;quote">"yes"</span>?&#62;</span>
+    <span class="xml&#45;tag">&#60;instruction xmlns=<span class="xml&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> access=<span class="xml&#45;quote">"open"</span>&#62;</span> <span class="xml&#45;comment">&#60;!&#45;&#45; access added here &#45;&#45;&#62;
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/a<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Apple.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>cf3ee1101d19328145e94da1cade45bd<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/b<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Pear.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>f57eb0e65d11a5a73eab9d5dddf1e528<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/c<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Banana.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/png<span class="xml&#45;tag">&#60;/contentType&#62;</span> &#60;!&#45;&#45; contentType here &#45;&#45;&#62;
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/d<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Potato.png<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;access&#62;</span>restricted<span class="xml&#45;tag">&#60;/access&#62;</span> &#60;!&#45;&#45; access element here &#45;&#45;&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/e<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/SecretRecipe.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;/instruction&#62;</span></pre></div><p class="paragraph"/><h4>Example with lid elements</h4>
+As a second example, lets suggest you are a content producer that can not supply persistent identifiers but only supply
+local identifiers. Lets also assume that you made things easy and the local identifiers can be derived from the filenames
+but without the extension. Here we can automatically create an instruction.<p class="paragraph"/><blockquote class="note">this example would only work in the object repository when it can fall back on a Handle System compatible PID
+webservice for which a naming authority is required. In the example we assume this so and the authority is 12345.</blockquote><p class="paragraph"/>Lets say these are the files in the staging area:<p class="paragraph"/>    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/Apple.tiff
+        /folderA/Pear.tiff
+        /folderA/Banana.tiff
+        /folderA/Potato.tiff
+        /folderA/FreeRecipe.tiff</pre></div><p class="paragraph"/>And we have set our profile defaults via the administration interface thus:<p class="paragraph"/>    <div class="code"><pre>action=upsert
+    access=closed
+    contentType=image/tiff
+    autoGeneratePIDs='filename2lid'</pre></div><p class="paragraph"/>Via the administration interface "instruction" tab, you can now press the autocreate button.<p class="paragraph"/>Alternatively, you could have created the XML instruction yourself so:<p class="paragraph"/>    <div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"UTF&#45;8"</span> standalone=<span class="xml&#45;quote">"yes"</span>?&#62;</span>
+    <span class="xml&#45;tag">&#60;instruction xmlns=<span class="xml&#45;quote">"http://objectrepository.org/instruction/1.0/"</span>&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;lid&#62;</span>12345/Apple<span class="xml&#45;tag">&#60;/lid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Apple.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>cf3ee1101d19328145e94da1cade45bd<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;lid&#62;</span>12345/Pear<span class="xml&#45;tag">&#60;/lid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Pear.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>f57eb0e65d11a5a73eab9d5dddf1e528<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;lid&#62;</span>12345/Banana<span class="xml&#45;tag">&#60;/lid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Banana.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;lid&#62;</span>12345/Potato<span class="xml&#45;tag">&#60;/lid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/Potato.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;lid&#62;</span>12345/FreeRecipe<span class="xml&#45;tag">&#60;/lid&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/FreeRecipe.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>d241cd201fafb15c5ec874ae167386ee<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;/instruction&#62;</span></pre></div>
+
+
+<h2 id="preparation_instruction_settings">7.2.3 Instruction settings</h2>
+You can manage the ingest of your files by setting the instruction's elements. As these configurations can be placed
+at different levels ( profile's, XML instruction's and stagingfile's ) we mention that between brackets.<p class="paragraph"/><h3>To begin with: a friendly description</h3>
+<code>label</code> (profile and instruction element)<p class="paragraph"/>A human readable bit of information. This will show up on the administration
+interface when viewing your instructions.<p class="paragraph"/><h3>Choose the services</h3>
+<code>plan</code> (profile and instruction)<p class="paragraph"/>Determines what services are to be used ( in no particular order ). Seperated by a comma.<p class="paragraph"/>To tell you want a master ingest or update:
+<div class="code"><pre>plan='StagingfileIngestMaster'</pre></div><p class="paragraph"/>To call the PID webservice to bind the persistent identifier of a file:
+<div class="code"><pre>plan='StagingFileBindPIDs'</pre></div>
+This will invoke the PID webservice to bind the PIDs to the resolve url's of the dissemination package. One must have
+an account at a PID webservice and have the <code>pidwebserviceEndpoint</code> and <code>pidwebserviceKey</code> set.<p class="paragraph"/>To call the PID webservice to bind the persistent identifier of a compound identifier ( objid ):
+<div class="code"><pre>plan='StagingFileBindObjId'</pre></div>
+This will invoke the PID webservice to bind the object identifier to the resolve url's of the dissemination package. One must have
+an account at a PID webservice and have the <code>pidwebserviceEndpoint</code> and <code>pidwebserviceKey</code> set.<p class="paragraph"/>To produce derivatives:
+<ul class="star">
+<li>@plan='StagingfileIngestLevel1'</li>
+<li>@plan='StagingfileIngestLevel2'</li>
+<li>@plan='StagingfileIngestLevel3'</li>
+</ul><p class="paragraph"/>If left empty, the default is to use all the services. This is equivalent to adding the following in an XML instruction:
+<div class="code"><pre>plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingFileBindObjId,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'</pre></div><p class="paragraph"/><h3>Additions and updates</h3>
+<code>action</code> (profile, instruction and stagingfile elements)<p class="paragraph"/>This controls how the ingest and dissemination procedures handles the file. The default 'upsert' is the most simple
+to use as it covers most use cases.<p class="paragraph"/>    <div class="code"><pre>action='upsert' ( <span class="java&#45;keyword">default</span> )</pre></div>
+    Adds the file with the given pid. If a file with the pid already exists, it will be updated with the new file.<p class="paragraph"/>    <div class="code"><pre>action='add'</pre></div>
+    Add a file with the given pid. But error will occur when the pid already exists in the object repository<p class="paragraph"/>    <div class="code"><pre>action='update'</pre></div>
+    Updates a file with the given pid. But error will occur if the pid does not exists in the object repository<p class="paragraph"/>    <div class="code"><pre>action='delete'</pre></div>
+    Removes the file with the specified PID. In this version of the object-repository the delete action does not remove
+    a file. Rather it sets the access value to 'deleted' and makes the digital object unavailable this way.<p class="paragraph"/><h3>Access policy</h3>
+<code>access</code> (profile, instruction and stagingfile elements)<p class="paragraph"/>Determines which dissemination policy to use when anonymous users want to view a level1, level2 or level3 derivative.
+There are three out-of-the-box policies available:<p class="paragraph"/>    All derivatives are viewable to the world:
+    <div class="code"><pre>access='open'</pre></div><p class="paragraph"/>    Level 1 is restricted; level 2 and 3 are viewable to the world
+    <div class="code"><pre>access='restricted'</pre></div><p class="paragraph"/>    no files can be downloaded or viewed
+    <div class="code"><pre>access='closed' (<span class="java&#45;keyword">default</span>)</pre></div><p class="paragraph"/>In the administration interface a CP administrator can add new policies and thus apply custom view levels.<p class="paragraph"/><h3>Access policy with embargo</h3>
+<code>embargo</code> (profile, instruction and stagingfile elements)<p class="paragraph"/><code>embargoAccess</code> (profile, instruction and stagingfile elements, default: closed)<p class="paragraph"/>The <code>embargo</code> is a date with the format [yyyy-MM-dd]. It will enforce an alternative access policy as defined in the
+ <code>embargoAccess</code> element.<p class="paragraph"/>Some examples:
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold"><code>access</code></strong></th><th><strong class="bold"><code>embargo</code></strong></th><th><strong class="bold"><code>embargoAccess</code></strong></th><th><strong class="bold"><code>policy enforced</code></strong></th></tr><tr class="table-odd"><td>open</td><td>2010-12-01</td><td>restricted</td><td>On 2009-12-01 the resource has <strong class="bold">restricted</strong> access</td></tr><tr class="table-even"><td>open</td><td>2010-12-01</td><td>restricted</td><td>On 2011-12-01 the resource has <strong class="bold">open</strong> access</td></tr><tr class="table-odd"><td>open</td><td>2010-12-01</td><td>&#160;</td><td>On 2009-12-01 the resource has <strong class="bold">closed</strong> access</td></tr><tr class="table-even"><td>open</td><td>2010-12-01</td><td>&#160;</td><td>On 2011-12-01 the resource has <strong class="bold">open</strong> access</td></tr><tr class="table-odd"><td>closed</td><td>2010-12-01</td><td>open</td><td>On 2009-12-01 the resource has <strong class="bold">open</strong> access</td></tr><tr class="table-even"><td>closed</td><td>2010-12-01</td><td>open</td><td>On 2011-12-01 the resource has <strong class="bold">closed</strong> access</td></tr></table><p class="paragraph"/><h3>The compound object identifier and ordering of files</h3>
+<code>objid</code> (instruction, stagingfile; empty by default)<p class="paragraph"/>Groups all the files declared the instruction; stating they all belong to the same compound.
+The syntax of this file is the same as any PID element.<p class="paragraph"/><code>seq</code> (stagingfile; 1 by default)
+Typically when using the objid; you would express the order for each stagingfile with the <code>seq</code> element. If you
+do not specify the order; the alphabetical ordering of your staged files will determine that sequence value.<p class="paragraph"/><code>pdfLevel</code> ( profile, instruction; 'level2' by default )
+Determines which derivative level shall be used to render a PDF with. This level must consist of images.<p class="paragraph"/><h3>Mimetype</h3>
+<code>contentType</code> (profile, instruction and stagingfile elements)<p class="paragraph"/>The value indicates the nature of the file ( like "image/jpeg", "application/pdf , etc)<p class="paragraph"/><blockquote class="note">Make sure your mimetype is correct or else the derivative creation or rendering may not go quite according to plan.</blockquote>
+For more on mimetypes see:
+<ul class="star">
+<li><a href="http://en.wikipedia.org/wiki/MIME" target="blank">http://en.wikipedia.org/wiki/MIME</a></li>
+<li>some good examples at <a href="http://www.ltsw.se/knbase/internet/mime.htp" target="blank">http://www.ltsw.se/knbase/internet/mime.htp</a></li>
+<li>The object-repository has a list at <a href="../ref/Httpsgithubcom IISH objectrepositoryscriptsblobmastersharedcontenttypetxt/https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt.html" class="https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt">https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt</a> of content types.</li>
+</ul><p class="paragraph"/><h3>Checksum</h3>
+<code>md5</code> (stagingfile element)<p class="paragraph"/>Used to determine if the transport from one place to another (the staging area; the document database) was in deed
+without flaw.<p class="paragraph"/><h3>File location</h3>
+<code>location</code> (stagingfile element)<p class="paragraph"/>The case sensitive path and filename of the digital file. The beginning of the path is the same as the home directory.<p class="paragraph"/><h3>The persistent identifier</h3>
+<code>pid</code> (stagingfile element)<p class="paragraph"/>The object-repository needs the PID (e.g. a piece of string that can be resolved via Handle System, Ark, DOI) without the base URL, for example like:
+<div class="code"><pre>&#60;pid&#62;12345/mypid&#60;/pid&#62;
+&#60;pid&#62;hdl:12345/mypid&#60;/pid&#62;
+&#60;pid&#62;ark:/12345/654xz321&#60;/pid&#62;
+&#60;pid&#62;10.12345/jmbi.1998.2354&#60;/pid&#62;
+&#60;pid&#62;doi:10.12345/jmbi.1998.2354&#60;/pid&#62;</pre></div><p class="paragraph"/><blockquote class="note">When unable to provide a pid value, use the optional substitute <code>lid</code> stagingfile element.</blockquote><p class="paragraph"/><h3>Set a PID resolver base url</h3>
+<code>resolverBaseUrl</code> (profile and instruction element)<p class="paragraph"/>The resolver is a website that will know what to do with the PID. So if the PID is attached to the resolverBaseUrl we
+ought to have a complete, workable url. This is used at the dissemination end of the object-repository to offer a link
+for the enduser.<p class="paragraph"/>For example, for
+<code>&#60;pid&#62;12345/mypid&#60;/pid&#62;</code>
+and
+<code>resolverBaseUrl='http://hdl.handle.net/'</code><p class="paragraph"/>the complete link on the dissemination interface would become: <code>http://hdl.handle.net/12345/mypid</code><p class="paragraph"/><h3>The optional 'lid' identifier</h3>
+This element is a system (your local organization's system that is ) wide unique identifier. For example a LIS number or
+database key. Usage of this substitute is only needed if you are unable to supply and manage your own PIDs. You ought to
+have a PID webservice account to use the LID-PID substitute.<p class="paragraph"/>When you submit a LID; the PID webservice will generate a PID value and insert it into the instruction. Any update
+afterwards with the same LID will return this PID.<p class="paragraph"/><h3>The PID webservice</h3>
+<code>pidwebserviceEndpoint</code>: the endpoint or url of a PID webservice<p class="paragraph"/><code>pidwebserviceKey</code>: the webservice key that belongs to your account at the PID webservice<p class="paragraph"/>These two settings combined are required to bind the PIDs to the object-repository's resolve URLs.<p class="paragraph"/><h3>Automated PID creation</h3>
+<code>autoGeneratePIDs</code> (profile and instruction element)<p class="paragraph"/>Is trickered by the administration interface <code>autoCreate instruction</code> and <code>upload instruction</code> commands.<p class="paragraph"/>    <div class="code"><pre>autoGeneratePIDs='none' (<span class="java&#45;keyword">default</span>)</pre></div>
+    Wont do anything for an absent pid element<p class="paragraph"/>    <div class="code"><pre>autoGeneratePIDs='uuid'</pre></div>
+    The system will provide an empty PID element with a seemingly random string.
+    Example: <code>&#60;pid&#62;12345/10997FB2-1BFD-4191-A7E2-1AA1308960BB&#60;/pid&#62;</code><p class="paragraph"/>    <div class="code"><pre>autoGeneratePIDs='filename2pid'</pre></div>
+    Substitute an empty PID element with the filename ( without suffix ).
+    example: <code>MyLargeFile.tif</code> will lead to <code>&#60;pid&#62;12345/MyLargeFile&#60;/pid&#62;</code><p class="paragraph"/>    <div class="code"><pre>autoGeneratePIDs='filename2lid'</pre></div>
+    Substitute an empty lid element with the filename ( without suffix ).
+    example: <code>MyLargeFile.tif</code> will lead to <code>&#60;lid&#62;12345/MyLargeFile&#60;/lid&#62;</code><p class="paragraph"/>    <div class="code"><pre>autoGeneratePIDs='lid'</pre></div>
+    Ignore an empty PID setting during auto creation and validation as long as it has a LID element<p class="paragraph"/><h3>Automatic ingest ( for automated batch procedures )</h3>
+<code>autoIngestValidInstruction</code> (profile and instruction element)<p class="paragraph"/>If set to <div class="code"><pre>autoIngestValidInstruction='<span class="java&#45;keyword">true</span>'</pre></div> will start an instruction process. But only if the instruction that was
+uploaded or automatically generated is valid.<p class="paragraph"/>Typically this is useful for batch procedures that involve automated FTP uploads of files and processing instructions.<p class="paragraph"/><h3>Replacing derivatives</h3>
+<code>replaceExistingDerivatives</code> (profile, instruction and stagingfile element)
+Used in combination with a plan that creates derivatives.
+When set to false ( default ) your derivatives will be replaced by newly master converted ones.<p class="paragraph"/><blockquote class="note">Custom derivatives will always be ingested, regardless of this setting.</blockquote><p class="paragraph"/><h3>E-mail notifications</h3>
+<code>notificationEMail</code>
+This value is a comma delimited list of e-mail addresses. When an instruction is completed, it will sent a message
+ to those e-mails<p class="paragraph"/>
+
+
+<h2 id="preparation_instruction_compound">7.2.4 Files and Compound objects</h2>
+Compound objects are abstractions of ordered files. The way you express a compound object is through the processing instruction.
+Here you determine:
+<ul class="star">
+<li>the pid value to refer to a group of files</li>
+<li>the physical file order</li>
+</ul><p class="paragraph"/>This information is used to offer the download of METS documents and on the fly PDFs at the dissemination api or website.<p class="paragraph"/><h3>Expressing objid and order of files</h3>
+The compound object has a persistent identifier. In the instruction this is set with the element <strong class="bold">objid</strong>
+This is a PID just like the PIDs you supply to identify your files with.<p class="paragraph"/>In addition each individual file in the instruction may be given an order using the element <strong class="bold">seq</strong>.<p class="paragraph"/>As an example, take the situation where you offer a three page letter. You place it onto the staging area:
+    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/page_0001.tiff
+        /folderA/page_0002.tiff
+        /folderA/page_0003.tiff</pre></div><p class="paragraph"/>Object ID and order is expressed this way in an instruction:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"UTF&#45;8"</span> standalone=<span class="xml&#45;quote">"yes"</span>?&#62;</span>
+    <span class="xml&#45;tag">&#60;instruction xmlns=<span class="xml&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> objid=<span class="xml&#45;quote">"12345/my&#45;object&#45;id"</span>&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/my&#45;identifier&#45;a<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>1<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00001.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>cf3ee1101d19328145e94da1cade45bd<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/my&#45;identifier&#45;b<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>2<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00002.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>f57eb0e65d11a5a73eab9d5dddf1e528<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/another&#45;identifier&#45;c<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>3<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00003.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;/instruction&#62;</span></pre></div><p class="paragraph"/>If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
+can be set after the autocreate procedure is completed.<p class="paragraph"/>When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
+the PID webservice. For this the plan must have the workflow 'StagingFileBindObjId' set.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -1,4 +1,8 @@
-h3. Current release, version 1.3
+h3. Current release, version 1.4
+* Access to repository resources can be set for user accounts. Access policies are applicable to these accounts.
+* Specific resources and their download limits and expiration dates can be assigned to such accounts
+
+h3. Version 1.3
 * Restructured the documentation to include architecture
 * Double key authentication is required for delete actions
 * Embargo support

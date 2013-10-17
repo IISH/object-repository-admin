@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>6 Dissemination information package 1.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/storage.html">&lt;&lt; <strong>5</strong><span>Archival Storage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>6 Dissemination information package - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.3</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#dip_http"><strong>6.1</strong><span>HTTP 1.1 service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#dip_ftp"><strong>6.2</strong><span>FTP service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#dip_pdf"><strong>6.3</strong><span>PDF service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#dip_mets"><strong>6.4</strong><span>METS service</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="dip">6 Dissemination information package</h1>
+There are several dissemination services to deliver content.
+In all cases the access to the dissemination package these services give is determined by access policies.
+
+
+
+<h2 id="dip_http">6.1 HTTP 1.1 service</h2>
+The HTTP dissemination service is probably the most familiar technique to distributing content to the human consumer or API client.
+Usually it is here persistent identifiers will need to resolve to. It offers:<p class="paragraph"/><h4>Html page of the metadata</h4>
+The archival package's preservation descriptive information is presented for the master and it's derivatives.
+The conventional dissemination url is:<p class="paragraph"/><code>http://disseminate.objectrepository.org/metadata/[persistent identifier]</code><p class="paragraph"/><h4>Xml document of the metadata</h4>
+Again the AIP rendered as a XML document. The conventional dissemination url is:<p class="paragraph"/><code>http://disseminate.objectrepository.org/metadata/[persistent identifier]?accept=xml</code><p class="paragraph"/>An example of the response could be:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"utf&#45;8"</span>?&#62;</span>
+<span class="xml&#45;tag">&#60;orfiles xmlns=<span class="xml&#45;quote">"http://objectrepository.org/orfiles/1.0/"</span>&#62;</span>
+    <span class="xml&#45;tag">&#60;orfile&#62;</span>
+        <span class="xml&#45;tag">&#60;pid&#62;</span>10622/30051002935671<span class="xml&#45;tag">&#60;/pid&#62;</span>
+        <span class="xml&#45;tag">&#60;resolverBaseUrl&#62;</span>http://hdl.handle.net/<span class="xml&#45;tag">&#60;/resolverBaseUrl&#62;</span>
+        <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+        <span class="xml&#45;tag">&#60;filename&#62;</span>30051002935671.tif<span class="xml&#45;tag">&#60;/filename&#62;</span>
+        <span class="xml&#45;tag">&#60;label&#62;</span>2012&#45;09&#45;08 batch filer4<span class="xml&#45;tag">&#60;/label&#62;</span>
+        <span class="xml&#45;tag">&#60;access&#62;</span>restricted<span class="xml&#45;tag">&#60;/access&#62;</span>
+        <span class="xml&#45;tag">&#60;master&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:master<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/master/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/tiff<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>293909478<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;content x&#45;resolution=<span class="xml&#45;quote">"300.0"</span> y&#45;resolution=<span class="xml&#45;quote">"300.0"</span> width=<span class="xml&#45;quote">"8066.0"</span> height=<span class="xml&#45;quote">"12142.0"</span>/&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>dc3fc60cf5ec720fbef6cbfaf04d7352<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Tue Nov 29 13:21:00 CET 2011<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:32:58 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:32:58 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/master&#62;</span>
+        <span class="xml&#45;tag">&#60;level2&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:level2<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/level2/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/jpeg<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>102768<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>15471cf308f739ea548496530277425d<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/level2&#62;</span>
+        <span class="xml&#45;tag">&#60;level3&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:level3<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/level3/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/jpeg<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>21065<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;content height=<span class="xml&#45;quote">"350"</span> width=<span class="xml&#45;quote">"232"</span> x&#45;resolution=<span class="xml&#45;quote">"72 PixelsPerInch"</span> y&#45;resolution=<span class="xml&#45;quote">"72 PixelsPerInch"</span>/&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>ba0682b465bf6d600d213eebb9b43388<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/level3&#62;</span>
+    <span class="xml&#45;tag">&#60;/orfile&#62;</span>
+<span class="xml&#45;tag">&#60;/orfiles&#62;</span></pre></div><p class="paragraph"/><h4>A file stream with mimetype</h4>
+A http request for an openly accessible resource would return the corresponding file in the appropriate content
+type such as an image. The template URL would be:<p class="paragraph"/><code>http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]</code><p class="paragraph"/>The returning filename can also be set by setting a contentType and filename parameter so:<p class="paragraph"/><code>http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]?contentType=application/save&#38;filename=myfile.tif</code><p class="paragraph"/><h4>Streaming</h4>
+De HTTP service handles the HTTP 206 protocol, which will enable the streaming of content to most common audio and video players.
+The Real Time Streaming Protocol is not supported.
+
+
+<h2 id="dip_ftp">6.2 FTP service</h2>
+The content producer can download ingested files using ftp. The ftp home directory will look like this, showing the stored master and it's derivatives:
+<div class="code"><pre>/master
+/level1
+/level2
+/level3</pre></div><p class="paragraph"/>From thereon the directory tree is similar to the way files are offered to the staging area when the dissemination package was assembled.
+Use your favorite ftp client to access the data. Use these settings:
+<ul class="star">
+<li>connect to ftp.objectrepository.org</li>
+<li>set the ftp client to support an <strong class="bold"></strong>implicit FTP over TLS<strong class="bold"></strong> connection</li>
+<li>enable <strong class="bold"></strong>passive mode<strong class="bold"></strong>.</li>
+<li>your account is the same account with which you administer your object repository.</li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="dip_pdf">6.3 PDF service</h2>
+A compound object can be disseminated as a PDF document. This is possible when at least one of the derivative layers is of an image type.
+The dissemination URL of a pdf document is:<p class="paragraph"/><code>http://disseminate.objectrepository.org/pdf/[object-id]<p class="paragraph"/>The default level of files used for this is set with the </code>pdfLevel<code> element set in instruction. See <a href="../guide/single.html#preparation_instruction_compound" class="guide">pids</a>.<p class="paragraph"/>However the consumer can force a level yourself by adding it to the url so:<p class="paragraph"/></code>http://disseminate.objectrepository.org/pdf/12345/my-object-id/derivative level@<p class="paragraph"/><blockquote class="note">If the level has a restrictive access or is not of a suitable mime type, the pdf will not render</blockquote><p class="paragraph"/>
+
+
+<h2 id="dip_mets">6.4 METS service</h2>
+The object repository can disseminate compound objects in a standardized way by exporting a by default profile level 3 Mets
+document. Mets is a <a href="http://www.loc.gov/standards/mets/" target="blank">metadata standard of the Library of Congres</a>. As this is a standardized
+way of describing files, their content type and their structure it can be used by third party software to render content.<p class="paragraph"/>The dissemination URL of a mets document is:
+http://disseminate.objectrepository.org/mets/12345/my-object-id<p class="paragraph"/>And if the producer used a PID webservice, then the persistent identifier is
+http://hdl.handle.net/12345/my-object-id<p class="paragraph"/>As an example, the Mets disseminated would be similar to:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"UTF&#45;8"</span>?&#62;</span>
+      <span class="xml&#45;tag">&#60;mets xmlns=<span class="xml&#45;quote">"http://www.loc.gov/METS/"</span> OBJID=<span class="xml&#45;quote">"10622/ARCH00483.511"</span>&#62;</span>
+          <span class="xml&#45;tag">&#60;fileSec&#62;</span>
+              <span class="xml&#45;tag">&#60;fileGrp ID=<span class="xml&#45;quote">"master"</span> USE=<span class="xml&#45;quote">"archive image"</span>&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"7ce13c6f87930f456a315ae2b8f4f599"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;24T20:09:14Z"</span> ID=<span class="xml&#45;quote">"f1"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/tiff"</span> SIZE=<span class="xml&#45;quote">"112909902"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:master"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00001.tif"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"db4baeeaa72f9d70248dc86243ec67a6"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;24T16:10:37Z"</span> ID=<span class="xml&#45;quote">"f2"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/tiff"</span> SIZE=<span class="xml&#45;quote">"34832744"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:master"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00002.tif"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"b94a379b69a22a06733c099fae756d5b"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;24T27:10:25Z"</span> ID=<span class="xml&#45;quote">"f3"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/tiff"</span> SIZE=<span class="xml&#45;quote">"34609288"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:master"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00003.tif"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+              <span class="xml&#45;tag">&#60;/fileGrp&#62;</span>
+              <span class="xml&#45;tag">&#60;fileGrp ID=<span class="xml&#45;quote">"level1"</span> USE=<span class="xml&#45;quote">"hires reference image"</span>&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"372fc2b527e841c87ae1981203853ecb"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T12:01:34Z"</span> ID=<span class="xml&#45;quote">"f40"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"281588"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level1"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"5b6375afa835b2737ddc785de94c78df"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T12:01:35Z"</span> ID=<span class="xml&#45;quote">"f41"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"524663"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level1"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"a575e7376590a77451fa2c5d0cc6b388"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T12:01:36Z"</span> ID=<span class="xml&#45;quote">"f42"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"544376"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level1"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+              <span class="xml&#45;tag">&#60;/fileGrp&#62;</span>
+              <span class="xml&#45;tag">&#60;fileGrp ID=<span class="xml&#45;quote">"level2"</span> USE=<span class="xml&#45;quote">"reference image"</span>&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"1131b5eaabd7eb8266295dfa6e9deb15"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T49:03:54Z"</span> ID=<span class="xml&#45;quote">"f79"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"40477"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level2"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"29b93e7a719c6235f63822cbd31cf310"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T49:03:56Z"</span> ID=<span class="xml&#45;quote">"f80"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"74001"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level2"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"e237e2a6cbac9e12b92b870e7845f211"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T49:03:57Z"</span> ID=<span class="xml&#45;quote">"f81"</span>
+                        MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"82348"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level2"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+              <span class="xml&#45;tag">&#60;/fileGrp&#62;</span>
+              <span class="xml&#45;tag">&#60;fileGrp ID=<span class="xml&#45;quote">"level3"</span> USE=<span class="xml&#45;quote">"thumbnail image"</span>&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"51935fb67bbb50b2d2908401ba95119e"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T49:03:57Z"</span>
+                        ID=<span class="xml&#45;quote">"f118"</span> MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"2644"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;a?locatt=view:level3"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00001.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"0f012b9052011cfa9791783895931505"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T49:03:58Z"</span>
+                        ID=<span class="xml&#45;quote">"f119"</span> MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"3864"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/my&#45;identifier&#45;b?locatt=view:level3"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00002.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+                  <span class="xml&#45;tag">&#60;file CHECKSUM=<span class="xml&#45;quote">"844a307af425882c241d8f8256fc1698"</span> CHECKSUMTYPE=<span class="xml&#45;quote">"MD5"</span> CREATED=<span class="xml&#45;quote">"2013&#45;03&#45;27T50:03:00Z"</span>
+                        ID=<span class="xml&#45;quote">"f120"</span> MIMETYPE=<span class="xml&#45;quote">"image/jpeg"</span> SIZE=<span class="xml&#45;quote">"4676"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;FLocat LOCTYPE=<span class="xml&#45;quote">"HANDLE"</span> xmlns:xlink=<span class="xml&#45;quote">"http://www.w3.org/1999/xlink"</span>
+                              xlink:href=<span class="xml&#45;quote">"http://hdl.handle.net/12345/another&#45;identifier&#45;c?locatt=view:level3"</span>
+                              xlink:title=<span class="xml&#45;quote">"page_00003.jpeg"</span> xlink:type=<span class="xml&#45;quote">"simple"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/file&#62;</span>
+              <span class="xml&#45;tag">&#60;/fileGrp&#62;</span>
+          <span class="xml&#45;tag">&#60;/fileSec&#62;</span>
+          <span class="xml&#45;tag">&#60;structMap TYPE=<span class="xml&#45;quote">"physical"</span>&#62;</span>
+              <span class="xml&#45;tag">&#60;div&#62;</span>
+                  <span class="xml&#45;tag">&#60;div ID=<span class="xml&#45;quote">"g0"</span> LABEL=<span class="xml&#45;quote">"Page 1"</span> ORDER=<span class="xml&#45;quote">"1"</span> TYPE=<span class="xml&#45;quote">"page"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f1"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f40"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f79"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f118"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/div&#62;</span>
+                  <span class="xml&#45;tag">&#60;div ID=<span class="xml&#45;quote">"g1"</span> LABEL=<span class="xml&#45;quote">"Page 2"</span> ORDER=<span class="xml&#45;quote">"2"</span> TYPE=<span class="xml&#45;quote">"page"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f2"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f41"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f80"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f119"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/div&#62;</span>
+                  <span class="xml&#45;tag">&#60;div ID=<span class="xml&#45;quote">"g2"</span> LABEL=<span class="xml&#45;quote">"Page 3"</span> ORDER=<span class="xml&#45;quote">"3"</span> TYPE=<span class="xml&#45;quote">"page"</span>&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f3"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f42"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f81"</span>/&#62;</span>
+                      <span class="xml&#45;tag">&#60;fptr FILEID=<span class="xml&#45;quote">"f120"</span>/&#62;</span>
+                  <span class="xml&#45;tag">&#60;/div&#62;</span>
+              <span class="xml&#45;tag">&#60;/div&#62;</span>
+          <span class="xml&#45;tag">&#60;/structMap&#62;</span>
+      <span class="xml&#45;tag">&#60;/mets&#62;</span></pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/storage.html">&lt;&lt; <strong>5</strong><span>Archival Storage</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

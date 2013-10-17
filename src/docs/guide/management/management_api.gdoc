@@ -1,0 +1,88 @@
+You can create new user accounts and defined the access to resources with API calls. To make those calls your client needs an administration account and it's webservice key that goes with it.
+The API will allow you to:
+* create a user account
+* re-set a user account, refreshing the webservice key or password
+* add or update access to resources; setting optional download limits and expiration dates
+
+You cannot:
+* delete a user account
+* create 'administration' and 'all' accounts
+* set policy access
+* delete resources access
+
+It will accept POSTs with JSON and XML content. It's entry point is:
+
+@http://[[object repository domain]]/[your naming authority]/user
+
+
+For example, to create or update a user account;  and set the access for two resources, on with a download limit, another with an expiration date, sent:
+
+Request:
+{code}POST /12345/user HTTP/1.1
+Accept: */*
+Connection: Keep-Alive
+Content-Type: text/xml; charset=utf-8
+Authorization: Bearer [webservice key]{code}
+
+{code:xml}
+<user>
+  <username>a username</username>
+  <password>a password</password>
+  <mail>an e-mail address</mail>
+  <resources>
+    <userResource>
+        <downloadLimit>100</downloadLimit>
+        <pid>12345/a-pid</pid>
+        <buckets>master</buckets>
+        <buckets>level1</buckets>
+    </userResource>
+    <userResource>
+        <expirationDate>2020-01-01</expirationDate>
+        <pid>12345/another-pid</pid>
+     </resources>
+</user>
+{code}
+
+Which is - had you sent it as text/json - equivalent to:
+{code:json}
+{
+    user:{
+        username: 'a username',
+        password: 'a password',
+        mail: 'an e-mail address',
+        resources:[
+            {
+                pid:'12345/a-pid',
+                buckets:'master',
+                buckets:'level1',
+                downloadLimit:100
+                },
+                {
+                pid:'12345/another-pid',
+                expirationDate:'2020-01-01'}
+        ]
+        }
+}
+{code}
+
+Response:
+{code:xml}
+<user>
+  <message>ok</message>
+  <url>http://[[[repository-url]]]/resource/list?access_token=[[webservice key]]</url>
+  <username>a username</username>
+  <password>a password</password>
+</user>
+{code}
+
+Which is equivalent to
+{code:json}
+{
+    "user":{
+        "message":"ok",
+        "url":"http://[[repository-url]]/resource/list?access_token=[[webservice key]]",
+        "username":"a username",
+        "password":"a password"
+        }
+}
+{code}

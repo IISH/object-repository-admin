@@ -62,7 +62,9 @@ preparation:
     preparation_instruction_compound: Files and Compound objects
 management:
     title: Administration interface
-    management_user: Staging area Ftp accounts
+    management_stagingarea: Staging area Ftp accounts
+    management_user: Dissemination Accounts
+    management_api: Dissemination Accounts API
     management_profile: Profile
     management_policy: Access policies
     management_instruction: Managing and monitoring instructions

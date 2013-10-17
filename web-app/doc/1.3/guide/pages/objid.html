@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>7.1 Object identifiers and file order 1.2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/architecture.html"><strong>2</strong><span>Architecture</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/stagingarea.html"><strong>3</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/readonlyftp.html"><strong>4</strong><span>Download files using ftp</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/instruction.html"><strong>5</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/pid.html"><strong>6</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/compound.html"><strong>7</strong><span>Compound objects</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/administration.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/pid.html">&lt;&lt; <strong>6</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/administration.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>7.1 Object identifiers and file order - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="objid">7.1 Object identifiers and file order</h2>
+<h3>Expressing objid and order of files</h3>
+The compound object has a persistent identifier. In the instruction this is set with the element <strong class="bold">objid</strong>
+This is a PID just like the PIDs you supply to identify your files with.<p class="paragraph"/>In addition each individual file in the instruction may be given an order using the element <strong class="bold">seq</strong>.<p class="paragraph"/>As an example, take the situation where you offer a three page letter. You place it onto the staging area:
+    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/page_0001.tiff
+        /folderA/page_0002.tiff
+        /folderA/page_0003.tiff</pre></div><p class="paragraph"/>Object ID and order is expressed this way in an instruction:
+<div class="code"><pre>&#60;?xml version=<span class="java&#45;quote">"1.0"</span> encoding=<span class="java&#45;quote">"UTF&#45;8"</span> standalone=<span class="java&#45;quote">"yes"</span>?&#62;
+    &#60;instruction xmlns=<span class="java&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> objid=<span class="java&#45;quote">"12345/my&#45;object&#45;id"</span>&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/my&#45;identifier&#45;a&#60;/pid&#62;
+            &#60;seq&#62;1&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00001.tiff&#60;/location&#62;
+            &#60;md5&#62;cf3ee1101d19328145e94da1cade45bd&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/my&#45;identifier&#45;b&#60;/pid&#62;
+            &#60;seq&#62;2&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00002.tiff&#60;/location&#62;
+            &#60;md5&#62;f57eb0e65d11a5a73eab9d5dddf1e528&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+        &#60;stagingfile&#62;
+            &#60;pid&#62;12345/another&#45;identifier&#45;c&#60;/pid&#62;
+            &#60;seq&#62;3&#60;/seq&#62;
+            &#60;location&#62;/folderA/page_00003.tiff&#60;/location&#62;
+            &#60;md5&#62;c741cd201fafb15c5ec874ae16738671&#60;/md5&#62;
+        &#60;/stagingfile&#62;
+    &#60;/instruction&#62;</pre></div><p class="paragraph"/>If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
+can be set after the autocreate procedure is completed.<p class="paragraph"/><h3>The PID of the objid and it's resolve URLs</h3>
+When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
+the PID webservice. This pid will refer to:
+<ul class="star">
+<li>a METS document</li>
+<li>a PDF</li>
+<li>and to the derivative levels of the very first file.</li>
+</ul><p class="paragraph"/>See the <a href="../guide/single.html#pids" class="guide">chapter on the pids</a> what the resolve URLs will become.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/pid.html">&lt;&lt; <strong>6</strong><span>PIDs and the repository's resolve urls</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/administration.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

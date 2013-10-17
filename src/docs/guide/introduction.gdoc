@@ -5,7 +5,7 @@ The object repository should is a service oriented framework. It offers a collec
 * image, audio and video derivative generation
 * accepts custom made derivatives of any content type
 * persistent identifier creation by calling a [PID webservice|https://pid.socialhistoryservices.org/]. Here persistent URLs become available that resolve to the stored resource and compound object locations
-* dissemination of the resources via HTTP and FTP
+* anonymous and account controlled dissemination of the resources via HTTP and FTP
 * exports compound objects by via METS and PDF
 * an administration interface plus account system to manage the above services and access policies
 

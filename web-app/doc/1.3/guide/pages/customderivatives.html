@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3.3 Your own derivatives 1.2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/architecture.html"><strong>2</strong><span>Architecture</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/stagingarea.html"><strong>3</strong><span>Staging area</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/readonlyftp.html"><strong>4</strong><span>Download files using ftp</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/instruction.html"><strong>5</strong><span>Prepare the ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/pid.html"><strong>6</strong><span>PIDs and the repository's resolve urls</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/compound.html"><strong>7</strong><span>Compound objects</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/administration.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>object-repository-admin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/architecture.html">&lt;&lt; <strong>2</strong><span>Architecture</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/readonlyftp.html"><strong>4</strong><span>Download files using ftp</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3.3 Your own derivatives - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="customderivatives">3.3 Your own derivatives</h2>
+The object-repository has a service to create lower level copies of the masters.<p class="paragraph"/>It attempts to create three levels for images and first page pdf documents:
+<ul class="star">
+<li>level 1: high print quality</li>
+<li>level 2: medium screen quality</li>
+<li>level 3: small, thumbnail quality</li>
+</ul><p class="paragraph"/>For audio:
+<ul class="star">
+<li>level 1: high quality mp3</li>
+</ul><p class="paragraph"/>For video:
+<ul class="star">
+<li>level 1: high quality h264 AAC (mp4) movie</li>
+<li>level 2: montage of 16 stills taken from the entire movie's range</li>
+<li>level 3: small, thumbnail quality taken from the middle of the movie</li>
+</ul><p class="paragraph"/>If you want you can add your own derivative material because it is of better quality or the type of derivative
+manufacturing is not supported.<p class="paragraph"/><h3>Conventional offerings</h3>
+The position and names of the derivatives must follow conventions:
+<ul class="star">
+<li>the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice they</li>
+</ul><p class="paragraph"/>start with a dot.
+<ul class="star">
+<li>the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file</li>
+</ul><p class="paragraph"/>extension. For example
+if the master is called <code>MyFile.tiff</code> or <code>BigVideo.mpg</code> then the custom derivative must be positioned and named like
+<code>/.level1/MyFile.jpg</code> or <code>/.level2/BigVideo.mpg</code>
+<ul class="star">
+<li>the derivative must be parallel to the master file.</li>
+<li>the extension of the derivative must be related to a known contenttype as <a href="../ref/Httpsgithubcom IISH objectrepositoryscriptsblobmastersharedcontenttypetxt/indicated in this list.html" class="https://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt">indicated in this list</a>. If you see that your derivative extension is not in this list, then make a feature request.</li>
+</ul><p class="paragraph"/>A few examples will clarify the points just made.<p class="paragraph"/><h4>Example 1</h4>
+A master is placed deep within some subfolders: <code>/main_folder/b/c/d/myLargeFile.tiff</code>
+And the derivative file is called <code>myLargeFile.png</code><p class="paragraph"/>Then a level1 derivative can be placed anywhere by <strong class="bold">inserting</strong> a <strong class="bold">.level1</strong> folder thus:
+<ul class="star">
+<li><code>/main_folder/b/c/d/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/>Or by <strong class="bold">substituting</strong> a folder so:
+<ul class="star">
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/><h4>Example 2</h4>
+A master is placed in the main folder <code>/mydataset/myVeryLargeMovie.mpg</code>
+Then we offer both level1, level2 and a level3 file like this:
+<ul class="star">
+<li><code>/mydataset/.level1/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level2/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level3/myVeryLargeMovie.mpg</code></li>
+</ul><p class="paragraph"/><blockquote class="note">The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it</blockquote><p class="paragraph"/><h4>Supplying derivatives some time after an ingest</h4>
+To add custom derivatives after the ingest is completed, you follow the same procedure:
+<ul class="star">
+<li>upload your custom derivative files according to the location convention</li>
+<li>in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and</li>
+</ul><p class="paragraph"/>any other non-related derivative tasks. Then validate the instruction
+<ul class="star">
+<li>Start processing your files.</li>
+</ul><p class="paragraph"/> Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
+ reupload a new one which should contain the location elements from which the custom derivative
+ can be found.<p class="paragraph"/> <blockquote class="note">In case you reupload for the sake of ingesting custom derivatives, the location element
+ need not be the same as the original master files from a previous instruction.</blockquote>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/architecture.html">&lt;&lt; <strong>2</strong><span>Architecture</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/readonlyftp.html"><strong>4</strong><span>Download files using ftp</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2012 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

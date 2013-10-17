@@ -1,0 +1,14 @@
+Upload and file arrangements are done with an ftp client. You can manage the required ftp accounts at the "Staging Area" section.
+
+h4. Create a user
+Fill in or edit the following fields:
+* @Login name@: A user name containing letters and numbers
+* @Password@: If the password is left blank, a random password will be created
+* @E-mail@: The end-user's mail address.
+* @Enabled@: If on, the account can be used to login.
+
+Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details to login.
+
+h4. Editing and removing
+Any account can be modified and deleted. If you delete an ftp account; the user's uploaded files and home
+directory still remain on the staging area. You need to move or delete these yourself with your ftp administration account.

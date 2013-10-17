@@ -1,5 +1,6 @@
-The "Staging area" section will allow you manage ftp accounts for uploading and managing files on the staging area.
-An additional function of such accounts is to to supply webservice keys. This key gives access to all admin and stored repository resources.
+The "Dissemination Accounts" section will allow you to manage user accounts. Such accounts can operate or download
+repository resources. You can specify what access policies are available to the user and what resources are available
+to the user and under that conditions.
 
 h4. Create a user
 You need to fill in or edit the following fields:
@@ -7,18 +8,44 @@ You need to fill in or edit the following fields:
 * @Password@: If the password is left blank, a random password will be created
 * @E-mail@: The end-user's mail address.
 * @Enabled@: If on, the account can be used to login.
+* @Access Scope@: see below for more details
 
-Press save to store. An account confirmation message is sent to the e-mail. It contains all user and ftp details to login.
-
-h4. User display
-This view will also show the webservice key. The key is intended to access an object repository resource that is
+h4. Webservice key
+Each account type has a webservice key. The key is intended to access an object repository resource that is
 normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
 Or be in the header file of a client that is responsible for downloading the files.
 
-The webservice key has the same effect when a user uses a username and password to access the administration interface.
-
 To modify the webservice key select "Change key"
 
+{note}Each time you change the access scope settings, this key will change too. You must update your software client or inform the end user of the new key{note}
+
+h4. Access Scope
+This setting determines what a user can access.
+
+h5. Set access by Policy
+Your repository resources are governed by access policies. If the user is allowed to download files with one or more of these policies, then select them here.
+
+h5. 'all'
+This account can access all resources, no matter their access policy.
+
+h5. 'administration'
+This account type has the same scope as the 'all' setting. In addition it allows a client to operate the repository API.
+All actions regarding account and permission creation can be operated via API calls using the webservice key.
+
+h5. Manage access to resources
+Leave the access scope option blank and save the account. You can then show the account and select the 'manage access to resources' option.
+In this section you can specify the resources by it's PID or OBJID value. Select 'New Userresource' to add a new resource.
+
+* @Resource\Pid@ : The PID value of the individual resource. Or objid of the resources
+* @Download limit@ (default is no limit) : The number of times a user is allowed to download this resources. Set to zero for no limit.
+* @Apply downloadlimit for levels@ : The levels this download limit applies to.
+* @Expiration date@ (default is no date) : The end date the resource is available
+
+Once one or more resources are declared this way, the user can visit their "User's download page". It will show all available ( and possibly expired ) resources and the way those resources are disseminated.
+The location of this page is:
+
+@http://[[object repository domain]]/resource?access_token=[[webservice key]]@
+
+
 h4. Editing and removing
-Any account can be modified and deleted. If you delete an ftp account; the user's uploaded files and home
-directory still remain on the staging area. You need to move or delete these yourself with your administration account.
+Any account can be modified and deleted. The webservice key will change when the Access Scope setting changed.
