@@ -11,10 +11,10 @@ You cannot:
 * delete resources access
 * create or update an account with a username created by a different object repository owner
 
-h4. API package
-The API request can be in JSON and XML. It's entry point is:
+h4. Content type
+The API content type can be JSON and XML. It's entry point is:
 
-@http://[object repository domain]/[your naming authority]/user
+@http://[[object repository domain]]/[[your naming authority]]/user@
 
 h4. Creating an account parameters
 * user.username: the login name
@@ -92,7 +92,7 @@ Response:
 </user>
 {code}
 
-Which is equivalent to
+Which JSON equivalent is
 {code:json}
 {
     "user":{
