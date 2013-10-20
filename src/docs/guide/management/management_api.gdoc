@@ -9,13 +9,30 @@ You cannot:
 * create 'administration' and 'all' accounts
 * set policy access
 * delete resources access
+* create or update an account with a username created by a different object repository owner
 
-It will accept POSTs with JSON and XML content. It's entry point is:
+h4. API package
+The API request can be in JSON and XML. It's entry point is:
 
-@http://[[object repository domain]]/[your naming authority]/user
+@http://[object repository domain]/[your naming authority]/user
 
+h4. Creating an account parameters
+* user.username: the login name
+* user.password: the unencrypted password. If empty this will automatically create a password
+* user.mail: an e-mail address
+* user.resources: the list of repository resources that can be accessed with this account
+* user.resources.userResource: a resource element with:
+** pid: the PID of OBJID
+** downloadLimit (default 0)
+** expirationDate (default none): format YYYY-mm-DD
+** buckets ( default 'master' ): a repeatable list of levels the downloadLimit and expirationDate apply to
 
-For example, to create or update a user account;  and set the access for two resources, on with a download limit, another with an expiration date, sent:
+h4. Updating an account parameters
+An existing account will be updated when you use the same user.username value
+* user.replaceKey ( default false ): will change the webservice key
+
+h4. Examples
+To create or update a user account; and set the access for two resources, one with a download limit, another with an expiration date, sent:
 
 Request:
 {code}POST /12345/user HTTP/1.1
@@ -69,7 +86,7 @@ Response:
 {code:xml}
 <user>
   <message>ok</message>
-  <url>http://[[[repository-url]]]/resource/list?access_token=[[webservice key]]</url>
+  <url>http://[repository-url]/resource/list?access_token=[webservice key]</url>
   <username>a username</username>
   <password>a password</password>
 </user>
@@ -80,7 +97,7 @@ Which is equivalent to
 {
     "user":{
         "message":"ok",
-        "url":"http://[[repository-url]]/resource/list?access_token=[[webservice key]]",
+        "url":"http://[repository-url]/resource/list?access_token=[webservice key]",
         "username":"a username",
         "password":"a password"
         }
