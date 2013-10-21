@@ -581,7 +581,7 @@ abstract class WorkflowJob {
         result.error == null
     }
 
-    void exception(def document, Exception e) {
+    static void exception(def document, Exception e) {
 
         println("Failure when processing document: " + e.message)
         //if (e instanceof CamelExecutionException) return // The message queue is offline

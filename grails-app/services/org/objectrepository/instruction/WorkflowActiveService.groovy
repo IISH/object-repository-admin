@@ -1,7 +1,6 @@
 package org.objectrepository.instruction
 
 import com.mongodb.DBPortPool
-import com.mongodb.Mongo
 import org.objectrepository.util.OrUtil
 
 /**
@@ -76,7 +75,7 @@ class WorkflowActiveService extends WorkflowJob {
     /**
      * status
      *
-     * Incoming message from the messagequeue
+     * Incoming message from the message queue
      *
      * @param identifier
      */
@@ -113,22 +112,6 @@ class WorkflowActiveService extends WorkflowJob {
 
     void tolerance() {
         if (failTolerance--< 0) System.exit(-1)
-    }
-/**
-     * dlq
-     *
-     * The DLQ will resend the message again and update the task date. No need to produce a new task.
-     *
-     * @param msg
-     */
-    public void dlq(String msg) {
-        final document = new XmlParser().parseText(msg)
-        final String queue = document.workflow.name.text()
-        final String collectionName = OrUtil.splitCamelcase(queue)[0].toLowerCase()
-        final String identifier = document.workflow.identifier.text()
-        final collection = mongo.getDB('sa').getCollection(collectionName)
-        def tmp = collection.findAndModify([workflow: [$elemMatch: [n: 0, name: queue, statusCode: 300, identifier: identifier]]], [$set: ['workflow.$.end': new Date()]])
-        if (tmp) sendMessage(["activemq", queue].join(":") + "?timeToLive=" + timeToLive(), msg)
     }
 
     /**

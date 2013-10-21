@@ -31,11 +31,7 @@ class PlanManagerService extends Thread implements Runnable, DisposableBean {
             for (int i = 0; i < count; i++) {
                 if (active) {
                     log.info "Running job: " + services.get(i).class.name
-                    try {
-                        services.get(i).job()
-                    } catch (Exception e) {
-                        println(e.message)
-                    }
+                    services.get(i).job()
                 }
             }
             sleep(timeout)

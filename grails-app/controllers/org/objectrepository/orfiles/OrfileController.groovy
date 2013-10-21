@@ -3,7 +3,6 @@ package org.objectrepository.orfiles
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
-import org.objectrepository.instruction.Task
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil

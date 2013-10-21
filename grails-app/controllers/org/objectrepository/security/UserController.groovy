@@ -153,6 +153,10 @@ class UserController extends NamingAuthorityInterceptor {
                 dissemination.removeAll { it != scope }
         }
 
+        dissemination.removeAll {
+            it.startsWith('ROLE_OR_POLICY_') || it.startsWith('ROLE_OR_DISSEMINATION_')
+        }
+
         List r = (fixedPolicies[0] in dissemination) ? ['ROLE_OR_USER', 'ROLE_OR_USER_' + userInstance.na] : []
         r += dissemination.collect {
             'ROLE_OR_POLICY_' + it
