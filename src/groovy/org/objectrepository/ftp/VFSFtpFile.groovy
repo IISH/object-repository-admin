@@ -69,7 +69,7 @@ public class VFSFtpFile implements FtpFile {
 
     public boolean isReadable() {
         user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            currentFolder.startsWith(it.split(':')[0])
+            currentFolder.startsWith(it)
         } != null
     }
 
@@ -122,7 +122,7 @@ public class VFSFtpFile implements FtpFile {
         def virtualFiles = []
         if (currentFolder.isEmpty()) {
             user.homeDirectory.split(',').each {
-                virtualFiles << new VFSFtpFile(it.split('/')[1].split(':')[0], user, gridFSService)
+                virtualFiles << new VFSFtpFile(it.split('/')[1], user, gridFSService)
             }
         } else {
             def vfs = gridFSService.vfs(currentFolder, user.policies, user.resources)

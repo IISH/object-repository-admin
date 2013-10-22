@@ -105,10 +105,8 @@ class UserResourceController extends NamingAuthorityInterceptor {
         }
         userInstance.resources << userResourceInstance
 
-        if (!userInstance.save(flush: true)) {
-            render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
-            return
-        }
+        if (!userInstance.save(flush: true))
+            return render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'userResource.label', default: 'UserResource'), pid])
         redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)

@@ -80,7 +80,9 @@ class UserPermissionController extends NamingAuthorityInterceptor {
         }
 
         for (def userResourceInstance : userPermission.resources) {
+
             final resource = gridFSService.countPidOrObjId(params.na, userResourceInstance.pid)
+
             if (!resource.locations)
                 return msg(userPermission, 'The userResourceInstance with pid ' + userResourceInstance.pid + ' does not exist.', 400)
             if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())

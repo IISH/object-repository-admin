@@ -95,17 +95,15 @@ class FileController {
 
             Date end = new Date()
 
-            if (from == 0) {
-                int downloadTime = new Date().time - begin.time
-                if (System.getProperty("layout", "not") == 'disseminate') stats(file, begin, downloadTime)
-            }
+            if (grailsApplication.config.siteusage && from == 0 && System.getProperty("layout", "not") == 'disseminate')
+                stats(file, begin, new Date().time - begin.time)
 
             log.info String.format("Done writing file in %s seconds", (end.time - begin.time) / 1000)
             null
         }
     }
 
-    private void stats(file, Date begin, int downloadTime) {
+    private void stats(def file, Date begin, long downloadTime) {
         log.info "Increment statistics"
         final String ip = request.getHeader('X-Forwarded-For') ?: request.getRemoteAddr()
         def document = [pid: file.metaData.pid,

@@ -103,8 +103,7 @@ class GridFSService {
     }
 
     void siteusage(String na, def document) {
-        if (grailsApplication.config.siteusage)
-            mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
+        mongo.getDB(OR + na).'siteusage'.save(document, WriteConcern.NONE)
     }
 
     /*void download(User user, UserResource resource) {
