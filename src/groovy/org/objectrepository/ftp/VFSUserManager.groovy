@@ -8,6 +8,7 @@ import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication
 import org.apache.ftpserver.usermanager.impl.AbstractUserManager
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission
+import org.objectrepository.util.OrUtil
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 import java.util.regex.Pattern
@@ -90,7 +91,15 @@ class VFSUserManager extends AbstractUserManager {
                 if (!policies && principal.authorities*.authority.find {
                     it.startsWith('ROLE_OR_DISSEMINATION_')
                 }) {
-                    resources = org.objectrepository.security.User.findByUsername(principal.username)?.resources
+                    resources = org.objectrepository.security.User.findByUsername(principal.username)?.resources?.findAll {
+                        OrUtil.hasPolicyAccess(it)
+                    }
+                    resources?.each {
+                        it.folders = it.folders.inject([]) { acc, folder ->
+                            expandFolders(acc, folder)
+                        }
+                    }
+
                 }
 
                 new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, policies: policies, resources: resources, maxIdleTimeSec: maxIdleTimeSec)
@@ -99,6 +108,24 @@ class VFSUserManager extends AbstractUserManager {
         } else
             throw new IllegalArgumentException(
                     "Authentication not supported by this user manager")
+    }
+
+    /**
+     * locations
+     *
+     * Split the location element
+     *
+     * @param list
+     * @param l
+     */
+    private static def expandFolders(def list, String l) {
+        String s = ""
+        l.split('/')[1..-1].each {
+            s += '/' + it
+            if (!(s in list))
+                list << s
+        }
+        list
     }
 
     String getAdminName() {

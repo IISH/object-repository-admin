@@ -273,9 +273,9 @@ class OrUtil {
     }
 
     static def hasPolicyAccess(def resource) {
-        final date = new Date()
-        if ((resource.downloadLimit < 1 || (resource.downloads < resource.downloadLimit)) &&
-                (!resource.expirationDate || resource.expirationDate > date))
-            resource
+
+        if ((resource.downloadLimit < 1 || resource.downloads < resource.downloadLimit) &&
+                (!resource.expirationDate || resource.expirationDate > new Date())
+        ) resource
     }
 }

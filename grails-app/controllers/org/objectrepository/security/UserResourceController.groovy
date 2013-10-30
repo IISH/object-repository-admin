@@ -78,12 +78,14 @@ class UserResourceController extends NamingAuthorityInterceptor {
             userResourceInstance.expirationDate = null
 
         final resource = gridFSService.countPidOrObjId(params.na, pid)
-        if (!resource.locations) {
+
+        if (!resource.folders) {
             flash.message = "Unknown resource: " + pid
             render(view: "create", model: [userInstance: userInstance, userResourceInstance: userResourceInstance])
             return
         }
 
+        userResourceInstance.folders = resource.folders
         userResourceInstance.thumbnail = (resource.orfile.level3) ? true : false
         userResourceInstance.contentType = resource.orfile.master.contentType
         userResourceInstance.objid = resource.orfile.master.metadata.objid
@@ -91,13 +93,6 @@ class UserResourceController extends NamingAuthorityInterceptor {
             it.value == 'on'
         }.collect {
             it.key
-        }
-
-        resource.orfile.each { orfile ->
-            resource.locations.each {
-                def location = params.na + '/' + orfile.key + it
-                listDirectories(userResourceInstance.folders, (location =~ /\/\d{4}-\d{2}-\d{2}\//).replaceFirst(''))
-            }
         }
 
         userInstance.resources?.removeAll {
@@ -110,16 +105,6 @@ class UserResourceController extends NamingAuthorityInterceptor {
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'userResource.label', default: 'UserResource'), pid])
         redirect(url: '/' + params.na + '/' + controllerName + '/list/' + id)
-    }
-
-    static void listDirectories(def list, String l) {
-
-        String s = ""
-        l.split('/').each {
-            s += '/' + it
-            if (!(s in list))
-                list << s
-        }
     }
 
     def edit(Long id) {

@@ -46,7 +46,7 @@ public class VFSView implements FileSystemView {
         if (user.homeDirectory.split(',').find { // make sure we are allowed to see this
             (s + '/').startsWith(it + '/')
         }) {
-            if (!gridFSService.vfs(s, user.policies, user.resources)) return false
+            if (!gridFSService.vfs(s, user)) return false
             currentFolder = s
             true
         } else false
@@ -55,8 +55,7 @@ public class VFSView implements FileSystemView {
     public FtpFile getFile(String s) throws FtpException {
         if (s == "./") {
             s = currentFolder
-        }
-        else if (s[0] != '/') { // directory or file in same folder
+        } else if (s[0] != '/') { // directory or file in same folder
             s = currentFolder + '/' + s
         }
         new VFSFtpFile(s, user, gridFSService)
@@ -81,10 +80,11 @@ public class VFSView implements FileSystemView {
      * @param s
      * @return the parent
      */
-    private String CDUP(String s) {
+    private static String CDUP(String s) {
         def t = s.tokenize("/")
         if (t.size() < 2) return ""
         t.remove(t.size() - 1)
         "/" + t.join("/")
     }
+
 }

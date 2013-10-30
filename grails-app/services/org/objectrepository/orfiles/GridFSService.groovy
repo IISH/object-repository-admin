@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
+import org.bson.types.ObjectId
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
@@ -143,8 +144,7 @@ class GridFSService {
  * @return
  */
     private def query(String db, String query, int limit = 1, int skip = 0) {
-        final command = mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true])
-        command.retval
+        mongo.getDB(db).command([$eval: String.format(collate, query, limit, skip), nolock: true]).retval
     }
 
 /**
@@ -192,57 +192,60 @@ class GridFSService {
      * The base name of the folder is always the database name.
      * /a/b/c/d => na=a
      *
-     * If the policy is all or administration we give all resources
-     * However, if the policy matches a particular access status, we filter out only those thay cover this.
+     * If the policy is all or administration we give access to all resources
+     * However, if the policy matches a particular access status, we filter out only those that cover this.
      *
      * @param currentFolder The path. For example: /a/b/c/d
      * @return
      */
-    def vfs(String currentFolder, def policies, def resources = null) {
+    def vfs(String currentFolder, def user) {
 
         final split = currentFolder.split('/')
         String na = split[1]
         final db = mongo.getDB(OR + na)
 
-        if (policies) {
-            if ('all' in policies || 'administration' in policies)
+        if (user.policies) {
+            if ('all' in user.policies || 'administration' in user.policies)
                 db.vfs.findOne([_id: currentFolder])
             else {
                 def q = [_id: currentFolder, $or:
-                        policies.collect {
+                        user.policies.collect {
                             ['f.a': it]
-                        } + policies.collect {
+                        } + user.policies.collect {
                             ['d.a': it]
                         }
                 ]
                 final doc = db.vfs.findOne(q)
-                doc?.d?.removeAll {
-                    !it.a.find {
-                        it in policies
+                doc?.d?.findAll {
+                    it.a.find {
+                        it in user.policies
                     }
+                } + doc?.f?.findAll {
+                    it.a in user.policies
                 }
-                doc?.f?.removeAll {
-                    !it.a in policies
-                }
-                doc
             }
         } else {
-            if (resources) {
+            if (user.resources) {
                 final doc = db.vfs.findOne([_id: currentFolder])
-                doc?.d?.removeAll {
-                    final folder = currentFolder + '/' + it.n
-                    !(resources.find { resource ->
-                        resource.folders.find {
-                            it == folder && OrUtil.hasPolicyAccess(resource)
-                        }
-                    })
+                if (!doc) return null
+
+                def folders = user.resources.inject([]) { acc, resource ->
+                    acc += OrUtil.hasPolicyAccess(resource)?.folders?.findAll {
+                        !(it in acc)
+                    }
                 }
-                doc?.f?.removeAll {
-                    !(resources.find { resource ->
-                        OrUtil.hasAccess(it.p, resource) || OrUtil.hasAccess(it.o, resource)
-                    })
+                doc.d?.retainAll {
+                    currentFolder + '/' + it.n in folders
                 }
-                doc
+                def pids = user.resources.findAll {
+                    OrUtil.hasPolicyAccess(it)
+                }?.collect {
+                    it.pid
+                }
+                doc.f?.retainAll {
+                    it.p in pids || it.o in pids
+                }
+                (doc.d || doc.f) ? doc : null
             }
         }
     }
@@ -259,15 +262,11 @@ class GridFSService {
      */
     def countPidOrObjId(String na, String id) {
 
-        final q = [$or: [['metadata.objid': id], ['metadata.pid': id]]]
-        def locations = []
-        mongo.getDB(OR + na).'master.files'.find(q, ['metadata.l': 1]).each {
-            if (!(it.l in locations))
-                locations << it.metadata.l
+        final q = [$or: [['f.p': id], ['f.o': id]]]
+        def folders = mongo.getDB(OR + na).vfs.find(q, [_id: 1]).collect {
+            it._id
         }
-        def orfile = (locations) ? get(na, id) : null
-
-        [locations: locations, orfile: orfile]
+        [folders: folders, orfile: (folders) ? get(na, id) : null]
     }
 
     /**

@@ -11,7 +11,7 @@ public class VFSFactory implements FileSystemFactory {
     private GridFSService gridFSService
 
     public FileSystemView createFileSystemView(User user) throws FtpException {
-        return new VFSView(gridFSService, user)
+        new VFSView(gridFSService, user)
     }
 
     public void setGridFSService(GridFSService gridFSService) {

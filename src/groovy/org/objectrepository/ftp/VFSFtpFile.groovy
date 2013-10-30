@@ -8,16 +8,16 @@ import org.objectrepository.security.UserResource
 public class VFSFtpFile implements FtpFile {
 
     private String currentFolder
-    private def user
-    private long length
-    private long created
-    private boolean isDirectory
-    private GridFSService gridFSService
+    private final def user
+    private long length = 0
+    private long created = 0
+    private boolean isDirectory = true
+    private final def gridFSService
     private def bucket
     private def pid
     private def objid
 
-    public VFSFtpFile(String currentFolder, def user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
+    VFSFtpFile(String currentFolder, def user, def gridFSService, boolean isDirectory = true, def length = 0, def created = 0) {
         this.currentFolder = currentFolder
         this.user = user
         this.gridFSService = gridFSService
@@ -52,7 +52,7 @@ public class VFSFtpFile implements FtpFile {
      */
     public boolean doesExist() {
         final parentFolder = currentFolder[0..currentFolder.lastIndexOf("/") - 1]
-        def file = gridFSService.vfs(parentFolder, user.policies, user.resources)?.f?.find {
+        def file = gridFSService.vfs(parentFolder, user)?.f?.find {
             parentFolder + '/' + it.n == currentFolder
         }
         if (file) {
@@ -68,9 +68,7 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public boolean isReadable() {
-        user.homeDirectory.split(',').find { // make sure we are allowed to see this
-            currentFolder.startsWith(it)
-        } != null
+        !isDirectory
     }
 
     public boolean isWritable() {
@@ -82,11 +80,11 @@ public class VFSFtpFile implements FtpFile {
     }
 
     public String getOwnerName() {
-        "user"
+        user.username
     }
 
     public String getGroupName() {
-        "group"
+        user.na
     }
 
     public int getLinkCount() {
@@ -125,12 +123,22 @@ public class VFSFtpFile implements FtpFile {
                 virtualFiles << new VFSFtpFile(it.split('/')[1], user, gridFSService)
             }
         } else {
-            def vfs = gridFSService.vfs(currentFolder, user.policies, user.resources)
+            def vfs = gridFSService.vfs(currentFolder, user)
             sort(vfs?.d)?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService)
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(),
+                        user,
+                        gridFSService,
+                        true,
+                        0,
+                        it.t)
             }
             sort(vfs?.f)?.each {
-                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(), user, gridFSService, false, it.l, it.t)
+                virtualFiles << new VFSFtpFile(currentFolder + '/' + it.n.trim(),
+                        user,
+                        gridFSService,
+                        false,
+                        it.l,
+                        it.t)
             }
         }
         virtualFiles
@@ -166,10 +174,10 @@ public class VFSFtpFile implements FtpFile {
 
     public InputStream createInputStream(long l) throws IOException {
 
-        user.resources?.find {
+        def resource = user.resources?.find {
             (it.pid == pid || it.pid == objid) && bucket in it.buckets
-        }?.ftpDownloads++
-
+        }
+        if (resource) resource.ftpDownloads++ // oddly the user.resources?.find { ... }?ftpDownloads returns from the method
         gridFSService.findByPid(pid, bucket)?.inputStream
     }
 }

@@ -40,7 +40,8 @@ class UserResource {
         downloadLimit attr: 'l'
         httpDownloads attr: 'hd'
         ftpDownloads attr: 'fd'
-        buckets attr: 'b'
         folders attr: 'f'
+        buckets attr: 'b'
     }
+
 }

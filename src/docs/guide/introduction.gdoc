@@ -12,6 +12,6 @@ The object repository should is a service oriented framework. It offers a collec
 h3. Purpose of this documentation
 This document will describe two aspects as outlined in this sketch:
 * What it is: on the left side are the service levels placed in context. A description of them should make clear how the framework handles the digital information you supply to it.
-* How to operate it: on the right is the administration panel where you manage your content. A guide will help you how to control it.
+* How to operate it: on the right is the administration panel where you manage your content. A guide will help you control it.
 
 !oais.png!

@@ -83,20 +83,15 @@ class UserPermissionController extends NamingAuthorityInterceptor {
 
             final resource = gridFSService.countPidOrObjId(params.na, userResourceInstance.pid)
 
-            if (!resource.locations)
+            if (!resource.folders)
                 return msg(userPermission, 'The userResourceInstance with pid ' + userResourceInstance.pid + ' does not exist.', 400)
+
+            userResourceInstance.folders = resource.folders
             if (userResourceInstance.expirationDate && userResourceInstance.expirationDate < new Date())
                 userResourceInstance.expirationDate = null
             userResourceInstance.thumbnail = (resource.orfile.level3) ? true : false
             userResourceInstance.contentType = resource.orfile.master.contentType
             userResourceInstance.objid = (resource.orfile.master.metadata.objid) ? true : false
-
-            resource.orfile.each { orfile ->
-                resource.locations.each {
-                    def location = params.na + '/' + orfile.key + it
-                    UserResourceController.listDirectories(userResourceInstance.folders, (location =~ /\/\d{4}-\d{2}-\d{2}\//).replaceFirst(''))
-                }
-            }
 
             userInstance.resources.removeAll {
                 it.pid == userResourceInstance.pid

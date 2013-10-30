@@ -67,6 +67,17 @@
                 <g:render template="dissemination" model="[policyList: policyList, userInstance: userInstance]"/>
             </td>
         </tr>
+
+        <g:if test="${!( userInstance.authoritiesFiltered('^ROLE_OR_POLICY_(.*)$').find{it in ['administration' ,'all']})}">
+            <tr class="prop">
+                <td valign="top" class="name"><g:message code="user.resource.label" default="Resource"/></td>
+                <td valign="top" class="value">
+                    <g:link mapping="namingAuthority" params="[na: params.na]"
+                            controller="userResource" action="list"
+                            id="${userInstance.id}">Manage access to resources</g:link></td>
+            </tr>
+        </g:if>
+
         <tr class="prop">
             <td valign="top" class="name">
                 <label for="mail"><g:message code="user.email.label" default="Email"/></label>
@@ -75,7 +86,6 @@
                 <g:textField name="mail" value="${userInstance?.mail}"/>
             </td>
         </tr>
-
 
         <tr class="prop">
             <td valign="top" class="name">
