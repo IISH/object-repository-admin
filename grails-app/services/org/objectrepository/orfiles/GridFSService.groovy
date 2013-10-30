@@ -61,7 +61,8 @@ class GridFSService {
     }
 
     def get(String na, String pid) {
-        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s'}]}", pid, pid))[0]
+        String p = OrUtil.escapeJS(pid)
+        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s'}]}", p, p))[0]
     }
 
     /**
@@ -73,7 +74,7 @@ class GridFSService {
      * @param params for sorting, paging and filtering
      */
     def findAllByLabel(def na, def params) {
-        final q = (params?.label) ? String.format("{'metadata.label': '%s'}", params.label) : ""
+        final q = (params?.label) ? String.format("{'metadata.label': '%s'}", OrUtil.escapeJS(params.label)) : ""
         query(OR + na, q, params.max, params.offset)
     }
 

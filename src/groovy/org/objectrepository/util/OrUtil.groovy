@@ -278,4 +278,16 @@ class OrUtil {
                 (!resource.expirationDate || resource.expirationDate > new Date())
         ) resource
     }
+
+    /**
+     * escapeJS
+     *
+     * Encode strategic javascript characters ( to prevent javascript injection )
+     *
+     * @param value
+     * @return
+     */
+    static String escapeJS(String value) {
+        value.replaceAll("'", "\\\\'").replaceAll('"', '\\\\"')
+    }
 }
