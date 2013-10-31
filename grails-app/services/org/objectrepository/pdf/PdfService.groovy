@@ -38,7 +38,7 @@ class PdfService {
         document.open()
         list.each {
             final def hasAccess = policyService.hasAccess(it, bucket, cache)
-            if (!hasAccess) {
+            if (hasAccess.status != 200) {
                 document.add(new Paragraph("Not allowed to render page. Access " + access))
             } else if (it.contentType.startsWith('image')) {
                 def image = null
@@ -48,6 +48,10 @@ class PdfService {
                     document.add(new Paragraph(e.message))
                 }
                 if (image) {
+
+                    if (hasAccess.level != 'open')
+                        hasAccess.user?.save(flush: false)
+
                     float imageWidth = image.getWidth()
                     float imageHeight = image.getHeight()
                     if (imageWidth > imageHeight) { // A4 to square
