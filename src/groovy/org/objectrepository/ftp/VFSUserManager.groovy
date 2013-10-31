@@ -81,7 +81,7 @@ class VFSUserManager extends AbstractUserManager {
                     throw new AuthenticationFailedException("Authentication failed")
 
                 p = Pattern.compile('^ROLE_OR_POLICY_(.*)$')
-                def policies = ('ROLE_OR_USER' in principal.authorities*.authority) ? ['administrator'] : principal.authorities*.authority.findAll {
+                def policies = ('ROLE_OR_USER' in principal.authorities*.authority) ? ['administration'] : principal.authorities*.authority.findAll {
                     p.matcher(it).matches()
                 }?.collect {
                     it.split('_').last()
