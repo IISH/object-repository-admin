@@ -36,7 +36,6 @@ class PdfService {
         final float documentHeight = document.getPageSize().getHeight() + document.getPageSize().getBorderWidthTop() + document.getPageSize().getBorderWidthBottom()
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, writer)
         document.open()
-        def userInstance
         list.each {
             final def hasAccess = policyService.hasAccess(it, bucket, cache)
             if (!hasAccess) {
@@ -71,7 +70,6 @@ class PdfService {
 
             document.newPage()
         }
-        userInstance.save()
         document.close()
         pdfWriter.close()
     }
