@@ -43,6 +43,7 @@
                     </g:else></td>
                 <td>${fieldValue(bean: userResourceInstance, field: "pid")}</td>
                 <td>${userResourceInstance.downloadLimit}</td>
+                <td>${userResourceInstance.downloads}</td>
                 <td><g:formatDate date="${userResourceInstance.expirationDate}"/></td>
                 <td><g:if test="${userResourceInstance.objid}">Use ftp</g:if><g:else>Use ftp or <a
                         href="${grailsApplication.config.grails.serverURL}/file/master/${userResourceInstance.pid}?access_token=${params.access_token}"
@@ -52,7 +53,7 @@
         </tbody>
     </table>
 
-    <p>Ftp host : ${ftp.host}<br/>
+    <p>Ftp host : ${grailsApplication.config.ftp.host}<br/>
         Encryption : implicit ftp over TLS<br/>
         Logintype : normal<br/>
         Transfer mode : passive<br/>
