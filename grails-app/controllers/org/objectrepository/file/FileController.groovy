@@ -122,22 +122,20 @@ class FileController {
 
         if (params.pid) {
             params.na = OrUtil.getNa(params.pid)
-            switch (params.accept) {
-                case 'application/xml':
-                case 'text/xml':
-                case 'xml':
-                    response.setCharacterEncoding("utf-8");
-                    response.setContentType("text/xml")
-                    downloadService.writeOrfiles(params, response.outputStream)
-                    break;
-                case 'text/javascript':
-                case 'text/json':
-                default:
-                    def orfileInstance = gridFSService.findByPidAsOrfile(params.pid)
-                    if (orfileInstance)
-                        [orfileInstance: orfileInstance, params: params]
-                    else
-                        render(view: '404', statuscode: 404)
+
+            def accepts = (params.accept) ? [params.accept] : request.getHeaders('accept')*.toLowerCase()
+            if (accepts.any {
+                it.contains('htm')
+            }) {
+                def orfileInstance = gridFSService.findByPidAsOrfile(params.pid)
+                if (orfileInstance)
+                    [orfileInstance: orfileInstance, params: params]
+                else
+                    render(view: '404', statuscode: 404)
+            } else {
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("text/xml")
+                downloadService.writeOrfiles(params, response.outputStream)
             }
         } else
             redirect(action: "about")
