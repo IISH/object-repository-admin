@@ -13,6 +13,7 @@ environments {
             options {
                 readPreference = _readPreference
                 writeConcern = WriteConcern.FSYNC_SAFE
+                autoConnectRetry = true
             }
         }
     }

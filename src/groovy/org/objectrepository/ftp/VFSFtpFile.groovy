@@ -177,7 +177,7 @@ public class VFSFtpFile implements FtpFile {
         def resource = user.resources?.find {
             (it.pid == pid || it.pid == objid) && bucket in it.buckets
         }
-        if (resource) resource.ftpDownloads++ // oddly the user.resources?.find { ... }?ftpDownloads returns from the method
+        if (resource) resource.ftpDownloads++ // oddly the user.resources?.find { ... }?ftpDownloads fails
         gridFSService.findByPid(pid, bucket)?.inputStream
     }
 
