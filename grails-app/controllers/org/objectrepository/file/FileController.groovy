@@ -35,7 +35,8 @@ class FileController {
      * Because the PID value can contain a forward slash, we made it's capture greedy in the UrlMappings.
      */
     def file = {
-        final def file = getFile(params)
+        boolean isHead = (request.method.toLowerCase() == 'head')
+        final def file = getFile(params, isHead)
         if (file) {
             response.contentType = (params.contentType) ?: file.contentType
             response.setHeader('Last-Modified', String.format('%ta, %<td %<tb %<tY %<tT GMT', file.uploadDate))
@@ -66,23 +67,24 @@ class FileController {
                 }
 
                 if (range.contains(',')) {   // we do not support a multipart response
-                    response.status = HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
+                    render HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE
                     return null
                 }
 
-                response.status = HttpServletResponse.SC_PARTIAL_CONTENT
+                render HttpServletResponse.SC_PARTIAL_CONTENT
                 int r = gridFSService.range(response.outputStream, file, from, to)
                 if (r != -1) response.status = r
 
             } else {
                 response.contentLength = file.length as int
-                response.status = HttpServletResponse.SC_OK
+                render HttpServletResponse.SC_OK
+
                 if (params.contentType == 'application/save') {
                     def filename = (params.filename) ?: file.filename
                     response.setHeader 'Content-disposition', 'attachment; filename="' + filename + '"'
                 }
 
-                if (request.method.toUpperCase() == 'HEAD') {
+                if (isHead) {
                     log.info "Returning HEAD"
                     return null
                 }
@@ -153,7 +155,7 @@ class FileController {
  * @param params
  * @return
  */
-    protected def getFile(def params) {
+    protected def getFile(def params, boolean isHead) {
 
         String pid = params.pid
         if (!pid) {
@@ -169,7 +171,7 @@ class FileController {
 
         final def access = policyService.hasAccess(fileInstance, params.bucket, params.cache)
         if (access.status == 200) {
-            if (access.level != 'open')
+            if (!isHead && access.level != 'open')
                 access.user?.save(flush: false)
             return fileInstance
         }

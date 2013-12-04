@@ -180,4 +180,5 @@ public class VFSFtpFile implements FtpFile {
         if (resource) resource.ftpDownloads++ // oddly the user.resources?.find { ... }?ftpDownloads returns from the method
         gridFSService.findByPid(pid, bucket)?.inputStream
     }
+
 }

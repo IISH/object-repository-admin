@@ -44,4 +44,43 @@ class UserResource {
         buckets attr: 'b'
     }
 
+    void expand() {
+        folders = folders.inject([]) { acc, folder ->
+            expandFolders(acc, folder)
+        }
+    }
+
+    /**
+     * locations
+     *
+     * Split the location element
+     *
+     * @param list
+     * @param l
+     */
+    private static def expandFolders(def list, String l) {
+        String s = ""
+        l.split('/')[1..-1].each {
+            s += '/' + it
+            if (!(s in list))
+                list << s
+        }
+        list
+    }
+
+    UserResource me(boolean clone) {
+        (clone) ? new UserResource(
+                pid: this.pid,
+                objid: this.objid,
+                contentType: this.contentType,
+                thumbnail: this.thumbnail,
+                expirationDate: this.expirationDate,
+                downloadLimit: this.downloadLimit,
+                httpDownloads: this.httpDownloads,
+                ftpDownloads: this.ftpDownloads,
+                buckets: this.buckets,
+                folders: this.folders
+        ) : this
+    }
+
 }

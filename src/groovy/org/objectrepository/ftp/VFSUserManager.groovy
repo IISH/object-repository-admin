@@ -92,14 +92,11 @@ class VFSUserManager extends AbstractUserManager {
                     it.startsWith('ROLE_OR_DISSEMINATION_')
                 }) {
                     resources = org.objectrepository.security.User.findByUsername(principal.username)?.resources?.findAll {
-                        OrUtil.hasPolicyAccess(it)
+                        OrUtil.hasPolicyAccess(it, true)
                     }
                     resources?.each {
-                        it.folders = it.folders.inject([]) { acc, folder ->
-                            expandFolders(acc, folder)
-                        }
+                        it.expand()
                     }
-
                 }
 
                 new VFSUser(name: principal.username, password: principal.password, homeDir: homeDir, authorities: authorities, policies: policies, resources: resources, maxIdleTimeSec: maxIdleTimeSec)
@@ -108,24 +105,6 @@ class VFSUserManager extends AbstractUserManager {
         } else
             throw new IllegalArgumentException(
                     "Authentication not supported by this user manager")
-    }
-
-    /**
-     * locations
-     *
-     * Split the location element
-     *
-     * @param list
-     * @param l
-     */
-    private static def expandFolders(def list, String l) {
-        String s = ""
-        l.split('/')[1..-1].each {
-            s += '/' + it
-            if (!(s in list))
-                list << s
-        }
-        list
     }
 
     String getAdminName() {

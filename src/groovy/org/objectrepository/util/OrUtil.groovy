@@ -272,11 +272,11 @@ class OrUtil {
             hasPolicyAccess(resource)
     }
 
-    static def hasPolicyAccess(def resource) {
+    static def hasPolicyAccess(def resource, boolean clone = false) {
 
         if ((resource.downloadLimit < 1 || resource.downloads < resource.downloadLimit) &&
                 (!resource.expirationDate || resource.expirationDate > new Date())
-        ) resource
+        ) resource.me(clone)
     }
 
     /**

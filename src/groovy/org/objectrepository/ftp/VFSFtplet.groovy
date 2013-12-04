@@ -21,6 +21,15 @@ class VFSFtplet extends DefaultFtplet {
         super.onDownloadEnd(session, request)
     }
 
+    @Override
+    FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {
+
+        session.user.policies?.clear()
+        session.user.resources?.clear()
+
+        super.onDisconnect(session)
+    }
+
     public void setGridFSService(GridFSService gridFSService) {
         this.gridFSService = gridFSService
     }
