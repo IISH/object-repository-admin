@@ -61,7 +61,8 @@ class FileController {
                 response.contentLength = 1 + to - from
                 response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
 
-                if (request.method.toUpperCase() == 'HEAD') {
+                if (isHead) {
+                    render HttpServletResponse.SC_OK
                     log.info "Returning HEAD"
                     return null
                 }
@@ -71,13 +72,13 @@ class FileController {
                     return null
                 }
 
-                render HttpServletResponse.SC_PARTIAL_CONTENT
+                response.status = HttpServletResponse.SC_PARTIAL_CONTENT
                 int r = gridFSService.range(response.outputStream, file, from, to)
                 if (r != -1) response.status = r
 
             } else {
                 response.contentLength = file.length as int
-                render HttpServletResponse.SC_OK
+                response.status = HttpServletResponse.SC_OK
 
                 if (params.contentType == 'application/save') {
                     def filename = (params.filename) ?: file.filename
@@ -85,6 +86,7 @@ class FileController {
                 }
 
                 if (isHead) {
+                    render HttpServletResponse.SC_OK
                     log.info "Returning HEAD"
                     return null
                 }
