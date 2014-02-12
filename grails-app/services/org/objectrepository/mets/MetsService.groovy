@@ -16,6 +16,17 @@ class MetsService {
     def grailsApplication
     def gridFSService
     def policyService
+    
+    /**
+     * countMetsFile
+     *
+     * @param na The naming authority
+     * @param objid Compound object
+     * @return
+     */
+    long countMetsFile(String na, String objid) {
+        gridFSService.countFilesByObjid(na, 'master', na + '/' + objid)
+    }
 
     /**
      * writeMetsFile
