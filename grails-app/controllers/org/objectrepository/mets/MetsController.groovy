@@ -21,6 +21,7 @@ class MetsController {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")
             response.writer.write(xml)
+            response.writer.flush()
         } else {
             params.pid = params.na + '/' + params.objid
             render(view: '/file/404', status: 404)
