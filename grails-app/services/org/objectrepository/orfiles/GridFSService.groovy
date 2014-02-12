@@ -305,6 +305,10 @@ class GridFSService {
                 .find(new BasicDBObject('metadata.objid', na + '/' + id))
                 .sort { it.metaData.seq }
     }
+    
+    long countFilesByObjid(String na, String bucket, String id) {
+        mongo.getDB(OR + na).getCollection(bucket + ".files").count(['metadata.objid': id])
+    }
 
     def listFilesByLabel(String na, String bucket = 'master', String label) {
         new GridFS(mongo.getDB(OR + na), bucket)
