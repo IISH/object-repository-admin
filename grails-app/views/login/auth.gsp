@@ -36,7 +36,7 @@
                                                                                          name='j_password'
                                                                                          id='password'
                                                                                          value="12345"/></g:if>
-                    <g:else><input type='password' class='text_' name='j_password' id='password'/></g:else>
+                    <g:else><input AUTOCOMPLETE='off' type='password' class='text_' name='j_password' id='password'/></g:else>
                 </p>
 
                 <p>
