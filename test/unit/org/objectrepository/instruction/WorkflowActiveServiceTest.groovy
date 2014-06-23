@@ -5,7 +5,6 @@ import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
 import org.bson.types.ObjectId
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.objectrepository.orfiles.GridFSService
 import org.objectrepository.util.OrUtil
 
@@ -40,12 +39,12 @@ class WorkflowActiveServiceTest {
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
-        workflowActiveService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
+        workflowActiveService.grailsApplication = taskValidationService.grailsApplication = grailsApplication
 
         workflowInitiateService = new WorkflowInitiateService()
         workflowInitiateService.metaClass.mongo = new GMongo()
         workflowInitiateService.taskValidationService = taskValidationService = new TaskValidationService()
-        workflowInitiateService.grailsApplication = taskValidationService.grailsApplication = ConfigurationHolder
+        workflowInitiateService.grailsApplication = taskValidationService.grailsApplication = grailsApplication
 
         // This fileSet has a instruction.xml in it
         fileSet_NoInstruction = System.properties['base.dir'] + "/test/resources/home/12345/folder_of_cpuser/test-templates"

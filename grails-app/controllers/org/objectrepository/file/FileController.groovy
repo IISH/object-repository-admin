@@ -1,7 +1,7 @@
 package org.objectrepository.file
 
-import org.objectrepository.security.User
 import org.objectrepository.util.OrUtil
+import org.springframework.security.access.annotation.Secured
 
 import javax.servlet.http.HttpServletResponse
 
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse
  *     Delivers the metadata of a file in a particular bucket
  *     Delivers the file ( bytestream ) in the corresponding contentType
  */
+@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class FileController {
 
     def policyService
@@ -34,7 +35,7 @@ class FileController {
      * /file/level1/12345/abcdefg = {bucket:'level1',pid:'12345/abcdefg'}*
      * Because the PID value can contain a forward slash, we made it's capture greedy in the UrlMappings.
      */
-    def file = {
+    def file() {
         boolean isHead = (request.method.toLowerCase() == 'head')
         final def file = getFile(params, isHead)
         if (file) {
@@ -122,7 +123,7 @@ class FileController {
         gridFSService.siteusage(file.metaData.na, document)
     }
 
-    def metadata = {
+    def metadata() {
 
         if (params.pid) {
             params.na = OrUtil.getNa(params.pid)
@@ -145,7 +146,7 @@ class FileController {
             redirect(action: "about")
     }
 
-    def deleted = {
+    def deleted() {
         [params: params]
     }
 

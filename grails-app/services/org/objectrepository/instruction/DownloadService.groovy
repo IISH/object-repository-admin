@@ -118,7 +118,7 @@ class DownloadService {
                         embargo orfileInstance.metadata.embargo
                         embargoAccess orfileInstance.metadata.embargoAccess
                         out << metadata(orfileInstance, "master")
-                        ['level1', 'level2', 'level3'].each {  bucket ->
+                        grailsApplication.config.buckets.each {  bucket ->
                             out << metadata(gridFSService.findByPid(orfileInstance.metadata.pid, bucket), bucket)
                         }
                     }

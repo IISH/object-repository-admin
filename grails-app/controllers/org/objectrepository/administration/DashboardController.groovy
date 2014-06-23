@@ -1,12 +1,14 @@
 package org.objectrepository.administration
 
+import grails.converters.JSON
+import grails.converters.XML
 import org.objectrepository.instruction.Profile
-import org.objectrepository.security.NamingAuthorityInterceptor
+import org.objectrepository.security.InterceptorValidation
 import org.objectrepository.util.OrUtil
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
-class DashboardController extends NamingAuthorityInterceptor {
+class DashboardController extends InterceptorValidation {
 
     def springSecurityService
     def ldapUserDetailsManager
@@ -16,7 +18,7 @@ class DashboardController extends NamingAuthorityInterceptor {
     /**
      * See if we need to create a user
      */
-    def index = {
+    def index() {
         log.info "Checking if adding an account is needed..."
         if (params.na && ldapUserDetailsManager) {
             log.info "We are a ldap user "
@@ -27,8 +29,28 @@ class DashboardController extends NamingAuthorityInterceptor {
 
         final interval = (params.interval) ?: 'all'
         def ret = [storage: statisticsService.getStorage(params.na, interval), tasks: null]
-        if ( grailsApplication.config.siteusage )
+        if (grailsApplication.config.siteusage)
             ret << [siteusage: statisticsService.getSiteusage(params.na, interval)]
-        ret
+
+        switch (request.format) {
+            case 'json':
+                if (params.callback)
+                    render(text: "${params.callback}(${ret as JSON})", contentType: 'application/json')
+                else
+                    render ret as JSON
+                break
+            case 'xml':
+                render ret as XML
+                break
+            case 'html':
+            case 'format':
+            default:
+                ret
+                break;
+
+        }
     }
+
 }
+
+

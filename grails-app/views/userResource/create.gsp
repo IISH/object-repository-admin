@@ -12,18 +12,18 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link mapping="namingAuthority" params="[na: params.na]" id="userInstance.id" class="list"
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" id="${userInstance.id}" class="list"
                     action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
-<g:render template="/layouts/header" model="[instance: userResourceInstance]"/>
+<g:render template="/layouts/header" model="[instance: userInstance.resources[0]]"/>
 
 <div id="create-userResource" class="content scaffold-create" role="main">
     <h1><g:message code="default.create.label" args="[entityName]"/> for user: ${userInstance.username}</h1>
-    <g:hasErrors bean="${userResourceInstance}">
+    <g:hasErrors bean="${userInstance.resources}">
         <ul class="errors" role="alert">
-            <g:eachError bean="${userResourceInstance}" var="error">
+            <g:eachError bean="${userInstance.resources}" var="error">
                 <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message
                         error="${error}"/></li>
             </g:eachError>

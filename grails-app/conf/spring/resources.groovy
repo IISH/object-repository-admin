@@ -1,9 +1,10 @@
+import grails.plugin.springsecurity.SpringSecurityUtils
 import org.apache.activemq.camel.component.ActiveMQComponent
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.UserDetailsContextMapperImpl
 import org.objectrepository.ftp.FtpService
 import org.objectrepository.instruction.PlanManagerService
 import org.objectrepository.ldap.CustomLdapUserDetailsManager
+import org.objectrepository.oauth.Oauth2Service
 import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
@@ -58,17 +59,23 @@ beans = {
             groupMemberAttributeName = conf.ldap.rememberMe.detailsManager.groupMemberAttributeName
             grailsApplication = application
             springSecurityService = ref('springSecurityService')
+
+        }
+    }
+
+    if (conf.oauthProvider.active) {
+        println("Loading oauthProvider")
+
+        tokenStore(MongoTokenStore) {
+            mongo = ref('mongoBean')
+            database = "security"
+        }
+
+        oauth2Service(Oauth2Service) {
             clientDetailsService = ref('clientDetailsService')
             tokenStore = ref('tokenStore')
             tokenServices = ref('tokenServices')
         }
     }
 
-    if (conf.oauthProvider.active) {
-        println("Loading Mongo OAuth2 tokenstore")
-        tokenStore(MongoTokenStore) {
-            mongo = ref('mongoBean')
-            database = "security"
-        }
-    }
 }

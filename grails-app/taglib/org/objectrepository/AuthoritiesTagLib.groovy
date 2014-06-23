@@ -1,6 +1,6 @@
 package org.objectrepository
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 class AuthoritiesTagLib {
     static namespace = 'roles'

@@ -16,7 +16,7 @@ class MetsService {
     def grailsApplication
     def gridFSService
     def policyService
-    
+
     /**
      * countMetsFile
      *
@@ -33,9 +33,8 @@ class MetsService {
      *
      * Returns an XML object in its wrapper
      *
-     * @param na
-     * @param objidOrPidOrLabel
-     * @param cache
+     * @param na The naming authority
+     * @param objid Compound object
      * @return
      */
     String writeMetsFile(String na, String objid, def buckets = grailsApplication.config.buckets) {

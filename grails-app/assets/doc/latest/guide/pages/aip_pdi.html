@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4.1 Preservation Description Information 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/ingest.html">&lt;&lt; <strong>3</strong><span>Ingest</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4.1 Preservation Description Information - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="aip_pdi">4.1 Preservation Description Information</h2>
+This document consists of the following archival elements:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">element</strong></th><th><strong class="bold">type</strong></th><th><strong class="bold">purpose</strong></th></tr><tr class="table-odd"><td>md5</td><td>number</td><td>The md5 checksum for the stored file</td></tr><tr class="table-even"><td>length</td><td>number</td><td>The length in bytes of the file</td></tr><tr class="table-odd"><td>filename</td><td>string</td><td>original file</td></tr><tr class="table-even"><td>contentType</td><td>string</td><td>The mimetype</td></tr><tr class="table-odd"><td>metadata.pid</td><td>string</td><td>The persistent identifier</td></tr><tr class="table-even"><td>metadata.pidType</td><td>string</td><td>The indicator of the type of pid resolver</td></tr><tr class="table-odd"><td>metadata.resolverBaseUrl</td><td>string</td><td>The base URL to prefix the metadata.pid value with</td></tr><tr class="table-even"><td>metadata.objid</td><td>string</td><td>The object identifier or group identifier</td></tr><tr class="table-odd"><td>metadata.seq</td><td>number</td><td>The physical order of the file vis a vis other files under the shared metadata.objid</td></tr><tr class="table-even"><td>metadata.content</td><td>json</td><td>The fingerprint of the content. Such as width, length, resolution, etc.</td></tr><tr class="table-odd"><td>metadata.access</td><td>string</td><td>Access status of this file and all</td></tr><tr class="table-even"><td>metadata.fileSet</td><td>string</td><td>the location of the file in the dissemination package</td></tr><tr class="table-odd"><td>metadata.l</td><td>string</td><td>the relative location of the file in the dissemination package</td></tr><tr class="table-even"><td>metadata.label</td><td>string</td><td>the label for the dissemination package</td></tr><tr class="table-odd"><td>metadata.firstUploadDate</td><td>date</td><td>The date the file with this metadata.pid value was first uploaded</td></tr><tr class="table-even"><td>uploadDate</td><td>date</td><td>The last date this file was uploaded.</td></tr></table><p class="paragraph"/>For example, an image:
+<div class="code"><pre><span class="java&#45;quote">"_id"</span> : NumberLong(12345),
+<span class="java&#45;quote">"contentType"</span> : <span class="java&#45;quote">"image/jpeg"</span>,
+<span class="java&#45;quote">"filename"</span> : <span class="java&#45;quote">"myfile.TIFF"</span>,
+<span class="java&#45;quote">"length"</span> : NumberLong(10058),
+<span class="java&#45;quote">"md5"</span> : <span class="java&#45;quote">"f1c8b344033c30f1670626b087b607bc"</span>,
+<span class="java&#45;quote">"metadata"</span> : &#123;
+	<span class="java&#45;quote">"access"</span> : <span class="java&#45;quote">"restricted"</span>,
+	<span class="java&#45;quote">"content"</span> : &#123;
+		<span class="java&#45;quote">"x&#45;resolution"</span> : 72,
+		<span class="java&#45;quote">"y&#45;resolution"</span> : 72,
+		<span class="java&#45;quote">"width"</span> : 368,
+		<span class="java&#45;quote">"height"</span> : 313
+	&#125;,
+	<span class="java&#45;quote">"fileSet"</span> : <span class="java&#45;quote">"/data/stagingarea/12345/12347/2007&#45;08&#45;27"</span>,
+	<span class="java&#45;quote">"firstUploadDate"</span> : ISODate(<span class="java&#45;quote">"2012&#45;06&#45;27T15:15:57.957Z"</span>),
+	<span class="java&#45;quote">"l"</span> : <span class="java&#45;quote">"/2007&#45;08&#45;27/30051/00/013"</span>,
+	<span class="java&#45;quote">"label"</span> : <span class="java&#45;quote">"2012&#45;06&#45;27 batch filer4"</span>,
+	<span class="java&#45;quote">"pid"</span> : <span class="java&#45;quote">"12345/30051000131778"</span>,
+	<span class="java&#45;quote">"pidType"</span> : <span class="java&#45;quote">"or"</span>,
+	<span class="java&#45;quote">"resolverBaseUrl"</span> : <span class="java&#45;quote">"http://hdl.handle.net/"</span>,
+&#125;,
+<span class="java&#45;quote">"uploadDate"</span> : ISODate(<span class="java&#45;quote">"2007&#45;08&#45;27T14:30:00Z"</span>)</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/ingest.html">&lt;&lt; <strong>3</strong><span>Ingest</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

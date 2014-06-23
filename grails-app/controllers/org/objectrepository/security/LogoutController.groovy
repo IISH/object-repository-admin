@@ -1,13 +1,15 @@
 package org.objectrepository.security
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
+import org.springframework.security.access.annotation.Secured
 
+@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class LogoutController {
 
 	/**
 	 * Index action. Redirects to the Spring security logout uri.
 	 */
-	def index = {
+	def index() {
 		redirect uri: SpringSecurityUtils.securityConfig.logout.filterProcessesUrl
 	}
 }

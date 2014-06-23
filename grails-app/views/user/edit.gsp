@@ -1,4 +1,4 @@
-<g:set var="entityName" value="UserAccount"/>
+<g:set var="entityName" value="User"/>
 <!doctype html>
 <html>
 <head>
@@ -97,9 +97,6 @@
         </tr>
         </tbody>
     </table>
-    %{--<div id="tree" style="float:left;margin-left:50px"></div>
-    </div>
---}%
 
     <div class="buttons">
         <span class="button"><g:actionSubmit class="save" action="update"

@@ -1,6 +1,6 @@
+import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
@@ -46,8 +46,9 @@ class BootStrap {
                 final String adminUsername = System.getProperty("adminUsername")
                 final String adminPassword = System.getProperty("adminPassword")
                 if (adminPassword && adminUsername) {
-                    addUser(["0"], adminUsername,
-                            springSecurityService.encodePassword(adminPassword, UUID.randomUUID().encodeAsMD5Bytes()))
+                    addUser(['0'], adminUsername,
+                            springSecurityService.encodePassword(adminPassword, UUID.randomUUID().encodeAsMD5Bytes()),
+                    ['administrator'])
                 }
                 break
             case Environment.DEVELOPMENT:
@@ -73,7 +74,7 @@ class BootStrap {
             def authorities = authentication.authorities*.role.findAll {
                 it.startsWith('ROLE_OR_USER_')
             }.sort { it }
-            if (authorities) authorities[0].split('_').last()
+            if (authorities) ((String)authorities[0]).split('_').last()
         }
     }
 
@@ -119,7 +120,7 @@ class BootStrap {
         }
     }
 
-    private void addUser(def na, String username, String password = null) {
+    private void addUser(def na, String username, String password = null, def roles = null) {
 
         User.findByUsername(username)?.delete(flush: true)
 
@@ -138,6 +139,13 @@ class BootStrap {
 
             OrUtil.availablePolicies(it, grailsApplication.config.accessMatrix)
             if (!Profile.findByNa(it)) new Profile(na: it).save(failOnError: true)
+        }
+
+        roles?.each {
+            def authority = "ROLE_OR_USER_" + it
+            log.info "Add authority " + authority
+            def role = Role.findByAuthority(authority) ?: new Role(authority: authority).save(failOnError: true)
+            UserRole.create user, role
         }
     }
 }

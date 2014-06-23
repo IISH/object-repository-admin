@@ -1,5 +1,7 @@
 package org.objectrepository.viewer
 
+import org.springframework.security.access.annotation.Secured
+
 /**
  * ViewerController
  *
@@ -8,6 +10,7 @@ package org.objectrepository.viewer
  * level1=video/mp4
  * level2=montage
  */
+@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ViewerController {
 
     def gridFSService

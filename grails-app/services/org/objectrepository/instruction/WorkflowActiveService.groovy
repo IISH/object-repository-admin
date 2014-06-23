@@ -192,6 +192,10 @@ class WorkflowActiveService extends WorkflowJob {
         StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel3')
     }
 
+    def StagingfileIngestCustomLevel4600(def document) {
+        StagingfileIngestCustomLevel(document, 'StagingfileIngestLevel4')
+    }
+
     private void StagingfileIngestCustomLevel(def document, String name) {
         if (document.task.exitValue == 0) {
             document.workflow.find {

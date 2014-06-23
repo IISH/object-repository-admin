@@ -1,5 +1,5 @@
 <%@ page import="org.springframework.security.oauth2.common.OAuth2AccessToken" %>
-<g:set var="entityName" value="UserAccount"/>
+<g:set var="entityName" value="User"/>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -31,7 +31,7 @@
     <tr>
         <td valign="top" class="name"><g:message code="user.url.label" default="username"/></td>
         <td valign="top" class="value"><input type="text" size="100"
-                                              value="${grailsApplication.config.grails.serverURL + '/' + userInstance.username + '/resource/list?access_token=' + token.value}"/>
+                                              value="${grailsApplication.config.grails.serverURL + '/resource/list?access_token=' + token.value}"/>
         </td>
     </tr>
     <tr class="prop">
@@ -47,7 +47,7 @@
             <td valign="top" class="value">
                 <g:link mapping="namingAuthority" params="[na: params.na]"
                         controller="userResource" action="list"
-                        id="${userInstance.id}">Manage access to resources</g:link></td>
+                        id="${userInstance.id}"><g:message code="user.resource.access.label" default="Manage access to resources"/></g:link></td>
         </tr>
     </g:if>
 
@@ -89,7 +89,7 @@
 
                 <p>Place the key in a HTTP header request as expressed in this pseudo code:<br/>
                     HTTP-header("Authorization", "${OAuth2AccessToken.BEARER_TYPE} ${token.value}")<br/>
-                    Or in your browser url: ?${OAuth2AccessToken.BEARER_TYPE_PARAMETER}=${token.value}</p>
+                    Or in your browser url: ?${OAuth2AccessToken.BEARER_TYPE}=${token.value}</p>
             </td>
         </tr>
     </g:if>

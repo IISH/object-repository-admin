@@ -6,7 +6,7 @@
             code="user.dissemination.policy.label" args="[policy]"/></g:else></g:set>
     <g:set var="checked">${policy in userInstance.authoritiesFiltered('^ROLE_OR_POLICY_(.*)$')}</g:set>
 
-    <g:if test="${params.action in ['create', 'edit', 'index']}">
+    <g:if test="${params.action in ['create', 'edit', 'index', 'delete']}">
         <g:checkBox name="dissemination.${policy}"
                     checked="${checked == 'true'}"/>${msg}<br/>
     </g:if>

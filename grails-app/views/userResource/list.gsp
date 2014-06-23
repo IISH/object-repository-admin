@@ -15,6 +15,9 @@
         <li><g:link mapping="namingAuthority" params="[na: params.na]" class="create" action="create"
                     id="${userInstance.id}"><g:message
                     code="default.new.label" args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="list" controller="user" action="show"
+                    id="${userInstance.id}"><g:message
+                    code="userResource.back" args="[entityName]"/></g:link></li>
     </ul>
 </div>
 
@@ -37,7 +40,7 @@
         </tr>
         </thead>
         <tbody>
-        <g:each in="${userResourceInstanceList}" status="i" var="userResourceInstance">
+        <g:each in="${userInstance.resources}" status="i" var="userResourceInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                 <td><g:if test="${userResourceInstance.thumbnail}">
                     <img src="${grailsApplication.config.grails.serverURL + "/file/level3/" + userResourceInstance.pid}"

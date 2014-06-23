@@ -12,7 +12,7 @@
             <label for="${bucket.bucket}">
                 <g:message code="policy.access.${bucket.bucket}" default="${bucket.bucket}"/>
             </label>
-            <g:select from="${accessStatus}" name="${bucket.bucket}" value="${bucket.access}" />
+            <g:select from="${grailsApplication.config.accessStatus}" name="${bucket.bucket}" value="${bucket.access}" />
         </p>
     </g:each>
 </div>

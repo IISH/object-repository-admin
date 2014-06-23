@@ -1,5 +1,6 @@
 <g:set var="pidurl" value="${orfileInstance.master.metadata.resolverBaseUrl + orfileInstance.master.metadata.pid}"/>
-<g:if test="${orfileInstance.master.metadata.objid}"><g:set var="metsurl" value="${orfileInstance.master.metadata.resolverBaseUrl}${orfileInstance.master.metadata.objid}"/></g:if>
+<g:if test="${orfileInstance.master.metadata.objid}"><g:set var="metsurl"
+                                                            value="${orfileInstance.master.metadata.resolverBaseUrl}${orfileInstance.master.metadata.objid}"/></g:if>
 
 
 <ol class="property-list files">
@@ -11,18 +12,20 @@
     </li>
 
     <g:if test="${orfileInstance.master.metadata.embargo}">
-    <li class="fieldcontain">
-        <span id="embargo-label" class="property-label"><g:message code="files.embargo.label"
-                                                                  default="Embargo"/></span>
-        <span class="property-value" aria-labelledby="embargo-label">${orfileInstance.master.metadata.embargo}</span>
-    </li></g:if>
+        <li class="fieldcontain">
+            <span id="embargo-label" class="property-label"><g:message code="files.embargo.label"
+                                                                       default="Embargo"/></span>
+            <span class="property-value"
+                  aria-labelledby="embargo-label">${orfileInstance.master.metadata.embargo}</span>
+        </li></g:if>
 
     <g:if test="${orfileInstance.master.metadata.embargoAccess}">
-    <li class="fieldcontain">
-        <span id="embargoAccess-label" class="property-label"><g:message code="files.embargoAccess.label"
-                                                                  default="Embargo access"/></span>
-        <span class="property-value" aria-labelledby="embargo-embargoAccess">${orfileInstance.master.metadata.embargoAccess}</span>
-    </li></g:if>
+        <li class="fieldcontain">
+            <span id="embargoAccess-label" class="property-label"><g:message code="files.embargoAccess.label"
+                                                                             default="Embargo access"/></span>
+            <span class="property-value"
+                  aria-labelledby="embargo-embargoAccess">${orfileInstance.master.metadata.embargoAccess}</span>
+        </li></g:if>
 
     <li class="fieldcontain">
         <span id="label-label" class="property-label"><g:message code="files.label.label"
@@ -47,6 +50,14 @@
                                                                            default="Base url"/></span>
         <span class="property-value" aria-labelledby="resolverBaseUrl-label">
             <a href="${pidurl}" target="_blank">${pidurl}</a>
+        </span>
+    </li>
+
+    <li class="fieldcontain">
+        <span id="metadata-label" class="property-label"><g:message code="files.metadata.label" default="Metadata"/></span>
+        <span class="property-value" aria-labelledby="metadata-label">
+                <g:link mapping="namingAuthority" action="show"
+                        params="[na: params.na, pid: orfileInstance.master.metadata.pid, format: 'xml']">xml</g:link>
         </span>
     </li>
 

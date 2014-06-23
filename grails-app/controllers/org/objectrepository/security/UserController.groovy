@@ -2,145 +2,194 @@ package org.objectrepository.security
 
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
-class UserController extends NamingAuthorityInterceptor {
+class UserController extends InterceptorValidation {
 
-    static allowedMethods = [save: "POST", update: "POST"]
+    static allowedMethods = [save: 'POST', update: 'POST']
+
     final static fixedPolicies = ['administration', 'all']
 
     def springSecurityService
     def gridFSService
-    def ldapUserDetailsManager
+    def oauth2Service
 
     def index() {
-        redirect(action: "list", params: params)
+        forward(action: 'list', params: params)
     }
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        final list = User.findAllByNa(params.na)
-        [userInstanceList: list, userInstanceTotal: list.size()]
+        final list = User.findAllByNa(params.na, params)
+        respond list, model: [userInstanceList: list, userInstanceTotal: list.size()]
     }
 
     def create() {
-        [userInstance: new User(params), policyList: fixedPolicies + Policy.findAllByNa(params.na).access]
+        final userInstance = new User(na: params.na)
+        respond userInstance, model: [userInstance: userInstance, policyList: _policyList()]
     }
 
-    def save() {
-
-        switch (request.format) {
-            case 'js':
-            case 'json':
-            case 'xml':
-                return forward(controller: 'userPermission', action: 'save')
-        }
+    def save(User userInstance) {
 
         // Set password when it was left empty
         def newPassword
-        if (params.password == "" && params.confirmpassword == "") {
+        if (!userInstance.password && !params.confirmpassword) {
             newPassword = RandomStringUtils.random(6, true, false)
-            params.password = newPassword
-            params.confirmpassword = newPassword
+            userInstance.password = newPassword
+            userInstance.confirmpassword = newPassword
         } else
-            newPassword = params.password
-        params.username = params.username.toLowerCase()
-
-        if (User.findByUsername(params.username)) {
-            flash.message = "Account already exists. Choose a different name."
-            return render(view: "create", model: [userInstance: params, policyList: fixedPolicies + Policy.findAllByNa(params.na).access])
-        }
+            newPassword = userInstance.password
 
         // confirm password check
-        if (!params.skippassword) {
-            if (params.password != params.confirmpassword) {
-                flash.message = "Passwords do not match"
-                return render(view: "create", model: [userInstance: params])
-            }
-        }
-        params.password = springSecurityService.encodePassword(params.password, UUID.randomUUID().encodeAsMD5Bytes())
-
-        def userInstance = new User(params)
-        if (!userInstance.save(flush: true))
-            return render(view: "create", model: [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access])
-
-        def policyList = create().policyList
-        userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
-            it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
-        }.collect { it.key })
-        def token = ldapUserDetailsManager.updateKey(userInstance)
-
-
-        def code = ('ROLE_OR_POLICY_administration' in userInstance.authorities*.authority) ? 'administration' : 'dissemination'
-        if (params.sendmail) {
-            sendMail {
-                to params.mail
-                from grailsApplication.config.mail.from
-                subject message(code: "mail.user.created.subject." + code)
-                body message(code: "mail.user.created." + code, args: [grailsApplication.config.grails.serverURL, grailsApplication.config.ftp.host, userInstance.username, newPassword, token.value])
-            }
+        switch (request.format) {
+            case 'html':
+            case 'form':
+                if (!params.skippassword) {
+                    if (userInstance.password != params.confirmpassword) {
+                        flash.message = 'Passwords do not match'
+                        return render(view: 'create', status: HttpStatus.BAD_REQUEST.value(), model: [userInstance: params])
+                    }
+                }
+                break
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        forward(action: "show", id: userInstance.id)
+        userInstance.password = springSecurityService.encodePassword(userInstance.password, UUID.randomUUID().encodeAsMD5Bytes())
+
+        switch (status(userInstance)) {
+            case HttpStatus.OK:
+                userInstance.save flush: true
+                def policyList = _policyList()
+                userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
+                    it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
+                }.collect { it.key })
+                def token = oauth2Service.updateKey(userInstance)
+
+                def code = ('ROLE_OR_POLICY_administration' in userInstance.authorities*.authority) ? 'administration' : 'dissemination'
+                if (params.sendmail) {
+                    sendMail {
+                        to params.mail
+                        from grailsApplication.config.mail.from
+                        subject message(code: 'mail.user.created.subject.' + code)
+                        body message(code: 'mail.user.created.' + code, args: [grailsApplication.config.grails.serverURL, grailsApplication.config.ftp.host, userInstance.username, newPassword, token.value])
+                    }
+                }
+
+                flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+                respond(userInstance, view: 'show', model: [userInstance: userInstance, policyList: _policyList(), token: token])
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                respond(userInstance, view: 'create', model: [userInstance: userInstance, policyList: _policyList()])
+                break
+        }
     }
 
-    def show(Long id) {
-        def userInstance = User.findByIdAndNa(id, params.na)
-        if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            return forward(action: "list")
-        }
+    def show(User userInstance) {
 
-        def token = ldapUserDetailsManager.selectKeys(userInstance.username)
-        userInstance.replaceKey = (token)
-        if (!token) token = ldapUserDetailsManager.updateKey(userInstance)
-        [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access, token: token]
+        switch (status(userInstance)) {
+            case HttpStatus.OK:
+                def token = oauth2Service.selectKeys(userInstance.username)
+                userInstance.replaceKey = (token)
+                if (!token) token = oauth2Service.updateKey(userInstance)
+                respond userInstance, model: [userInstance: userInstance, policyList: _policyList(), token: token]
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), params.id])
+                respond(userInstance, forward: 'list')
+                break
+        }
     }
 
-    def edit(Long id) {
-        def userInstance = User.findByIdAndNa(id, params.na)
-        if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-        } else
-            [userInstance: userInstance, policyList: fixedPolicies + Policy.findAllByNa(params.na).access]
+    def edit(User userInstance) {
+
+        switch (status(userInstance)) {
+            case HttpStatus.OK:
+                respond userInstance, model: [userInstance: userInstance, policyList: _policyList()]
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), params.id])
+                respond userInstance, forward(action: 'list')
+                break
+        }
     }
 
-    def update(Long id, Long version) {
-        def userInstance = User.findByIdAndNa(id, params.na)
-        if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            return forward(action: "list")
-        } else if (version != null) {
-            if (userInstance.version > version) {
-                userInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'user.label', default: 'User')] as Object[],
-                        "Another ftp has updated this User while you were editing")
-                return render(view: "edit", model: [userInstance: userInstance])
-            }
+    def update(User userInstance) {
+
+        def policyList = _policyList()
+
+        switch (status(userInstance)) {
+            case HttpStatus.OK:
+                userInstance.save flush: true
+
+                userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
+                    it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
+                }.collect { it.key })
+
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+                params.action = 'show'
+                respond(userInstance, view: 'show', model: [userInstance: userInstance, token: oauth2Service.updateKey(userInstance), policyList: _policyList()])
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+                respond userInstance, view: 'edit', model: [userInstance: userInstance, policyList: _policyList()]
+                break
         }
+    }
 
-        userInstance.properties = params
-        if (!userInstance.save(flush: true)) {
-            return render(view: "edit", model: [userInstance: userInstance])
+    def delete(User userInstance) {
+
+        switch (status(userInstance)) {
+            case HttpStatus.OK:
+                try {
+                    userInstance.authorities?.each {
+                        UserRole.remove(userInstance, it, true)
+                    }
+                    userInstance.delete flush: true
+                    oauth2Service.removeToken(oauth2Service.selectKeys(userInstance.username))
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])
+
+                    switch (request.format) {
+                        case 'html':
+                        case 'form':
+                            forward(action: 'list')
+                            break
+                        default:
+                            respond userInstance
+                            break
+                    }
+                }
+                catch (DataIntegrityViolationException e) {
+                    log.warn e
+                    flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])
+                    switch (request.format) {
+                        case 'html':
+                        case 'form':
+                            forward(action: 'show', id: userInstance.id)
+                            break
+                        default:
+                            respond userInstance
+                            break
+                    }
+                }
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+                respond(userInstance, forward(action: 'show', id: userInstance.id))
+                break
+
         }
-
-        def policyList = create().policyList
-        userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
-            it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
-        }.collect { it.key })
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        params.action = 'show'
-        render(view: "show", model: [userInstance: userInstance, token: ldapUserDetailsManager.updateKey(userInstance), policyList: policyList])
     }
 
     /**
      * roles
      *
-     * Removes all authorities and resets these with the given parameters.
+     * Removes all authorities and resets those with the given parameters.
      *
      * @param userInstance
      * @param dissemination
@@ -186,36 +235,16 @@ class UserController extends NamingAuthorityInterceptor {
 
         def userInstance = User.findByIdAndNa(id, params.na)
         if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            return forward(action: "list")
+            flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), id])
+            return forward(action: 'list')
         }
 
         userInstance.replaceKey = true
-        ldapUserDetailsManager.updateKey(userInstance)
-        forward(action: "show", id: params.id)
+        oauth2Service.updateKey(userInstance)
+        forward(action: 'show', id: params.id)
     }
 
-    def delete(Long id) {
-        def userInstance = User.findByIdAndNa(id, params.na)
-        if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            return forward(action: "list")
-        }
-
-        try {
-            userInstance.authorities?.each {
-                UserRole.remove(userInstance, it, true)
-            }
-
-            userInstance.delete(flush: true)
-            ldapUserDetailsManager.removeToken(ldapUserDetailsManager.selectKeys(userInstance.username))
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "list")
-        }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
-            forward(action: "show", id: id)
-        }
+    def _policyList() {
+        fixedPolicies + Policy.findAllByNa(params.na).access
     }
-
 }

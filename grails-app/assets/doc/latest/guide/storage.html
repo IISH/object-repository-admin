@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Archival Storage 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/aip.html">&lt;&lt; <strong>4</strong><span>Archival information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Archival Storage - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="storage">5 Archival Storage</h1>
+<h4>Chunked data</h4>
+Physically the data is stored into a NoSQL database called <a href="http://docs.mongodb.org/" target="blank">MongoDB</a> using the native driver support of GridFS.
+With GridFS a document is created with the md5 checksum, contentType, length in a files collection. The ingest procedure will add to this
+the preservation descriptive information. The actual byte stream is split up into 64MB sized segments called "chunks". Each segment is
+stored as a document in a corresponding chunks collection. There is a one-to-many relation between the document in the files
+ collection and the documents in the chunks collection.<p class="paragraph"/> Whilst the files document contains the md5 for the entire file, each individual chunk has it's own checksum. This is not part of the
+ gridFS convention, but is added for future services that are responsible for error detection and repair of stored chunks. Should corruption
+ turn its ugly head, it will be easier to repair a small chunks; than the larger file it is part of.<p class="paragraph"/> The object-repository stores "master" files for preservation and "level1", "level2" and "level3" types of derivatives. Hence the
+ namespace of the collections are named accordingly.<p class="paragraph"/><img border="0" class="center" src="../img/gridfs.png"></img><p class="paragraph"/><h4>Replication</h4>
+Data is mirrored by real-time replication. Each write to the primary database is copied to the replica. As the primary databases are situated in
+a different datacenter than the secondary databases, there always is a copy should one of the datacenter become unavailable - or at wost is destroyed.<p class="paragraph"/><h4>Uninterrupted data delivery</h4>
+To avoid a single point of failure the repository storage is constructed from replica sets. The replicaset is made out of a single read&#119;rite
+primary server which is responsible for storing content. The secondary read-only servers can deliver content to the dissemination package.
+Should a primary fail because of a defect or be down for maintenance; then the secondary will take over the role of primary and resume normal operations.
+However, write actions are suspended until the intended primary is available again.<p class="paragraph"/><h4>Scalability by clustering</h4>
+As the volume of the storage cannot be hold onto a single storage device, a distributed solution is implemented by sharding.
+A shard contains a fragment that is part of the entire volume of data. When volume increases beyond the current storage capacity,
+new shards can be added to facilitate the extra needed storage. This makes the solution completely scalable.<p class="paragraph"/>In addition: should a primary server in the cluster go down for whatever reason, then any ingest action can proceed via the other primaries in the cluster.<p class="paragraph"/><img border="0" class="center" src="../img/cluster.png"></img>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/aip.html">&lt;&lt; <strong>4</strong><span>Archival information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/dip.html"><strong>6</strong><span>Dissemination information package</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -6,11 +6,11 @@ class User {
 
     String na
     String mail
+    String username
     String confirmpassword
     String verification
     Long expiration = 0 // Of the verification token
     String newpassword
-    String username
     String url
     boolean replaceKey = true
 

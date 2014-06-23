@@ -1,14 +1,11 @@
 package org.objectrepository.orfiles
-
 import com.mongodb.BasicDBObject
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
-import org.bson.types.ObjectId
 import org.objectrepository.util.OrUtil
 
 import javax.servlet.http.HttpServletResponse
-
 /**
  * GridFSService
  *
@@ -305,7 +302,7 @@ class GridFSService {
                 .find(new BasicDBObject('metadata.objid', na + '/' + id))
                 .sort { it.metaData.seq }
     }
-    
+
     long countFilesByObjid(String na, String bucket, String id) {
         mongo.getDB(OR + na).getCollection(bucket + ".files").count(['metadata.objid': id])
     }

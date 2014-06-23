@@ -1,4 +1,4 @@
-<g:set var="entityName" value="UserAccount"/>
+<g:set var="entityName" value="User"/>
 <!doctype html>
 <html>
 <head>
@@ -28,7 +28,7 @@
                 <label for="username"><g:message code="user.username.label" default="username"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'username', 'errors')}">
-                <g:textField name="username" maxlength="30"/>
+                <g:textField name="username" maxlength="30" value="${userInstance.username}"/>
             </td>
         </tr>
         <tr class="prop">

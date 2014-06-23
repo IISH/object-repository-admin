@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>7.1.3 Supply custom derivatives 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>7.1.3 Supply custom derivatives - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="preparation_stagingarea_customderivatives">7.1.3 Supply custom derivatives</h2>
+The object-repository has a service to create lower level copies of the masters. If you want you can add your own derivative material because it is of better quality or the type of derivative
+manufacturing is not supported.<p class="paragraph"/><h3>Conventional offerings</h3>
+The position and names of the derivatives must follow conventions:
+<ul class="star">
+<li>the root folder in which the derivative is placed must be called ".level1" or ".level2" or ".level3". Notice these names start with a dot.</li>
+<li>the derivative filename must be identical ( case sensitive ) to that of the master filename - excluding the file extension. For example, if the master is called <code>MyFile.tiff</code> or <code>BigVideo.mpg</code> then the custom derivative must be positioned and named like <code>/.level1/MyFile.jpg</code> or <code>/.level2/BigVideo.mpg</code></li>
+<li>the derivative must be parallel to the master file.</li>
+<li>the extension of the derivative must be related to a known content type as <a href="http://github.com/IISH/object-repository-scripts/blob/master/shared/contenttype.txt" target="blank">indicated in this list</a>. If you see that your derivative extension is not in this list, then make a feature request.</li>
+</ul><p class="paragraph"/>A few examples will clarify the points just made.<p class="paragraph"/><h4>Example 1</h4>
+A master is placed deep within some subfolders: <code>/main_folder/b/c/d/myLargeFile.tiff</code>
+And the derivative file is called <code>myLargeFile.png</code><p class="paragraph"/>Then a level1 derivative can be placed anywhere by <strong class="bold">inserting</strong> a <strong class="bold">.level1</strong> folder thus:
+<ul class="star">
+<li><code>/main_folder/b/c/d/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/>Or by <strong class="bold">substituting</strong> a folder so:
+<ul class="star">
+<li><code>/main_folder/b/c/.level1/myLargeFile.png</code></li>
+<li><code>/main_folder/b/.level1/d/myLargeFile.png</code></li>
+<li><code>/main_folder/.level1/c/d/myLargeFile.png</code></li>
+</ul><p class="paragraph"/><h4>Example 2</h4>
+A master is placed in the main folder <code>/mydataset/myVeryLargeMovie.mpg</code>
+Then we offer both level1, level2 and a level3 file like this:
+<ul class="star">
+<li><code>/mydataset/.level1/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level2/myVeryLargeMovie.mpg</code></li>
+<li><code>/mydataset/.level3/myVeryLargeMovie.mpg</code></li>
+</ul><p class="paragraph"/><blockquote class="note">The derivative service will first look a custom derivative. If it does not find a one, it will attempt to produce it</blockquote><p class="paragraph"/><h4>Supplying derivatives some time after an ingest</h4>
+To add custom derivatives after the ingest is completed, you follow the same procedure:
+<ul class="star">
+<li>upload your custom derivative files according to the location convention</li>
+<li>in case your instruction gives validation warnings on absent master locations: disable and save the plan's master and any other non-related derivative tasks. Then validate the instruction</li>
+<li>Start processing your files.</li>
+</ul><p class="paragraph"/>Should you have deleted your instruction, then either recreate it from the Stored objects menu. Or
+re upload a new one which should contain the location elements from which the custom derivative can be found.<p class="paragraph"/><blockquote class="note">In case you re upload for the sake of ingesting custom derivatives, the location element need not be the same as the original master files from a previous instruction.</blockquote>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

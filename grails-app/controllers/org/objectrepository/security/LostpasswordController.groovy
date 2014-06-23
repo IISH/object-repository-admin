@@ -1,8 +1,7 @@
 package org.objectrepository.security
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 import org.apache.commons.lang.RandomStringUtils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.objectrepository.ai.ldap.LdapUser.Essence
 
 @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
@@ -10,7 +9,9 @@ class LostpasswordController {
 
     def springSecurityService
     def ldapUserDetailsManager
-    def index = { }
+    def grailsApplication
+
+    def index() { }
 
     /**
      * Sends a mail with a link to first password. Generates a random password and validation code.
@@ -18,7 +19,7 @@ class LostpasswordController {
      * @param mailThe mail of the user whose password to first.
      * @return returns a message whether user was found
      */
-    def newpass = {
+    def newpass() {
 
         if (params.mail) {
             User user = User.findByMail(params.mail)
@@ -33,7 +34,7 @@ class LostpasswordController {
                 final String serverURL = grailsApplication.config.grails.serverURL
                 if (!user.hasErrors() && user.save(flush: true)) {
                     def verificationUrl = serverURL + this.controllerUri + "/verify?v=" + user.verification
-                    def config = ConfigurationHolder.config
+                    def config = grailsApplication.config
                     final String strFrom = config.mail.from
                     sendMail {
                         to params.mail
@@ -43,20 +44,20 @@ class LostpasswordController {
                     }
                 }
                 flash.message = message(code: "lostpassword.mail.newpassword", args: [params.mail])
-                redirect(action: sent)
+                redirect(action: "sent")
             }
             else {
                 flash.message = message(code: "lostpassword.invalid.user")
-                redirect(action: index)
+                redirect(action: "index")
             }
         }
         else {
             flash.message = message(code: "lostpassword.invalid.mail")
-            redirect(action: index)
+            redirect(action: "index")
         }
     }
 
-    def sent = {
+    def sent() {
     }
 
     /**
@@ -67,7 +68,7 @@ class LostpasswordController {
      * @param verification A code which must correspond to the verification property which was generated when a password first was requested.
      * @return returns a message whether first was (un)successful
      */
-    def verify = {
+    def verify() {
         def msg = "${message(code: 'verification.invalid.code')}"
 
         if (params.v == null || params.v == "") {

@@ -1,30 +1,31 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.security.NamingAuthorityInterceptor
+import org.objectrepository.security.InterceptorValidation
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
-class InstructionController extends NamingAuthorityInterceptor {
+class InstructionController extends InterceptorValidation {
 
     def grailsApplication
     def springSecurityService
     def workflowActiveService
     def downloadService
 
-    static allowedMethods = [update: "POST", uploadfile: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", uploadfile: "POST", delete: "DELETE"]
 
-    def index = {
+    def index() {
         forward(action: "list", params: params)
     }
 
-    def list = {
+    def list() {
         params.view = "list"
         forward(action: "listremote", params: params)
     }
 
-    def listremote = {
+    def listremote() {
         params.max = Math.min(params.max ? params.int('max') : 5, 10)
         if (!params.sort) params.sort = 'label';
 
@@ -32,53 +33,53 @@ class InstructionController extends NamingAuthorityInterceptor {
         int count = Instruction.countByNa(params.na)
 
         if (params.view) {
-            render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
+            respond(instructionInstanceList, view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
             params.remove('view')
         } else
-            [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count]
+            respond instructionInstanceList, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count]
     }
 
-    def show = {
+    def show() {
         params.view = 'show'
         forward(action: "showremote", params: params)
     }
 
-    def showremote = {
+    def showremote() {
         def instructionInstance = serviceAvailable()
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
             forward(action: 'list')
         } else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
-            render(view: params.view ?: '_showremote', model: [instructionInstance: instructionInstance])
+            respond(instructionInstance, view: params.view ?: '_showremote', model: [instructionInstance: instructionInstance])
         }
     }
 
-    def autocreate = {
+    def autocreate() {
         runMethod()
     }
 
-    def declare = {
+    def declare() {
         runMethod()
     }
 
-    def remove = {
+    def remove() {
         runMethod()
     }
 
-    def ingest = {
+    def ingest() {
         runMethod()
     }
 
-    def retry = {
+    def retry() {
         runMethod()
     }
 
-    def validate = {
+    def validate() {
         runMethod()
     }
 
-    def upload = {
+    def upload() {
         def instructionInstance = serviceAvailable()
         if (!instructionInstance) return
 
@@ -95,7 +96,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         [instructionInstance: instructionInstance, fileExists: file.exists()]
     }
 
-    def download = {
+    def download() {
         // Fetch the instruction, render 404 if not found or it still needs to be
         // validated.
         def instructionInstance = serviceAvailable()
@@ -116,7 +117,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         [instructionInstance: instructionInstance]
     }
 
-    def edit = {
+    def edit() {
 
         def instructionInstance = serviceAvailable()
         if (!instructionInstance) {
@@ -124,63 +125,39 @@ class InstructionController extends NamingAuthorityInterceptor {
             forward(action: 'list')
         } else if (instructionInstance.status == 200) {
             OrUtil.setInstructionPlan(instructionInstance)
-            def policyInstanceList = Policy.findAllByNa(instructionInstance.na)
-            [instructionInstance: instructionInstance, policyList: policyInstanceList.access]
+            [instructionInstance: instructionInstance, policyList: Policy.findAllByNa(instructionInstance.na).access]
         }
     }
 
-    def update = {
-        def instructionInstance = Instruction.get(params.id)
+    def update(Instruction instructionInstance) {
+
         if (instructionInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
-                if (instructionInstance.version > version) {
-
-                    instructionInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                            [message(code: 'instruction.label', default: 'Instruction')] as Object[],
-                            "Another user has updated this Instruction while you were editing")
-                    render(view: "edit", model: [instructionInstance: instructionInstance])
-                    return
-                }
-            }
-
-            instructionInstance.properties = params
             instructionInstance.action = params.action1
-            if (instructionInstance.plan) {
-                instructionInstance.plan.clear()
-            } else {
-                instructionInstance.plan = []
-            }
-            params.plan.each {
-                if (it.value == 'on') {
-                    instructionInstance.plan << it.key
-                }
-            }
-
-            if (!instructionInstance.plan) {
-                render(view: "edit", model: [instructionInstance: instructionInstance])
-                flash.message = "You need to select at least one plan"
-                return
-            }
             final username = springSecurityService.principal.username.toLowerCase()
             if (!instructionInstance.approval) {
                 instructionInstance.approval = [username]
-            }
-            else if (!username in instructionInstance.approval) instructionInstance.approval << username
+            } else if (!username in instructionInstance.approval) instructionInstance.approval << username
+        }
 
-            if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
+        if (!instructionInstance.plan) {
+            flash.message = "You need to select at least one plan"
+            return render(view: "edit", model: [instructionInstance: instructionInstance, policyList: Policy.findAllByNa(instructionInstance.na).access])
+        }
+
+        switch (status(instructionInstance)) {
+            case HttpStatus.OK:
+                instructionInstance.save()
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
                 forward(action: 'show', id: instructionInstance.id)
-            } else {
-                render(view: "edit", model: [instructionInstance: instructionInstance])
-            }
-        } else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'instruction.label', default: 'Instruction'), params.id])}"
-            forward(action: 'list')
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                render(view: "edit", model: [instructionInstance: instructionInstance, policyList: Policy.findAllByNa(instructionInstance.na).access])
+                break
         }
     }
 
-    def delete = {
+    def delete() {
         def instructionInstance = Instruction.get(params.id)
         if (instructionInstance) {
             try {

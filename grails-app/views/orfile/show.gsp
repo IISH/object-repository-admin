@@ -24,12 +24,10 @@
     <g:form mapping="namingAuthority"
             params="[na: params.na, id: orfileInstance.master.metadata.pid]">
         <fieldset class="buttons">
-            <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="edit"
-                    id="${orfileInstance.master.metadata.pid}"><g:message
+            <g:link mapping="namingAuthority" params="[na: params.na,pid:orfileInstance.master.metadata.pid]" class="edit" action="edit"><g:message
                     code="default.button.edit.label"
                     default="Edit"/></g:link>
-            <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="recreatefile"
-                    id="${orfileInstance.master.metadata.pid}"><g:message
+            <g:link mapping="namingAuthority" params="[na: params.na, pid:orfileInstance.master.metadata.pid]" class="edit" action="recreatefile"><g:message
                     code="default.button.instruction.label"
                     default="New instruction"/></g:link>
         </fieldset>

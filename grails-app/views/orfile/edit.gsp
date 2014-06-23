@@ -21,13 +21,14 @@
 <g:render template="/layouts/header" model="[instance: master]"/>
 
 <div id="edit-files" class="content scaffold-edit" role="main">
-    <g:form mapping="namingAuthority" params="[na:params.na, id:orfileInstance.master.metadata.pid]" method="post">
+    <g:form mapping="namingAuthority" params="[na:params.na]" method="post" >
+        <g:hiddenField name="pid" value="${orfileInstance.master.metadata.pid}"/>
         <ol class="property-list files">
 
             <li class="fieldcontain">
                 <span id="access-label" class="property-label"><g:message code="files.access.label"
                                                                           default="Access"/></span>
-                <span class="property-value" aria-labelledby="access-label">
+                <span class="property-value" labelledby="access-label">
                     <g:select from="${policyList.access}" name="access"
                               value="${orfileInstance.master.metadata.access}"/>
             </li>
@@ -63,10 +64,8 @@
                 </li>
         </ol>
         <fieldset class="buttons">
-            <g:actionSubmit class="update" action="update"
+            <g:actionSubmit class="update" action="update" params="[a:'a']"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-            <g:actionSubmit class="update" action="recreatefile"
-                            value="${message(code: 'default.button.instruction.label', default: 'New instruction')}"/>
         </fieldset>
     </g:form>
 </div>

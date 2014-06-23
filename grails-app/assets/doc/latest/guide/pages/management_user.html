@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>8.2 Dissemination Accounts 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/preparation.html">&lt;&lt; <strong>7</strong><span>Preparing the submission package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>8.2 Dissemination Accounts - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="management_user">8.2 Dissemination Accounts</h2>
+The "Dissemination Accounts" section will allow you to manage user accounts. Such accounts can operate or download
+repository resources. You can specify what access policies are available to the user and what resources are available
+to the user and under that conditions.<p class="paragraph"/><h4>Create a user</h4>
+You need to fill in or edit the following fields:
+<ul class="star">
+<li><code>Login name</code>: A user name containing letters and numbers</li>
+<li><code>Password</code>: If the password is left blank, a random password will be created</li>
+<li><code>E-mail</code>: The end-user's mail address.</li>
+<li><code>Enabled</code>: If on, the account can be used to login.</li>
+<li><code>Access Scope</code>: see below for more details</li>
+</ul><p class="paragraph"/><h4>Webservice key</h4>
+Each account type has a webservice key. The key is intended to access an object repository resource that is
+normally closed for anonymous users. The key needs to be attached to the resolve URL that points to a resource.
+Or be in the header file of a client that is responsible for downloading the files.<p class="paragraph"/>To modify the webservice key select "Change key"<p class="paragraph"/><blockquote class="note">Each time you change the access scope settings, this key will change too. You must update your software client or inform the end user of the new key</blockquote><p class="paragraph"/><h4>Access Scope</h4>
+This setting determines what a user can access.<p class="paragraph"/><h5>Set access by Policy</h5>
+Your repository resources are governed by access policies. If the user is allowed to download files with one or more of these policies, then select them here.<p class="paragraph"/><h5>'all'</h5>
+This account can access all resources, no matter their access policy.<p class="paragraph"/><h5>'administration'</h5>
+This account type has the same scope as the 'all' setting. In addition it allows a client to operate the repository API.
+All actions regarding account and permission creation can be operated via API calls using the webservice key.<p class="paragraph"/><h5>Manage access to resources</h5>
+Leave the access scope option blank and save the account. You can then show the account and select the 'manage access to resources' option.
+In this section you can specify the resources by it's PID or OBJID value. Select 'New Userresource' to add a new resource.
+<ul class="star">
+<li><code>Resource&#80;id</code> : The PID value of the individual resource. Or objid of the resources</li>
+<li><code>Download limit</code> (default is no limit) : The number of times a user is allowed to download this resources. Set to zero for no limit.</li>
+<li><code>Apply downloadlimit for levels</code> : The levels this download limit applies to.</li>
+<li><code>Expiration date</code> (default is no date) : The end date the resource is available</li>
+</ul><p class="paragraph"/>Once one or more resources are declared this way, the user can visit their "User's download page". It will show all available ( and possibly expired ) resources and the way those resources are disseminated.
+The location of this page is:<p class="paragraph"/><code>http://[object repository domain]/resource?access_token=[webservice key]</code><p class="paragraph"/>
+<h4>Editing and removing</h4>
+Any account can be modified and deleted. The webservice key will change when the Access Scope setting changed.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/preparation.html">&lt;&lt; <strong>7</strong><span>Preparing the submission package</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

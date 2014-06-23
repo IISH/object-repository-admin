@@ -39,7 +39,7 @@
 
     </ol>
 
-    <g:form mapping="namingAuthority" params="[na:params.na, id:policyInstance.id]">
+    <g:form mapping="namingAuthority" params="[na:params.na, id:policyInstance.id]" method="DELETE" >
         <fieldset class="buttons">
             <g:link mapping="namingAuthority" params="[na:params.na]" class="edit" action="edit" id="${policyInstance?.id}"><g:message code="default.button.edit.label"
                                                                                       default="Edit"/></g:link>

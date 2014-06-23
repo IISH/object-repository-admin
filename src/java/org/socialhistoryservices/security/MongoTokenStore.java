@@ -20,16 +20,20 @@ package org.socialhistoryservices.security;
 import com.mongodb.*;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * OAuth2 provider of tokens. Made for MongoDB
+ *
+ * Field expirationTokenStore will contain a token and expiration datestamp
  */
 final public class MongoTokenStore implements TokenStore {
 
@@ -43,22 +47,6 @@ final public class MongoTokenStore implements TokenStore {
     private String database;
     private Mongo mongo;
 
-    /**
-     * selectKeys
-     * <p/>
-     * returns all keys that belong to a principal
-     *
-     * @param username The identifier of the principal
-     * @return The OAuth2AccessToken associated with this principal
-     */
-    public OAuth2AccessToken selectKeys(String username) {
-        final BasicDBObject query = new BasicDBObject("name", username);
-        final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
-        DBObject document = collection.findOne(query);
-        return (document == null)
-                ? null
-                : (OAuth2AccessToken) deserialize((byte[]) document.get("token"));
-    }
 
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
         // insert into oauth_access_token (token_id, token, authentication_id, authentication, refresh_token) values (?, ?, ?, ?, ?)
@@ -66,14 +54,15 @@ final public class MongoTokenStore implements TokenStore {
         if (token.getRefreshToken() != null) {
             refreshToken = token.getRefreshToken().getValue();
         }
-        final String name = (authentication.getUserAuthentication() == null) ? null : authentication.getUserAuthentication().getName();
+        final String username = (authentication.getUserAuthentication() == null) ? null : authentication.getUserAuthentication().getName();
         final BasicDBObject document = new BasicDBObject();
-        document.put("token_id", token.getValue());
+        document.put("token_id", encodePassword( token.getValue()));
         document.put("token", serialize(token));
         document.put("authentication_id", null);
         document.put("authentication", serialize(authentication));
-        document.put("refresh_token", refreshToken);
-        document.put("name", name);
+        document.put("refresh_token", encodePassword(refreshToken));
+        document.put("username", username);
+        document.put("clientId", authentication.getAuthorizationRequest().getClientId());
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
         collection.insert(document);
     }
@@ -85,7 +74,7 @@ final public class MongoTokenStore implements TokenStore {
                 : null;
         if (accessToken == null) {
             // select token_id, token from oauth_access_token where token_id = ?
-            final BasicDBObject query = new BasicDBObject("token_id", tokenValue);
+            final BasicDBObject query = new BasicDBObject("token_id", encodePassword(tokenValue));
             final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
             DBObject document = collection.findOne(query);
             if (document == null) {
@@ -98,25 +87,43 @@ final public class MongoTokenStore implements TokenStore {
         return accessToken;
     }
 
-    public void removeAccessToken(String tokenValue) {
-
-        final BasicDBObject query = new BasicDBObject("token_id", tokenValue);
+    @Override
+    public void removeAccessToken(OAuth2AccessToken oAuth2AccessToken) {
+        final BasicDBObject query = new BasicDBObject("token_id", encodePassword(oAuth2AccessToken.getValue()));
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
         collection.remove(query);
-        this.accessTokenStore.remove(tokenValue);
+        this.accessTokenStore.remove(oAuth2AccessToken.getValue());
+    }
+
+    @Override
+    public void storeRefreshToken(OAuth2RefreshToken oAuth2RefreshToken, OAuth2Authentication oAuth2Authentication) {
+        final BasicDBObject document = new BasicDBObject();
+        document.put("token_id", encodePassword(oAuth2RefreshToken.getValue()));
+        document.put("token", serialize(oAuth2RefreshToken));
+        document.put("authentication", serialize(oAuth2Authentication));
+        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
+        collection.insert(document);
     }
 
     public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
+        return readAuthentication(token.getValue(), OAUTH_ACCESS_TOKEN);
+    }
 
-        final String tokenValue = token.getValue();
+
+    @Override
+    public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
+        return readAuthentication(token.getValue(), OAUTH_REFRESH_TOKEN);
+    }
+
+    private OAuth2Authentication readAuthentication(String tokenValue, String collectionName) {
         OAuth2Authentication authentication = (isFresh(tokenValue))
                 ? this.authenticationTokenStore.get(tokenValue)
                 : null;
         if (authentication == null) {
             // select token_id, authentication from oauth_access_token where token_id = ?
             final BasicDBObject query = new BasicDBObject();
-            query.put("token_id", token.getValue());
-            final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
+            query.put("token_id", encodePassword(tokenValue));
+            final DBCollection collection = getCollection(collectionName);
             final DBObject document = collection.findOne(query);
             if (document == null) {
             } else {
@@ -128,44 +135,10 @@ final public class MongoTokenStore implements TokenStore {
         return authentication;
     }
 
-    public void storeRefreshToken(ExpiringOAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
-
-        // insert into oauth_refresh_token (token_id, token, authentication) values (?, ?, ?)
-        final BasicDBObject document = new BasicDBObject();
-        document.put("token_id", refreshToken.getValue());
-        document.put("token", serialize(refreshToken));
-        document.put("authentication", serialize(authentication));
-        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
-        collection.insert(document);
-    }
-
-    public ExpiringOAuth2RefreshToken readRefreshToken(String token) {
-
-        // select token_id, token from oauth_refresh_token where token_id = ?
-        ExpiringOAuth2RefreshToken refreshToken = null;
-        final BasicDBObject query = new BasicDBObject("token_id", token);
-        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
-        final DBObject document = collection.findOne(query);
-        if (document == null) {
-        } else {
-            refreshToken = deserialize((byte[]) document.get("token"));
-        }
-        return refreshToken;
-    }
-
-    public void removeRefreshToken(String token) {
-
-        // remove from oauth_refresh_token where token_id = ?
-        final BasicDBObject query = new BasicDBObject("token_id", token);
-        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
-        collection.remove(query);
-    }
-
-    public OAuth2Authentication readAuthentication(ExpiringOAuth2RefreshToken token) {
-
-        // select token_id, authentication from oauth_refresh_token where token_id = ?
+    @Override
+    public OAuth2Authentication readAuthentication(String token) {
         OAuth2Authentication authentication = null;
-        final BasicDBObject query = new BasicDBObject("token_id", token.getValue());
+        final BasicDBObject query = new BasicDBObject("token_id", encodePassword(token));
         final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
         final DBObject document = collection.findOne(query);
         if (document == null) {
@@ -175,27 +148,87 @@ final public class MongoTokenStore implements TokenStore {
         return authentication;
     }
 
-    public void removeAccessTokenUsingRefreshToken(String refreshToken) {
+    public ExpiringOAuth2RefreshToken readRefreshToken(String token) {
 
-        // remove from oauth_access_token where refresh_token = ?
-        final BasicDBObject query = new BasicDBObject("refresh_token", refreshToken);
+        // select token_id, token from oauth_refresh_token where token_id = ?
+        ExpiringOAuth2RefreshToken refreshToken = null;
+        final BasicDBObject query = new BasicDBObject("token_id", encodePassword(token));
+        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
+        final DBObject document = collection.findOne(query);
+        if (document == null) {
+        } else {
+            refreshToken = deserialize((byte[]) document.get("token"));
+        }
+        return refreshToken;
+    }
+
+    @Override
+    public void removeRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
+        final BasicDBObject query = new BasicDBObject("token_id", encodePassword(oAuth2RefreshToken.getValue()));
+        final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
+        collection.remove(query);
+    }
+
+    @Override
+    public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
+        final BasicDBObject query = new BasicDBObject("refresh_token", encodePassword(oAuth2RefreshToken.getValue()));
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
         collection.remove(query);
     }
 
-    private void expiration(String tokenValue) {
-        this.expirationTokenStore.put(tokenValue, new Date().getTime() + sliderExpiration);
+    @Override
+    public OAuth2AccessToken getAccessToken(OAuth2Authentication oAuth2Authentication) {
+        final String username = oAuth2Authentication.getUserAuthentication().getName();
+        final Collection<OAuth2AccessToken> tokens = findTokensByUserName(username);
+        return (tokens.size() == 0) ? null : tokens.iterator().next();
     }
 
-    public void updateAuthentication(OAuth2AccessToken token, OAuth2Authentication authentication ) {
+    @Override
+    public Collection<OAuth2AccessToken> findTokensByUserName(String username) {
+        return findTokens("username", username);
+    }
 
+    @Override
+    public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
+        return findTokens("clientId", clientId);
+    }
+
+    private Collection<OAuth2AccessToken> findTokens(String key, String value) {
+        final BasicDBObject query = new BasicDBObject(key, value);
+        final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
+        final DBCursor cursor = collection.find(query);
+        Collection<OAuth2AccessToken> list = new ArrayList<OAuth2AccessToken>(cursor.size());
+        while (cursor.hasNext()) {
+            list.add((OAuth2AccessToken) deserialize((byte[]) cursor.next().get("token")));
+        }
+        return list;
+    }
+
+    public void updateAuthentication(OAuth2AccessToken token, OAuth2Authentication authentication) {
         storeAccessToken(token, authentication);
+    }
+
+    /**
+     * selectKeys
+     * <p/>
+     * returns all keys that belong to a user
+     *
+     * @param username The identifier of the principal
+     * @return The OAuth2AccessToken associated with this principal
+     */
+    public OAuth2AccessToken selectKeys(String username) {
+        final BasicDBObject query = new BasicDBObject("username", username);
+        final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
+        DBObject document = collection.findOne(query);
+        return (document == null)
+                ? null
+                : (OAuth2AccessToken) deserialize((byte[]) document.get("token"));
     }
 
     /**
      * isFresh
      * <p/>
-     * Determines if we can use the cache...
+     * Determines if we can use the cache rather than hit the database...
      *
      * @param tokenValue the token to look for
      * @return Fresh when the token is requested within the sliding expiration span
@@ -220,6 +253,10 @@ final public class MongoTokenStore implements TokenStore {
         this.sliderExpiration = sliderExpiration;
     }
 
+    private void expiration(String tokenValue) {
+        this.expirationTokenStore.put(tokenValue, new Date().getTime() + sliderExpiration);
+    }
+
     private DBCollection getCollection(String collection) {
 
         final DB db = mongo.getDB(getDatabase());
@@ -239,7 +276,7 @@ final public class MongoTokenStore implements TokenStore {
     public void setDatabase(String database) {
         this.database = database;
         final DBCollection c = getCollection(OAUTH_ACCESS_TOKEN);
-        c.ensureIndex("token_id");
+        c.ensureIndex("username");
         c.ensureIndex("token_id");
     }
 
@@ -282,5 +319,9 @@ final public class MongoTokenStore implements TokenStore {
                 }
             }
         }
+    }
+
+    private static String encodePassword(String rawPass) {
+        return org.apache.commons.codec.digest.DigestUtils.sha256Hex(rawPass);
     }
 }

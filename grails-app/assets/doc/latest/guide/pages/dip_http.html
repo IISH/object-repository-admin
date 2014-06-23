@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>6.1 HTTP 1.1 service 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/storage.html">&lt;&lt; <strong>5</strong><span>Archival Storage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>6.1 HTTP 1.1 service - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="dip_http">6.1 HTTP 1.1 service</h2>
+The HTTP dissemination service is probably the most familiar technique to distributing content to the human consumer or API client.
+Usually it is here persistent identifiers will need to resolve to. It offers:<p class="paragraph"/><h4>Html page of the metadata</h4>
+The archival package's preservation descriptive information is presented for the master and it's derivatives.
+The conventional dissemination url is:<p class="paragraph"/><code>http://disseminate.objectrepository.org/metadata/[persistent identifier]</code><p class="paragraph"/><h4>Xml document of the metadata</h4>
+Again the AIP rendered as a XML document. The conventional dissemination url is:<p class="paragraph"/><code>http://disseminate.objectrepository.org/metadata/[persistent identifier]?accept=xml</code><p class="paragraph"/>An example of the response could be:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"utf&#45;8"</span>?&#62;</span>
+<span class="xml&#45;tag">&#60;orfiles xmlns=<span class="xml&#45;quote">"http://objectrepository.org/orfiles/1.0/"</span>&#62;</span>
+    <span class="xml&#45;tag">&#60;orfile&#62;</span>
+        <span class="xml&#45;tag">&#60;pid&#62;</span>10622/30051002935671<span class="xml&#45;tag">&#60;/pid&#62;</span>
+        <span class="xml&#45;tag">&#60;resolverBaseUrl&#62;</span>http://hdl.handle.net/<span class="xml&#45;tag">&#60;/resolverBaseUrl&#62;</span>
+        <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+        <span class="xml&#45;tag">&#60;filename&#62;</span>30051002935671.tif<span class="xml&#45;tag">&#60;/filename&#62;</span>
+        <span class="xml&#45;tag">&#60;label&#62;</span>2012&#45;09&#45;08 batch filer4<span class="xml&#45;tag">&#60;/label&#62;</span>
+        <span class="xml&#45;tag">&#60;access&#62;</span>restricted<span class="xml&#45;tag">&#60;/access&#62;</span>
+        <span class="xml&#45;tag">&#60;master&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:master<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/master/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/tiff<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>293909478<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;content x&#45;resolution=<span class="xml&#45;quote">"300.0"</span> y&#45;resolution=<span class="xml&#45;quote">"300.0"</span> width=<span class="xml&#45;quote">"8066.0"</span> height=<span class="xml&#45;quote">"12142.0"</span>/&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>dc3fc60cf5ec720fbef6cbfaf04d7352<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Tue Nov 29 13:21:00 CET 2011<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:32:58 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:32:58 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/master&#62;</span>
+        <span class="xml&#45;tag">&#60;level2&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:level2<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/level2/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/jpeg<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>102768<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>15471cf308f739ea548496530277425d<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:34:06 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/level2&#62;</span>
+        <span class="xml&#45;tag">&#60;level3&#62;</span>
+            <span class="xml&#45;tag">&#60;pidurl&#62;</span>http://hdl.handle.net/10622/30051002935671?locatt=view:level3<span class="xml&#45;tag">&#60;/pidurl&#62;</span>
+            <span class="xml&#45;tag">&#60;resolveUrl&#62;</span>http://disseminate.objectrepository.org/file/level3/10622/30051002935671<span class="xml&#45;tag">&#60;/resolveUrl&#62;</span>
+            <span class="xml&#45;tag">&#60;contentType&#62;</span>image/jpeg<span class="xml&#45;tag">&#60;/contentType&#62;</span>
+            <span class="xml&#45;tag">&#60;length&#62;</span>21065<span class="xml&#45;tag">&#60;/length&#62;</span>
+            <span class="xml&#45;tag">&#60;content height=<span class="xml&#45;quote">"350"</span> width=<span class="xml&#45;quote">"232"</span> x&#45;resolution=<span class="xml&#45;quote">"72 PixelsPerInch"</span> y&#45;resolution=<span class="xml&#45;quote">"72 PixelsPerInch"</span>/&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>ba0682b465bf6d600d213eebb9b43388<span class="xml&#45;tag">&#60;/md5&#62;</span>
+            <span class="xml&#45;tag">&#60;uploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/uploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;firstUploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/firstUploadDate&#62;</span>
+            <span class="xml&#45;tag">&#60;lastUploadDate&#62;</span>Sat Sep 08 22:34:01 CEST 2012<span class="xml&#45;tag">&#60;/lastUploadDate&#62;</span>
+        <span class="xml&#45;tag">&#60;/level3&#62;</span>
+    <span class="xml&#45;tag">&#60;/orfile&#62;</span>
+<span class="xml&#45;tag">&#60;/orfiles&#62;</span></pre></div><p class="paragraph"/><h4>A file stream with mimetype</h4>
+A http request for an openly accessible resource would return the corresponding file in the appropriate content
+type such as an image. The template URL would be:<p class="paragraph"/><code>http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]</code><p class="paragraph"/>The returning filename can also be set by setting a contentType and filename parameter so:<p class="paragraph"/><code>http://disseminate.objectrepository.org/file/[derivative level]/[persistent identifier]?contentType=application/save&#38;filename=myfile.tif</code><p class="paragraph"/><h4>Streaming</h4>
+De HTTP service handles the HTTP 206 protocol, which will enable the streaming of content to most common audio and video players.
+The Real Time Streaming Protocol is not supported.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/storage.html">&lt;&lt; <strong>5</strong><span>Archival Storage</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

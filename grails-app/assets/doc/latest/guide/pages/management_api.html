@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>8.3 Dissemination Accounts API 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/preparation.html">&lt;&lt; <strong>7</strong><span>Preparing the submission package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>8.3 Dissemination Accounts API - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="management_api">8.3 Dissemination Accounts API</h2>
+You can create new user accounts and defined the access to resources with API calls. To make those calls your client needs an administration account and it's webservice key that goes with it.
+The API will allow you to:
+<ul class="star">
+<li>create a user account</li>
+<li>re-set a user account, refreshing the webservice key or password</li>
+<li>add or update access to resources; setting optional download limits and expiration dates</li>
+</ul><p class="paragraph"/>You cannot:
+<ul class="star">
+<li>delete a user account</li>
+<li>create 'administration' and 'all' accounts</li>
+<li>set policy access</li>
+<li>delete resources access</li>
+<li>create or update an account with a username created by a different object repository owner</li>
+</ul><p class="paragraph"/><h4>Content type</h4>
+The API content type can be JSON and XML. It's entry point is:<p class="paragraph"/><code>http://[object repository domain]/[your naming authority]/user</code><p class="paragraph"/><h4>Creating an account parameters</h4>
+<ul class="star">
+<li>user.username: the login name</li>
+<li>user.password: the unencrypted password. If empty this will automatically create a password</li>
+<li>user.mail: an e-mail address</li>
+<li>user.resources: the list of repository resources that can be accessed with this account</li>
+<li>user.resources.userResource: a resource element with:</li>
+<ul class="star">
+<li>pid: the PID of OBJID</li>
+<li>downloadLimit (default 0)</li>
+<li>expirationDate (default none): format YYYY-mm-DD</li>
+<li>buckets ( default 'master' ): a repeatable list of levels the downloadLimit and expirationDate apply to</li>
+</ul></ul><p class="paragraph"/><h4>Updating an account parameters</h4>
+An existing account will be updated when you use the same user.username value
+<ul class="star">
+<li>user.replaceKey ( default false ): will change the webservice key</li>
+</ul><p class="paragraph"/><h4>Examples</h4>
+To create or update a user account; and set the access for two resources, one with a download limit, another with an expiration date, sent:<p class="paragraph"/>Request:
+<div class="code"><pre>POST /12345/user HTTP/1.1
+Accept: &#42;/&#42;
+Connection: Keep&#45;Alive
+Content&#45;Type: text/xml; charset=utf&#45;8
+Authorization: Bearer &#91;webservice key&#93;</pre></div><p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;user&#62;</span>
+  <span class="xml&#45;tag">&#60;username&#62;</span>a username<span class="xml&#45;tag">&#60;/username&#62;</span>
+  <span class="xml&#45;tag">&#60;password&#62;</span>a password<span class="xml&#45;tag">&#60;/password&#62;</span>
+  <span class="xml&#45;tag">&#60;mail&#62;</span>an e&#45;mail address<span class="xml&#45;tag">&#60;/mail&#62;</span>
+  <span class="xml&#45;tag">&#60;resources&#62;</span>
+    <span class="xml&#45;tag">&#60;userResource&#62;</span>
+        <span class="xml&#45;tag">&#60;downloadLimit&#62;</span>100<span class="xml&#45;tag">&#60;/downloadLimit&#62;</span>
+        <span class="xml&#45;tag">&#60;pid&#62;</span>12345/a&#45;pid<span class="xml&#45;tag">&#60;/pid&#62;</span>
+        <span class="xml&#45;tag">&#60;buckets&#62;</span>master<span class="xml&#45;tag">&#60;/buckets&#62;</span>
+        <span class="xml&#45;tag">&#60;buckets&#62;</span>level1<span class="xml&#45;tag">&#60;/buckets&#62;</span>
+    <span class="xml&#45;tag">&#60;/userResource&#62;</span>
+    <span class="xml&#45;tag">&#60;userResource&#62;</span>
+        <span class="xml&#45;tag">&#60;expirationDate&#62;</span>2020&#45;01&#45;01<span class="xml&#45;tag">&#60;/expirationDate&#62;</span>
+        <span class="xml&#45;tag">&#60;pid&#62;</span>12345/another&#45;pid<span class="xml&#45;tag">&#60;/pid&#62;</span>
+     <span class="xml&#45;tag">&#60;/resources&#62;</span>
+<span class="xml&#45;tag">&#60;/user&#62;</span></pre></div><p class="paragraph"/>Which is - had you sent it as text/json - equivalent to:
+<div class="code"><pre>&#123;
+    user:&#123;
+        username: 'a username',
+        password: 'a password',
+        mail: 'an e&#45;mail address',
+        resources:&#91;
+            &#123;
+                pid:'12345/a&#45;pid',
+                buckets:'master',
+                buckets:'level1',
+                downloadLimit:100
+                &#125;,
+                &#123;
+                pid:'12345/another&#45;pid',
+                expirationDate:'2020&#45;01&#45;01'&#125;
+        &#93;
+        &#125;
+&#125;</pre></div><p class="paragraph"/>Response:
+<div class="code"><pre><span class="xml&#45;tag">&#60;user&#62;</span>
+  <span class="xml&#45;tag">&#60;message&#62;</span>ok<span class="xml&#45;tag">&#60;/message&#62;</span>
+  <span class="xml&#45;tag">&#60;url&#62;</span>http://&#91;repository&#45;url&#93;/resource/list?access_token=&#91;webservice key&#93;<span class="xml&#45;tag">&#60;/url&#62;</span>
+  <span class="xml&#45;tag">&#60;username&#62;</span>a username<span class="xml&#45;tag">&#60;/username&#62;</span>
+  <span class="xml&#45;tag">&#60;password&#62;</span>a password<span class="xml&#45;tag">&#60;/password&#62;</span>
+<span class="xml&#45;tag">&#60;/user&#62;</span></pre></div><p class="paragraph"/>Which JSON equivalent is
+<div class="code"><pre>&#123;
+    <span class="java&#45;quote">"user"</span>:&#123;
+        <span class="java&#45;quote">"message"</span>:<span class="java&#45;quote">"ok"</span>,
+        <span class="java&#45;quote">"url"</span>:<span class="java&#45;quote">"http://&#91;repository&#45;url&#93;/resource/list?access_token=&#91;webservice key&#93;"</span>,
+        <span class="java&#45;quote">"username"</span>:<span class="java&#45;quote">"a username"</span>,
+        <span class="java&#45;quote">"password"</span>:<span class="java&#45;quote">"a password"</span>
+        &#125;
+&#125;</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/preparation.html">&lt;&lt; <strong>7</strong><span>Preparing the submission package</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

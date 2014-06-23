@@ -1,4 +1,4 @@
-<g:set var="entityName" value="UserAccount"/>
+<g:set var="entityName" value="User"/>
 <!doctype html>
 <html>
 <head>

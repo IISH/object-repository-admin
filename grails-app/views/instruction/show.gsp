@@ -11,11 +11,12 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link mapping="namingAuthority" params="[na:params.na]" class="list" action="list"><g:message code="default.list.label"
-                                                          args="[entityName]"/></g:link></li>
+        <li><g:link mapping="namingAuthority" params="[na: params.na]" class="list" action="list"><g:message
+                code="default.list.label"
+                args="[entityName]"/></g:link></li>
         <li><g:link mapping="namingAuthority" class="list" controller="stagingfile"
-                    params="[na:params.na,orid: instructionInstance.id]"><g:message code="default.files.label"
-                                                                       default="Show files"/></g:link></li>
+                    params="[na: params.na, orid: instructionInstance.id]"><g:message code="default.files.label"
+                                                                                      default="Show files"/></g:link></li>
         <g:render template="/layouts/services" model="[instance: instructionInstance]"/>
     </ul>
 </div>
@@ -48,29 +49,31 @@
         <g:render template="/layouts/profileInstructionShow" model="[instance: instructionInstance]"/>
     </ol>
 
-    <div class="buttons">
-        <g:form mapping="namingAuthority" params="[na:params.na, id:instructionInstance?.id]">
+
+    <g:form mapping="namingAuthority" params="[na: params.na, id: instructionInstance?.id]" method="DELETE">
+        <fieldset class="buttons">
             <g:if test="${!instructionInstance.ingesting && (instructionInstance.task.statusCode <= 300 || instructionInstance.task.statusCode > 699)}">
                 <g:if test="${(instructionInstance.task.statusCode == 0 || instructionInstance.task.statusCode > 699)}">
-                    <span class="button"><g:actionSubmit class="edit" action="edit"
-                                                         value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
+                    <g:link mapping="namingAuthority" params="[na: params.na]" class="edit" action="edit"
+                            id="${instructionInstance?.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link>
                 </g:if>
             </g:if>
             <g:else>
                 <p>This instruction's attributes are now frozen. They cannot be changed whilst a task is in progress until it is completed.</p>
             </g:else>
 
-            <span class="button"><g:actionSubmit
+            <g:actionSubmit
                     class="delete" action="delete"
                     value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
-        </g:form>
-    </div>
+                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+        </fieldset>
+    </g:form>
+</div>
 </div>
 
 <g:formRemote name="listremote"
               update="updateList"
-              url="[mapping:'namingAuthority', action:'showremote', params: [na:params.na,id: instructionInstance.id]]"/>
+              url="[mapping: 'namingAuthority', action: 'showremote', params: [na: params.na, id: instructionInstance.id]]"/>
 
 </body>
 </html>

@@ -3,7 +3,6 @@ package org.objectrepository.orfiles
 import org.objectrepository.security.Bucket
 import org.objectrepository.security.Policy
 import org.objectrepository.security.User
-import org.objectrepository.security.UserResource
 import org.objectrepository.util.OrUtil
 
 class PolicyService {
@@ -81,7 +80,7 @@ class PolicyService {
      * Detects if the user is allowed to see the resource as if it has an access=open status
      * Returns a true or a userInstance with the downloads upped. Null if no access is allowed.
      *
-     * @param access Access status: 'open', 'restricted' or 'closed'
+     * @param status Access status: 'open', 'restricted' or 'closed'
      * @param na Prefix of the PID
      * @param pids PID value
      * @return Array of [status:http status, level:open|restricted|closed, user:null|userInstance]

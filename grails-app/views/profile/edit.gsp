@@ -21,7 +21,7 @@
 <g:render template="/layouts/header" model="[instance:profileInstance]"/>
 
 <div id="edit-profile" class="content scaffold-edit" role="main">
-    <g:form mapping="namingAuthority" params="[na:params.na, id:profileInstance.id, version:profileInstance?.version]" method="post">
+    <g:form mapping="namingAuthority" params="[na:params.na, id:profileInstance.id, version:profileInstance?.version]" method="PUT">
         <fieldset class="form">
             <ol class="property-list profile"><g:render template="/layouts/profileInstructionForm"
                                                         model="[instance:profileInstance]"/></ol>

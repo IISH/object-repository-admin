@@ -11,29 +11,29 @@ import org.springframework.security.access.annotation.Secured
  * @author Lucien van Wouw <lwo@iisg.nl>
  */
 @Secured(['ROLE_OR_USER'])
-class StagingareaController extends NamingAuthorityInterceptor {
+class StagingareaController extends InterceptorValidation {
 
     def springSecurityService
     def ldapUserDetailsManager
 
     static allowedMethods = [save: "POST", update: "POST", changekey: "POST"]
 
-    def index = {
+    def index() {
         forward(action: "list", params: params)
     }
 
-    def list = {
+    def list() {
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         def userInstanceList = ldapUserDetailsManager.listLdapUsers(params.na)
         [userInstanceList: userInstanceList, userInstanceTotal: userInstanceList.size()]
     }
 
-    def create = {
+    def create() {
         [userInstance: []]
     }
 
-    def save = {
+    def save() {
 
         // Set password when it was left empty
         final def newPassword
@@ -78,7 +78,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
         forward(action: "show", id: params.id)
     }
 
-    def show = {
+    def show() {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
@@ -88,7 +88,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
         [userInstance: userInstance]
     }
 
-    def edit = {
+    def edit() {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
@@ -97,7 +97,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
             [userInstance: userInstance]
     }
 
-    def update = {
+    def update() {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
@@ -120,7 +120,7 @@ class StagingareaController extends NamingAuthorityInterceptor {
         }
     }
 
-    def delete = {
+    def delete() {
         def userInstance = ldapUserDetailsManager.loadUserByUsername(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"

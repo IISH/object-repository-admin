@@ -1,25 +1,26 @@
 package org.objectrepository.instruction
 
-import org.objectrepository.security.NamingAuthorityInterceptor
+import org.objectrepository.security.InterceptorValidation
 import org.objectrepository.security.Policy
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
-class StagingfileController extends NamingAuthorityInterceptor {
+class StagingfileController extends InterceptorValidation {
 
     def springSecurityService
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index = {
+    def index() {
         forward(action: "list", params: params)
     }
 
-    def list = {
+    def list() {
         params.view = "list"
         forward(action: "listremote", params: params)
     }
 
-    def listremote = {
+    def listremote() {
         def instructionInstance = Instruction.get(params.orid) // This is the Instruction id
         if (!instructionInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'Stagingfile.label', default: 'Instruction'), params.orId])}"
@@ -63,18 +64,17 @@ class StagingfileController extends NamingAuthorityInterceptor {
                     stagingfileInstanceTotal: count,
                     instructionInstance: instructionInstance])
             params.remove('view')
-        }
-        else
+        } else
             [stagingfileInstanceList: stagingfileInstanceList, stagingfileInstanceTotal: count,
                     instructionInstance: instructionInstance]
     }
 
-    def show = {
+    def show() {
         params.view = "show"
         forward(action: "showremote", params: params)
     }
 
-    def showremote = {
+    def showremote() {
         def stagingfileInstance = Stagingfile.get(params.id)
         if (!stagingfileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
@@ -88,41 +88,27 @@ class StagingfileController extends NamingAuthorityInterceptor {
         }
     }
 
-    def edit = {
-        def stagingfileInstance = Stagingfile.get(params.id)
-        if (!stagingfileInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            forward(action: "list")
-            return
+    def edit(Stagingfile stagingfileInstance) {
+
+        switch (status(stagingfileInstance)) {
+            case HttpStatus.OK:
+                respond stagingfileInstance, model: [stagingfileInstance: stagingfileInstance, policyList: Policy.findAllByNa(stagingfileInstance.parent.na).access]
+                break
+            case HttpStatus.BAD_REQUEST:
+                respond(stagingfileInstance, view: 'show', model: [stagingfileInstance: stagingfileInstance, policyList: Policy.findAllByNa(stagingfileInstance.parent.na).access])
+                break
         }
-        def policyInstanceList = Policy.findAllByNa(stagingfileInstance.parent.na)
-        [stagingfileInstance: stagingfileInstance, policyList: policyInstanceList.access]
     }
 
-    def update = {
-        def stagingfileInstance = Stagingfile.get(params.id)
-        if (stagingfileInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
-                if (stagingfileInstance.version > version) {
+    def update(Stagingfile stagingfileInstance) {
 
-                    stagingfileInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'instruction.label', default: 'Instruction')] as Object[], "Another user has updated this Instruction while you were editing")
-                    render(view: "edit", model: [stagingfileInstance: stagingfileInstance])
-                    return
-                }
-            }
-            stagingfileInstance.properties = params
-            if (!stagingfileInstance.hasErrors() && stagingfileInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'stagingfile', default: 'Stagingfile'), stagingfileInstance.id])}"
-                forward(action: "show", id: stagingfileInstance.id)
-            }
-            else {
-                render(view: "edit", model: [stagingfileInstance: stagingfileInstance])
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'stagingfile.label', default: 'Stagingfile'), params.id])}"
-            forward(action: "list")
+        switch (status(stagingfileInstance)) {
+            case HttpStatus.OK:
+                respond(stagingfileInstance, view: 'show', model: [stagingfileInstance: stagingfileInstance])
+                break
+            case HttpStatus.BAD_REQUEST:
+                respond(stagingfileInstance, view: 'edit', model: [stagingfileInstance: stagingfileInstance])
+                break
         }
     }
 }

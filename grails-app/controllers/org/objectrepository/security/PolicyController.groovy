@@ -1,115 +1,121 @@
 package org.objectrepository.security
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_OR_USER'])
-class PolicyController extends NamingAuthorityInterceptor {
+class PolicyController extends InterceptorValidation {
 
     def springSecurityService
-    def policyService
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def index = {
+    def index() {
         forward(action: "list", params: params)
     }
 
-    def list = {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    def list(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
         def policies = Policy.findAllByNa(params.na, params)
-        if (!policies) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-        } else
-            [policyInstanceList: policies, policyInstanceTotal: policies.size()]
+        respond policies, model: [policyInstanceList: policies, policyInstanceTotal: policies.size()]
     }
 
-    def create = {
-        def buckets = grailsApplication.config.accessMatrix['closed'].collect {
+    def create() {
+        respond new Policy(access: 'add a custom value here', na: params.na, buckets: grailsApplication.config.accessMatrix['closed'].collect {
             new Bucket(it)
-        }
-        Policy policy = new Policy(access: 'add a custom value here', na: params.na, buckets: buckets)
-        [policyInstance: policy, accessStatus: grailsApplication.config.accessStatus]
-
+        })
     }
 
-    def save = {
-        def policyInstance = new Policy(params)
-        policyInstance.na = params.na
-        policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect {
-            new Bucket(bucket: it.bucket, access: params[it.bucket])
-        }
-        if (!policyInstance.save(flush: true)) {
-            render(view: "create", model: [policyInstance: policyInstance])
-            return
-        }
-        flash.message = message(code: 'default.created.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
-        forward(action: "show", id: policyInstance.id)
-    }
-
-    def show = {
-        def policyInstance = Policy.get(params.id)
-        if (!policyInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            forward(action: "list")
-            return
-        }
-        [policyInstance: policyInstance]
-    }
-
-    def edit = {
-        def policyInstance = Policy.get(params.id)
-        if (!policyInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            forward(action: "list")
-        }
-        else if (accessMatrixIsLocked(policyInstance.access)) {
-            forward(action: "show", params: params)
-        }
-        [policyInstance: policyInstance, accessStatus: grailsApplication.config.accessStatus]
-    }
-
-    def update = {
-        def policyInstance = Policy.get(params.id)
-        if (!policyInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            forward(action: "list")
-            return
-        }
+    def save(Policy policyInstance) {
         policyInstance.buckets = grailsApplication.config.accessMatrix['closed'].collect {
             new Bucket(bucket: it.bucket, access: params[it.bucket])
         }
 
-        if (!policyInstance.save(flush: true)) {
-            render(view: "edit", model: [policyInstance: policyInstance])
-            return
+        switch (status(policyInstance)) {
+            case HttpStatus.OK:
+                policyInstance.save()
+                flash.message = message(code: 'default.created.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
+                forward(action: "show", id: policyInstance.id)
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                respond(policyInstance, view: 'create', model: [policyInstance: policyInstance])
+                break
         }
-
-        policyService.cachePolicy(params.na, policyInstance)
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
-        forward(action: "show", id: policyInstance.id)
     }
 
-    def delete = {
-        def policyInstance = Policy.get(params.id)
-        if (!policyInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-            forward(action: "list")
+    def show(Policy policyInstance) {
+
+        switch (status(policyInstance)) {
+            case HttpStatus.OK:
+                respond policyInstance
+                break
+            case HttpStatus.BAD_REQUEST:
+                respond(policyInstance, view: 'create', model: [policyInstance: policyInstance])
+                break
         }
-        else
-        if (accessMatrixIsLocked(policyInstance.access)) {
-            forward(action: "show", id: params.id)
+    }
+
+    def edit(Policy policyInstance) {
+
+        switch (status(policyInstance)) {
+            case HttpStatus.OK:
+                if (accessMatrixIsLocked(policyInstance.access))
+                    forward(action: "show", params: params)
+                else
+                    respond policyInstance
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                respond(policyInstance, view: 'show', model: [policyInstance: policyInstance])
+                break
         }
-        else
-            try {
-                policyInstance.delete(flush: true)
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-                forward(action: "list")
-            }
-            catch (DataIntegrityViolationException e) {
-                flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
-                forward(action: "show", id: params.id)
-            }
+    }
+
+    def update(Policy policyInstance) {
+
+        policyInstance?.buckets = grailsApplication.config.accessMatrix['closed'].collect {
+            new Bucket(bucket: it.bucket, access: params[it.bucket])
+        }
+
+        switch (status(policyInstance)) {
+            case HttpStatus.OK:
+                if (accessMatrixIsLocked(policyInstance.access)) {
+                    forward(action: "show", params: params)
+                } else {
+                    policyInstance.save()
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'policy.label', default: 'Policy'), policyInstance.id])
+                    forward(action: "show", id: policyInstance.id)
+                }
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                render(view: "edit", model: [policyInstance: policyInstance])
+        }
+
+    }
+
+    def delete(Policy policyInstance) {
+
+        switch (status(policyInstance)) {
+            case HttpStatus.OK:
+                if (accessMatrixIsLocked(policyInstance.access))
+                    forward(action: "show", params: params)
+                else
+                    try {
+                        policyInstance.delete(flush: true)
+                        flash.message = message(code: 'default.deleted.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
+                        forward(action: "list")
+                    }
+                    catch (DataIntegrityViolationException e) {
+                        flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'policy.label', default: 'Policy'), params.id])
+                    }
+                break
+
+            case HttpStatus.BAD_REQUEST:
+                respond(policyInstance, view: 'show', model: [policyInstance: policyInstance])
+                break
+        }
     }
 
     /**
@@ -120,7 +126,7 @@ class PolicyController extends NamingAuthorityInterceptor {
      * @param access
      * @return
      */
-    boolean accessMatrixIsLocked(def access) {
+    private boolean accessMatrixIsLocked(def access) {
 
         def locked = (grailsApplication.config.accessMatrix[access])
         if (locked) {

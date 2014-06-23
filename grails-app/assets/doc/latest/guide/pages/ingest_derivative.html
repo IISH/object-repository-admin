@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3.5 Ingest derivative services 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/sip.html">&lt;&lt; <strong>2</strong><span>Submission information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3.5 Ingest derivative services - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_derivative_custom"><strong>3.1</strong><span>Custom derivative service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_derivative_image"><strong>3.2</strong><span>Image derivative service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#ingest_derivative_av"><strong>3.3</strong><span>Audio-video derivative service</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h2 id="ingest_derivative">3.5 Ingest derivative services</h2>
+The object repository derivative services will generate - on command and if possible  - three types
+of preview material which is intended as display to the consumer. There range from "light weight" presentations to "heavy"
+normalizations of the original master data. Derivative production may involve a simple reduction; but also the introduction
+of a completely new content type.<p class="paragraph"/>The types are:
+<ul class="star">
+<li>Level 1 derivatives: these are normalisations. Or near-enough reproductions of the master files.</li>
+<li>level 2 derivatives: medium sized, fit-to-screen sized content. That still give a good insight of the details of the master files.</li>
+<li>level 3 derivatives: small, quick-peek, thumbnail like material.</li>
+</ul><p class="paragraph"/>Both master and derivatives become part of the archival package, be it that only the master has the intended durable
+status. It goes without saying that derivative production is only possible after a master is persisted and part of
+the archival package.<p class="paragraph"/>Supplying the submission package of custom derivatives is also possible. The precise interpretation of what a level 1, 2 or 3 is therefor at the discretion of the content producer.<p class="paragraph"/>Derivative services will produce a derivative when:
+<ul class="star">
+<li>No derivative of that level exists;</li>
+<li>Or when the processing instruction explicitly states to replace existing derivatives.</li>
+<li>If not, the action is skipped.</li>
+</ul><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_custom">3.5.1 Custom derivative service</h2>
+At any time the content producer can offer their own custom derivatives. These can be of any content type or file size.
+It is advisable to remain consistent with regard to the to the level 1, 2 and 3 derivative types.<p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>Look for a custom placed derivative in the submission package</li>
+<li>if not found, return success</li>
+<li>if found, determine the derivative level</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_image">3.5.2 Image derivative service</h2>
+It attempts to create three levels for images and first page pdf documents:
+<ul class="star">
+<li>level 1: high print quality; standardization to pdf</li>
+<li>level 2: medium screen quality; length and width reduction</li>
+<li>level 3: small, thumbnail quality; length and width and resolution reduction</li>
+</ul><p class="paragraph"/>The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>Obtain the master file; or if available a suitable level 1 derivative from the archival storage</li>
+<li>Produce a derivative using ImageMagick</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>For a delete action:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+<h2 id="ingest_derivative_av">3.5.3 Audio-video derivative service</h2>
+The Audio and Video derivative service will turn the master video or audio file into a derivative.<p class="paragraph"/><h3>Audio additions</h3>
+For master audio, the service will produce a level 1 type, high quality mp3. The requirements this service adheres to is to:
+<ol>
+<li>retrieve the master audio file</li>
+<li>use ffmpeg software to create the audio file in the desired mp3 content type</li>
+<li>add the derivative to the archival package</li>
+<li>when issues arrive, throw an error</li>
+<li>otherwise return success</li>
+</ol><p class="paragraph"/><h3>Video additions</h3>
+For video, three derivative levels are produced:<p class="paragraph"/><h4>Level 1</h4>
+A high quality h264 AAC (mp4) movie.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the master video file</li>
+<li>use ffmpeg software to create the video file in the desired mp4 content type. No resolution, frame or height and width are altered.</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h4>Level 2</h4>
+A montage of 16 stills taken from the entire movie's range.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the level 1 derivative video file. Or if not available the master.</li>
+<li>use ffmpeg software to create 16 video stills; the height is set to about 800px each.</li>
+<li>use ImageMagick to collate these images into one image/png file</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h4>Level 3</h4>
+A small, thumbnail quality taken from the middle of the movie.
+The requirements this service adheres to is for an addition or update action:
+<ol>
+<li>retrieve the level 1 derivative video file. Or if not available the master.</li>
+<li>use ffmpeg software to create a single video stills from an estimated "middle" of the movie.</li>
+<li>use ImageMagick to scale the image into one image/png file</li>
+<li>calculate a md5 checksum</li>
+<li>add the file to the archival storage</li>
+<ol>
+<li>compare the checksum between the submission package and the archival package</li>
+<ol>
+<li>when these match, add the preservation description information to the archival package.</li>
+<li>if there is a mismatch, throw an error</li>
+</ol>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/><h3>Removal</h3>
+The requirements this service adheres to is for a removal action is:
+<ol>
+<li>remove the content data objects ( the derivative file )</li>
+<li>check the removal</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>remove the preservation description information</li>
+<ol>
+<li>verify the removal action. if it succeeded, continue</li>
+<li>if removal failed, throw an error</li>
+</ol>
+<li>return success</li>
+</ol><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/sip.html">&lt;&lt; <strong>2</strong><span>Submission information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

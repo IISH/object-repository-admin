@@ -22,12 +22,12 @@ class UserResource {
     }
 
     static constraints = {
+        pid(matches:'^.+\\/.+')
         objid(nullable: true)
         contentType(nullable: true)
         expirationDate(nullable: true)
         downloadLimit(min: 0)
         downloads(min: 0)
-        buckets(inList: ['master', 'level1', 'level2', 'level3'])
     }
 
     static mapping = {

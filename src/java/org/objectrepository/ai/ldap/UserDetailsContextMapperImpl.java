@@ -11,11 +11,11 @@ import java.util.Collection;
 
 public class UserDetailsContextMapperImpl implements UserDetailsContextMapper {
 
-    public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<GrantedAuthority> authorities) {
-
+    @Override
+    public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> grantedAuthorities) {
         LdapUser.Essence p = new LdapUser.Essence(ctx);
         p.setUsername(username);
-        p.setAuthorities(authorities);
+        p.setAuthorities(grantedAuthorities);
         return p.createUserDetails();
     }
 

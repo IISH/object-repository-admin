@@ -66,8 +66,7 @@ abstract class WorkflowJob {
         runMethod(document, method)
         if (taskValidationService.hasChange(current, document)) {
             runMethod(document)
-        }
-        else {
+        } else {
             saveWorkflow(document)
         }
     }
@@ -107,8 +106,7 @@ abstract class WorkflowJob {
         if (method) {
             log.info id(document) + "Method " + method + ": " + plans[document.task.name].statusCodes[document.task.statusCode]?.purpose
             "$method"(document)
-        }
-        else {
+        } else {
             final task = plans[method]?.statusCodes
             if (task) {
                 final map = [task: [name: method]]
@@ -233,28 +231,23 @@ abstract class WorkflowJob {
                 document.task.statusCode = (document.task.statusCode < 800) ? 797 : document.task.statusCode
             }
             last(document)
-        }
-        else if (document.task.exitValue == 240) {
+        } else if (document.task.exitValue == 240) {
             log.info id(document) + "Skipping task. The document has an unknown property making it incompatible with this service."
             document.task.statusCode = 798
             nextWorkflow(document)
-        }
-        else if (document.task.exitValue == 245) {
+        } else if (document.task.exitValue == 245) {
             log.info id(document) + "Skipping task. The document cannot proceed because the required files are not there."
             document.task.statusCode = 800
             nextWorkflow(document)
-        }
-        else if (document.task.exitValue == 250) {
+        } else if (document.task.exitValue == 250) {
             log.info id(document) + "Skipping task. It's design cannot handle this type of document."
             document.task.statusCode = 800
             nextWorkflow(document)
-        }
-        else if (++document.task.attempts > document.task.limit) {
+        } else if (++document.task.attempts > document.task.limit) {
             log.info id(document) + "Failed. Tried " + document.task.limit + " times."
             document.task.statusCode = 790
             nextWorkflow(document)
-        }
-        else {
+        } else {
             final String info = id(document) + "Retry task " + document.task.attempts + "\"" + document.task.limit + " " + document.task.name
             log.info info
             first(document)
@@ -304,7 +297,7 @@ abstract class WorkflowJob {
     /**
      * executeBefore
      *
-     * This task should and complete and then run a system task.
+     * This task should run and then proceed with a system task.
      *
      * @param document
      * @param args
@@ -365,10 +358,13 @@ abstract class WorkflowJob {
         ).each {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
-            stagingfile.workflow.each {
-                it.statusCode = (it.statusCode < 800) ? 100 : it.statusCode
+            stagingfile.workflow.findAll {
+                it.statusCode < 800
+            }.each {
+                it.attempts = 0
+                it.statusCode = 100
             }
-            stagingfile.workflow.find {it.name == 'EndOfTheRoad'}?.statusCode = 100
+            stagingfile.workflow.find { it.name == 'EndOfTheRoad' }?.statusCode = 100
 
             nextWorkflow(stagingfile)
             save(stagingfile) // we just go through the mill here.

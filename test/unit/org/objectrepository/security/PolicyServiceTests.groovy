@@ -3,7 +3,7 @@ package org.objectrepository.security
 import grails.test.mixin.TestFor
 import grails.util.Environment
 import org.objectrepository.orfiles.PolicyService
-import org.springframework.security.core.authority.GrantedAuthorityImpl
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @TestFor(PolicyService)
 class PolicyServiceTests {
@@ -51,7 +51,7 @@ class PolicyServiceTests {
     }
 
     void testAnonymousAccess() {
-        service.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_ANONYMOUS')]]]
+        service.springSecurityService = [authentication: [authorities: [new SimpleGrantedAuthority('ROLE_ANONYMOUS')]]]
 
         // We expect with policy open|restricted and closed...
         [
@@ -73,7 +73,7 @@ class PolicyServiceTests {
 
     void testEmbargoAnonymousAccess() {
 
-        service.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_ANONYMOUS')]]]
+        service.springSecurityService = [authentication: [authorities: [new SimpleGrantedAuthority('ROLE_ANONYMOUS')]]]
 
         String yesterday = new Date().minus(1).format('yyyy-MM-dd')
         String tomorrow = new Date().plus(1).format('yyyy-MM-dd')
@@ -116,7 +116,7 @@ class PolicyServiceTests {
     }
 
     void testAdministrationAccess() {
-        service.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_USER_' + na)]]]
+        service.springSecurityService = [authentication: [authorities: [new SimpleGrantedAuthority('ROLE_OR_USER_' + na)]]]
 
         [
                 'open':
@@ -136,13 +136,13 @@ class PolicyServiceTests {
 
     void testDisseminationRoleAccess() {
 
-        service.springSecurityService = [authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na)]]]
+        service.springSecurityService = [authentication: [authorities: [new SimpleGrantedAuthority('ROLE_OR_DISSEMINATION_' + na)]]]
         [
                 open: ['administration', 'restricted', 'closed'],
                 restricted: ['administration', 'administration', 'closed'],
                 closed: ['administration', 'administration', 'administration']
         ].each {
-            service.springSecurityService.authentication.authorities << new GrantedAuthorityImpl('ROLE_OR_POLICY_' + it.key)
+            service.springSecurityService.authentication.authorities << new SimpleGrantedAuthority('ROLE_OR_POLICY_' + it.key)
             [
                     'open':
                             expectedPolicieResponses[it.value[0]],
@@ -178,7 +178,7 @@ class PolicyServiceTests {
         String principal = 'a username'
         service.springSecurityService = [
                 principal: principal,
-                authentication: [authorities: [new GrantedAuthorityImpl('ROLE_OR_DISSEMINATION_' + na)]]]
+                authentication: [authorities: [new SimpleGrantedAuthority('ROLE_OR_DISSEMINATION_' + na)]]]
 
         final String pid = na + '/' + UUID.randomUUID().toString()
         userCache = new User(username: principal, na: na, resources: [

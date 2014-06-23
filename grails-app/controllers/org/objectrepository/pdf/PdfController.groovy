@@ -1,5 +1,8 @@
 package org.objectrepository.pdf
 
+import org.springframework.security.access.annotation.Secured
+
+@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class PdfController {
 
     def pdfService

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>7.2.4 Files and Compound objects 1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/sip.html"><strong>2</strong><span>Submission information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/ingest.html"><strong>3</strong><span>Ingest</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/aip.html"><strong>4</strong><span>Archival information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/storage.html"><strong>5</strong><span>Archival Storage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/dip.html"><strong>6</strong><span>Dissemination information package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/preparation.html"><strong>7</strong><span>Preparing the submission package</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Object repository</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>7.2.4 Files and Compound objects - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Lucien van Wouw</p>
+
+                    <p><strong>Version:</strong> 1.4</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="preparation_instruction_compound">7.2.4 Files and Compound objects</h2>
+Compound objects are abstractions of ordered files. The way you express a compound object is through the processing instruction.
+Here you determine:
+<ul class="star">
+<li>the pid value to refer to a group of files</li>
+<li>the physical file order</li>
+</ul><p class="paragraph"/>This information is used to offer the download of METS documents and on the fly PDFs at the dissemination api or website.<p class="paragraph"/><h3>Expressing objid and order of files</h3>
+The compound object has a persistent identifier. In the instruction this is set with the element <strong class="bold">objid</strong>
+This is a PID just like the PIDs you supply to identify your files with.<p class="paragraph"/>In addition each individual file in the instruction may be given an order using the element <strong class="bold">seq</strong>.<p class="paragraph"/>As an example, take the situation where you offer a three page letter. You place it onto the staging area:
+    <div class="code"><pre>home&#45;directory: /
+        /folderA
+        /folderA/page_0001.tiff
+        /folderA/page_0002.tiff
+        /folderA/page_0003.tiff</pre></div><p class="paragraph"/>Object ID and order is expressed this way in an instruction:
+<div class="code"><pre><span class="xml&#45;tag">&#60;?xml version=<span class="xml&#45;quote">"1.0"</span> encoding=<span class="xml&#45;quote">"UTF&#45;8"</span> standalone=<span class="xml&#45;quote">"yes"</span>?&#62;</span>
+    <span class="xml&#45;tag">&#60;instruction xmlns=<span class="xml&#45;quote">"http://objectrepository.org/instruction/1.0/"</span> objid=<span class="xml&#45;quote">"12345/my&#45;object&#45;id"</span>&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/my&#45;identifier&#45;a<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>1<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00001.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>cf3ee1101d19328145e94da1cade45bd<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/my&#45;identifier&#45;b<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>2<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00002.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>f57eb0e65d11a5a73eab9d5dddf1e528<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+        <span class="xml&#45;tag">&#60;stagingfile&#62;</span>
+            <span class="xml&#45;tag">&#60;pid&#62;</span>12345/another&#45;identifier&#45;c<span class="xml&#45;tag">&#60;/pid&#62;</span>
+            <span class="xml&#45;tag">&#60;seq&#62;</span>3<span class="xml&#45;tag">&#60;/seq&#62;</span>
+            <span class="xml&#45;tag">&#60;location&#62;</span>/folderA/page_00003.tiff<span class="xml&#45;tag">&#60;/location&#62;</span>
+            <span class="xml&#45;tag">&#60;md5&#62;</span>c741cd201fafb15c5ec874ae16738671<span class="xml&#45;tag">&#60;/md5&#62;</span>
+        <span class="xml&#45;tag">&#60;/stagingfile&#62;</span>
+    <span class="xml&#45;tag">&#60;/instruction&#62;</span></pre></div><p class="paragraph"/>If you autocreate an instruction, the seq element is always set in the alphabetical order of the files. An objid
+can be set after the autocreate procedure is completed.<p class="paragraph"/>When you offer an objid together with at least one file that has a sequence value of 1, a PID will be declared at
+the PID webservice. For this the plan must have the workflow 'StagingFileBindObjId' set.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/dip.html">&lt;&lt; <strong>6</strong><span>Dissemination information package</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/management.html"><strong>8</strong><span>Administration interface</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    Copyright (c) 2013 Social History Services
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
