@@ -24,6 +24,7 @@ class Profile {
     String pidwebserviceKey
     String notificationEMail
     List<String> plan
+    String objid = null
 
     // End move
 
@@ -44,6 +45,7 @@ class Profile {
         pdfLevel(inList:['master','level1','level2','level3'])
         pidwebserviceEndpoint(nullable: true)
         pidwebserviceKey(nullable: true, matches: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}')
+        objid(nullable: true)
     }
 
     static embedded = ['plan']
