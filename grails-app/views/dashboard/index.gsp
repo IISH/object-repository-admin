@@ -38,7 +38,7 @@
                                                              format="yyyy-MM-dd"/></g:if></td>
                     <td>${bucket}</td>
                     <td>
-                        <g:formatNumber number="${interval.value['files_count_' + bucket]}" maxFractionDigits="0"/>
+                        <g:formatNumber number="${interval.value['files_count.' + bucket]}" maxFractionDigits="0"/>
                     </td>
                     <td><g:if test="${interval.value['files_length_' + bucket]}">
                         <g:formatNumber number="${interval.value['files_length_' + bucket] / 1073741824}"
@@ -133,7 +133,7 @@
                 <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                     <td><g:if test="${first}"><g:formatDate date="${interval._id}"
                                                             format="yyyy-MM-dd"/></g:if></td>
-                    <g:each in="['master', 'level1', 'level2', 'level3']" var="bucket" status="j">
+                    <g:each in="${grailsApplication.config.buckets}" var="bucket" status="j">
                         <td>
                             <table>
                                 <caption>${bucket}</caption>
