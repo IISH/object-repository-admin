@@ -23,7 +23,7 @@ class WorkflowInitiateService extends WorkflowJob {
      * @return
      */
     void job() {
-        cpAdminFolders(Profile.list().collect {it.na})
+        cpAdminFolders(Profile.list().collect { it.na })
     }
 
     private def cpAdminFolders(def nas) {
@@ -179,17 +179,8 @@ class WorkflowInitiateService extends WorkflowJob {
         if (taskValidationService.hasFSFiles(document)) {
             log.info id(document) + "Files seen in fileset"
             last(document)
-        }
-        else {
-            // An instruction without files.
-            def instruction = taskValidationService.hasFSInstruction(document)
-            if (instruction) {
-                OrUtil.putAll(plans, instruction)
-                mongo.getDB('sa').instruction.update([_id: document.id],
-                        [$set: instruction], false, false
-                )
-                changeWorkflow('InstructionUpload', document)
-            }
+        } else {
+            loadInstruction(document)
         }
     }
 
@@ -203,17 +194,21 @@ class WorkflowInitiateService extends WorkflowJob {
      */
     def UploadFiles800(Instruction document) {
         if (taskValidationService.hasFSFiles(document)) {
-            def instruction = taskValidationService.hasFSInstruction(document)
-            if (instruction) {
-                OrUtil.putAll(plans, instruction)
-                mongo.getDB('sa').instruction.update([_id: document.id],
-                        [$set: instruction], false, false
-                )
-                changeWorkflow('InstructionUpload', document)
-            }
+            loadInstruction(document)
         } else {
             // We have even become a bigger lie !  We cant ask for an instruction, and be without files. Rules of the game.
             first(document)
+        }
+    }
+
+    private void loadInstruction(def document) {
+        def instruction = taskValidationService.hasFSInstruction(document)
+        if (instruction) {
+            OrUtil.putAll(plans, instruction, document)
+            mongo.getDB('sa').instruction.update([_id: document.id],
+                    [$set: instruction], false, false
+            )
+            changeWorkflow('InstructionUpload', document)
         }
     }
 }

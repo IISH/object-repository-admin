@@ -183,26 +183,27 @@ class OrUtil {
      * When parsing XML:
      * place all attributes in the instruction map to the document instance
      *
-     * @param workflow
-     * @param xmlDocumentHeader
+     * @param workflow Valid plans from the configuration
+     * @param fsDocument Instruction read from filesystem
      * @param instructionAttributes
      */
-    static void putAll(def workflow, Map fsDocument) {
+    static void putAll(def workflow, Map fsDocument, def instruction) {
 
         println("Loading instruction: ")
         def plans = availablePlans(workflow)
-        def p = []
-        fsDocument.each {
-            if (it.key == 'plan') {
-                it.value.split(',').each { String plan ->
-                    if (plan in plans) {
-                        println("Add plan " + plan)
-                        p << plan
-                    }
-                }
+        fsDocument.plan = fsDocument.find {
+            it.key == 'plan'
+        }?.value.split(',').inject([]) { vis, plan ->
+            if (plan in plans) {
+                println("Add plan " + plan)
+                vis << plan
             }
         }
-        fsDocument.plan = p
+
+        // Merge the results with the instruction.
+        fsDocument.each {
+            instruction[it.key] = it.value
+        }
     }
 
     /**

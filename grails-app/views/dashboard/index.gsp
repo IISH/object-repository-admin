@@ -38,10 +38,10 @@
                                                              format="yyyy-MM-dd"/></g:if></td>
                     <td>${bucket}</td>
                     <td>
-                        <g:formatNumber number="${interval.value['files.count.' + bucket]}" maxFractionDigits="0"/>
+                        <g:formatNumber number="${interval.value['files_count_' + bucket]}" maxFractionDigits="0"/>
                     </td>
-                    <td><g:if test="${interval.value['files.length.' + bucket]}">
-                        <g:formatNumber number="${interval.value['files.length.' + bucket] / 1073741824}"
+                    <td><g:if test="${interval.value['files_length_' + bucket]}">
+                        <g:formatNumber number="${interval.value['files_length_' + bucket] / 1073741824}"
                                         maxFractionDigits="2"/></g:if>
                     </td>
                 </tr>
@@ -49,15 +49,15 @@
             <tr>
                 <td></td>
                 <td>Replica</td>
-                <td><g:formatNumber number="${interval.value['files.count']}" maxFractionDigits="0"/></td>
-                <td><g:formatNumber number="${interval.value['files.length'] / 1073741824}"
+                <td><g:formatNumber number="${interval.value['files_count']}" maxFractionDigits="0"/></td>
+                <td><g:formatNumber number="${interval.value['files_length'] / 1073741824}"
                                     maxFractionDigits="2"/></td>
             </tr>
             <tr>
                 <td></td>
                 <td>Total</td>
-                <td><g:formatNumber number="${interval.value['files.count'] * 2}" maxFractionDigits="0"/></td>
-                <td><g:formatNumber number="${interval.value['files.length'] * 2 / 1073741824}"
+                <td><g:formatNumber number="${interval.value['files_count'] * 2}" maxFractionDigits="0"/></td>
+                <td><g:formatNumber number="${interval.value['files_length'] * 2 / 1073741824}"
                                     maxFractionDigits="2"/></td>
             </tr>
         </g:each>
@@ -76,12 +76,12 @@
         <g:each in="${storage}" var="interval" status="i">
             <g:set var="first" value="true"/>
             <g:each in="${interval.value}" var="item">
-                <g:if test="${item.key.startsWith('access.count.')}">
+                <g:if test="${item.key.startsWith('access_count_')}">
                     <g:if test="${!item.value}"><g:set var="item.value" value="0"/></g:if>
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td><g:if test="${first}"><g:formatDate date="${interval._id}"
                                                                 format="yyyy-MM-dd"/></g:if></td>
-                        <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
+                        <td>${item.key.substring(item.key.lastIndexOf('_') + 1)}</td>
                         <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
                         <g:set var="first" value="false"/>
                     </tr>
@@ -109,7 +109,7 @@
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td><g:if test="${first}"><g:formatDate date="${interval._id}"
                                                                 format="yyyy-MM-dd"/></g:if></td>
-                        <td>${item.key.substring(item.key.lastIndexOf('.') + 1)}</td>
+                        <td>${item.key.substring(item.key.lastIndexOf('_') + 1)}</td>
                         <td><g:formatNumber number="${item.value}" maxFractionDigits="0"/></td>
                         <g:set var="first" value="false"/>
                     </tr>
@@ -137,7 +137,7 @@
                         <td>
                             <table>
                                 <caption>${bucket}</caption>
-                                <g:each in="${interval.value.findAll { it.key.endsWith('.' + bucket) }}" var="item"
+                                <g:each in="${interval.value.findAll { it.key.endsWith('_' + bucket) }}" var="item"
                                         status="k">
                                     <tr class="${(k % 2) == 0 ? 'even' : 'odd'}">
                                         <td><g:message code="${item.key.substring(0, 2).toLowerCase()}"/></td>

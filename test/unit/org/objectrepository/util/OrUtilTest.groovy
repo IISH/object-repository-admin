@@ -1,10 +1,9 @@
 package org.objectrepository.util
-
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
 import groovy.io.FileType
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.objectrepository.instruction.Instruction
 
 @TestMixin(GrailsUnitTestMixin)
 class OrUtilTest {
@@ -14,7 +13,7 @@ class OrUtilTest {
     void setUp() {
         GroovyClassLoader classLoader = new GroovyClassLoader(this.class.classLoader)
         ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
-        config = ConfigurationHolder.config = slurper.parse(classLoader.loadClass("PlanConfig"))
+        config = slurper.parse(classLoader.loadClass("PlanConfig"))
     }
 
     void testAvailablePlans() {
@@ -73,11 +72,13 @@ class OrUtilTest {
     }
 
     void testPutAll() {
+        def document = new Instruction()
         File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
-        OrUtil.putAll(config.plans, instructionFromFile)
+        OrUtil.putAll(config.plans, instructionFromFile, document)
         assert instructionFromFile.plan.size() == 2
         assert instructionFromFile.action == 'upsert'
+        assert document.action == 'upsert'
     }
 
     /**
