@@ -104,7 +104,7 @@
         <g:each in="${storage}" var="interval" status="i">
             <g:set var="first" value="true"/>
             <g:each in="${interval.value}" var="item">
-                <g:if test="${item.key.startsWith('contentType.count.')}">
+                <g:if test="${item.key.startsWith('contentType_count.')}">
                     <g:if test="${!item.value}"><g:set var="item.value" value="0"/></g:if>
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td><g:if test="${first}"><g:formatDate date="${interval._id}"
