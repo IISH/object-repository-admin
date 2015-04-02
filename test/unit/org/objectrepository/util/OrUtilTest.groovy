@@ -81,6 +81,17 @@ class OrUtilTest {
         assert document.action == 'upsert'
     }
 
+    void testPutAllNoPlan() {
+        def document = new Instruction()
+        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
+        def instructionFromFile = OrUtil.hasFSInstruction(file)
+        instructionFromFile.remove('plan')
+        OrUtil.putAll(config.plans, instructionFromFile, document)
+        assert instructionFromFile.plan.size() == 2
+        assert instructionFromFile.action == 'upsert'
+        assert document.action == 'upsert'
+    }
+
     /**
      * testGetOr
      *

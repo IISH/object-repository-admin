@@ -193,7 +193,7 @@ class OrUtil {
         def plans = availablePlans(workflow)
         fsDocument.plan = fsDocument.find {
             it.key == 'plan'
-        }?.value.split(',').inject([]) { vis, plan ->
+        }?.value?.split(',').inject([]) { vis, plan ->
             if (plan in plans) {
                 println("Add plan " + plan)
                 vis << plan
