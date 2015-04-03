@@ -366,7 +366,10 @@ abstract class WorkflowJob {
             Stagingfile stagingfile = it as Stagingfile
             stagingfile.parent = document
             stagingfile.workflow.each {
-                it.statusCode = (it.statusCode < 800) ? 100 : it.statusCode
+                if (it.statusCode < 800) {
+                    it.attempts = 0
+                    it.statusCode = 100
+                }
             }
             stagingfile.workflow.find {it.name == 'EndOfTheRoad'}?.statusCode = 100
 
