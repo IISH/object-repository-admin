@@ -50,6 +50,6 @@ grails.project.dependency.resolution = {
         compile ':spring-security-oauth2-provider:1.0.5.2'
         compile ':routing:1.3.2'
         compile ':mail:1.0.6'
-	compile ':mongodb:3.0.1'
+	    compile ':mongodb:3.0.1'
     }
 }
