@@ -28,7 +28,7 @@ class OrUtilTest {
             if (OrUtil.hasFSInstruction(it)) {success++}
             else { failure++ }
         }
-        assert success == 2
+        assert success == 3
         assert failure == 3
     }
 
@@ -83,11 +83,10 @@ class OrUtilTest {
 
     void testPutAllNoPlan() {
         def document = new Instruction()
-        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-with-plan.xml")
+        File file = new File(System.properties['user.dir'] + "/test/resources/instruction-without-plan.xml")
         def instructionFromFile = OrUtil.hasFSInstruction(file)
-        instructionFromFile.remove('plan')
         OrUtil.putAll(config.plans, instructionFromFile, document)
-        assert instructionFromFile.plan.size() == 2
+        assert instructionFromFile.plan.size() == 0
         assert instructionFromFile.action == 'upsert'
         assert document.action == 'upsert'
     }
