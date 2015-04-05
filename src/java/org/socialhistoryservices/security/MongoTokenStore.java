@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * OAuth2 provider of tokens. Made for MongoDB
- *
+ * <p/>
  * Field expirationTokenStore will contain a token and expiration datestamp
  */
 final public class MongoTokenStore implements TokenStore {
@@ -56,13 +56,13 @@ final public class MongoTokenStore implements TokenStore {
         }
         final String username = (authentication.getUserAuthentication() == null) ? null : authentication.getUserAuthentication().getName();
         final BasicDBObject document = new BasicDBObject();
-        document.put("token_id", encodePassword( token.getValue()));
+        document.put("token_id", encodePassword(token.getValue()));
         document.put("token", serialize(token));
         document.put("authentication_id", null);
         document.put("authentication", serialize(authentication));
         document.put("refresh_token", encodePassword(refreshToken));
         document.put("username", username);
-        document.put("clientId", authentication.getAuthorizationRequest().getClientId());
+        document.put("clientId", authentication.getOAuth2Request().getClientId());
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
         collection.insert(document);
     }
@@ -77,8 +77,7 @@ final public class MongoTokenStore implements TokenStore {
             final BasicDBObject query = new BasicDBObject("token_id", encodePassword(tokenValue));
             final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
             DBObject document = collection.findOne(query);
-            if (document == null) {
-            } else {
+            if (document != null) {
                 accessToken = deserialize((byte[]) document.get("token"));
                 this.accessTokenStore.put(tokenValue, accessToken);
                 expiration(tokenValue);
@@ -125,8 +124,7 @@ final public class MongoTokenStore implements TokenStore {
             query.put("token_id", encodePassword(tokenValue));
             final DBCollection collection = getCollection(collectionName);
             final DBObject document = collection.findOne(query);
-            if (document == null) {
-            } else {
+            if (document != null) {
                 authentication = deserialize((byte[]) document.get("authentication"));
                 this.authenticationTokenStore.put(tokenValue, authentication);
                 expiration(tokenValue);
@@ -141,8 +139,7 @@ final public class MongoTokenStore implements TokenStore {
         final BasicDBObject query = new BasicDBObject("token_id", encodePassword(token));
         final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
         final DBObject document = collection.findOne(query);
-        if (document == null) {
-        } else {
+        if (document != null) {
             authentication = deserialize((byte[]) document.get("authentication"));
         }
         return authentication;
@@ -155,8 +152,7 @@ final public class MongoTokenStore implements TokenStore {
         final BasicDBObject query = new BasicDBObject("token_id", encodePassword(token));
         final DBCollection collection = getCollection(OAUTH_REFRESH_TOKEN);
         final DBObject document = collection.findOne(query);
-        if (document == null) {
-        } else {
+        if (document != null) {
             refreshToken = deserialize((byte[]) document.get("token"));
         }
         return refreshToken;
@@ -178,25 +174,28 @@ final public class MongoTokenStore implements TokenStore {
 
     @Override
     public OAuth2AccessToken getAccessToken(OAuth2Authentication oAuth2Authentication) {
+        final String clientId = oAuth2Authentication.getOAuth2Request().getClientId();
         final String username = oAuth2Authentication.getUserAuthentication().getName();
-        final Collection<OAuth2AccessToken> tokens = findTokensByUserName(username);
+        final Collection<OAuth2AccessToken> tokens = findTokens(clientId, username);
         return (tokens.size() == 0) ? null : tokens.iterator().next();
     }
 
     @Override
-    public Collection<OAuth2AccessToken> findTokensByUserName(String username) {
-        return findTokens("username", username);
+    public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String username) {
+        return findTokens(clientId, username);
     }
 
     @Override
     public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
-        return findTokens("clientId", clientId);
+        return findTokens(clientId, null);
     }
 
-    private Collection<OAuth2AccessToken> findTokens(String key, String value) {
-        final BasicDBObject query = new BasicDBObject(key, value);
+    private Collection<OAuth2AccessToken> findTokens(String clientId, String username) {
+        final QueryBuilder qb = QueryBuilder.start("clientId").is(clientId);
+        if (username != null)
+            qb.and("username").is(username);
         final DBCollection collection = getCollection(OAUTH_ACCESS_TOKEN);
-        final DBCursor cursor = collection.find(query);
+        final DBCursor cursor = collection.find(qb.get());
         Collection<OAuth2AccessToken> list = new ArrayList<OAuth2AccessToken>(cursor.size());
         while (cursor.hasNext()) {
             list.add((OAuth2AccessToken) deserialize((byte[]) cursor.next().get("token")));
@@ -276,8 +275,10 @@ final public class MongoTokenStore implements TokenStore {
     public void setDatabase(String database) {
         this.database = database;
         final DBCollection c = getCollection(OAUTH_ACCESS_TOKEN);
-        c.ensureIndex("username");
-        c.ensureIndex("token_id");
+        DBObject keys = new BasicDBList();
+        keys.put("username", 1);
+        keys.put("token_id", 1);
+        c.createIndex(keys);
     }
 
     private static byte[] serialize(Object state) {

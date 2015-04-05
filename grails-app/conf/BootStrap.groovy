@@ -8,7 +8,8 @@ import org.objectrepository.security.Role
 import org.objectrepository.security.User
 import org.objectrepository.security.UserRole
 import org.objectrepository.util.OrUtil
-import org.springframework.security.oauth2.provider.BaseClientDetails
+import org.springframework.security.oauth2.provider.client.BaseClientDetails
+
 
 class BootStrap {
 

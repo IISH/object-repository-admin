@@ -1,12 +1,8 @@
 package org.objectrepository.oauth
-
-import org.socialhistoryservices.security.MongoTokenStore
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.oauth2.provider.DefaultAuthorizationRequest
+import org.springframework.security.oauth2.provider.AuthorizationRequest
 import org.springframework.security.oauth2.provider.OAuth2Authentication
-
-
 /**
  *  Oauth2Service
  *
@@ -57,9 +53,9 @@ class Oauth2Service {
     private OAuth2Authentication refresh(def userInstance) {
         removeToken(selectKeys(userInstance.username))
         def client = clientDetailsService.clientDetailsStore.get("clientId")
-        def ar = new DefaultAuthorizationRequest(client.clientId, client.scope)
+        def ar = new AuthorizationRequest(client.clientId, client.scope)
         ar.approved = true
-        new OAuth2Authentication(ar, authentication(userInstance, userInstance.authorities))
+        new OAuth2Authentication(ar.createOAuth2Request(), authentication(userInstance, userInstance.authorities))
     }
 
     void removeToken(def token) {

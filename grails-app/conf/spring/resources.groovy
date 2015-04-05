@@ -10,6 +10,7 @@ import org.springframework.security.authentication.encoding.LdapShaPasswordEncod
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
 
+//noinspection GroovyUnusedAssignment
 beans = {
 
     localeResolver(SessionLocaleResolver) {
