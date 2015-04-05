@@ -2,7 +2,6 @@ package org.objectrepository.security
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.plugin.springsecurity.oauthprovider.GormClientDetailsService
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -35,10 +34,8 @@ class LoginController {
     def index() {
 
         if (springSecurityService.isLoggedIn()) {
-            final na = springSecurityService.na
-            if (na) {
-                if (!clientDetailsService instanceof GormClientDetailsService)
-                    redirect uri: createLink(base: '/' + na, controller: 'dashboard')
+            if (springSecurityService.na) {
+                redirect uri: createLink(base: '/' + springSecurityService.na, controller: 'dashboard')
             } else
                 forward(controller: 'logout')
         } else

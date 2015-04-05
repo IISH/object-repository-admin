@@ -116,20 +116,27 @@ grails.plugin.springsecurity.rememberMe.useSecureCookie = false
 grails.plugin.springsecurity.oauthProvider.active = oauthProvider
 grails.plugin.springsecurity.oauthProvider.tokenServices.accessTokenValiditySeconds = 31536000
 grails.plugin.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
+
+
+// Added by the Spring Security OAuth2 Provider plugin:
+grails.plugin.springsecurity.oauthProvider.clientLookup.className = 'org.objectrepository.security.OrOAuth2Client'
+grails.plugin.springsecurity.oauthProvider.authorizationCodeLookup.className = 'org.objectrepository.security.AuthorizationCode'
+grails.plugin.springsecurity.oauthProvider.accessTokenLookup.className = 'org.objectrepository.security.AccessToken'
+grails.plugin.springsecurity.oauthProvider.refreshTokenLookup.className = 'org.objectrepository.security.RefreshToken'
+
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
         '/oauth/authorize.dispatch': ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"],
-        '/oauth/token.dispatch'    : ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"]
+        '/oauth/token.dispatch'    : ["isFullyAuthenticated() and request.getMethod().equals('POST')"]
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [
-        '/oauth/token'              : 'JOINED_FILTERS,-oauth2ProviderFilter,-securityContextPersistenceFilter,-logoutFilter,-exceptionTranslationFilter',
-        '/*/dashboard': 'JOINED_FILTERS,-securityContextPersistenceFilter,-logoutFilter,-exceptionTranslationFilter',
-        '/**'                       : 'JOINED_FILTERS,-statelessSecurityContextPersistenceFilter,-oauth2ProviderFilter,-clientCredentialsTokenEndpointFilter,-oauth2ExceptionTranslationFilter'
+        '/oauth/token': 'JOINED_FILTERS,-oauth2ProviderFilter,-securityContextPersistenceFilter,-logoutFilter,-rememberMeAuthenticationFilter,-exceptionTranslationFilter',
+        '/securedOAuth2Resources/**': 'JOINED_FILTERS,-securityContextPersistenceFilter,-logoutFilter,-rememberMeAuthenticationFilter,-exceptionTranslationFilter',
+        '/**': 'JOINED_FILTERS,-statelessSecurityContextPersistenceFilter,-oauth2ProviderFilter,-clientCredentialsTokenEndpointFilter,-oauth2ExceptionTranslationFilter'
 ]
 
-
 oauthclient = [
-        'client_1': [
+        'client_or': [
                 authorizedGrantTypes:
                         ['authorization_code', 'refresh_token', 'implicit', 'password', 'client_credentials'],
                 authorities         :
@@ -142,8 +149,7 @@ oauthclient = [
 ]
 
 
-def serverPort = System.properties['server.port']
-serverURL = "http://localhost:${serverPort}/${appName}"
+serverURL = "http://localhost:${System.properties['server.port']}/${appName}"
 
 if (!screenLogin) grails.plugin.springsecurity.apf.filterProcessesUrl = "/" // This breakage is deliberate
 
@@ -196,9 +202,7 @@ grails.doc.title = "Object repository"
 grails.doc.subtitle = "Object repository"
 grails.doc.authors = "Lucien van Wouw"
 grails.doc.license = "Licensed under the Apache License, Version 2.0"
-grails.doc.copyright = "Copyright (c) 2014 Social History Services"
-//grails.doc.footer
-//grails.doc.css
+grails.doc.copyright = "Copyright (c) 2015 Social History Services"
 grails.doc.images = new File("src/docs/images")
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
@@ -222,10 +226,4 @@ grails {
         }
     }
 }
-
-// Added by the Spring Security OAuth2 Provider plugin:
-grails.plugin.springsecurity.oauthProvider.clientLookup.className = 'org.objectrepository.security.OrOAuth2Client'
-grails.plugin.springsecurity.oauthProvider.authorizationCodeLookup.className = 'org.objectrepository.security.AuthorizationCode'
-grails.plugin.springsecurity.oauthProvider.accessTokenLookup.className = 'org.objectrepository.security.AccessToken'
-grails.plugin.springsecurity.oauthProvider.refreshTokenLookup.className = 'org.objectrepository.security.RefreshToken'
 

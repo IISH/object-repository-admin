@@ -1,5 +1,6 @@
 package org.objectrepository.security
 
+import grails.plugin.springsecurity.oauthprovider.GormTokenStoreService
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
@@ -11,10 +12,11 @@ class UserController extends InterceptorValidation {
     static allowedMethods = [save: 'POST', update: 'POST']
 
     final static fixedPolicies = ['administration', 'all']
+    final static CLIENT_ID = 'client_or'
 
     def springSecurityService
     def gridFSService
-    def oauth2Service
+    def GormTokenStoreService gormTokenStoreService
 
     def index() {
         forward(action: 'list', params: params)
@@ -64,7 +66,7 @@ class UserController extends InterceptorValidation {
                 userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
                     it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
                 }.collect { it.key })
-                def token = oauth2Service.updateKey(userInstance)
+                def token = updateKey(userInstance)
 
                 def code = ('ROLE_OR_POLICY_administration' in userInstance.authorities*.authority) ? 'administration' : 'dissemination'
                 if (params.sendmail) {
@@ -90,10 +92,7 @@ class UserController extends InterceptorValidation {
 
         switch (status(userInstance)) {
             case HttpStatus.OK:
-                def token = oauth2Service.selectKeys(userInstance.username)
-                userInstance.replaceKey = (token)
-                if (!token) token = oauth2Service.updateKey(userInstance)
-                respond userInstance, model: [userInstance: userInstance, policyList: _policyList(), token: token]
+                respond userInstance, model: [userInstance: userInstance, policyList: _policyList(), token: getToken(userInstance)]
                 break
 
             case HttpStatus.BAD_REQUEST:
@@ -131,7 +130,7 @@ class UserController extends InterceptorValidation {
 
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
                 params.action = 'show'
-                respond(userInstance, view: 'show', model: [userInstance: userInstance, token: oauth2Service.updateKey(userInstance), policyList: _policyList()])
+                respond(userInstance, view: 'show', model: [userInstance: userInstance, token: updateKey(userInstance), policyList: _policyList()])
                 break
 
             case HttpStatus.BAD_REQUEST:
@@ -150,7 +149,7 @@ class UserController extends InterceptorValidation {
                         UserRole.remove(userInstance, it, true)
                     }
                     userInstance.delete flush: true
-                    oauth2Service.removeToken(oauth2Service.selectKeys(userInstance.username))
+                    removeToken(userInstance)
                     flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), userInstance.username])
 
                     switch (request.format) {
@@ -231,6 +230,10 @@ class UserController extends InterceptorValidation {
         removals || additions
     }
 
+    def _policyList() {
+        fixedPolicies + Policy.findAllByNa(params.na).access
+    }
+
     def updatekey(Long id) {
 
         def userInstance = User.findByIdAndNa(id, params.na)
@@ -240,11 +243,23 @@ class UserController extends InterceptorValidation {
         }
 
         userInstance.replaceKey = true
-        oauth2Service.updateKey(userInstance)
+        updateKey(userInstance)
         forward(action: 'show', id: params.id)
     }
 
-    def _policyList() {
-        fixedPolicies + Policy.findAllByNa(params.na).access
+
+    private void updateKey(User user) {
+
+    }
+
+    private void removeToken(User user) {
+
+    }
+
+    private String getToken(User user) {
+
+        def tokens = gormTokenStoreService.findTokensByClientIdAndUserName(CLIENT_ID, user.username)
+        if ( !tokens )
+            tokens = gormTokenStoreService.
     }
 }
