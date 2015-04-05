@@ -1,18 +1,16 @@
-package org.objectrepository.domain
-
+package org.objectrepository.instruction
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
-import org.objectrepository.instruction.Task
-
+/**
+ * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
+ */
 @TestMixin(GrailsUnitTestMixin)
-class DomainTest {
+class TaskTest {
 
-    void testTaskKey(){
-
+    void testTask() {
         Task task = new Task()
         assert !task.identifier
         assert task.taskKey()
         assert task.identifier
     }
-
 }

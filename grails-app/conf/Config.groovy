@@ -10,18 +10,18 @@ updateList.interval = 60000 // setInterval in ms for the Javascript Ajax functio
 
 grails.mime.file.extensions = false // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = true
-grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-        xml: ['text/xml', 'application/xml'],
-        text: 'text/plain',
-        js: 'text/javascript',
-        rss: 'application/rss+xml',
-        atom: 'application/atom+xml',
-        css: 'text/css',
-        csv: 'text/csv',
-        all: '*/*',
-        json: ['application/json', 'text/json'],
-        form: 'application/x-www-form-urlencoded',
-        multipartForm: 'multipart/form-data'
+grails.mime.types = [html         : ['text/html', 'application/xhtml+xml'],
+                     xml          : ['text/xml', 'application/xml'],
+                     text         : 'text/plain',
+                     js           : 'text/javascript',
+                     rss          : 'application/rss+xml',
+                     atom         : 'application/atom+xml',
+                     css          : 'text/css',
+                     csv          : 'text/csv',
+                     all          : '*/*',
+                     json         : ['application/json', 'text/json'],
+                     form         : 'application/x-www-form-urlencoded',
+                     multipartForm: 'multipart/form-data'
 ]
 
 // URL Mapping Cache Max Size, defaults to 5000
@@ -51,7 +51,7 @@ grails.spring.bean.packages = []
 grails.web.disable.multipart = false
 
 // request parameters to mask when logging exceptions
-grails.exceptionresolver.params.exclude = ['password', 'authorization']
+grails.exceptionresolver.params.exclude = ['password', 'authorization', 'client_secret']
 
 grails.config.locations = [ContentTypeConfig, PlanConfig]
 if (System.properties.containsKey("or.properties")) {
@@ -73,7 +73,7 @@ if (System.properties.containsKey("or.properties")) {
 buckets = ['master', 'level1', 'level2', 'level3']
 accessStatus = ['open', 'restricted', 'closed']
 accessMatrix = [
-        closed: [
+        closed    : [
                 [bucket: 'master', access: 'closed'],
                 [bucket: 'level1', access: 'closed'],
                 [bucket: 'level2', access: 'closed'],
@@ -85,7 +85,7 @@ accessMatrix = [
                 [bucket: 'level2', access: 'open'],
                 [bucket: 'level3', access: 'open']
         ],
-        open: [
+        open      : [
                 [bucket: 'master', access: 'closed'],
                 [bucket: 'level1', access: 'open'],
                 [bucket: 'level2', access: 'open'],
@@ -102,8 +102,11 @@ grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'org.objectrepo
 
 // Set the authentication providers
 grails.plugin.springsecurity.providerNames = ['daoAuthenticationProvider', 'anonymousAuthenticationProvider']
-grails.plugin.springsecurity.ldap.active = ldap
 if (ldap) grails.plugin.springsecurity.providerNames.add(0, 'ldapAuthProvider')
+if (oauthProvider) grails.plugin.springsecurity.providerNames.add(0, 'clientCredentialsAuthenticationProvider')
+print('providernames=')
+println(grails.plugin.springsecurity.providerNames)
+grails.plugin.springsecurity.ldap.active = ldap
 grails.plugin.springsecurity.ldap.authorities.retrieveGroupRoles = true
 grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = false
 grails.plugin.springsecurity.ldap.groupAttribute = cn
@@ -111,13 +114,36 @@ grails.plugin.springsecurity.ldap.useRememberMe = false
 grails.plugin.springsecurity.rememberMe.persistent = false
 grails.plugin.springsecurity.rememberMe.useSecureCookie = false
 grails.plugin.springsecurity.oauthProvider.active = oauthProvider
-if (oauthProvider) grails.plugin.springsecurity.providerNames << 'clientCredentialsAuthenticationProvider'
 grails.plugin.springsecurity.oauthProvider.tokenServices.accessTokenValiditySeconds = 31536000
 grails.plugin.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
-grails.plugin.springsecurity.controllerAnnotations.staticRules = ['/oauth/authorize.dispatch': ['ROLE_OR_USER'], '/oauth/token.dispatch': ['ROLE_OR_USER']]
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+        '/oauth/authorize.dispatch': ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"],
+        '/oauth/token.dispatch'    : ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"]
+]
+
+grails.plugin.springsecurity.filterChain.chainMap = [
+        '/oauth/token'              : 'JOINED_FILTERS,-oauth2ProviderFilter,-securityContextPersistenceFilter,-logoutFilter,-exceptionTranslationFilter',
+        '/*/dashboard': 'JOINED_FILTERS,-securityContextPersistenceFilter,-logoutFilter,-exceptionTranslationFilter',
+        '/**'                       : 'JOINED_FILTERS,-statelessSecurityContextPersistenceFilter,-oauth2ProviderFilter,-clientCredentialsTokenEndpointFilter,-oauth2ExceptionTranslationFilter'
+]
+
+
+oauthclient = [
+        'client_1': [
+                authorizedGrantTypes:
+                        ['authorization_code', 'refresh_token', 'implicit', 'password', 'client_credentials'],
+                authorities         :
+                        ['OR_USER'],
+                scopes              :
+                        ['read', 'write'],
+                redirectUris        :
+                        ['http://localhost']
+        ]
+]
+
 
 def serverPort = System.properties['server.port']
-resolveBaseUrl = "http://localhost:${serverPort}/${appName}"
+serverURL = "http://localhost:${serverPort}/${appName}"
 
 if (!screenLogin) grails.plugin.springsecurity.apf.filterProcessesUrl = "/" // This breakage is deliberate
 
@@ -127,14 +153,14 @@ environments {
         grails.logging.jul.usebridge = true
     }
     development {
-        grails.serverURL = "http://localhost:${serverPort}/${appName}"
+        grails.serverURL = resolveBaseUrl
         grails.plugin.springsecurity.successHandler.defaultTargetUrl = "/${appName}/login"
         grails.logging.jul.usebridge = false
         grails.gorm.failOnError = true
         //grails.plugin.springsecurity.debug.useFilter = true
     }
     test {
-        grails.serverURL = "http://localhost:${serverPort}/${appName}"
+        grails.serverURL = serverURL
         grails.plugin.springsecurity.workflow.active = false
         grails.plugin.springsecurity.ldap.active = false
         grails.plugin.springsecurity.oauthProvider.active = false
@@ -196,3 +222,10 @@ grails {
         }
     }
 }
+
+// Added by the Spring Security OAuth2 Provider plugin:
+grails.plugin.springsecurity.oauthProvider.clientLookup.className = 'org.objectrepository.security.OrOAuth2Client'
+grails.plugin.springsecurity.oauthProvider.authorizationCodeLookup.className = 'org.objectrepository.security.AuthorizationCode'
+grails.plugin.springsecurity.oauthProvider.accessTokenLookup.className = 'org.objectrepository.security.AccessToken'
+grails.plugin.springsecurity.oauthProvider.refreshTokenLookup.className = 'org.objectrepository.security.RefreshToken'
+

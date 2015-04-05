@@ -4,6 +4,9 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.objectrepository.instruction.Instruction
 import org.objectrepository.instruction.Profile
 import org.objectrepository.instruction.Stagingfile
+import org.objectrepository.security.OrOAuth2Client
+import org.objectrepository.security.OrOAuth2Client
+import org.objectrepository.security.OrOAuth2Client
 import org.objectrepository.security.Role
 import org.objectrepository.security.User
 import org.objectrepository.security.UserRole
@@ -49,7 +52,7 @@ class BootStrap {
                 if (adminPassword && adminUsername) {
                     addUser(['0'], adminUsername,
                             springSecurityService.encodePassword(adminPassword, UUID.randomUUID().encodeAsMD5Bytes()),
-                    ['administrator'])
+                            ['administrator'])
                 }
                 break
             case Environment.DEVELOPMENT:
@@ -75,20 +78,21 @@ class BootStrap {
             def authorities = authentication.authorities*.role.findAll {
                 it.startsWith('ROLE_OR_USER_')
             }.sort { it }
-            if (authorities) ((String)authorities[0]).split('_').last()
+            if (authorities) ((String) authorities[0]).split('_').last()
         }
     }
 
     private void oauth2() {
 
-        if (SpringSecurityUtils.securityConfig.oauthProvider.active) {
-
-            def client = new BaseClientDetails()
-            client.clientId = 'clientId'
-            client.authorizedGrantTypes = ["authorization_code", "refresh_token", "client_credentials"]
-            clientDetailsService.clientDetailsStore = [
-                    "clientId": client
-            ]
+        grailsApplication.config.oauthclient.each { it ->
+            OrOAuth2Client.findByClientId(it.key)?.delete(flush: true)
+            new OrOAuth2Client(
+                    clientId: it.key,
+                    authorizedGrantTypes: it.value.authorizedGrantTypes,
+                    authorities: it.value.authorities,
+                    scopes: it.value.scopes,
+                    redirectUris: it.value.redirectUris
+            ).save(flush: true)
         }
     }
 

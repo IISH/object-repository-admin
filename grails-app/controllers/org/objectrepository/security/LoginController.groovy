@@ -2,18 +2,17 @@ package org.objectrepository.security
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.oauthprovider.GormClientDetailsService
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.AccountExpiredException
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.web.WebAttributes
 
-import javax.servlet.http.HttpServletResponse
-
-import static org.springframework.http.HttpStatus.*
+import static org.springframework.http.HttpStatus.FORBIDDEN
+import static org.springframework.http.HttpStatus.UNAUTHORIZED
 
 @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class LoginController {
@@ -28,6 +27,8 @@ class LoginController {
      */
     def springSecurityService
 
+    def clientDetailsService
+
     /**
      * Default action; redirects to 'defaultTargetUrl' if logged in, /login/auth otherwise.
      */
@@ -35,9 +36,10 @@ class LoginController {
 
         if (springSecurityService.isLoggedIn()) {
             final na = springSecurityService.na
-            if (na)
-                redirect uri: createLink(base: '/' + na, controller: 'dashboard')
-            else
+            if (na) {
+                if (!clientDetailsService instanceof GormClientDetailsService)
+                    redirect uri: createLink(base: '/' + na, controller: 'dashboard')
+            } else
                 forward(controller: 'logout')
         } else
             redirect action: "auth", params: params
@@ -58,8 +60,8 @@ class LoginController {
                 forward(controller: 'logout')
         } else {
             String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
-            render view: 'auth', model: [postUrl: postUrl,
-                    rememberMeParameter: config.rememberMe.parameter]
+            render view: 'auth', model: [postUrl            : postUrl,
+                                         rememberMeParameter: config.rememberMe.parameter]
         }
     }
 
@@ -89,7 +91,7 @@ class LoginController {
         def config = SpringSecurityUtils.securityConfig
         render view: 'auth', params: params,
                 model: [hasCookie: authenticationTrustResolver.isRememberMe(SCH.context?.authentication),
-                        postUrl: "${request.contextPath}${config.apf.filterProcessesUrl}"]
+                        postUrl  : "${request.contextPath}${config.apf.filterProcessesUrl}"]
     }
 
     /**

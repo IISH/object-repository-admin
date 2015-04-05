@@ -1,8 +1,6 @@
 package org.objectrepository.security
 
-import grails.converters.XML
 import grails.test.mixin.TestFor
-
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
