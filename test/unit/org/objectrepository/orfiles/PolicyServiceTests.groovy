@@ -1,8 +1,11 @@
-package org.objectrepository.security
+package org.objectrepository.orfiles
 
 import grails.test.mixin.TestFor
 import grails.util.Environment
-import org.objectrepository.orfiles.PolicyService
+import org.objectrepository.security.Bucket
+import org.objectrepository.security.Policy
+import org.objectrepository.security.User
+import org.objectrepository.security.UserResource
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @TestFor(PolicyService)

@@ -1,10 +1,14 @@
 package org.objectrepository.security
 
 import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
+
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestFor(PolicyController)
+@TestMixin(GrailsUnitTestMixin)
 class PolicyControllerTests {
 
     void setUp() {
@@ -26,15 +30,15 @@ class PolicyControllerTests {
     void testSave() {
 
         def cmd = mockCommandObject(Policy)
-        cmd.na = '12345'
+        cmd.na = params.na = '12345'
         cmd.access = 'custom'
         cmd.validate()
         controller.save(cmd)
         assert view == '/policy/show.gsp'
 
-        cmd.na = '67890'
+        cmd.na = params.na = '67890'
         controller.save(cmd)
-        assert view == 'create'
+        assert view == '/layouts/403'
     }
 
 }

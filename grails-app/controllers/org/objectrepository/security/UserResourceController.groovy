@@ -19,7 +19,6 @@ class UserResourceController extends InterceptorValidation {
 
     static allowedMethods = [save: "POST", update: "POST"]
     def springSecurityService
-    def ldapUserDetailsManager
     def gridFSService
 
     /**

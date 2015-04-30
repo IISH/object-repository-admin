@@ -1,9 +1,10 @@
-package org.objectrepository.util
+package org.objectrepository.instruction
+
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.Environment
 import groovy.io.FileType
-import org.objectrepository.instruction.Instruction
+import org.objectrepository.util.OrUtil
 
 @TestMixin(GrailsUnitTestMixin)
 class OrUtilTest {

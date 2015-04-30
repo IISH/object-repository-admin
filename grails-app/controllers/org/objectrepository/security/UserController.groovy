@@ -1,10 +1,19 @@
 package org.objectrepository.security
 
 import grails.plugin.springsecurity.oauthprovider.GormTokenStoreService
+import grails.plugin.springsecurity.oauthprovider.provider.GrailsOAuth2RequestFactory
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
+import org.springframework.security.oauth2.common.OAuth2AccessToken
+import org.springframework.security.oauth2.common.OAuth2RefreshToken
+import org.springframework.security.oauth2.provider.AuthorizationRequest
+import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 @Secured(['ROLE_OR_USER'])
 class UserController extends InterceptorValidation {
@@ -17,6 +26,7 @@ class UserController extends InterceptorValidation {
     def springSecurityService
     def gridFSService
     def GormTokenStoreService gormTokenStoreService
+    def GrailsOAuth2RequestFactory oauth2RequestFactory
 
     def index() {
         forward(action: 'list', params: params)
@@ -36,23 +46,17 @@ class UserController extends InterceptorValidation {
     def save(User userInstance) {
 
         // Set password when it was left empty
-        def newPassword
-        if (!userInstance.password && !params.confirmpassword) {
-            newPassword = RandomStringUtils.random(6, true, false)
-            userInstance.password = newPassword
-            userInstance.confirmpassword = newPassword
-        } else
-            newPassword = userInstance.password
+        def newPassword = params.password
+        if (!newPassword)
+            newPassword = userInstance.password = params.confirmpassword = RandomStringUtils.random(6, true, false)
 
         // confirm password check
         switch (request.format) {
             case 'html':
             case 'form':
-                if (!params.skippassword) {
-                    if (userInstance.password != params.confirmpassword) {
-                        flash.message = 'Passwords do not match'
-                        return render(view: 'create', status: HttpStatus.BAD_REQUEST.value(), model: [userInstance: params])
-                    }
+                if (userInstance.password != params.confirmpassword) {
+                    flash.message = 'Passwords do not match'
+                    return render(view: 'create', status: HttpStatus.BAD_REQUEST.value(), model: [userInstance: params])
                 }
                 break
         }
@@ -66,7 +70,6 @@ class UserController extends InterceptorValidation {
                 userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
                     it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
                 }.collect { it.key })
-                def token = updateKey(userInstance)
 
                 def code = ('ROLE_OR_POLICY_administration' in userInstance.authorities*.authority) ? 'administration' : 'dissemination'
                 if (params.sendmail) {
@@ -79,7 +82,7 @@ class UserController extends InterceptorValidation {
                 }
 
                 flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-                respond(userInstance, view: 'show', model: [userInstance: userInstance, policyList: _policyList(), token: token])
+                respond(userInstance, view: 'show', model: [userInstance: userInstance, policyList: _policyList(), token: getBearer(userInstance)])
                 break
 
             case HttpStatus.BAD_REQUEST:
@@ -92,7 +95,7 @@ class UserController extends InterceptorValidation {
 
         switch (status(userInstance)) {
             case HttpStatus.OK:
-                respond userInstance, model: [userInstance: userInstance, policyList: _policyList(), token: getToken(userInstance)]
+                respond userInstance, model: [userInstance: userInstance, policyList: _policyList(), token: getBearer(userInstance)]
                 break
 
             case HttpStatus.BAD_REQUEST:
@@ -124,6 +127,7 @@ class UserController extends InterceptorValidation {
             case HttpStatus.OK:
                 userInstance.save flush: true
 
+                // We only need a new key when the authorities have changed.
                 userInstance.replaceKey = roles(userInstance, params.dissemination.findAll {
                     it.value == 'on' && (it.key in fixedPolicies || it.key in policyList)
                 }.collect { it.key })
@@ -237,29 +241,88 @@ class UserController extends InterceptorValidation {
     def updatekey(Long id) {
 
         def userInstance = User.findByIdAndNa(id, params.na)
-        if (!userInstance) {
+        if (userInstance) {
+            updateKey(userInstance)
+            forward(action: 'show', id: params.id)
+        } else {
             flash.message = message(code: 'default.validation.message', args: [message(code: 'user.label', default: 'User'), id])
-            return forward(action: 'list')
+            forward(action: 'list')
         }
-
-        userInstance.replaceKey = true
-        updateKey(userInstance)
-        forward(action: 'show', id: params.id)
     }
 
-
-    private void updateKey(User user) {
-
+    def updateKey(User user) {
+        if (user.replaceKey)
+            removeToken(user)
+        getBearer(user)
     }
 
-    private void removeToken(User user) {
-
+    /**
+     * getBearer
+     * Retrieved the current bearer token from the token store.
+     * Create a token if it did not exist.
+     *
+     * @param user the user associated with the token
+     * @return A token
+     */
+    private OAuth2AccessToken getBearer(User user) {
+        (gormTokenStoreService.findTokensByClientIdAndUserName(CLIENT_ID, user.username)?.find {
+            it.tokenType == 'bearer'
+        }) ?: saveBearer(user)
     }
 
-    private String getToken(User user) {
+    /**
+     * saveBearer
+     *
+     * Create an OAUTH2 access token. We hardwire it here, because we do not allow for user account UI logins.
+     *
+     * @param user
+     * @return
+     */
+    private OAuth2AccessToken saveBearer(User user, expiration = new Date().plus(365)) {
 
-        def tokens = gormTokenStoreService.findTokensByClientIdAndUserName(CLIENT_ID, user.username)
-        if ( !tokens )
-            tokens = gormTokenStoreService.
+        def scope = ['read']
+        final authorizationRequest = new AuthorizationRequest(CLIENT_ID, scope)
+        final storedRequest = oauth2RequestFactory.createOAuth2Request(authorizationRequest)
+        final authentication = new OAuth2Authentication(storedRequest,
+                authentication(user))
+
+        final OAuth2RefreshToken refreshToken = new DefaultExpiringOAuth2RefreshToken(UUID.randomUUID().toString(), expiration)
+        gormTokenStoreService.storeRefreshToken(refreshToken, authentication)
+
+        final OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(UUID.randomUUID().toString())
+        accessToken.refreshToken = refreshToken
+        accessToken.tokenType = 'bearer'
+        accessToken.expiration = expiration
+        accessToken.scope = scope
+        gormTokenStoreService.storeAccessToken(accessToken, authentication)
+        accessToken
     }
+
+    private removeToken(User user) {
+        gormTokenStoreService.findTokensByClientIdAndUserName(CLIENT_ID, user.username)?.each {
+            gormTokenStoreService.removeRefreshToken(it.refreshToken)
+            gormTokenStoreService.removeAccessToken(it)
+        }
+    }
+
+    /**
+     * authentication
+     *
+     * Create an UsernamePasswordAuthenticationToken for the oauth authentication provider.
+     *
+     * @param id Identifier of the user
+     * @param authorities Roles of the user
+     * @return
+     */
+    static def authentication(User user) {
+
+        new UsernamePasswordAuthenticationToken(
+                user.username,
+                user.password,
+                user.authorities.collect {
+                    new SimpleGrantedAuthority(it.authority)
+                }
+        )
+    }
+
 }

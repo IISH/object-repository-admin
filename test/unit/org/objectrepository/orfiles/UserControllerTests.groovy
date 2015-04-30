@@ -1,11 +1,17 @@
-package org.objectrepository.security
+package org.objectrepository.orfiles
 
 import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
+import org.objectrepository.security.Policy
+import org.objectrepository.security.User
+import org.objectrepository.security.UserController
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestFor(UserController)
+@TestMixin(GrailsUnitTestMixin)
 class UserControllerTests {
 
     void setUp() {

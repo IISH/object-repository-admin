@@ -4,7 +4,6 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 import org.objectrepository.ai.ldap.LdapUser
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.*
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.ldap.LdapUsernameToDnMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsManager

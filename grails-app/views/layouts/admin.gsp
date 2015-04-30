@@ -40,7 +40,7 @@
         function validate(form) {
             var e = form.elements;
 
-            if (!e['skippassword'] && e['confirmpassword'].value && e['password'].value != e['confirmpassword'].value) {
+            if (!e['confirmpassword'].value && e['password'].value != e['confirmpassword'].value) {
                 alert('Your passwords do not match');
                 return false;
             }

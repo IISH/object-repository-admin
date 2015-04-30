@@ -114,8 +114,6 @@ grails.plugin.springsecurity.ldap.useRememberMe = false
 grails.plugin.springsecurity.rememberMe.persistent = false
 grails.plugin.springsecurity.rememberMe.useSecureCookie = false
 grails.plugin.springsecurity.oauthProvider.active = oauthProvider
-grails.plugin.springsecurity.oauthProvider.tokenServices.accessTokenValiditySeconds = 31536000
-grails.plugin.springsecurity.oauthProvider.tokenServices.refreshTokenValiditySeconds = 31536000
 
 
 // Added by the Spring Security OAuth2 Provider plugin:
