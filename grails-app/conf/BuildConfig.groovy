@@ -4,7 +4,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.offline.mode = false
 
-//grails.project.dependency.resolver = 'maven'
+grails.project.dependency.resolver = 'maven'
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -15,7 +15,7 @@ grails.project.dependency.resolution = {
     legacyResolve false
 
     repositories {
-        grailsRepo "http://grails.org/plugins"
+        mavenRepo 'https://repo.grails.org/grails/plugins'
         grailsPlugins()
         grailsHome()
         grailsCentral()
