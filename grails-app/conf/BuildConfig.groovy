@@ -16,12 +16,13 @@ grails.project.dependency.resolution = {
 
     repositories {
         grailsRepo 'http://grails.org/plugins'
-        mavenRepo 'https://repo.grails.org/grails/plugins'
         grailsPlugins()
         grailsHome()
         grailsCentral()
         mavenCentral()
         mavenLocal()
+        mavenRepo 'https://repo.grails.org/grails/plugins'
+        mavenRepo 'http://maven.springframework.org/milestone/'
         //mavenRepo 'http://repo.spring.io/milestone'
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
