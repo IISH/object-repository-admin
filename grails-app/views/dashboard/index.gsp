@@ -38,7 +38,7 @@
                                                              format="yyyy-MM-dd"/></g:if></td>
                     <td>${bucket}</td>
                     <td>
-                        <g:formatNumber number="${interval.value['files_count.' + bucket]}" maxFractionDigits="0"/>
+                        <g:formatNumber number="${interval.value['files_count_' + bucket]}" maxFractionDigits="0"/>
                     </td>
                     <td><g:if test="${interval.value['files_length_' + bucket]}">
                         <g:formatNumber number="${interval.value['files_length_' + bucket] / 1073741824}"
