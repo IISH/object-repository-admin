@@ -61,8 +61,7 @@ class GridFSService {
     }
 
     def get(String na, String pid) {
-        String p = OrUtil.escapeJS(pid)
-        query(OR + na, String.format("{\$or:[{'metadata.pid':'%s'},{'metadata.objid':'%s'}]}", p, p))[0]
+        query(OR + na, String.format("{'metadata.pid':'%s'}", OrUtil.escapeJS(pid)))[0]
     }
 
     /**
