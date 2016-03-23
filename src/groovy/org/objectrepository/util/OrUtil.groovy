@@ -81,9 +81,8 @@ class OrUtil {
  * @param document
  * @return
  */
-    static String makeOrType(document) {
+    static String makeOrType(document, filter = ['task', 'workflow', 'plan', 'version']) {
 
-        def filter = ['task', 'workflow', 'plan', 'version']
         if (document instanceof Instruction) filter << 'label'
         final LinkedHashMap map = getPropertiesMap(document, true, filter)
         map << [id: document.id]

@@ -198,6 +198,17 @@ class InstructionController extends NamingAuthorityInterceptor {
         }
     }
 
+    def status = {
+        def instructionInstance = Instruction.get(params.id)
+        if (instructionInstance) {
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("text/xml")
+            response.write( OrUtil.makeOrType(document, []) )
+        } else {
+            return render(status: 404, characterEncoding: 'utf-8', contentType: 'text/xml')
+        }
+    }
+
     protected runMethod() {
 
         def instructionInstance = serviceAvailable()
