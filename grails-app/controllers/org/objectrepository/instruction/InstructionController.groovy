@@ -199,7 +199,7 @@ class InstructionController extends NamingAuthorityInterceptor {
     }
 
     def status = {
-        def instructionInstance = Stagingfile.findByPidAndNa(params.pid, params.na)?._parent
+        def instructionInstance = Stagingfile.findByPidAndNa(params.pid, params.na)?.parent
         if (instructionInstance) {
             response.setCharacterEncoding('utf-8')
             response.setContentType('text/xml')
