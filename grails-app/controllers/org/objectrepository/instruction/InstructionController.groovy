@@ -1,5 +1,6 @@
 package org.objectrepository.instruction
 
+import grails.converters.XML
 import org.objectrepository.security.NamingAuthorityInterceptor
 import org.objectrepository.security.Policy
 import org.objectrepository.util.OrUtil
@@ -203,7 +204,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (instructionInstance) {
             response.setCharacterEncoding('utf-8')
             response.setContentType('text/xml')
-            response.write( OrUtil.makeOrType(instructionInstance, ['version']) )
+            response.outputStream.write( OrUtil.makeOrType(instructionInstance, ['version', 'pidwebserviceKey']) )
         } else {
             return render(status: 404, characterEncoding: 'utf-8', contentType: 'text/xml')
         }
