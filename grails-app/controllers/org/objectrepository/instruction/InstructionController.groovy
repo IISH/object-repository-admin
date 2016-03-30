@@ -204,7 +204,11 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (instructionInstance) {
             response.setCharacterEncoding('utf-8')
             response.setContentType('text/xml')
-            response.outputStream.write( OrUtil.makeOrType(instructionInstance, ['version', 'pidwebserviceKey']).bytes )
+            def instructionByteArray = OrUtil.makeOrType(instructionInstance, ['version', 'pidwebserviceKey']).bytes
+            response.setContentLength(instructionByteArray.size())
+            response.outputStream << instructionByteArray
+            response.outputStream.flush()
+            response.outputStream.close()
         } else {
             return render(status: 404, characterEncoding: 'utf-8', contentType: 'text/xml')
         }
