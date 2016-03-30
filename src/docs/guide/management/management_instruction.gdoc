@@ -44,6 +44,8 @@ This is the particular status of an instruction.
 
 !statusinstruction.gif!
 
+h3. Monitoring with the API
+
 You can use the API to retrieve the current status as well. Use:
 
 NA/instruction/status?pid=[The PID of a file contained in the instruction]
@@ -69,7 +71,7 @@ Example response:
 The instruction action and status is mentioned in the @instruction/workflow element. The codes indicate the following:
 
 For a validation where the name is InstructionValidate
-100=Validation
+{code}100=Validation
 100.status=Validation instruction command
 100.info=A command to validate the instruction was given
 200=Validate files
@@ -142,10 +144,10 @@ For a validation where the name is InstructionValidate
 723.info=Two or more md5 checksums are identical, but only one unique file can be ingested
 800=Validation
 800.status=Validation complete
-800.info=The instruction has been validated
+800.info=The instruction has been validated{code}
 
 For an ingest where the name is InstructionIngest:
-100=Ingest
+{code}100=Ingest
 100.status=Ingest file command
 100.info=A command to ingest the files was given
 200=Process files
@@ -170,7 +172,7 @@ For an ingest where the name is InstructionIngest:
 800.status = Files are being ingested
 800.info=The files are being ingested
 900.status=Tasks complete
-900.info=All tasks have been completed.
+900.info=All tasks have been completed.{code}
 
 h4. Files status accumulative
 All progress for the files
