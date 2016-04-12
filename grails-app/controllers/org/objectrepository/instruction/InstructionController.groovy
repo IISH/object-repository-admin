@@ -164,10 +164,10 @@ class InstructionController extends NamingAuthorityInterceptor {
                 return
             }
             final username = springSecurityService.principal.username.toLowerCase()
-            if (!instructionInstance.approval) {
-                instructionInstance.approval = [username]
-            }
-            else if (!username in instructionInstance.approval) instructionInstance.approval << username
+            if (instructionInstance.approval == null)
+                instructionInstance.approval = []
+            if (!(username in instructionInstance.approval))
+                instructionInstance.approval << username
 
             if (!instructionInstance.hasErrors() && instructionInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'instruction.label', default: 'Instruction'), instructionInstance.id])}"
