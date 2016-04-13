@@ -33,7 +33,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // group, name, version
         compile "org.apache.ftpserver:ftpserver-core:1.0.6"
-        compile "com.lowagie:itext:4.2.0"
+        compile "com.lowagie:itext:2.1.7"
         compile "org.apache.activemq:activemq-camel:5.8.0"
         compile "org.apache.activemq:activemq-pool:5.8.0"
     }

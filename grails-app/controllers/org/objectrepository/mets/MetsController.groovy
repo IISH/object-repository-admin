@@ -5,6 +5,7 @@ package org.objectrepository.mets
  */
 class MetsController {
 
+    grailsApplication grailsApplication
     def metsService
 
     def index() {
@@ -16,7 +17,8 @@ class MetsController {
                 return render(status: 200, characterEncoding: 'utf-8', contentType: 'text/xml')
         }
 
-        def xml = metsService.writeMetsFile(params.na, params.objid, null, params.seq ? params.seq.toInteger() : 0)
+        def xml = metsService.writeMetsFile(params.na, params.objid, grailsApplication.config.buckets,
+                params.seq ? params.seq.toInteger() : 0)
         if (xml) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")

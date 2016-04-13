@@ -13,7 +13,7 @@ class MetsService {
 
     static transactional = false
     static def uses = ['master': 'archive', 'level1': 'hires reference', 'level2': 'reference', 'level3': 'thumbnail']
-    def grailsApplication
+
     def gridFSService
     def policyService
     
@@ -38,7 +38,7 @@ class MetsService {
      * @param cache
      * @return
      */
-    String writeMetsFile(String na, String objid, def buckets = grailsApplication.config.buckets, int seq) {
+    String writeMetsFile(String na, String objid, def buckets, int seq) {
 
         if (objid)
             metsFile(na, buckets, objid, seq)
