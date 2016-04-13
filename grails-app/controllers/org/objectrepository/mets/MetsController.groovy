@@ -16,7 +16,7 @@ class MetsController {
                 return render(status: 200, characterEncoding: 'utf-8', contentType: 'text/xml')
         }
 
-        def xml = metsService.writeMetsFile(params.na, params.objid)
+        def xml = metsService.writeMetsFile(params.na, params.objid, null, params.seq)
         if (xml) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")

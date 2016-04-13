@@ -38,10 +38,10 @@ class MetsService {
      * @param cache
      * @return
      */
-    String writeMetsFile(String na, String objid, def buckets = grailsApplication.config.buckets) {
+    String writeMetsFile(String na, String objid, def buckets = grailsApplication.config.buckets, def seq = 0) {
 
         if (objid)
-            metsFile(na, buckets, objid)
+            metsFile(na, buckets, objid, seq)
         else
             null
     }
@@ -55,10 +55,10 @@ class MetsService {
      *  - use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
-    private String metsFile(String na, def buckets, String objid) {
+    private String metsFile(String na, def buckets, String objid, int seq) {
 
         def levels = buckets.inject([:]) { map, bucket ->
-            def list = gridFSService.listFilesByObjid(na, bucket, objid)
+            def list = gridFSService.listFilesByObjid(na, bucket, objid, seq)
             if (list.size()) map[bucket] = list
             map
         }
