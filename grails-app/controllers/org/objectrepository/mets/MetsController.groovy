@@ -5,7 +5,7 @@ package org.objectrepository.mets
  */
 class MetsController {
 
-    grailsApplication grailsApplication
+    def grailsApplication
     def metsService
 
     def index() {
