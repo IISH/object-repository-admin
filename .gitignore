@@ -49,3 +49,6 @@ Thumbs.db
 # Grails
 _git.gsp
 latest
+
+# Caches
+.slcache
