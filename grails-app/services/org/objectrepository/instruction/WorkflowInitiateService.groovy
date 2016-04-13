@@ -104,20 +104,13 @@ class WorkflowInitiateService extends WorkflowJob {
             Instruction instructionInstance = it as Instruction
             int countStagingfiles = Stagingfile.countByFileSet(instructionInstance.fileSet)
             int count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch:
-                    [name: 'EndOfTheRoad', statusCode: [$gt: 699]]]]) // statusCode ought to be 850 (problems) or 900
+                                                                                                                      [name: 'EndOfTheRoad', statusCode: [$gt: 699]]]])
+            // statusCode ought to be 850 (problems) or 900
             if (countStagingfiles == count) {
                 log.info id(instructionInstance) + "Decomissioning (Instruction is done)"
                 instructionInstance.task.statusCode = 900
-                if (count == 0) {
-                    if (instructionInstance.deleteCompletedInstruction) {
-                        delete(instructionInstance)
-                        return
-                    }
-                } else {
-                    count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
-                    instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
-                }
-                save(instructionInstance)
+                count = mongo.getDB('sa').stagingfile.count([fileSet: instructionInstance.fileSet, workflow: [$elemMatch: [name: 'EndOfTheRoad', statusCode: 900]]])
+                instructionInstance.task.info = (count == countStagingfiles) ? "Completed" : "Done, but with some unresolved issues"
 
                 if (instructionInstance.notificationEMail) {
                     sendMail {
@@ -127,6 +120,11 @@ class WorkflowInitiateService extends WorkflowJob {
                         body instructionInstance.task.info
                     }
                 }
+
+                if (count == countStagingfiles && instructionInstance.deleteCompletedInstruction)
+                    delete(instructionInstance)
+                else
+                    save(instructionInstance)
             }
         }
     }
