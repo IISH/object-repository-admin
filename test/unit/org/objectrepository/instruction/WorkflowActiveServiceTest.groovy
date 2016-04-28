@@ -284,7 +284,7 @@ class WorkflowActiveServiceTest {
         document.workflow = [task]
         workflowInitiateService.renameQueueWithContentType(document)
 
-        assert document.task.queue == 'sometaskimageVideo'
+        assert document.task.queue == 'sometaskVideo'
     }
 
 }
