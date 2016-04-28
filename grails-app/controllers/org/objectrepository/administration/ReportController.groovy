@@ -20,9 +20,9 @@ class ReportController extends NamingAuthorityInterceptor {
             response.setCharacterEncoding('utf-8')
             response.setContentType('text/plain')
             def writer = response.outputStream
-            f.withReader {
-                def line = it.readLine()
-                writer.write(line.bytes)
+            f.eachLine {
+                writer.write(it.bytes)
+                writer.write(13)
             }
             writer.close()
         } else {
