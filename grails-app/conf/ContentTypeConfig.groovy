@@ -1,3 +1,7 @@
+contentType_alternatives = [
+        'application/mxf': 'video/mxf'
+]
+
 contentType = ['application/x-bytecode.python',
         'application/acad',
         'application/arj',

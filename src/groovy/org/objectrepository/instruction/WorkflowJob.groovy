@@ -334,7 +334,8 @@ abstract class WorkflowJob {
      */
     def renameQueueWithContentType(def document) {
 
-        final String type = OrUtil.camelCase([document.contentType.split('/', 2)[0]])
+        final String contentType = grailsApplication.config.contentType_alternatives[document.contentType] ?: document.contentType
+        final String type = OrUtil.camelCase([contentType.split('/', 2)[0]])
         switch (type) {
             case 'Audio':
             case 'Image':
