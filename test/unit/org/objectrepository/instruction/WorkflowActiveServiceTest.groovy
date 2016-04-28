@@ -268,4 +268,23 @@ class WorkflowActiveServiceTest {
         assert document.task.limit == Integer.MAX_VALUE
     }
 
+
+    void testContentType() {
+        Task task = [name: 'some task', statusCode: 0]
+        Stagingfile document = [contentType: 'image/jpeg']
+        document.workflow = [task]
+        workflowInitiateService.renameQueueWithContentType(document)
+
+        assert document.task.queue == 'image/jpeg'
+    }
+
+    void testAlternativeContentType() {
+        Task task = [name: 'some task', statusCode: 0]
+        Stagingfile document = [contentType: 'application/mxf']
+        document.workflow = [task]
+        workflowInitiateService.renameQueueWithContentType(document)
+
+        assert document.task.queue == 'video/mxf'
+    }
+
 }
