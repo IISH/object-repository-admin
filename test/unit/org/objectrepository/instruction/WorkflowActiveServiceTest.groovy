@@ -270,21 +270,21 @@ class WorkflowActiveServiceTest {
 
 
     void testContentType() {
-        Task task = [name: 'some task', statusCode: 0]
+        Task task = [name: 'sometask', statusCode: 0]
         Stagingfile document = [contentType: 'image/jpeg']
         document.workflow = [task]
         workflowInitiateService.renameQueueWithContentType(document)
 
-        assert document.task.queue == 'image/jpeg'
+        assert document.task.queue == 'sometaskImage'
     }
 
     void testAlternativeContentType() {
-        Task task = [name: 'some task', statusCode: 0]
+        Task task = [name: 'sometask', statusCode: 0]
         Stagingfile document = [contentType: 'application/mxf']
         document.workflow = [task]
         workflowInitiateService.renameQueueWithContentType(document)
 
-        assert document.task.queue == 'video/mxf'
+        assert document.task.queue == 'sometaskimageVideo'
     }
 
 }
