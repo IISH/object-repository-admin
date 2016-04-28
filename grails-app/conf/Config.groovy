@@ -178,3 +178,5 @@ grails.doc.copyright = "Copyright (c) 2013 Social History Services"
 //grails.doc.footer
 //grails.doc.css
 grails.doc.images = new File("src/docs/images")
+
+report_folder='report'

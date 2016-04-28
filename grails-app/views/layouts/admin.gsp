@@ -74,6 +74,7 @@
         <li class="policy"><g:link mapping="namingAuthority" params="[na:params.na]" controller="policy">${message(code: 'admin.dissemination.policy')}</g:link></li>
         <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">${message(code: 'admin.dissemination.instruction')}</g:link></li>
         <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">${message(code: 'admin.dissemination.object')}</g:link></li>
+        <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="report">${message(code: 'admin.dissemination.report')}</g:link></li>
     </ul>
 </div>
 
