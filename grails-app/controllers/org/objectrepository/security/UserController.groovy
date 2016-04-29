@@ -20,8 +20,8 @@ class UserController extends NamingAuthorityInterceptor {
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        final list = User.findAllByNa(params.na)
-        [userInstanceList: list, userInstanceTotal: list.size()]
+        final list = User.findAllByNa(params.na, params)
+        [userInstanceList: list, userInstanceTotal: User.countByNa(params.na)]
     }
 
     def create() {

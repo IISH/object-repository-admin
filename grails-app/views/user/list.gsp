@@ -49,7 +49,7 @@
     </table>
 
     <div class="paginateButtons">
-        <g:paginate mapping="namingAuthority" params="[na:params.na]" total="${userInstanceTotal}"/>
+        <g:paginate mapping="namingAuthority" params="[na:params.na]" action="list" total="${userInstanceTotal}"/>
     </div>
 </div>
 </body>
