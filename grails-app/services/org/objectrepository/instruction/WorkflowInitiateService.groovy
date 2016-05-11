@@ -122,7 +122,7 @@ class WorkflowInitiateService extends WorkflowJob {
                 }
 
                 if (count == countStagingfiles && instructionInstance.deleteCompletedInstruction)
-                    delete(instructionInstance)
+                    instructionInstance.delete()
                 else
                     save(instructionInstance)
             }
