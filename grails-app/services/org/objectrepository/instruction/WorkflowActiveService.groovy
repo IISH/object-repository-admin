@@ -133,6 +133,26 @@ class WorkflowActiveService extends WorkflowJob {
         }
     }
 
+
+
+/**
+ * InstructionIngest100
+ *
+ * Determine if this ingest is about packaging or individual file ingest.
+ *
+ * @param document
+ * @return
+ */
+    def InstructionIngest100(def document) {
+
+        if ('InstructionPackage' in document.plan) {
+            changeWorkflow('InstructionPackage', document)
+        } else {
+            next(document)
+        }
+    }
+
+
 /**
  * InstructionIngest600
  *
@@ -151,6 +171,21 @@ class WorkflowActiveService extends WorkflowJob {
             next(document)
         }
     }
+
+
+    /**
+     * InstructionPackage800
+     *
+     * When we reach this status, the instruction can be removed in its entirety.
+     *
+     * @param document
+     * @return
+     */
+    def InstructionPackage800(def document) {
+
+        document.delete()
+    }
+
 
     /**
      * InstructionRecreate600

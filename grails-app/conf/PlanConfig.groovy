@@ -89,6 +89,18 @@ plans = [
                         800: [purpose: 'The overal instruction has been validated. All is well.']
                 ]
         ],
+        InstructionPackage: [
+                statusCodes: [
+                        100: [purpose: 'The user has made a request to package the files in this instruction'],
+                        200: [purpose: 'Sending declaration to the queue'],
+                        300: [purpose: 'The instruction has been sent to the queue for processing'],
+                        400: [purpose: 'Packaging files'],
+                        500: [purpose: 'The service node completed the task.'],
+                        600: [purpose: 'Check if the package command was completed'],
+                        700: [purpose: 'Something went wrong'],
+                        800: [purpose: 'Packaging is done']
+                ],
+        ],
         InstructionIngest: [
                 service: [method: 'hasValidDBInstruction', statusCode: 800],
                 statusCodes: [
