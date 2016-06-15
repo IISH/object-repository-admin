@@ -157,7 +157,7 @@ class WorkflowActiveServiceTest {
                 contentType: 'image/jpeg', task: task, action: 'add', objid:'hello', seq:1]
         document.parent = [id: new ObjectId()]
         document.parent.plan = OrUtil.availablePlans(config.plans)
-        document.parent.plan.removeAt(0) //  remove the InstructionPackage
+        OrUtil.removeFirst(document.parent.plan) //  remove the InstructionPackage
         workflowActiveService.runMethod(document)
         assert document.task.name == 'EndOfTheRoad'
         assert document.task.statusCode == 900
@@ -178,7 +178,7 @@ class WorkflowActiveServiceTest {
         Stagingfile document = [fileSet: fileSet_Instruction, na: '00000', pid: '123/12321312', md5: 'wedewdewdew',
                 contentType: 'image/jpeg', task: task, action: 'upsert', objid:'hello', seq:1]
         def allWorkflow = OrUtil.availablePlans(config.plans)
-        allWorkflow.removeAt(0) //  remove the InstructionPackage
+        OrUtil.removeFirst(allWorkflow) //  remove the InstructionPackage
         document.parent = [id: new ObjectId()]
         document.parent.plan = [
                 allWorkflow[1], // StagingfileBindPIDs
@@ -196,10 +196,10 @@ class WorkflowActiveServiceTest {
             }
         }
         assert !document.workflow.find {
-            it.name == allWorkflow[0] // StagingfileIngestMaster
+            it.name == allWorkflow[0] // StagingfileIngestMaster should not be in the workflow
         }
         assert !document.workflow.find {
-            it.name == allWorkflow[4] // StagingfileIngestLevel2
+            it.name == allWorkflow[4] // StagingfileIngestLevel2 should not be in the workflow
         }
     }
 
