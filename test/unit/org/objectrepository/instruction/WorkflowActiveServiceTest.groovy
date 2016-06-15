@@ -37,13 +37,6 @@ class WorkflowActiveServiceTest {
             getProperty("action")
         }
 
-        Instruction.metaClass.beforeDelete = {
-        }
-
-        Instruction.metaClass.delete = {
-            delegate.action = 'ok'
-        }
-
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
@@ -302,7 +295,6 @@ class WorkflowActiveServiceTest {
         workflowActiveService.runMethod(document)
         document.task.queue == 'InstructionPackage'
         assert document.task.statusCode == 800
-        assert document.action == 'ok'
     }
 
 }
