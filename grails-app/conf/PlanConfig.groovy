@@ -38,7 +38,6 @@ plans = [
                 ]
         ],
         InstructionRecreate: [
-                visible: false,
                 statusCodes: [
                         100: [purpose: 'A user asked to create an instruction from an existing set.'],
                         200: [purpose: 'Sending request to the queue'],
@@ -51,7 +50,6 @@ plans = [
                 ]
         ],
         InstructionRecreatefile: [
-                visible: false,
                 statusCodes: [
                         100: [purpose: 'A user asked to create an instruction for a file.'],
                         200: [purpose: 'Sending request to the queue'],
@@ -90,6 +88,7 @@ plans = [
                 ]
         ],
         InstructionPackage: [
+                visible: true,
                 statusCodes: [
                         100: [purpose: 'The user has made a request to package the files in this instruction'],
                         200: [purpose: 'Sending declaration to the queue'],
@@ -129,6 +128,7 @@ plans = [
         ],
         StagingfileIngestMaster: [
                 task: [limit: Integer.MAX_VALUE],
+                visible: true,
                 statusCodes: [
                         100: [purpose: 'The system received a request to ingest this master'],
                         200: [purpose: 'Sending request to the queue'],
@@ -141,6 +141,7 @@ plans = [
                 ],
         ],
         StagingfileBindPIDs: [
+                visible: true,
                 statusCodes: [
                         100: [purpose: 'The system received a request to create or bind PIDs'],
                         200: [purpose: 'Sending request to the queue'],
@@ -153,6 +154,7 @@ plans = [
                 ]
         ],
         StagingfileBindObjId: [
+                visible: true,
                 statusCodes: [
                         100: [purpose: 'The system received a request to create or bind an objid'],
                         200: [purpose: 'Sending request to the queue'],
@@ -178,6 +180,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel1: [
+                visible: true,
                 methods: [executeAfter: 'StagingfileIngestCustomLevel1', renameQueueWithContentType: null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -204,6 +207,7 @@ plans = [
                 ],
         ],
         StagingfileIngestLevel2: [
+                visible: true,
                 methods: [executeAfter: 'StagingfileIngestCustomLevel2', renameQueueWithContentType: null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],
@@ -231,6 +235,7 @@ plans = [
         ]
         ,
         StagingfileIngestLevel3: [
+                visible: true,
                 methods: [executeAfter: 'StagingfileIngestCustomLevel3', renameQueueWithContentType: null],
                 statusCodes: [
                         100: [purpose: 'The system received a request to produce this derivative'],

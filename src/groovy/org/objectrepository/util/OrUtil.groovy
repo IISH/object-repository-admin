@@ -157,15 +157,15 @@ class OrUtil {
 /**
  * availablePlans
  *
- * All available plans start with 'Stagingfile'
+ * All available plans have a visible attribute.
  * Exceptions for those visible set to true
  *
  * @param workflow
  * @return
  */
-    static List<String> availablePlans(def workflow, String type = "Stagingfile") {
+    static List<String> availablePlans(def workflow) {
         workflow.findResults {
-            (it.key.startsWith(type) && ((it.value.visible == null) ? true : it.value.visible)) ? it.key : null
+            (it.value.visible ?: false) ? it.key : null
         }
     }
 
