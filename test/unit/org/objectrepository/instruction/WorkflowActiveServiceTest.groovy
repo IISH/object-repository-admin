@@ -37,6 +37,13 @@ class WorkflowActiveServiceTest {
             getProperty("action")
         }
 
+        Instruction.metaClass.beforeDelete = {
+        }
+
+        Instruction.metaClass.delete = {
+            delegate.action = 'ok'
+        }
+
         workflowActiveService = new WorkflowActiveService()
         workflowActiveService.metaClass.mongo = new GMongo()
         workflowActiveService.taskValidationService = taskValidationService = new TaskValidationService()
@@ -287,6 +294,15 @@ class WorkflowActiveServiceTest {
         workflowInitiateService.renameQueueWithContentType(document)
 
         assert document.task.queue == 'sometaskVideo'
+    }
+
+    void testInstructionPackage() {
+        Task task = [name: 'InstructionIngest', statusCode: 100]
+        Instruction document = [fileSet: 'dummy', na: '00000', contentType: 'image/jpeg', task: task, plans: ['InstructionPackage']]
+        workflowActiveService.runMethod(document)
+        document.task.queue == 'InstructionPackage'
+        assert document.task.statusCode == 800
+        assert document.action == 'ok'
     }
 
 }
