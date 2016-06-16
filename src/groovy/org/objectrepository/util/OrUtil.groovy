@@ -160,11 +160,11 @@ class OrUtil {
  * All available plans have a visible attribute.
  * Exceptions for those visible set to true
  *
- * @param workflow
- * @return
+ * @param Available plans
+ * @return The list of selectable plans
  */
-    static List<String> availablePlans(def workflow) {
-        workflow.findResults {
+    static List<String> availablePlans(def plans) {
+        plans.findResults {
             (it.value.visible ?: false) ? it.key : null
         }
     }
