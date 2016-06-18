@@ -183,6 +183,14 @@ class WorkflowActiveService extends WorkflowJob {
      */
     def InstructionPackage800(def document) {
 
+        if (document.notificationEMail) {
+            sendMail {
+                to document.notificationEMail.split(";|,")
+                from grailsApplication.config.mail.from
+                subject "Ingested " + document.fileSet
+                body document.task.info
+            }
+        }
         document.delete()
     }
 
