@@ -25,7 +25,7 @@ abstract class WorkflowJob {
     def taskProperties
 
     static long messageTTL = 43200000 // Twelve hours and then the task is stale
-    static long instructionMessageTTL = 300000 // Five minutes and then the task is stale
+    static long instructionMessageTTL = 900000 // Fifteen minutes and then the task is stale
 
     public WorkflowJob() {
 
