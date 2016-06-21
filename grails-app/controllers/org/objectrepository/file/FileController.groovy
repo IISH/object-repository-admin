@@ -58,7 +58,8 @@ class FileController {
                     to = m[0][2] as long
                 }
 
-                response.contentLength = 1 + to - from
+                long contentLength = 1 + to - from
+                response.setHeader('Content-Length', contentLength.toString() )
                 response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
 
                 if (isHead) {
@@ -77,7 +78,7 @@ class FileController {
                 if (r != -1) response.status = r
 
             } else {
-                response.contentLength = file.length as int
+                response.setHeader('Content-Length', file.length.toString() )
                 response.status = HttpServletResponse.SC_OK
 
                 if (params.contentType == 'application/save') {
