@@ -33,6 +33,13 @@ To produce derivatives:
 If left empty, the default is to use all the services. This is equivalent to adding the following in an XML instruction:
 {code}plan='StagingfileIngestMaster,StagingFileBindPIDs,StagingFileBindObjId,StagingfileIngestLevel1,StagingfileIngestLevel2,StagingfileIngestLevel3'{code}
 
+{code}plan='InstructionPackage'{code}
+This will create an uncompressed rar package. The rar is build after the instruction is determined to be valid.
+This is the only situation where zero sized files and files and folders that start with a dot are accepted.
+
+The rar package will be divided into 2GiB multipart files. All the files can be seen via the Mets endpoint:
+http://disseminate.objectrepository.org/mets/12345/my-object-id
+
 h3. Additions and updates
 @action@ (profile, instruction and stagingfile elements)
 
