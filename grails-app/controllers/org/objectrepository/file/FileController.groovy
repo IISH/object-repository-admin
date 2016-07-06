@@ -42,7 +42,7 @@ class FileController {
             response.setHeader('Last-Modified', String.format('%ta, %<td %<tb %<tY %<tT GMT', file.uploadDate))
 
             Date begin = new Date()
-            long from = 0, to = 0
+            long from = 0
             final String range = request.getHeader('Range')
             if (range) {
                 log.info("range : " + range)
@@ -63,8 +63,9 @@ class FileController {
                 response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
 
                 if (isHead) {
-                    render HttpServletResponse.SC_OK
-                    log.info "Returning HEAD"
+                    response.status = HttpServletResponse.SC_OK
+                    response.outputStream.flush()
+                    response.outputStream.close()
                     return null
                 }
 
@@ -87,20 +88,19 @@ class FileController {
                 }
 
                 if (isHead) {
-                    render HttpServletResponse.SC_OK
-                    log.info "Returning HEAD"
+                    response.outputStream.flush()
+                    response.outputStream.close()
                     return null
+                } else {
+                    file.writeTo(response.outputStream)
                 }
-
-                log.info "Serving file"
-                file.writeTo(response.outputStream)
             }
 
             response.outputStream.flush()
 
             Date end = new Date()
 
-            if (grailsApplication.config.siteusage && from == 0 && System.getProperty("layout", "not") == 'disseminate')
+            if (grailsApplication.config.siteusage && from == 0L && System.getProperty("layout", "not") == 'disseminate')
                 stats(file, begin, new Date().time - begin.time)
 
             log.info String.format("Done writing file in %s seconds", (end.time - begin.time) / 1000)
