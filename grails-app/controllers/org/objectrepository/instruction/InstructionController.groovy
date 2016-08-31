@@ -29,7 +29,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         params.max = Math.min(params.max ? params.int('max') : 5, 10)
         if (!params.sort) params.sort = 'label';
 
-        def instructionInstanceList = (params.objid) ? Instruction.findAllByNaOrObjid(params.na, params.objid, params) : Instruction.findAllByNa(params.na, params)
+        def instructionInstanceList = (params.objid) ? Instruction.findAllByNaAndObjid(params.na, params.objid, params) : Instruction.findAllByNa(params.na, params)
         int count = (params.objid) ? 1 : Instruction.countByNa(params.na)
 
         if (params.view) {
