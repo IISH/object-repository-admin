@@ -30,7 +30,7 @@ class InstructionController extends NamingAuthorityInterceptor {
         if (!params.sort) params.sort = 'label';
 
         def instructionInstanceList = (params.objid) ? Instruction.findAllByNaAndFileSetLike(params.na, params.objid, params) : Instruction.findAllByNa(params.na, params)
-        int count = (params.objid) ? 1 : Instruction.countByNa(params.na)
+        int count = (params.objid) ? Instruction.countByFileSetLike(params.objid) : Instruction.countByNa(params.na)
 
         if (params.view) {
             render(view: params.view, model: [instructionInstanceList: instructionInstanceList, instructionInstanceTotal: count])
