@@ -301,7 +301,7 @@ class GridFSService {
 
     def listFilesByObjid(String na, String bucket, String id, int seq = 0) {
         def query = new BasicDBObject('metadata.objid', na + '/' + id)
-        if ( seq )
+        if ( seq > 0 )
             query.append('metadata.seq', seq)
 
         def list = new GridFS(mongo.getDB(OR + na), bucket)
