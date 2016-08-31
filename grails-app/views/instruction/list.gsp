@@ -17,6 +17,8 @@
 
 <g:render template="/layouts/header" model="[instance: instructionInstanceList]"/>
 
+<ul class="view"><li><form method="GET"><input type="submit" value="Find objid"/><input id="objid" name="objid" size="50"/></form></li></ul>
+
 <div class="body" id="updateList">
     <g:render template="list" model="[instructionInstanceList, instructionInstanceTotal]"/>
 </div>
