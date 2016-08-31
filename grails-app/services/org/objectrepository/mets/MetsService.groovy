@@ -38,10 +38,10 @@ class MetsService {
      * @param cache
      * @return
      */
-    String writeMetsFile(String na, String objid, def buckets, int seq) {
+    String writeMetsFile(String na, String objid, def buckets, int seq, int limit) {
 
         if (objid)
-            metsFile(na, buckets, objid, seq)
+            metsFile(na, buckets, objid, seq, limit)
         else
             null
     }
@@ -55,10 +55,10 @@ class MetsService {
      *  - use the corresponding objid or fileSet\label combination to get a sorted list. Sorting is by seq
      *  - for each found level, produce a fileSec.
      */
-    private String metsFile(String na, def buckets, String objid, int seq) {
+    private String metsFile(String na, def buckets, String objid, int seq, int limit) {
 
         def levels = buckets.inject([:]) { map, bucket ->
-            def list = gridFSService.listFilesByObjid(na, bucket, objid, seq)
+            def list = gridFSService.listFilesByObjid(na, bucket, objid, seq, limit)
             if (list.size()) map[bucket] = list
             map
         }

@@ -18,7 +18,7 @@ class MetsController {
         }
 
         def xml = metsService.writeMetsFile(params.na, params.objid, grailsApplication.config.buckets,
-                params.seq ? params.seq.toInteger() : 0)
+                params.seq ? params.seq.toInteger() : 0, params.limit ? params.limit.toInteger() : 0)
         if (xml) {
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/xml")

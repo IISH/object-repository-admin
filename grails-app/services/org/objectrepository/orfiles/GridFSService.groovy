@@ -94,12 +94,12 @@ class GridFSService {
 
         grailsApplication.config.buckets.each {
             mongo.getDB(OR + document.metadata.na).getCollection(it + ".files").update(['metadata.pid': document.metadata.pid],
-                    [$set: ['metadata.access': document.metadata.access,
-                            'metadata.embargo': document.metadata.embargo,
+                    [$set: ['metadata.access'       : document.metadata.access,
+                            'metadata.embargo'      : document.metadata.embargo,
                             'metadata.embargoAccess': document.metadata.embargoAccess,
-                            'metadata.label': document.metadata.label,
-                            'metadata.objid': document.metadata.objid,
-                            'metadata.seq': document.metadata.seq]], false, false)
+                            'metadata.label'        : document.metadata.label,
+                            'metadata.objid'        : document.metadata.objid,
+                            'metadata.seq'          : document.metadata.seq]], false, false)
         }
     }
 
@@ -299,7 +299,7 @@ class GridFSService {
         }
     }
 
-    def listFilesByObjid(String na, String bucket, String id, int seq = 0) {
+    def listFilesByObjid(String na, String bucket, String id, int seq = 0, int limit = 0) {
         def query = new BasicDBObject('metadata.objid', na + '/' + id)
         if ( seq )
             query.append('metadata.seq', seq)
@@ -307,8 +307,9 @@ class GridFSService {
         new GridFS(mongo.getDB(OR + na), bucket)
                 .find(query)
                 .sort { it.metaData.seq }
+                .limit(limit)
     }
-    
+
     long countFilesByObjid(String na, String bucket, String id) {
         mongo.getDB(OR + na).getCollection(bucket + ".files").count(['metadata.objid': id])
     }
