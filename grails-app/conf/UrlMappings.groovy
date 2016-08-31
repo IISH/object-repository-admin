@@ -5,7 +5,7 @@ class UrlMappings {
         "/file/$bucket/$pid**"(controller: 'file', action: 'file')
         "/metadata/$pid**"(controller: 'file', action: "metadata")
         "/viewer/$pid**"(controller: 'viewer', action: 'index')
-        "/mets/$na/$objid/$seq?/$limit?"(controller: 'mets', action: 'index')
+        "/mets/$na/$objid/$seq?"(controller: 'mets', action: 'index')
         "/pdf/$na/$objid/$bucket?"(controller: 'pdf', action: 'index')
         "/$na/orfile/$action/$bucket/$pid**"(controller: 'orfile')
         "/resource/list"(controller:'resource', action: 'list')

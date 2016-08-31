@@ -299,15 +299,20 @@ class GridFSService {
         }
     }
 
-    def listFilesByObjid(String na, String bucket, String id, int seq = 0, int limit = 0) {
+    def listFilesByObjid(String na, String bucket, String id, int seq = 0) {
         def query = new BasicDBObject('metadata.objid', na + '/' + id)
         if ( seq )
             query.append('metadata.seq', seq)
 
-        new GridFS(mongo.getDB(OR + na), bucket)
+        def list = new GridFS(mongo.getDB(OR + na), bucket)
                 .find(query)
                 .sort { it.metaData.seq }
-                .limit(limit)
+
+        if ( seq == -1 ) {
+            [list.first()]
+        }
+        else
+            list
     }
 
     long countFilesByObjid(String na, String bucket, String id) {
