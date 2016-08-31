@@ -28,7 +28,7 @@
               url="[mapping:'namingAuthority', action:'listremote', params: params]" />
 
 <div class="pagination">
-    <g:paginate mapping="namingAuthority" params="[na:params.na]" action="list" total="${instructionInstanceTotal}"  />
+    <g:paginate mapping="namingAuthority" params="[na:params.na,objid:params.objid]" action="list" total="${instructionInstanceTotal}"  />
 </div>
 </body>
 </html>
