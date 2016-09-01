@@ -38,6 +38,7 @@ class FileController {
         boolean isHead = (request.method.toLowerCase() == 'head')
         final def file = getFile(params, isHead)
         if (file) {
+            webRequest.renderView = false
             response.contentType = (params.contentType) ?: file.contentType
             response.setHeader('Last-Modified', String.format('%ta, %<td %<tb %<tY %<tT GMT', file.uploadDate))
 
@@ -86,14 +87,9 @@ class FileController {
                     response.setHeader 'Content-disposition', 'attachment; filename="' + filename + '"'
                 }
 
-                if (isHead) {
-                    webRequest.renderView = false
-                } else {
+                if (!isHead)
                     file.writeTo(response.outputStream)
-                }
             }
-
-            response.outputStream.flush()
 
             Date end = new Date()
 
@@ -101,7 +97,6 @@ class FileController {
                 stats(file, begin, new Date().time - begin.time)
 
             log.info String.format("Done writing file in %s seconds", (end.time - begin.time) / 1000)
-            null
         }
     }
 
