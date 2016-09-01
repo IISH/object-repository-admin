@@ -63,9 +63,8 @@ class FileController {
                 response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
 
                 if (isHead) {
+                    webRequest.renderView = false
                     response.status = HttpServletResponse.SC_OK
-                    response.outputStream.flush()
-                    response.outputStream.close()
                     return null
                 }
 
@@ -80,8 +79,6 @@ class FileController {
 
             } else {
                 response.setHeader('Content-Length', file.length.toString() )
-                if (isHead)
-                    return render(status: 200)
                 response.status = HttpServletResponse.SC_OK
 
                 if (params.contentType == 'application/save') {
@@ -89,7 +86,11 @@ class FileController {
                     response.setHeader 'Content-disposition', 'attachment; filename="' + filename + '"'
                 }
 
-                file.writeTo(response.outputStream)
+                if (isHead) {
+                    webRequest.renderView = false
+                } else {
+                    file.writeTo(response.outputStream)
+                }
             }
 
             response.outputStream.flush()
