@@ -64,9 +64,7 @@ class FileController {
                 response.setHeader('Content-Range', 'bytes ' + from + '-' + to + '/' + file.length)
 
                 if (isHead) {
-                    webRequest.renderView = false
-                    response.status = HttpServletResponse.SC_OK
-                    return null
+                    return
                 }
 
                 if (range.contains(',')) {   // we do not support a multipart response
