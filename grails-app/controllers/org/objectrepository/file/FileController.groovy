@@ -43,9 +43,9 @@ class FileController {
             response.setHeader('Last-Modified', String.format('%ta, %<td %<tb %<tY %<tT GMT', file.uploadDate))
 
             Date begin = new Date()
-            long from = 0
             final String range = request.getHeader('Range')
             if (range) {
+                long from, to
                 log.info("range : " + range)
                 def m = range.substring('bytes='.length()) =~ /(\d*)-(\d*)/
                 if (m[0][1] == "") { // -[n]
