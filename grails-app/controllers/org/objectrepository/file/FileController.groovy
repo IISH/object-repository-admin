@@ -44,8 +44,8 @@ class FileController {
 
             Date begin = new Date()
             final String range = request.getHeader('Range')
+            long from = 0, to
             if (range) {
-                long from, to
                 log.info("range : " + range)
                 def m = range.substring('bytes='.length()) =~ /(\d*)-(\d*)/
                 if (m[0][1] == "") { // -[n]
