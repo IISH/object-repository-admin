@@ -75,6 +75,7 @@
         <li class="instruction"><g:link mapping="namingAuthority" params="[na:params.na]" controller="instruction">${message(code: 'admin.dissemination.instruction')}</g:link></li>
         <li class="convert"><g:link mapping="namingAuthority" params="[na:params.na]" controller="orfile">${message(code: 'admin.dissemination.object')}</g:link></li>
         <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="report">${message(code: 'admin.dissemination.report')}</g:link></li>
+        <li class="dashboard"><g:link mapping="namingAuthority" params="[na:params.na]" controller="health">${message(code: 'admin.dissemination.health')}</g:link></li>
     </ul>
 </div>
 
