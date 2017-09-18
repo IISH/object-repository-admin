@@ -10,7 +10,7 @@ class DownloadService {
     static transactional = 'mongo'
 
     def _filter = ['version', '_id', '_class', 'date', 'name', 'na', 'fileSet',
-            'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length', 'plan']
+                   'pidwebserviceEndpoint', 'pidwebserviceKey', 'task', 'workflow', 'length', 'plan']
 
     def messageSource
     def gridFSService
@@ -30,8 +30,8 @@ class DownloadService {
         instructionAttributes.putAll(OrUtil.getPropertiesMap(document, true, _filter))
         OrUtil.setInstructionPlan(document)
         instructionAttributes << [plan: document.plan.collect() {
-                    it
-                }.join(",")]
+            it
+        }.join(",")]
 
         def builder = new StreamingMarkupBuilder()
         builder.setEncoding("utf-8")
@@ -107,7 +107,9 @@ class DownloadService {
                         pid orfileInstance.metadata.pid
                         resolverBaseUrl orfileInstance.metadata.resolverBaseUrl
                         pidurl orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.pid
-                        if (orfileInstance.metadata.lid) { lid orfileInstance.metadata.lid }
+                        if (orfileInstance.metadata.lid) {
+                            lid orfileInstance.metadata.lid
+                        }
                         if (orfileInstance.metadata.objid) {
                             objid orfileInstance.metadata.resolverBaseUrl + orfileInstance.metadata.objid
                             seq orfileInstance.metadata.seq
@@ -118,7 +120,7 @@ class DownloadService {
                         embargo orfileInstance.metadata.embargo
                         embargoAccess orfileInstance.metadata.embargoAccess
                         out << metadata(orfileInstance, "master")
-                        ['level1', 'level2', 'level3'].each {  bucket ->
+                        ['level1', 'level2', 'level3'].each { bucket ->
                             out << metadata(gridFSService.findByPid(orfileInstance.metadata.pid, bucket), bucket)
                         }
                     }
@@ -140,19 +142,20 @@ class DownloadService {
                     }
                     resolveUrl _resolveUrl
                     ['contentType',
-                            'length',
-                            'content',
-                            'md5',
-                            'uploadDate',
-                            'firstUploadDate',
-                            'lastUploadDate',
-                            'timesAccessed',
-                            'timesUpdated'].each {
-                        if (orfileInstance[it]) {
-                            "$it" orfileInstance[it]
-                        } else if (orfileInstance.metadata[it] && (!(it == 'content' && bucket == 'level1'))) {
-                            "$it" orfileInstance.metadata[it]
-                        }
+                     'length',
+                     'content',
+                     'md5',
+                     'uploadDate',
+                     'firstUploadDate',
+                     'lastUploadDate',
+                     'timesAccessed',
+                     'timesUpdated'].each {
+                        if (!(it == 'content' && bucket == 'level1'))
+                            if (orfileInstance[it]) {
+                                "$it" orfileInstance[it]
+                            } else if (orfileInstance.metadata[it]) {
+                                "$it" orfileInstance.metadata[it]
+                            }
                     }
                 }
 
