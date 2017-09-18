@@ -150,7 +150,7 @@ class DownloadService {
                             'timesUpdated'].each {
                         if (orfileInstance[it]) {
                             "$it" orfileInstance[it]
-                        } else if (orfileInstance.metadata[it]) {
+                        } else if (orfileInstance.metadata[it] && (!(it == 'content' && bucket == 'level1'))) {
                             "$it" orfileInstance.metadata[it]
                         }
                     }
