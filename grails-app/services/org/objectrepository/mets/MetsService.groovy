@@ -81,7 +81,7 @@ class MetsService {
                             file(
                                     CHECKSUM: d.md5,
                                     CHECKSUMTYPE: 'MD5',
-                                    CREATED: d.uploadDate.format("yyyy-MM-dd'T'mm:hh:ss'Z'"),
+                                    CREATED: d.uploadDate.format("yyyy-MM-dd'T'hh:mm:ss'Z'"),
                                     ID: file_ID,
                                     MIMETYPE: d.contentType,
                                     SIZE: d.length
